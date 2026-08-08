@@ -1,0 +1,61 @@
+supplier_id:ID(Supplier),name,english_name,short_name,country,region,category,tier:int,:LABEL
+tsmc,台湾积体电路制造股份有限公司,Taiwan Semiconductor Manufacturing Company (TSMC),TSMC / 台积电,Taiwan,East Asia,Foundry,1,Supplier
+arm,安谋控股公司,Arm Holdings plc,Arm,UK,Europe,IP/EDA,1,Supplier
+sdc,三星显示有限公司,"Samsung Display Co., Ltd.",SDC / 三星显示,South Korea,East Asia,Display,1,Supplier
+lgd,乐金显示株式会社,"LG Display Co., Ltd.",LGD / LG显示,South Korea,East Asia,Display,1,Supplier
+boe,京东方科技集团股份有限公司,"BOE Technology Group Co., Ltd.",BOE / 京东方,China,East Asia,Display,1,Supplier
+sharp,夏普株式会社,Sharp Corporation,Sharp / 夏普,Japan,East Asia,Display,1,Supplier
+sony,索尼集团株式会社,Sony Group Corporation,Sony / 索尼,Japan,East Asia,CIS/Optical,1,Supplier
+largan,大立光电股份有限公司,"Largan Precision Co., Ltd.",Largan / 大立光,Taiwan,East Asia,Optics,1,Supplier
+genius,玉晶光电股份有限公司,"Genius Electronic Optical Co., Ltd.",Genius / 玉晶光,Taiwan,East Asia,Optics,1,Supplier
+sunny,舜宇光学科技(集团)有限公司,"Sunny Optical Technology (Group) Co., Ltd.",Sunny / 舜宇光学,China,East Asia,Optics,1,Supplier
+alps,阿尔卑斯阿尔派株式会社,"Alps Alpine Co., Ltd.",Alps / 阿尔卑斯,Japan,East Asia,Mech/Actuator,2,Supplier
+mitsumi,三美电机株式会社,"Mitsumi Electric Co., Ltd.",Mitsumi / 三美,Japan,East Asia,Mech/Actuator,2,Supplier
+samsung_elec,三星电子株式会社,"Samsung Electronics Co., Ltd.",SEC / 三星电子,South Korea,East Asia,Memory,1,Supplier
+skhynix,SK海力士株式会社,SK hynix Inc.,SK hynix / SK海力士,South Korea,East Asia,Memory,1,Supplier
+micron,美光科技股份有限公司,"Micron Technology, Inc.",Micron / 美光,USA,North America,Memory,1,Supplier
+kioxia,铠侠株式会社,Kioxia Corporation,Kioxia / 铠侠,Japan,East Asia,Memory,1,Supplier
+wdc,西部数据公司,Western Digital Corporation,WD / 西部数据,USA,North America,Memory,1,Supplier
+qualcomm,高通公司,Qualcomm Incorporated,Qualcomm / 高通,USA,North America,Semiconductor,1,Supplier
+broadcom,博通公司,Broadcom Inc.,Broadcom / 博通,USA,North America,Semiconductor,1,Supplier
+cirrus,凌云逻辑公司,"Cirrus Logic, Inc.",Cirrus / 凌云逻辑,USA,North America,Semiconductor,2,Supplier
+ti,德州仪器公司,Texas Instruments Incorporated,TI / 德州仪器,USA,North America,Semiconductor,1,Supplier
+st,意法半导体集团,STMicroelectronics N.V.,ST / 意法半导体,Switzerland/France,Europe,Semiconductor,1,Supplier
+bosch,罗伯特·博世有限公司,Robert Bosch GmbH,Bosch / 博世,Germany,Europe,Sensor,2,Supplier
+tdk,TDK株式会社,TDK Corporation,TDK,Japan,East Asia,Passive/Battery,2,Supplier
+murata,株式会社村田制作所,"Murata Manufacturing Co., Ltd.",Murata / 村田,Japan,East Asia,Passive,2,Supplier
+knowles,楼氏电子公司,Knowles Corporation,Knowles / 楼氏,USA,North America,Acoustics,2,Supplier
+aac,瑞声科技控股有限公司,AAC Technologies Holdings Inc.,AAC / 瑞声科技,China,East Asia,Acoustics,2,Supplier
+goertek,歌尔股份有限公司,GoerTek Inc.,GoerTek / 歌尔股份,China,East Asia,Assembly/Acoustics,2,Supplier
+corning,康宁公司,Corning Incorporated,Corning / 康宁,USA,North America,Material,1,Supplier
+lens_tech,蓝思科技股份有限公司,"Lens Technology Co., Ltd.",Lens / 蓝思科技,China,East Asia,Glass/Enclosure,1,Supplier
+berne,伯恩光学(惠州)有限公司,"Berne Optics (Huizhou) Co., Ltd.",Berne / 伯恩光学,China,East Asia,Glass,1,Supplier
+foxconn,鸿海精密工业股份有限公司,"Hon Hai Precision Industry Co., Ltd. (Foxconn)",Foxconn / 富士康,Taiwan/China,East Asia,Assembly,1,Supplier
+luxshare,立讯精密工业股份有限公司,"Luxshare Precision Industry Co., Ltd.",Luxshare / 立讯精密,China,East Asia,Assembly,1,Supplier
+pegatron,和硕联合科技股份有限公司,Pegatron Corporation,Pegatron / 和硕,Taiwan,East Asia,Assembly,1,Supplier
+quanta,广达电脑股份有限公司,Quanta Computer Inc.,Quanta / 广达,Taiwan,East Asia,Assembly,1,Supplier
+wistron,纬创资通股份有限公司,Wistron Corporation,Wistron / 纬创,Taiwan,East Asia,Assembly,2,Supplier
+byd_e,比亚迪电子(国际)有限公司,"BYD Electronic (International) Co., Ltd.",BYD Electronic / 比亚迪电子,China,East Asia,Assembly/Enclosure,1,Supplier
+catcher,可成科技股份有限公司,"Catcher Technology Co., Ltd.",Catcher / 可成科技,Taiwan,East Asia,Enclosure,1,Supplier
+changying,广东长盈精密技术股份有限公司,"Guangdong Changying Precision Technology Co., Ltd.",Changying / 长盈精密,China,East Asia,Enclosure,1,Supplier
+lingyi,领益智造科技股份有限公司,"Lingyi iTech (Guangdong) Co., Ltd.",Lingyi / 领益智造,China,East Asia,Enclosure/Module,1,Supplier
+desay,惠州市德赛电池有限公司,"Huizhou Desay Battery Co., Ltd.",Desay / 德赛电池,China,East Asia,Battery,1,Supplier
+sunwoda,欣旺达电子股份有限公司,"Sunwoda Electronic Co., Ltd.",Sunwoda / 欣旺达,China,East Asia,Battery,1,Supplier
+atl,新能源科技有限公司,Amperex Technology Limited (ATL),ATL / 新能源科技,China,East Asia,Battery,1,Supplier
+zhending,鹏鼎控股(深圳)股份有限公司,Zhen Ding Technology Holding Limited,ZDT / 鹏鼎控股,Taiwan/China,East Asia,FPC,1,Supplier
+flexium,台郡科技股份有限公司,Flexium Interconnect Inc.,Flexium / 台郡科技,Taiwan,East Asia,FPC,1,Supplier
+dongshan,东山精密制造股份有限公司,"Dongshan Precision Manufacturing Co., Ltd.",Dongshan / 东山精密,China,East Asia,FPC/Component,1,Supplier
+unimicron,欣兴电子股份有限公司,Unimicron Technology Corporation,Unimicron / 欣兴电子,Taiwan,East Asia,Substrate/PCB,1,Supplier
+nanya_pcb,南亚电路板股份有限公司,Nan Ya PCB Corporation,NYP / 南亚电路板,Taiwan,East Asia,Substrate/PCB,1,Supplier
+ibiden,揖斐电株式会社,"Ibiden Co., Ltd.",Ibiden / 揖斐电,Japan,East Asia,Substrate,1,Supplier
+shennan,深南电路股份有限公司,"Shennan Circuits Co., Ltd.",SCC / 深南电路,China,East Asia,PCB,2,Supplier
+ase,日月光投资控股股份有限公司,"ASE Technology Holding Co., Ltd.",ASE / 日月光,Taiwan,East Asia,OSAT,1,Supplier
+amkor,爱麦克科技股份有限公司,"Amkor Technology, Inc.",Amkor / 安靠,USA/Korea,North America,OSAT,1,Supplier
+crystal,浙江水晶光电科技股份有限公司,"Zhejiang Crystal-Optech Co., Ltd.",Crystal / 水晶光电,China,East Asia,Optical,2,Supplier
+lante,浙江蓝特光学股份有限公司,Lante Optics Inc.,Lante / 蓝特光学,China,East Asia,Optical,2,Supplier
+gis,业成科技(深圳)有限公司,General Interface Solution (GIS) - TPK,GIS / 业成,Taiwan,East Asia,Touch/Display,2,Supplier
+viseira,采钰科技股份有限公司,VisEra Technologies Company Limited,VisEra / 采钰科技,Taiwan,East Asia,CIS/Optical,2,Supplier
+cowell,高伟电子控股有限公司,Cowell Technology Corporation,Cowell / 高伟电子,China,East Asia,Camera Module,2,Supplier
+zhaowei,深圳市兆威机电股份有限公司,"Shenzhen Zhaowei Machinery & Electronics Co., Ltd.",Zhaowei / 兆威机电,China,East Asia,Mech,2,Supplier
+apple,苹果公司(自研),Apple Inc. (in-house),Apple / 苹果自研,USA,North America,Semiconductor,1,Supplier
+ams,艾迈斯欧司朗公司,ams OSRAM AG,ams OSRAM,Austria,Europe,Sensor,2,Supplier

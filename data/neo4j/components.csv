@@ -1,0 +1,28 @@
+component_id:ID(Component),name,english_name,category,subcategory,:LABEL
+soc,Apple 自研 SoC 芯片,Apple Silicon SoC,Processor,A/M 系列自研芯片,Component
+display_panel,显示面板,Display Panel,Display,OLED/LTPO/Mini-LED/LCD/Micro-OLED,Component
+cover_glass,盖板玻璃,Cover Glass,Display,Ceramic Shield / 3D玻璃盖板,Component
+cis,摄像头图像传感器,Camera Image Sensor,Optics/Camera,CMOS 图像传感器,Component
+lens,镜头,Camera Lens,Optics/Camera,镜头 / Pancake 光学,Component
+ois,光学防抖执行器,OIS / VCM Actuator,Optics/Camera,光学防抖 VCM,Component
+dram,DRAM 运行内存,DRAM,Memory,动态随机存取存储器,Component
+nand,NAND 闪存,NAND Flash,Memory,存储,Component
+modem,5G 调制解调器,5G Modem,Connectivity,基带,Component
+connectivity,无线连接芯片,Wi-Fi / BT / RF,Connectivity,Wi-Fi/蓝牙/射频前端,Component
+audio_codec,音频编解码与触觉芯片,Audio Codec / Haptics,Semiconductor,音频 / 触觉引擎,Component
+pmic,电源管理芯片,Power Management IC,Semiconductor,电源管理,Component
+battery,电池与电源系统,Battery,Power,电芯 / 电源系统,Component
+enclosure,中框与结构件,Enclosure / Structural,Mechanical,中框 / 机壳 / 结构件,Component
+fpc,柔性印刷电路板,Flexible PCB (FPC),PCB,柔性电路板,Component
+pcb,刚性 PCB / 载板,Rigid PCB / Substrate,PCB,硬板 / 载板(ABF),Component
+substrate,ABF 封装载板,ABF Substrate,PCB,封装载板,Component
+osat,先进封装与测试,Advanced Packaging / OSAT,Semiconductor,先进封装 / 测试,Component
+speaker,扬声器模组,Speaker Module,Acoustics,扬声器模组,Component
+mic,MEMS 麦克风,MEMS Microphone,Acoustics,麦克风,Component
+sensor_motion,运动与环境传感器,Motion / MEMS Sensor,Sensor,运动 / 气压 / IMU,Component
+sensor_bio,生物与健康传感器,Biometric / Health Sensor,Sensor,健康 / 生物传感,Component
+optical_filter,光学滤光片与棱镜,Optical Filter / Prism,Optics/Camera,滤光片 / 棱镜,Component
+uwb,超宽带芯片,UWB Chip,Connectivity,超宽带,Component
+wireless_charging,无线充电模组,Wireless Charging,Power,无线充电,Component
+touch,触控模组,Touch Module,Display,触控模组,Component
+camera_module,摄像头模组,Camera Module,Optics/Camera,摄像头模组,Component

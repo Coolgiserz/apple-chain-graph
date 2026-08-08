@@ -1,0 +1,24 @@
+# Python
+__pycache__/
+*.py[cod]
+*.egg-info/
+.venv/
+venv/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+*.swp
+*~
+
+# Local overrides (keep generated data & dist tracked)
+# data/ and dist/ are intentional deliverables and should be committed.
+
+# WorkBuddy project-local memory (not source)
+.workbuddy/
+
+# Node (project uses managed runtimes; no npm deps to vendor)
+node_modules/
+
+# JetBrains / PyCharm IDE files (not source)
+.idea/

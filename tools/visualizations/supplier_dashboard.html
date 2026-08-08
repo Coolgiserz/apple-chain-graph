@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>苹果供应链重点供应商 · 估值 × 舆情可视化</title>
+<script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
+<style>
+  :root{
+    --bg:#f5f7fa; --card:#ffffff; --ink:#1f2937; --muted:#6b7280;
+    --blue:#2563eb; --red:#dc2626; --green:#16a34a; --amber:#d97706;
+    --line:#e5e7eb; --soft:#eef2f7;
+  }
+  *{box-sizing:border-box;}
+  body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
+    background:var(--bg);color:var(--ink);line-height:1.5;}
+  header{background:linear-gradient(120deg,#0f172a,#1e3a8a);color:#fff;padding:28px 32px;}
+  header h1{margin:0;font-size:23px;font-weight:700;letter-spacing:.5px;}
+  header p{margin:8px 0 0;color:#cbd5e1;font-size:13.5px;}
+  .wrap{max-width:1180px;margin:0 auto;padding:24px 20px 60px;}
+  .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:22px 0 8px;}
+  .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;
+    box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  .card .v{font-size:27px;font-weight:800;line-height:1.1;}
+  .card .l{font-size:12.5px;color:var(--muted);margin-top:4px;}
+  .card.blue .v{color:var(--blue);} .card.red .v{color:var(--red);}
+  .tag.t-warn{background:var(--amber);}
+  .card.green .v{color:var(--green);} .card.amber .v{color:var(--amber);}
+  section{background:var(--card);border:1px solid var(--line);border-radius:14px;
+    padding:20px 22px;margin:18px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+  section h2{margin:0 0 4px;font-size:17px;}
+  section .sub{color:var(--muted);font-size:13px;margin:0 0 14px;}
+  .chart-box{position:relative;width:100%;}
+  .h-440{height:440px;} .h-380{height:380px;} .h-360{height:360px;}
+  .grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px;}
+  .legend{display:flex;flex-wrap:wrap;gap:14px;margin-top:10px;font-size:12.5px;color:var(--muted);}
+  .legend span{display:inline-flex;align-items:center;gap:6px;}
+  .dot{width:11px;height:11px;border-radius:50%;display:inline-block;}
+  .quad{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px;}
+  .quad div{border-left:4px solid;padding:8px 12px;background:var(--soft);border-radius:0 8px 8px 0;font-size:12.8px;}
+  table{width:100%;border-collapse:collapse;font-size:12.3px;margin-top:6px;}
+  th,td{padding:7px 9px;border-bottom:1px solid var(--line);text-align:right;}
+  th:first-child,td:first-child{text-align:left;}
+  thead th{background:var(--soft);color:var(--muted);font-weight:600;position:sticky;top:0;}
+  .tag{display:inline-block;padding:2px 9px;border-radius:20px;font-size:11.5px;font-weight:700;color:#fff;}
+  .t-under{background:var(--blue);} .t-over{background:var(--red);} .t-fair{background:var(--green);}
+  .note{font-size:11.5px;color:var(--muted);margin-top:10px;}
+  @media(max-width:880px){.cards{grid-template-columns:repeat(2,1fr);}.grid2{grid-template-columns:1fr;}}
+.wb-topnav{position:fixed;top:0;left:0;right:0;height:52px;z-index:9999;
+  display:flex;align-items:center;gap:6px;padding:0 14px;
+  background:linear-gradient(135deg,#0a2540,#0a66c2);color:#fff;
+  font-family:-apple-system,'Segoe UI',Roboto,'PingFang SC','Microsoft YaHei',sans-serif;
+  box-shadow:0 2px 8px rgba(0,0,0,.18)}
+.wb-topnav .brand{font-weight:700;font-size:14px;margin-right:10px;white-space:nowrap;opacity:.95}
+.wb-topnav a{color:#dbeafe;text-decoration:none;font-size:13.5px;padding:7px 13px;border-radius:8px;
+  white-space:nowrap;transition:background .15s}
+.wb-topnav a:hover{background:rgba(255,255,255,.16);color:#fff}
+.wb-topnav a.active{background:#fff;color:#0a2540;font-weight:700}
+.wb-topnav .spacer{flex:1}
+body{padding-top:52px}
+section{scroll-margin-top:60px}
+</style>
+</head>
+<body>
+<nav class='wb-topnav'><span class='brand'>Apple 供应链</span><a href='../../dist/graph_viewer.html'>🕸️ 供应链图谱</a><a href='../../dist/apple_supply_chain_report.html'>📄 上下游报告</a><a href='../../tools/visualizations/supplier_geo.html'>🗺️ 供应商地图</a><a href='../../tools/visualizations/supplier_dashboard.html' class='active'>📊 估值看板</a><span class='spacer'></span></nav>
+<!-- 访问统计（Umami，隐私友好）。需与 topnav.py 的 ANALYTICS_WEBSITE_ID 一致；本地 file:// 预览不计入。 -->
+<script>(function(){if(location.protocol.indexOf('http')!==0)return;var s=document.createElement('script');s.async=true;s.src='https://cloud.umami.is/script.js';s.dataset.websiteId='126e2a2e-a550-4669-8f17-f31fb60d0861';document.head.appendChild(s);})();</script>
+<header>
+  <h1>苹果供应链重点供应商 · 估值 × 舆情可视化</h1>
+  <p>15 家核心供应商 | 同业相对估值（便宜/合理/贵）+ 市场舆情（新闻情绪 / 卖方共识）| 数据快照 2026-08-05</p>
+</header>
+
+<div class="wrap">
+
+  <div class="cards" id="cards"></div>
+
+  <!-- 1. 估值分布 -->
+  <section>
+    <h2>① 同业相对估值分布</h2>
+    <p class="sub">得分为「当前估值倍数 ÷ 同业中位倍数」的均值：&lt;0.85 低估（蓝）、0.85–1.15 合理（绿）、&gt;1.15 高估（红）。</p>
+    <div class="chart-box h-440"><canvas id="valChart"></canvas></div>
+    <div class="note">注：单家同业不足 2 家时回退至全样本中位（估值结论仍成立，但可比性略降）。</div>
+  </section>
+
+  <!-- 2. 情绪-估值背离矩阵 -->
+  <section>
+    <h2>② 情绪—估值背离矩阵（核心洞察）</h2>
+    <p class="sub">横轴＝相对估值得分（越右越贵），纵轴＝舆情指数（新闻+卖方共识，-1 看空 ~ +1 看多），气泡大小＝市值（十亿美元）。</p>
+    <div class="chart-box h-440"><canvas id="quadChart"></canvas></div>
+    <div class="quad">
+      <div style="border-color:var(--blue)"><b>左上 · 优质低估</b><br/>估值便宜且市场看好，质量与价格兼备。</div>
+      <div style="border-color:var(--amber)"><b>左下 · 逆向机会</b><br/>估值便宜但情绪偏冷，悲观预期或已充分反映（需甄别价值陷阱）。</div>
+      <div style="border-color:var(--green)"><b>右上 · 预期充分</b><br/>市场看好且估值偏高，对不及预期更敏感（priced for perfection）。</div>
+      <div style="border-color:var(--red)"><b>右下 · 风险区</b><br/>估值偏贵且情绪转冷，双杀风险最高。</div>
+    </div>
+  </section>
+
+  <!-- 3. 舆情分布 -->
+  <section>
+    <h2>③ 市场舆情分布</h2>
+    <p class="sub">新闻情绪（媒体/事件）与卖方分析师共识（评级/目标价）的占比。</p>
+    <div class="grid2">
+      <div class="chart-box h-360"><canvas id="newsChart"></canvas></div>
+      <div class="chart-box h-360"><canvas id="analystChart"></canvas></div>
+    </div>
+  </section>
+
+  <!-- 4. 盈利质量 -->
+  <section>
+    <h2>④ 盈利质量对比（ROE × 净利率）</h2>
+    <p class="sub">横轴＝净利率，纵轴＝ROE，气泡大小＝营收（TTM，十亿美元），颜色＝估值结论。</p>
+    <div class="chart-box h-440"><canvas id="profitChart"></canvas></div>
+  </section>
+
+  <!-- 5. 行业市值 + 数据表 -->
+  <section>
+    <h2>⑤ 行业市值分布 & 明细表</h2>
+    <p class="sub">左：各赛道（sector）总市值；右：15 家供应商关键指标一览。</p>
+    <div class="grid2">
+      <div class="chart-box h-360"><canvas id="sectorChart"></canvas></div>
+      <div style="overflow:auto;max-height:380px;">
+        <table id="dataTable">
+          <thead><tr><th>供应商</th><th>赛道</th><th>市值</th><th>估值</th><th>舆情</th><th>PE</th><th>ROE</th></tr></thead>
+          <tbody></tbody>
+        </table>
+      </div>
+    </div>
+    <div class="note">市值/营收单位为十亿美元；「—」表示数据缺失（如 LGD 亏损无 PE）。舆情 = 新闻情绪+卖方共识的简短标签。</div>
+  </section>
+
+</div>
+
+<script>
+// ===== 数据（来自 supplier_fundamentals.csv + supplier_sentiment.csv + supplier_analysis.json）=====
+// news/analyst: 1=正面/看多, 0=中性, -1=负面/看空
+const S = [
+ {id:'tsmc',     name:'台积电',   sector:'晶圆代工',   mcap:1880, rev:139.6, score:1.59, verdict:'高估', news:1,  analyst:1,  gm:59.0, nm:50.0,  roe:40.0,  pe:27.1,  pb:9.3,  ev:18.4,  con:'强烈买入，约98%覆盖机构买入'},
+ {id:'foxconn',  name:'富士康',   sector:'代工',       mcap:90.3, rev:253.1, score:0.48, verdict:'低估', news:1,  analyst:1,  gm:6.15, nm:2.3,   roe:11.5,  pe:16.8,  pb:1.7,  ev:8.0,   con:'多数买入，目标价普遍上修'},
+ {id:'samsung_elec',name:'三星电子',sector:'存储',     mcap:1120, rev:346.6, score:0.44, verdict:'低估', news:1,  analyst:1,  gm:57.5, nm:30.9,  roe:30.8,  pe:10.83, pb:2.71, ev:6.11,  con:'强烈买入，目标价约+78%空间'},
+ {id:'skhynix',  name:'SK海力士', sector:'存储',       mcap:915.8,rev:94.3,  score:1.21, verdict:'高估', news:1,  analyst:1,  gm:62.0, nm:56.9,  roe:61.2,  pe:16.7,  pb:7.8,  ev:13.7,  con:'多数买入，HBM4龙头'},
+ {id:'sony',     name:'索尼',     sector:'摄像头',     mcap:131,  rev:80.5,  score:0.59, verdict:'低估', news:1,  analyst:1,  gm:30.8, nm:8.5,   roe:12.3,  pe:20.2,  pb:2.4,  ev:10.1,  con:'强烈买入，目标价约+31%'},
+ {id:'qualcomm', name:'高通',     sector:'逻辑芯片',   mcap:193.9,rev:44.5,  score:0.32, verdict:'低估', news:-1, analyst:0,  gm:54.8, nm:22.3,  roe:36.1,  pe:20.7,  pb:7.3,  ev:15.4,  con:'中性：9家下调目标价（苹果modem替代）'},
+ {id:'broadcom', name:'博通',     sector:'逻辑芯片',   mcap:1990, rev:63.9,  score:3.13, verdict:'高估', news:1,  analyst:1,  gm:64.7, nm:36.2,  roe:31.1,  pe:69.6,  pb:22.7, ev:45.0,  con:'强烈买入，AI ASIC双引擎'},
+ {id:'boe',      name:'京东方',   sector:'显示面板',   mcap:31.1, rev:28.5,  score:1.21, verdict:'高估', news:1,  analyst:1,  gm:15.6, nm:2.9,   roe:2.3,   pe:35.5,  pb:1.7,  ev:29.5,  con:'买入为主，中尺寸OLED成长'},
+ {id:'lgd',      name:'LG显示',   sector:'显示面板',   mcap:4.6,  rev:18.1,  score:null, verdict:'困境', news:0,  analyst:0,  gm:11.0, nm:-5.4,  roe:3.4,   pe:null,  pb:0.9,  ev:3.4,   con:'中性：OLED扭亏途中（亏损，倍数失真不判低估）'},
+ {id:'murata',   name:'村田',     sector:'元器件',     mcap:87.1, rev:12.4,  score:0.56, verdict:'低估', news:1,  analyst:1,  gm:40.0, nm:13.8,  roe:8.8,   pe:54.5,  pb:3.2,  ev:24.0,  con:'普遍买入，AI服务器MLCC'},
+ {id:'largan',   name:'大立光',   sector:'光学',       mcap:18.3, rev:1.94,  score:0.83, verdict:'低估', news:1,  analyst:1,  gm:49.2, nm:33.7,  roe:11.4,  pe:28.4,  pb:3.1,  ev:14.4,  con:'外资买入，CPO新业务催化'},
+ {id:'corning',  name:'康宁',     sector:'元器件',     mcap:137.1,rev:16.3,  score:2.15, verdict:'高估', news:0,  analyst:1,  gm:36.4, nm:11.1,  roe:16.7,  pe:73.38, pb:11.53,ev:35.85, con:'多数买入，光通信爆发'},
+ {id:'luxshare', name:'立讯精密', sector:'代工',       mcap:64.6, rev:49.2,  score:2.17, verdict:'高估', news:1,  analyst:1,  gm:11.7, nm:4.9,   roe:19.0,  pe:26.0,  pb:4.3,  ev:19.4,  con:'多家唱多，H股IPO后'},
+ {id:'ase',      name:'日月光',   sector:'封测',       mcap:93.8, rev:21.0,  score:2.1,  verdict:'高估', news:1,  analyst:1,  gm:16.8, nm:7.0,   roe:13.6,  pe:66.1,  pb:7.9,  ev:24.6,  con:'普遍看多，AI先进封装'},
+ {id:'micron',   name:'美光',     sector:'存储',       mcap:1040, rev:90.3,  score:1.61, verdict:'高估', news:1,  analyst:1,  gm:72.57,nm:55.91, roe:66.64, pe:20.14, pb:10.01,ev:14.42, con:'强烈买入，HBM售罄至2027'}
+];
+
+const C = {低估:'#2563eb', 高估:'#dc2626', 合理:'#16a34a', 困境:'#d97706'};
+const sentimentLabel = v => v===1?'正面/看多':(v===0?'中性':'负面/看空');
+const sentimentIndex = d => (d.news + d.analyst)/2;
+
+// ===== 概览卡片 =====
+const counts = {低估:0,高估:0,合理:0};
+S.forEach(d=>counts[d.verdict]++);
+const newsDist = {正面:0,中性:0,负面:0}; const anDist={看多:0,中性:0,看空:0};
+S.forEach(d=>{ newsDist[d.news===1?'正面':d.news===0?'中性':'负面']++; anDist[d.analyst===1?'看多':d.analyst===0?'中性':'看空']++;});
+const cards = [
+ {c:'blue',  v:counts['低估'], l:'相对低估（蓝）'},
+ {c:'green', v:counts['合理'], l:'相对合理（绿）'},
+ {c:'red',   v:counts['高估'], l:'相对高估（红）'},
+ {c:'amber', v:S.filter(d=>sentimentIndex(d)>=0.5).length, l:'舆情强烈正面（指数≥0.5）'}
+];
+document.getElementById('cards').innerHTML = cards.map(x=>
+ `<div class="card ${x.c}"><div class="v">${x.v}</div><div class="l">${x.l}</div></div>`).join('');
+
+Chart.defaults.font.family = '-apple-system,"PingFang SC","Microsoft YaHei",sans-serif';
+Chart.defaults.color = '#374151';
+
+// ===== ① 估值分布（水平条形，按得分升序）=====
+const valSorted = [...S].filter(d=>d.score!=null).sort((a,b)=>a.score-b.score);
+new Chart(document.getElementById('valChart'),{
+  type:'bar',
+  data:{labels:valSorted.map(d=>d.name),
+    datasets:[{label:'相对估值得分',data:valSorted.map(d=>d.score),
+      backgroundColor:valSorted.map(d=>C[d.verdict]),borderRadius:5}]},
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},
+      tooltip:{callbacks:{label:c=>`得分 ${c.raw} · ${valSorted[c.dataIndex].verdict}`}}},
+    scales:{x:{title:{display:true,text:'相对估值得分（<0.85 低估 · 0.85–1.15 合理 · >1.15 高估）'},
+      grid:{color:'#f0f0f0'}}}}
+});
+
+// ===== ② 情绪-估值背离矩阵（气泡）=====
+const bubbleData = S.filter(d=>d.score!=null).map(d=>({x:d.score,y:sentimentIndex(d),r:5+Math.sqrt(d.mcap)*0.5,
+  _d:d}));
+new Chart(document.getElementById('quadChart'),{
+  type:'bubble',
+  data:{datasets:[{label:'供应商',data:bubbleData,
+    backgroundColor:bubbleData.map(b=>(C[b._d.verdict]+'cc')),
+    borderColor:bubbleData.map(b=>C[b._d.verdict]),borderWidth:1.5}]},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},
+      tooltip:{callbacks:{label:b=>`${b.raw._d.name}｜估值${b.raw._d.verdict}(${b.raw.x})｜舆情指数${b.raw.y.toFixed(2)}｜市值$${b.raw._d.mcap}B`}}},
+    scales:{
+      x:{title:{display:true,text:'相对估值得分 → 越右越贵'},min:0,max:4.3,
+         grid:{color:c=> c.tick.value>=0.85&&c.tick.value<=1.15?'rgba(22,163,74,.25)':'#eee'}},
+      y:{title:{display:true,text:'舆情指数（上=看多 / 下=看空）'},min:-1.2,max:1.3,
+         grid:{color:c=> c.tick.value===0?'#9ca3af':'#eee'}}}}
+});
+
+// ===== ③ 舆情分布 =====
+function doughnut(canvas,dist,colors){
+  new Chart(document.getElementById(canvas),{
+   type:'doughnut',
+   data:{labels:Object.keys(dist),datasets:[{data:Object.values(dist),backgroundColor:colors,borderWidth:2,borderColor:'#fff'}]},
+   options:{responsive:true,maintainAspectRatio:false,cutout:'58%',
+     plugins:{legend:{position:'bottom'},title:{display:true,text:canvas==='newsChart'?'新闻情绪分布':'卖方共识分布'},
+       tooltip:{callbacks:{label:c=>`${c.label}: ${c.raw} 家 (${Math.round(c.raw/S.length*100)}%)`}}}}
+  });
+}
+doughnut('newsChart',newsDist,['#16a34a','#9ca3af','#dc2626']);
+doughnut('analystChart',anDist,['#2563eb','#9ca3af','#dc2626']);
+
+// ===== ④ 盈利质量（ROE × 净利率）=====
+const profitData = S.map(d=>({x:d.nm,y:d.roe,r:4+Math.sqrt(d.rev)*2.4,_d:d}));
+new Chart(document.getElementById('profitChart'),{
+  type:'bubble',
+  data:{datasets:[{label:'供应商',data:profitData,
+    backgroundColor:profitData.map(b=>(C[b._d.verdict]+'cc')),
+    borderColor:profitData.map(b=>C[b._d.verdict]),borderWidth:1.5}]},
+  options:{responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},
+      tooltip:{callbacks:{label:b=>`${b.raw._d.name}｜净利率${b.raw.x}%｜ROE ${b.raw.y}%`}}},
+    scales:{x:{title:{display:true,text:'净利率 (%)'},grid:{color:'#eee'}},
+      y:{title:{display:true,text:'ROE (%)'},grid:{color:'#eee'}}}}
+});
+
+// ===== ⑤ 行业市值分布 =====
+const sectorMap = {};
+S.forEach(d=>{sectorMap[d.sector]=(sectorMap[d.sector]||0)+d.mcap;});
+const sectorEntries = Object.entries(sectorMap).sort((a,b)=>b[1]-a[1]);
+new Chart(document.getElementById('sectorChart'),{
+  type:'bar',
+  data:{labels:sectorEntries.map(e=>e[0]),
+    datasets:[{label:'总市值 (十亿美元)',data:sectorEntries.map(e=>e[1]),
+      backgroundColor:'#1e3a8a',borderRadius:5}]},
+  options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
+    plugins:{legend:{display:false},title:{display:true,text:'各赛道总市值'}},
+    scales:{x:{title:{display:true,text:'十亿美元'},grid:{color:'#f0f0f0'}}}}
+});
+
+// ===== 数据表 =====
+const tbody = document.querySelector('#dataTable tbody');
+tbody.innerHTML = S.map(d=>{
+  const vtag = d.verdict==='困境'?'t-warn':d.verdict==='低估'?'t-under':d.verdict==='高估'?'t-over':'t-fair';
+  const sLabel = d.news===1&&d.analyst===1?'看多/正面':(d.news===-1?'偏冷':'中性');
+  return `<tr>
+    <td>${d.name}</td><td>${d.sector}</td>
+    <td>$${d.mcap}B</td>
+    <td><span class="tag ${vtag}">${d.verdict}</span></td>
+    <td>${sLabel}</td>
+    <td>${d.pe??'—'}</td><td>${d.roe}</td>
+  </tr>`;
+}).join('');
+</script>
+</body>
+</html>

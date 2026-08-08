@@ -1,0 +1,9 @@
+# Apple 供应链可视化 —— 依赖清单
+#
+# 全部生成脚本仅使用 Python 标准库（json / os / sys / csv / math / re /
+# collections / statistics / argparse / urllib.parse）与项目内部模块
+#（topnav、supplier_research 包）。因此本项目的网站构建**无任何第三方运行时依赖**。
+#
+# 只需一个 Python 3.9+ 解释器即可重生成全部页面；推荐用仓库自带的受管运行时
+#（Python 3.13）。前端产物（HTML/JS）本身零运行时依赖、可双击打开。
+python >= 3.9

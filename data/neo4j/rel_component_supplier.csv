@@ -1,0 +1,78 @@
+:START_ID(Component),:END_ID(Supplier),:TYPE,share,note,source
+soc,tsmc,SUPPLIED_BY,100,3nm N3E/N3P 独家代工；旧款 A16 在台积电亚利桑那厂,apple_supplier_list;techinsights
+soc,arm,SUPPLIED_BY,,CPU 架构 IP 授权,apple_supplier_list;techinsights
+soc,apple,SUPPLIED_BY,,自研芯片设计,apple_supplier_list;techinsights
+display_panel,sdc,SUPPLIED_BY,,OLED/LTPO/Micro-OLED 面板,dscc;techinsights
+display_panel,lgd,SUPPLIED_BY,,OLED/AMOLED/Mini-LED 面板,dscc;techinsights
+display_panel,boe,SUPPLIED_BY,,OLED/LCD 面板(MacBook Air 51%),dscc;techinsights
+display_panel,sharp,SUPPLIED_BY,,Mini-LED(MacBook Pro),dscc;techinsights
+display_panel,sony,SUPPLIED_BY,,Micro-OLED 内屏(Vision Pro),dscc;techinsights
+cover_glass,corning,SUPPLIED_BY,,Ceramic Shield 玻璃基材,techinsights;ifixit
+cover_glass,lens_tech,SUPPLIED_BY,,3D 玻璃盖板/金属中框,techinsights;ifixit
+cover_glass,berne,SUPPLIED_BY,,玻璃盖板,techinsights;ifixit
+cis,sony,SUPPLIED_BY,,CMOS 图像传感器(独占高端),techinsights;counterpoint
+cis,samsung_elec,SUPPLIED_BY,,未来替代供应商,techinsights;counterpoint
+lens,largan,SUPPLIED_BY,,手机镜头,techinsights;counterpoint
+lens,genius,SUPPLIED_BY,,镜头/Pancake 光学(Vision Pro),techinsights;counterpoint
+lens,sunny,SUPPLIED_BY,,镜头,techinsights;counterpoint
+ois,alps,SUPPLIED_BY,,OIS/VCM 执行器,counterpoint;techinsights
+ois,mitsumi,SUPPLIED_BY,,OIS/VCM 执行器,counterpoint;techinsights
+dram,samsung_elec,SUPPLIED_BY,,DRAM 第一大供应商(~60-70%),trendforce;counterpoint
+dram,skhynix,SUPPLIED_BY,,DRAM,trendforce;counterpoint
+dram,micron,SUPPLIED_BY,,DRAM,trendforce;counterpoint
+nand,samsung_elec,SUPPLIED_BY,,NAND,trendforce;counterpoint
+nand,skhynix,SUPPLIED_BY,,NAND,trendforce;counterpoint
+nand,kioxia,SUPPLIED_BY,,NAND(~35%),trendforce;counterpoint
+nand,wdc,SUPPLIED_BY,,NAND/SanDisk,trendforce;counterpoint
+nand,micron,SUPPLIED_BY,,NAND,trendforce;counterpoint
+modem,qualcomm,SUPPLIED_BY,,5G 基带(当前主力),techinsights;counterpoint
+modem,apple,SUPPLIED_BY,,C1 自研基带(过渡中),techinsights;counterpoint
+connectivity,broadcom,SUPPLIED_BY,,Wi-Fi/蓝牙/射频,techinsights;counterpoint
+connectivity,qualcomm,SUPPLIED_BY,,射频前端,techinsights;counterpoint
+audio_codec,cirrus,SUPPLIED_BY,,音频编解码/触觉,techinsights;apple_10k
+pmic,ti,SUPPLIED_BY,,电源管理 IC,techinsights;counterpoint
+pmic,st,SUPPLIED_BY,,电源/无线充电,techinsights;counterpoint
+pmic,apple,SUPPLIED_BY,,PMIC,techinsights;counterpoint
+battery,desay,SUPPLIED_BY,,电池电芯/电源系统,counterpoint;techinsights
+battery,sunwoda,SUPPLIED_BY,,电池,counterpoint;techinsights
+battery,atl,SUPPLIED_BY,,电池,counterpoint;techinsights
+battery,tdk,SUPPLIED_BY,,电池/被动件,counterpoint;techinsights
+enclosure,catcher,SUPPLIED_BY,,金属机壳,techinsights;nikkei
+enclosure,lens_tech,SUPPLIED_BY,,金属中框/玻璃,techinsights;nikkei
+enclosure,changying,SUPPLIED_BY,,结构件,techinsights;nikkei
+enclosure,lingyi,SUPPLIED_BY,,结构件/模组,techinsights;nikkei
+enclosure,byd_e,SUPPLIED_BY,,结构件/组装,techinsights;nikkei
+enclosure,foxconn,SUPPLIED_BY,,金属机身,techinsights;nikkei
+fpc,zhending,SUPPLIED_BY,,柔性电路板 FPC,techinsights;nikkei
+fpc,flexium,SUPPLIED_BY,,FPC,techinsights;nikkei
+fpc,dongshan,SUPPLIED_BY,,FPC/组件,techinsights;nikkei
+pcb,unimicron,SUPPLIED_BY,,PCB/载板,techinsights;counterpoint
+pcb,nanya_pcb,SUPPLIED_BY,,PCB,techinsights;counterpoint
+pcb,shennan,SUPPLIED_BY,,PCB,techinsights;counterpoint
+pcb,ibiden,SUPPLIED_BY,,ABF 载板,techinsights;counterpoint
+substrate,ibiden,SUPPLIED_BY,,ABF 载板,techinsights;counterpoint
+substrate,unimicron,SUPPLIED_BY,,载板,techinsights;counterpoint
+substrate,nanya_pcb,SUPPLIED_BY,,载板,techinsights;counterpoint
+osat,ase,SUPPLIED_BY,,先进封装/测试(InFO/CoWoS),techinsights;counterpoint
+osat,amkor,SUPPLIED_BY,,先进封装/测试,techinsights;counterpoint
+speaker,goertek,SUPPLIED_BY,,扬声器模组,techinsights;counterpoint
+speaker,aac,SUPPLIED_BY,,声学元件,techinsights;counterpoint
+speaker,luxshare,SUPPLIED_BY,,声学/模组,techinsights;counterpoint
+mic,knowles,SUPPLIED_BY,,MEMS 麦克风,techinsights;counterpoint
+mic,goertek,SUPPLIED_BY,,MEMS 麦克风(歌尔微),techinsights;counterpoint
+mic,aac,SUPPLIED_BY,,麦克风,techinsights;counterpoint
+sensor_motion,bosch,SUPPLIED_BY,,运动/气压传感器,techinsights;counterpoint
+sensor_motion,st,SUPPLIED_BY,,传感器,techinsights;counterpoint
+sensor_motion,tdk,SUPPLIED_BY,,传感器/IMU,techinsights;counterpoint
+sensor_bio,st,SUPPLIED_BY,,健康/生物传感器,techinsights;counterpoint
+sensor_bio,ams,SUPPLIED_BY,,光学/环境传感器,techinsights;counterpoint
+optical_filter,crystal,SUPPLIED_BY,,光学滤光片/棱镜,techinsights;counterpoint
+optical_filter,lante,SUPPLIED_BY,,光学元件,techinsights;counterpoint
+uwb,st,SUPPLIED_BY,,U2 超宽带芯片,techinsights;counterpoint
+uwb,apple,SUPPLIED_BY,,UWB 设计,techinsights;counterpoint
+wireless_charging,st,SUPPLIED_BY,,无线充电控制器,techinsights;counterpoint
+wireless_charging,broadcom,SUPPLIED_BY,,无线充电,techinsights;counterpoint
+touch,gis,SUPPLIED_BY,,触控模组,techinsights;ifixit
+touch,lgd,SUPPLIED_BY,,触控显示,techinsights;ifixit
+camera_module,cowell,SUPPLIED_BY,,摄像头模组,techinsights;counterpoint
+camera_module,lgd,SUPPLIED_BY,,模组,techinsights;counterpoint
