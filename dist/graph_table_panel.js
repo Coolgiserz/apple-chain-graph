@@ -15,21 +15,11 @@
 (function () {
   "use strict";
 
-  var COLORS = { Product: "#2f6fed", Component: "#f59e0b", Supplier: "#10b981" };
-  var TYPE_LABEL = { Product: "产品", Component: "零部件", Supplier: "供应商" };
-  var TYPE_ORDER = { Product: 0, Component: 1, Supplier: 2 };
-
   function $(id) { return document.getElementById(id); }
   function esc(s) {
     return String(s == null ? "" : s).replace(/[&<>]/g, function (c) {
       return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]);
     });
-  }
-  // 每个类型挑 1–2 个最有辨识度的属性，作为表格「属性」列
-  function attrPairs(n) {
-    if (n.type === "Product") return [["产品线", n.product_line], ["状态", n.status]];
-    if (n.type === "Component") return [["类别", n.category], ["子类", n.subcategory]];
-    return [["国家/地区", n.country], ["区域", n.region], ["层级", n.tier]];
   }
 
   var side, tbody, countEl, toggleBtn, closeBtn;
@@ -38,29 +28,23 @@
     if (!side || side.style.display === "none") return;
     var nodes = (window.GraphEngine && window.GraphEngine.visibleNodes)
       ? window.GraphEngine.visibleNodes() : [];
-    // 默认排序：先按类型（产品→零部件→供应商），同类型按名称
-    nodes.sort(function (a, b) {
-      var d = (TYPE_ORDER[a.type] || 9) - (TYPE_ORDER[b.type] || 9);
-      if (d !== 0) return d;
-      return (a.name || "").localeCompare(b.name || "", "zh-Hans-CN");
-    });
-    if (countEl) countEl.textContent = nodes.length;
+    // 「企业表格」专指图谱中当前可见的「供应商」节点；产品/零部件在图谱里查看，不混入表格
+    var suppliers = nodes.filter(function (n) { return n.type === "Supplier"; });
+    suppliers.sort(function (a, b) { return (a.name || "").localeCompare(b.name || "", "zh-Hans-CN"); });
+    if (countEl) countEl.textContent = suppliers.length;
     if (!tbody) return;
-    if (!nodes.length) {
-      tbody.innerHTML = "<tr><td class='empty' colspan='4'>没有匹配的企业</td></tr>";
+    if (!suppliers.length) {
+      tbody.innerHTML = "<tr><td class='empty' colspan='4'>没有匹配的供应商</td></tr>";
       return;
     }
     var html = "";
-    nodes.forEach(function (n) {
-      var attrs = attrPairs(n).filter(function (kv) { return kv[1]; })
-        .map(function (kv) { return esc(kv[0]) + "：" + esc(kv[1]); })
-        .join(" · ");
-      html += "<tr data-key='" + esc(n._key) + "'>"
-        + "<td class='name'>" + esc(n.name || n.id)
-        + (n.english_name ? "<span class='en'>" + esc(n.english_name) + "</span>" : "") + "</td>"
-        + "<td><span class='dot' style='background:" + COLORS[n.type] + "'></span>" + TYPE_LABEL[n.type] + "</td>"
-        + "<td class='deg'>" + (n.degree || 0) + "</td>"
-        + "<td class='attr'>" + (attrs || "—") + "</td>"
+    suppliers.forEach(function (n) {
+      var name = esc(n.name || n.id);
+      html += "<tr data-key='" + esc(n._key) + "' title='" + name + "'>"
+        + "<td class='name'>" + name + "</td>"
+        + "<td>" + esc(n.country || "—") + "</td>"
+        + "<td>" + esc(n.category || "—") + "</td>"
+        + "<td class='tier'>" + esc(n.tier ? ("Tier " + n.tier) : "—") + "</td>"
         + "</tr>";
     });
     tbody.innerHTML = html;

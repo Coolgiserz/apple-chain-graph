@@ -23,7 +23,10 @@
   var nodes = [], links = [], adj = {}, idMap = {};
   var cv, ctx, view = { ox: 0, oy: 0, scale: 1 };
   var alpha = 1, running = false, animating = false, rafId = null, canvasReady = false;
-  var selected = null, hover = null, dragNode = null, panning = false, last = { x: 0, y: 0 }, moved = false;
+  var selected = null, hover = null, dragNode = null, panning = false, last = { x: 0, y: 0 };
+  var downNode = null, downX = 0, downY = 0;   // mousedown 时的候选节点与起始位置
+  var pointerDown = false;                     // 本次手势是否已按下鼠标（move 必须先按下才可能拖拽）
+  var DRAG_THRESH = 5;                         // 按下后位移超过该值(px)才视为拖拽/平移，否则按「点击」处理
   var reportLink = null, mapLink = null;
   var pendingFocus = null;   // 布局未就绪时暂缓居中，待首帧自愈后再执行
 
@@ -209,7 +212,11 @@
   }
 
   // —— 交互 ————————————————————————————————————————————————————————————————
-  function toWorld(px, py) { return { x: (px - view.ox) / view.scale, y: (py - view.oy) / view.scale }; }
+  // 把鼠标事件的坐标（viewport 坐标）换算成画布内部坐标：必须减去画布自身的
+  // 偏移（导航栏高度 52px、侧边面板打开时左侧 384px 等），否则点选/拖拽会整体偏移，
+  // 表现为「点不到节点、一点就平移画布」。
+  function localXY(px, py) { var r = cv.getBoundingClientRect(); return { x: px - r.left, y: py - r.top }; }
+  function toWorld(px, py) { var l = localXY(px, py); return { x: (l.x - view.ox) / view.scale, y: (l.y - view.oy) / view.scale }; }
   function pick(px, py) {
     var w = toWorld(px, py), best = null, bd = 1e9, vis = visibleSet();
     for (var i = 0; i < nodes.length; i++) {
@@ -260,32 +267,46 @@
 
   function bindEvents() {
     cv.addEventListener("mousedown", function (e) {
-      moved = false; last = { x: e.clientX, y: e.clientY };
-      var n = pick(e.clientX, e.clientY);
-      if (n) { dragNode = n; n.fixed = true; reheat(0.3); }
-      else { panning = true; cv.classList.add("dragging"); }
+      downX = e.clientX; downY = e.clientY;
+      downNode = pick(e.clientX, e.clientY);   // 仅记录候选，不立即进入拖拽/平移
+      pointerDown = true;
       kick();
     });
     cv.addEventListener("mousemove", function (e) {
-      var dx = e.clientX - last.x, dy = e.clientY - last.y;
-      if (Math.abs(dx) + Math.abs(dy) > 3) moved = true;
-      if (dragNode) { var w = toWorld(e.clientX, e.clientY); dragNode.x = w.x; dragNode.y = w.y; dragNode.vx = 0; dragNode.vy = 0; }
-      else if (panning) { view.ox += dx; view.oy += dy; }
-      else { hover = pick(e.clientX, e.clientY); cv.style.cursor = hover ? "pointer" : "grab"; }
-      last = { x: e.clientX, y: e.clientY };
+      if (dragNode) {                            // 正在拖动节点
+        var w = toWorld(e.clientX, e.clientY); dragNode.x = w.x; dragNode.y = w.y; dragNode.vx = 0; dragNode.vy = 0;
+      } else if (panning) {                      // 正在平移画布
+        view.ox += e.clientX - last.x; view.oy += e.clientY - last.y;
+        last = { x: e.clientX, y: e.clientY };
+      } else if (pointerDown) {                  // 已按下：越过阈值才进入拖拽，否则只是 hover 反馈
+        var dx = e.clientX - downX, dy = e.clientY - downY;
+        if (Math.abs(dx) + Math.abs(dy) > DRAG_THRESH) {
+          if (downNode) { dragNode = downNode; dragNode.fixed = true; reheat(0.3);
+            var w0 = toWorld(e.clientX, e.clientY); dragNode.x = w0.x; dragNode.y = w0.y; dragNode.vx = 0; dragNode.vy = 0; }
+          else { panning = true; cv.classList.add("dragging"); }
+          last = { x: e.clientX, y: e.clientY };
+        } else {
+          hover = pick(e.clientX, e.clientY); cv.style.cursor = hover ? "pointer" : "grab";
+        }
+      } else {                                   // 未按下：纯浏览，绝不拖拽/平移（只更新 hover 光标）
+        hover = pick(e.clientX, e.clientY); cv.style.cursor = hover ? "pointer" : "grab";
+      }
       kick();
     });
     global.addEventListener("mouseup", function (e) {
+      var wasClick = !dragNode && !panning;      // 按下后全程未越界 → 这是一次点击，而非拖拽
       if (dragNode) { dragNode.fixed = false; dragNode = null; }
-      panning = false; cv.classList.remove("dragging");
-      if (!moved) { var n = pick(e.clientX, e.clientY); selectNode(n); }
+      if (panning) { panning = false; cv.classList.remove("dragging"); }
+      if (wasClick) selectNode(downNode || null);   // 点击节点看详情；点击空白处取消选中
+      downNode = null; pointerDown = false;
       kick();
     });
     cv.addEventListener("wheel", function (e) {
       e.preventDefault();
-      var factor = e.deltaY < 0 ? 1.1 : 0.9, mx = e.clientX, my = e.clientY;
-      var wx = (mx - view.ox) / view.scale, wy = (my - view.oy) / view.scale;
-      view.scale *= factor; view.ox = mx - wx * view.scale; view.oy = my - wy * view.scale;
+      var l = localXY(e.clientX, e.clientY);      // 同样需扣除画布偏移，缩放才以光标为锚点
+      var factor = e.deltaY < 0 ? 1.1 : 0.9;
+      var wx = (l.x - view.ox) / view.scale, wy = (l.y - view.oy) / view.scale;
+      view.scale *= factor; view.ox = l.x - wx * view.scale; view.oy = l.y - wy * view.scale;
       kick();
     }, { passive: false });
     global.addEventListener("resize", resize);
@@ -357,7 +378,8 @@
     reheat: reheat,
     resize: resize,
     esc: esc,
-    visibleNodes: visibleNodes
+    visibleNodes: visibleNodes,
+    getViewport: function () { return { ox: view.ox, oy: view.oy, scale: view.scale }; }
   };
   global.GraphEngine = api;
 })(window);

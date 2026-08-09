@@ -12,7 +12,9 @@
   #cv { position: absolute; top: 52px; left: 0; width: 100%; height: calc(100% - 52px); display: block; cursor: grab; }
   #cv.dragging { cursor: grabbing; }
   #top { position: absolute; top: 64px; left: 12px; right: 12px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
-         background: rgba(20,26,42,.85); border: 1px solid #2a3450; border-radius: 12px; padding: 10px 14px; backdrop-filter: blur(8px); z-index: 10; }
+         background: rgba(20,26,42,.85); border: 1px solid #2a3450; border-radius: 12px; padding: 10px 14px; backdrop-filter: blur(8px); z-index: 10;
+         pointer-events: none; }   /* 容器本身不拦截鼠标，避免遮挡画布上位于该区域的节点 */
+  #top input, #top select, #top button, #top .chk { pointer-events: auto; }   /* 仅表单控件可点击 */
   #top .grp { display: flex; align-items: center; gap: 6px; }
   #top label { font-size: 12px; color: #9fb0d0; }
   #top input[type=search] { background: #0c1020; border: 1px solid #2a3450; color: #e8ecf4; border-radius: 8px; padding: 6px 10px; width: 200px; outline: none; }
@@ -23,7 +25,7 @@
   #top a.tlink { background: #2a3450; color: #dbeafe; text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 8px; white-space: nowrap; transition: background .15s; }
   #top a.tlink:hover { background: #3a4a6e; color: #fff; }
   #top .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
-  #hint { position: absolute; bottom: 12px; left: 12px; font-size: 12px; color: #7c8aa8; background: rgba(20,26,42,.7); padding: 6px 10px; border-radius: 8px; z-index: 10; }
+  #hint { position: absolute; bottom: 12px; left: 12px; font-size: 12px; color: #7c8aa8; background: rgba(20,26,42,.7); padding: 6px 10px; border-radius: 8px; z-index: 10; pointer-events: none; }
   #panel { position: absolute; top: 122px; right: 12px; width: 320px; max-height: calc(100% - 134px); overflow: auto;
            background: rgba(20,26,42,.95); border: 1px solid #2a3450; border-radius: 12px; padding: 16px; z-index: 9; display: none; }
   #panel h3 { margin: 0 0 4px; font-size: 16px; }

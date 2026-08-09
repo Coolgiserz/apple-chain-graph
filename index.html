@@ -12,7 +12,9 @@
   #cv { position: absolute; top: 52px; left: 0; width: 100%; height: calc(100% - 52px); display: block; cursor: grab; }
   #cv.dragging { cursor: grabbing; }
   #top { position: absolute; top: 64px; left: 12px; right: 12px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
-         background: rgba(20,26,42,.85); border: 1px solid #2a3450; border-radius: 12px; padding: 10px 14px; backdrop-filter: blur(8px); z-index: 10; }
+         background: rgba(20,26,42,.85); border: 1px solid #2a3450; border-radius: 12px; padding: 10px 14px; backdrop-filter: blur(8px); z-index: 10;
+         pointer-events: none; }   /* 容器本身不拦截鼠标，避免遮挡画布上位于该区域的节点 */
+  #top input, #top select, #top button, #top .chk { pointer-events: auto; }   /* 仅表单控件可点击 */
   #top .grp { display: flex; align-items: center; gap: 6px; }
   #top label { font-size: 12px; color: #9fb0d0; }
   #top input[type=search] { background: #0c1020; border: 1px solid #2a3450; color: #e8ecf4; border-radius: 8px; padding: 6px 10px; width: 200px; outline: none; }
@@ -23,7 +25,7 @@
   #top a.tlink { background: #2a3450; color: #dbeafe; text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 8px; white-space: nowrap; transition: background .15s; }
   #top a.tlink:hover { background: #3a4a6e; color: #fff; }
   #top .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
-  #hint { position: absolute; bottom: 12px; left: 12px; font-size: 12px; color: #7c8aa8; background: rgba(20,26,42,.7); padding: 6px 10px; border-radius: 8px; z-index: 10; }
+  #hint { position: absolute; bottom: 12px; left: 12px; font-size: 12px; color: #7c8aa8; background: rgba(20,26,42,.7); padding: 6px 10px; border-radius: 8px; z-index: 10; pointer-events: none; }
   #panel { position: absolute; top: 122px; right: 12px; width: 320px; max-height: calc(100% - 134px); overflow: auto;
            background: rgba(20,26,42,.95); border: 1px solid #2a3450; border-radius: 12px; padding: 16px; z-index: 9; display: none; }
   #panel h3 { margin: 0 0 4px; font-size: 16px; }
@@ -52,15 +54,11 @@
   #side table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
   #side th, #side td { text-align: left; padding: 8px 12px; border-bottom: 1px solid #1c2336; }
   #side th { position: sticky; top: 0; background: #161c2e; color: #9fb0d0; font-weight: 600; font-size: 11px; }
-  #side th.c, #side td.deg { text-align: center; width: 48px; }
   #side tbody tr { cursor: pointer; }
   #side tbody tr:hover { background: rgba(47,111,237,.16); }
   #side tbody tr.active { background: rgba(47,111,237,.32); }
-  #side td.name { color: #e8ecf4; }
-  #side td .en { color: #7c8aa8; font-size: 11px; margin-left: 4px; }
-  #side td .dot { display: inline-block; width: 8px; height: 8px; border-radius: 50%; margin-right: 6px; vertical-align: middle; }
-  #side td.attr { color: #9fb0d0; }
-  #side td.deg { color: #cfe0ff; }
+  #side td.name { color: #e8ecf4; max-width: 130px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #side td.tier { color: #cfe0ff; }
   #side td.empty { text-align: center; color: #7c8aa8; padding: 24px; }
   /* 面板打开时，画布让出左侧空间（图谱不被遮挡，仅压缩显示区域） */
   body.table-open #cv { left: 384px; width: calc(100% - 384px); }
@@ -108,7 +106,7 @@
   </header>
   <div class="scroll">
     <table>
-      <thead><tr><th>名称</th><th>类型</th><th class="c">关联</th><th>属性</th></tr></thead>
+      <thead><tr><th>名称</th><th>国家/地区</th><th>类别</th><th>层级</th></tr></thead>
       <tbody id="sideBody"></tbody>
     </table>
   </div>
