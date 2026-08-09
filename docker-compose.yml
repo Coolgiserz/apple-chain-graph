@@ -11,6 +11,9 @@ services:
     build:
       context: .
       dockerfile: Dockerfile
+      args:
+        # 网络受限时（如国内）在 .env 里把 BASE_REGISTRY 设为 docker.io 的镜像源
+        BASE_REGISTRY: ${BASE_REGISTRY:-docker.io}
     image: apple-supply-chain:latest
     container_name: apple-supply-chain-web
     ports:
