@@ -5,18 +5,21 @@
  *   - JS 动态文本：调用 window.i18n.t("key")
  *   - 切换语言：window.i18n.changeLanguage("en") —— 记忆到 localStorage + ?lang=
  *   - 语言加载完成/切换后会派发 document 事件：i18n:ready / i18n:changed（供动态面板重渲染）
+ *
+ *  默认语言策略：显式选择（?lang= 或 localStorage）优先；否则一律中文（不按浏览器
+ *  语言自动切换，避免英文浏览器默认显示英文让用户困惑）。
  */
 (function () {
   var SUPPORTED = ["zh", "en", "fr", "ja"];
   var DEFAULT = "zh";
+  var ASSET_VERSION = "20260809b"; // 资源版本号：改动语言包/引导脚本后递增，破除浏览器缓存
 
   function detect() {
     var p = new URLSearchParams(location.search).get("lang");
     if (p && SUPPORTED.indexOf(p) >= 0) return p;
     var s = localStorage.getItem("site_lang");
     if (s && SUPPORTED.indexOf(s) >= 0) return s;
-    var nav = (navigator.language || "zh").slice(0, 2);
-    return SUPPORTED.indexOf(nav) >= 0 ? nav : DEFAULT;
+    return DEFAULT; // 默认中文
   }
 
   // 语言包相对路径：按当前页面深度推导（首页/ dist/ / tools/ 三种 root）
@@ -28,6 +31,7 @@
   }
 
   var current = detect();
+  var pendingLng = null; // i18n 未就绪时用户已切换的语言，就绪后补应用
 
   var api = {
     lng: current,
@@ -59,7 +63,7 @@
       lng: current,
       fallbackLng: DEFAULT,
       supportedLngs: SUPPORTED,
-      backend: { loadPath: basePath() + "locales/{{lng}}.json" },
+      backend: { loadPath: basePath() + "locales/{{lng}}.json?v=" + ASSET_VERSION },
       interpolation: { escapeValue: false },
       returnEmptyString: false
     }, function () {
@@ -68,6 +72,8 @@
       applyDOM();
       var sel = document.getElementById("langSwitch");
       if (sel) sel.value = current;
+      // 若未就绪期间用户已切换语言，这里补应用
+      if (pendingLng) { var pl = pendingLng; pendingLng = null; api.changeLanguage(pl); }
       document.dispatchEvent(new CustomEvent("i18n:ready"));
     });
   }
@@ -75,10 +81,13 @@
   api.changeLanguage = function (lng) {
     if (SUPPORTED.indexOf(lng) < 0) lng = DEFAULT;
     current = lng;
+    api.lng = lng;
     localStorage.setItem("site_lang", lng);
-    var u = new URL(location.href);
-    u.searchParams.set("lang", lng);
-    history.replaceState(null, "", u);
+    try {
+      var u = new URL(location.href);
+      u.searchParams.set("lang", lng);
+      history.replaceState(null, "", u);
+    } catch (e) {}
     var sel = document.getElementById("langSwitch");
     if (sel) sel.value = lng;
     if (window.i18next && api.ready) {
@@ -86,6 +95,8 @@
         applyDOM();
         document.dispatchEvent(new CustomEvent("i18n:changed", { detail: { lng: lng } }));
       });
+    } else {
+      pendingLng = lng; // 尚未就绪：等 i18n:ready 后补应用
     }
   };
 

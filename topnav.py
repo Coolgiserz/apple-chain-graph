@@ -89,9 +89,10 @@ def topnav(root="../", active=None):
     parts.append("<script src='%sdist/vendor/responsive-nav.min.js'></script>" % root)
     parts.append("<script>responsiveNav('.nav-collapse', { transition: true, label: '☰' });</script>")
     # 国际化框架（i18next + http-backend，本地 vendored；i18n.js 自初始化并按页面深度加载 locales/）
-    parts.append("<script src='%sdist/vendor/i18next.min.js'></script>" % root)
-    parts.append("<script src='%sdist/vendor/i18nextHttpBackend.min.js'></script>" % root)
-    parts.append("<script src='%sdist/i18n.js'></script>" % root)
+    # ?v= 资源版本号：改动语言包/引导脚本后递增，强制浏览器放弃旧缓存
+    parts.append("<script src='%sdist/vendor/i18next.min.js?v=20260809b'></script>" % root)
+    parts.append("<script src='%sdist/vendor/i18nextHttpBackend.min.js?v=20260809b'></script>" % root)
+    parts.append("<script src='%sdist/i18n.js?v=20260809b'></script>" % root)
     parts.append(analytics_js())
     return "".join(parts)
 
