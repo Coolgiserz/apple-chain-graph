@@ -114,6 +114,13 @@
     return set;
   }
 
+  // 返回当前筛选条件下「可见」的节点对象数组（与图谱渲染共用同一 visibleSet）。
+  // 供首页侧边表格面板复用，实现「图 ↔ 表」联动：表格里看到的正是图谱当前筛出的企业。
+  function visibleNodes() {
+    var set = visibleSet();
+    return nodes.filter(function (n) { return set.has(n._key); });
+  }
+
   function physics(vis) {
     if (alpha < ALPHA_MIN) return;
     var arr = nodes.filter(function (n) { return vis.has(n._key); });
@@ -349,7 +356,8 @@
     focus: focus,
     reheat: reheat,
     resize: resize,
-    esc: esc
+    esc: esc,
+    visibleNodes: visibleNodes
   };
   global.GraphEngine = api;
 })(window);

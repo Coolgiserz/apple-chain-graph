@@ -32,18 +32,19 @@ def main():
             .replace("__TOPNAV_CSS__", TOPNAV_CSS)
             .replace("__TOPNAV__", topnav("", "graph"))        # 首页在根目录，root=""
             .replace("__ENGINE_SRC__", "dist/graph_engine.js")
-            .replace("__BOOTSTRAP_SRC__", "dist/graph_bootstrap.js"))
+            .replace("__BOOTSTRAP_SRC__", "dist/graph_bootstrap.js")
+            .replace("__TABLE_PANEL_SRC__", "dist/graph_table_panel.js"))
 
     dst = os.path.join(ROOT, "index.html")
     with open(dst, "w", encoding="utf-8") as f:
         f.write(page)
 
     # 共享引擎与启动脚本复制到 dist/（与整合 SPA 共用、一并发布）
-    for fname in ("graph_engine.js", "graph_bootstrap.js"):
+    for fname in ("graph_engine.js", "graph_bootstrap.js", "graph_table_panel.js"):
         shutil.copyfile(os.path.join(TEMPLATES, fname), os.path.join(ROOT, "dist", fname))
 
     print("written:", dst, "bytes:", len(page))
-    print("copied :", "dist/graph_engine.js, dist/graph_bootstrap.js")
+    print("copied :", "dist/graph_engine.js, dist/graph_bootstrap.js, dist/graph_table_panel.js")
 
 
 if __name__ == "__main__":

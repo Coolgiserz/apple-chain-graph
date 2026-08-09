@@ -38,6 +38,29 @@
   a { color: #6ea0ff; }
   .lk { color: #6ea0ff; text-decoration: none; border-bottom: 1px dashed #6ea0ff; cursor: pointer; }
   .lk:hover { background: rgba(110,160,255,.15); }
+  /* —— 侧边企业表格面板（与图谱联动，不遮挡图谱）—————————————————————— */
+  #side { position: absolute; top: 116px; left: 0; width: 384px; bottom: 12px;
+          background: rgba(18,24,40,.97); border-right: 1px solid #2a3450;
+          display: none; flex-direction: column; z-index: 8; box-shadow: 4px 0 16px rgba(0,0,0,.25); }
+  #side header { display: flex; align-items: center; justify-content: space-between;
+                 padding: 12px 14px; border-bottom: 1px solid #2a3450; }
+  #side header h2 { margin: 0; font-size: 14px; color: #e8ecf4; font-weight: 600; }
+  #side header .cnt { color: #9fb0d0; font-weight: 400; }
+  #side header .close { cursor: pointer; color: #9fb0d0; font-size: 20px; line-height: 1; padding: 0 4px; }
+  #side header .close:hover { color: #fff; }
+  #side .scroll { overflow: auto; flex: 1; }
+  #side table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  #side th, #side td { text-align: left; padding: 8px 12px; border-bottom: 1px solid #1c2336; }
+  #side th { position: sticky; top: 0; background: #161c2e; color: #9fb0d0; font-weight: 600; font-size: 11px; }
+  #side tbody tr { cursor: pointer; }
+  #side tbody tr:hover { background: rgba(47,111,237,.16); }
+  #side tbody tr.active { background: rgba(47,111,237,.32); }
+  #side td.name { color: #e8ecf4; max-width: 130px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  #side td.tier { color: #cfe0ff; }
+  #side td.empty { text-align: center; color: #7c8aa8; padding: 24px; }
+  /* 面板打开时，画布让出左侧空间（图谱不被遮挡，仅压缩显示区域） */
+  body.table-open #cv { left: 384px; width: calc(100% - 384px); }
+  body.table-open #hint { display: none; }
 __TOPNAV_CSS__
 </style>
 </head>
@@ -54,13 +77,26 @@ __TOPNAV__
   <div class="grp"><label>产品线</label>
     <select id="line"><option value="">全部</option></select>
   </div>
-  <a class="tlink" href="dist/supplier_table.html">📋 企业表格</a>
+  <button id="toggleTable" class="ghost">📋 企业表格</button>
   <button id="reset" class="ghost">重置视图</button>
 </div>
 <div id="panel"><span class="close" id="pc">×</span><div id="pbody"></div></div>
 <div id="hint">滚轮缩放 · 拖拽画布平移 · 拖动节点 · 单击节点看详情</div>
+<div id="side" style="display:none">
+  <header>
+    <h2>企业表格 <span class="cnt">(<span id="sideCount">0</span>)</span></h2>
+    <span class="close" id="sideClose" title="关闭">×</span>
+  </header>
+  <div class="scroll">
+    <table>
+      <thead><tr><th>名称</th><th>国家/地区</th><th>类别</th><th>层级</th></tr></thead>
+      <tbody id="sideBody"></tbody>
+    </table>
+  </div>
+</div>
 <script>window.SUPPLY_DATA = __DATA__;</script>
 <script src="__ENGINE_SRC__"></script>
 <script src="__BOOTSTRAP_SRC__"></script>
+<script src="__TABLE_PANEL_SRC__"></script>
 </body>
 </html>
