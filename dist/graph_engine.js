@@ -26,6 +26,7 @@
   var selected = null, hover = null, dragNode = null, panning = false, last = { x: 0, y: 0 };
   var downNode = null, downX = 0, downY = 0;   // mousedown 时的候选节点与起始位置
   var pointerDown = false;                     // 本次手势是否已按下鼠标（move 必须先按下才可能拖拽）
+  var touchActive = false, pinching = false, pinchDist = 0, pinchScale = 1;  // 触摸手势状态（移动端）
   var DRAG_THRESH = 5;                         // 按下后位移超过该值(px)才视为拖拽/平移，否则按「点击」处理
   var reportLink = null, mapLink = null;
   var pendingFocus = null;   // 布局未就绪时暂缓居中，待首帧自愈后再执行
@@ -311,6 +312,66 @@
       view.scale *= factor; view.ox = l.x - wx * view.scale; view.oy = l.y - wy * view.scale;
       kick();
     }, { passive: false });
+
+    // —— 触摸支持（移动端）：单指拖拽/点击节点，双指 pinch 缩放 ——————————————————
+    function touchDist(e) { var a = e.touches[0], b = e.touches[1]; return Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY); }
+    function touchMid(e) { var a = e.touches[0], b = e.touches[1]; return { x: (a.clientX + b.clientX) / 2, y: (a.clientY + b.clientY) / 2 }; }
+    cv.addEventListener("touchstart", function (e) {
+      e.preventDefault();   // 接管手势：禁用页面滚动/双击缩放/长按菜单与合成鼠标事件
+      if (e.touches.length === 1) {
+        var t = e.touches[0];
+        downX = t.clientX; downY = t.clientY;
+        downNode = pick(t.clientX, t.clientY);
+        touchActive = true; panning = false; dragNode = null;
+        last = { x: t.clientX, y: t.clientY };
+      } else if (e.touches.length >= 2) {
+        pinching = true; touchActive = false; dragNode = null; panning = false;
+        pinchDist = touchDist(e); pinchScale = view.scale;
+      }
+      kick();
+    }, { passive: false });
+    cv.addEventListener("touchmove", function (e) {
+      if (pinching && e.touches.length >= 2) {
+        e.preventDefault();
+        var d = touchDist(e);
+        if (pinchDist > 0) {
+          var mid = touchMid(e), l = localXY(mid.x, mid.y);
+          var factor = d / pinchDist;
+          var wx = (l.x - view.ox) / view.scale, wy = (l.y - view.oy) / view.scale;
+          view.scale = pinchScale * factor;
+          view.ox = l.x - wx * view.scale; view.oy = l.y - wy * view.scale;
+        }
+        kick();
+        return;
+      }
+      if (!touchActive || e.touches.length !== 1) return;
+      e.preventDefault();
+      var t = e.touches[0];
+      var dx = t.clientX - downX, dy = t.clientY - downY;
+      if (dragNode) {
+        var w = toWorld(t.clientX, t.clientY); dragNode.x = w.x; dragNode.y = w.y; dragNode.vx = 0; dragNode.vy = 0;
+      } else if (panning) {
+        view.ox += t.clientX - last.x; view.oy += t.clientY - last.y; last = { x: t.clientX, y: t.clientY };
+      } else if (Math.abs(dx) + Math.abs(dy) > DRAG_THRESH) {   // 越过阈值才进入拖拽/平移
+        if (downNode) { dragNode = downNode; dragNode.fixed = true; reheat(0.3);
+          var w0 = toWorld(t.clientX, t.clientY); dragNode.x = w0.x; dragNode.y = w0.y; dragNode.vx = 0; dragNode.vy = 0; }
+        else { panning = true; }
+        last = { x: t.clientX, y: t.clientY };
+      }
+      kick();
+    }, { passive: false });
+    function onTouchEnd(e) {
+      if (pinching) { if (e.touches.length < 2) pinching = false; return; }
+      if (e.touches.length > 0) return;               // 还有手指按着
+      var wasClick = touchActive && !dragNode && !panning;
+      if (dragNode) { dragNode.fixed = false; dragNode = null; }
+      if (panning) panning = false;
+      if (wasClick) selectNode(downNode || null);     // 轻点即点击：选中/取消
+      downNode = null; touchActive = false;
+      kick();
+    }
+    cv.addEventListener("touchend", onTouchEnd, { passive: false });
+    cv.addEventListener("touchcancel", onTouchEnd, { passive: false });
     global.addEventListener("resize", resize);
 
     var pc = document.getElementById("pc"); if (pc) pc.onclick = function () { selectNode(null); kick(); };

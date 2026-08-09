@@ -59,14 +59,26 @@ TOPNAV_CSS = """
 
 
 def topnav(root="../", active=None):
-    """返回统一导航条的 HTML 片段（含可选的访问统计脚本）。"""
+    """返回统一导航条的 HTML 片段（含响应式导航库 + 访问统计脚本）。
+
+    菜单包进 `.nav-collapse`，由本地 vendored 的 responsive-nav.js 在窄屏
+    折叠为汉堡菜单、宽屏保持横向排列，从而解决移动端导航栏「显示不全」。
+    库 CSS/JS 经 `root` 拼接路径，离线 / 国内访问均可用。
+    """
     parts = ["<nav class='wb-topnav'>", "<span class='brand'>Apple 供应链</span>"]
+    # 菜单区：响应式框架管理，窄屏折叠为汉堡
+    parts.append("<nav class='nav-collapse'><ul>")
     for key, label, path in NAV_ITEMS:
         cls = " class='active'" if key == active else ""
-        parts.append("<a href='%s'%s>%s</a>" % (root + path, cls, label))
+        parts.append("<li><a href='%s'%s>%s</a></li>" % (root + path, cls, label))
+    parts.append("</ul></nav>")
     parts.append("<span class='spacer'></span>")
     parts.append(GITHUB_LINK % GITHUB_URL)
     parts.append("</nav>")
+    # 响应式导航库（本地 vendored，离线可用；库会自动在 .nav-collapse 前生成汉堡 toggle）
+    parts.append("<link rel='stylesheet' href='%sdist/vendor/responsive-nav.css'>" % root)
+    parts.append("<script src='%sdist/vendor/responsive-nav.min.js'></script>" % root)
+    parts.append("<script>responsiveNav('.nav-collapse', { transition: true, label: '☰' });</script>")
     parts.append(analytics_js())
     return "".join(parts)
 

@@ -1,0 +1,105 @@
+/*! responsive-nav.js 1.0.39 by @viljamis — 适配本仓库暗色 topnav 的定制版 */
+.nav-collapse ul {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  list-style: none;
+}
+.nav-collapse li {
+  width: 100%;
+  display: block;
+}
+.nav-collapse a {
+  display: block;
+  width: 100%;
+}
+
+/* 折叠态基础（窄屏默认隐藏整块菜单，仅保留汉堡按钮） */
+.js .nav-collapse {
+  clip: rect(0 0 0 0);
+  max-height: 0;
+  position: absolute;
+  display: block;
+  overflow: hidden;
+  zoom: 1;
+}
+.nav-collapse.opened {
+  max-height: 9999px;
+}
+
+/* 汉堡按钮基础样式（暗色导航适配） */
+.wb-topnav .nav-toggle {
+  -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
+  -webkit-touch-callout: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  display: block;
+  color: #fff;
+  font-size: 18px;
+  line-height: 1;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+  text-decoration: none;
+  white-space: nowrap;
+}
+.wb-topnav .nav-toggle:hover {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
+
+/* ---- 宽屏（≥52em≈832px）：横向菜单，隐藏汉堡 ----
+   用 .wb-topnav 前缀提升优先级，压过基础 display:block，确保桌面不显示汉堡 */
+@media screen and (min-width: 52em) {
+  .js .nav-collapse {
+    position: relative;
+    max-height: none;
+    clip: auto;
+    overflow: visible;
+  }
+  .wb-topnav .nav-collapse ul {
+    display: flex;
+    gap: 6px;
+    width: auto;
+  }
+  .wb-topnav .nav-collapse li {
+    width: auto;
+    display: inline-block;
+  }
+  .wb-topnav .nav-collapse a {
+    width: auto;
+  }
+  .wb-topnav .nav-toggle {
+    display: none;
+  }
+}
+
+/* ---- 窄屏（<52em）：汉堡展开后的下拉面板，浮在导航栏下方 ---- */
+@media screen and (max-width: 51.99em) {
+  .wb-topnav .nav-collapse {
+    top: 52px;
+    left: 0;
+    right: 0;
+    background: linear-gradient(135deg, #0a2540, #0a66c2);
+    box-shadow: 0 6px 16px rgba(0, 0, 0, 0.25);
+    padding: 6px 0;
+    z-index: 9998;
+  }
+  .wb-topnav .nav-collapse li a {
+    color: #dbeafe;
+    padding: 12px 18px;
+    border-radius: 0;
+  }
+  .wb-topnav .nav-collapse li a:hover {
+    background: rgba(255, 255, 255, 0.16);
+    color: #fff;
+  }
+  .wb-topnav .nav-collapse li a.active {
+    background: #fff;
+    color: #0a2540;
+    font-weight: 700;
+  }
+}
