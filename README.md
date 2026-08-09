@@ -72,7 +72,8 @@ zero-dependency interactive visualizations.
 - **属性增强**：供应商节点拆分 `全称 / 英文名称 / 简称`；产品节点含 `英文名称、别名、发布时间、状态、起售价、主芯片、显示规格`。
 - **图数据库就绪**：6 个 Neo4j 官方批量导入格式 CSV（`:ID` / `:LABEL` / `:START_ID` / `:END_ID` / `:TYPE` 表头），离线 / 在线两种导入方式任选。
 - **零依赖可视化**：根目录 `index.html`（首页供应链图谱）等网页数据内嵌，双击即开，无需联网或数据库（看板图表依赖 CDN 上的 Chart.js，首次打开需联网）。
-- **多页互跳、非孤岛**：首页图谱 / 报告 / 整合页 / 地图 / 看板 / 融合页 共享同一套顶部导航（`topnav.py` 一处维护、全局生效）；跨页深链直达具体实体。
+- **多页互跳、非孤岛**：首页图谱 / 企业列表 / 报告 / 整合页 / 地图 / 看板 / 融合页 共享同一套顶部导航（`topnav.py` 一处维护、全局生效）；跨页深链直达具体实体。
+- **企业列表（表格视图）**：`dist/supplier_table.html` 把图谱中全部 60 家企业以表格呈现，支持按 **地区 / 国家 / 类别 / 层级** 筛选、关键字搜索、点击列标题 **升/降序排序**，每行可一键回到图谱定位或地图打点。
 - **供应商研究层**：对 15 家重点供应商做同业相对估值 + 舆情分析，结论以看板与报告形式呈现。
 - **可复现**：纯 Python 标准库，无任何第三方依赖，从单一数据源可重生成全部产物。
 
@@ -100,7 +101,7 @@ zero-dependency interactive visualizations.
 
 ### 0.1 各页面统一导航（多页互跳，非孤岛）
 
-各页面——**首页图谱** (`index.html`)、**上下游报告** (`dist/apple_supply_chain_report.html`)、
+各页面——**首页图谱** (`index.html`)、**企业列表** (`dist/supplier_table.html`)、**上下游报告** (`dist/apple_supply_chain_report.html`)、
 **整合页** (`dist/apple_supply_chain_app.html`)、**供应商地图** (`tools/visualizations/supplier_geo.html`)、
 **估值看板** (`tools/visualizations/supplier_dashboard.html`)、**融合页** (`tools/visualizations/supplier_combined.html`)——
 顶部都带**同一套导航条**（`topnav.py` 生成），可一键在各页面间跳转，不再是彼此孤立的页面。
@@ -112,6 +113,8 @@ zero-dependency interactive visualizations.
 | 报告表格中的实体 | → 图谱定位该节点 | `index.html?focus=S:tsmc` |
 | 报告中的供应商 | → 地图定位该供应商 | `supplier_geo.html?supplier=tsmc` |
 | 图谱节点详情 | → 报告对应章节 / 地图定位 | 链接 `apple_supply_chain_report.html#sec-suppliers` 与 `supplier_geo.html?supplier=…` |
+| 首页图谱控制栏「📋 企业表格」按钮 | → 企业列表（表格视图） | `dist/supplier_table.html` |
+| 企业列表每行「图谱 / 地图」 | → 图谱定位 / 地图打点 | `index.html?focus=S:tsmc`、`supplier_geo.html?supplier=tsmc` |
 | 地图标记弹窗 | → 图谱 / 报告 | 弹窗内「在图谱中查看 →」「在报告中查看 →」 |
 
 > 地图 / 看板为静态或 `geo_build.py` 生成的页面，其导航条同样由 `topnav.py` 注入；
@@ -248,6 +251,7 @@ python3 build_all.py
 python3 scripts/generate.py     # 生成 data/neo4j/*.csv + data/apple_supply_chain.json
 python3 scripts/report.py       # 生成 dist/apple_supply_chain_report.html（独立报告）
 python3 scripts/build_viewer.py # 生成根目录 index.html（首页图谱）+ dist/graph_engine.js（共享画布引擎）
+python3 scripts/build_table.py  # 生成 dist/supplier_table.html（企业列表：筛选 + 排序表格视图）
 python3 scripts/build_app.py    # 生成 dist/apple_supply_chain_app.html（整合页 SPA）
 python3 tools/geo_build.py      # 生成 tools/visualizations/supplier_geo.html（地图）+ supplier_combined.html（融合页）
 # 估值看板 tools/visualizations/supplier_dashboard.html 为静态页面，已注入统一导航条
@@ -355,7 +359,7 @@ apple_supply_chain/
 ├── Makefile                  # 常用快捷键（up / down / logs / serve / build）
 ├── nginx.conf                # 容器内 nginx 配置（UTF-8 / gzip / 长缓存）
 ├── .dockerignore             # 构建上下文排除项
-├── index.html                # 站点入口落地页（聚合四页 + 整合页）
+├── index.html                # 首页：供应链图谱（站点入口，力导向交互，双击即开）
 ├── .gitignore
 ├── data/                     # 数据产物
 │   ├── apple_supply_chain.json   # 完整图数据（nodes + edges + 数据字段字典）
@@ -372,12 +376,14 @@ apple_supply_chain/
 │   ├── generate.py           # 生成 CSV + JSON
 │   ├── report.py             # 生成 HTML 分析报告（可复用 builder，支持 jump 深链）
 │   ├── build_viewer.py       # 生成首页交互式图谱（根 index.html，引擎复用 templates/graph_engine.js）
+│   ├── build_table.py        # 生成企业列表：dist/supplier_table.html（表格筛选+排序）
 │   └── build_app.py          # 生成整合页：图谱 + 报告单页 SPA（view-router）
 ├── index.html                # 首页：供应链图谱（力导向交互，双击即开）
 ├── templates/                # 网页前端模版（HTML/JS/CSS 单独维护，脚本填数据生成页面）
 │   ├── graph_engine.js       # 共享图谱画布物理引擎（首页与整合页共用，单一事实来源）
 │   ├── graph_page.html       # 首页图谱 HTML 模版
 │   ├── graph_bootstrap.js    # 首页图谱启动脚本
+│   ├── table_page.html       # 企业列表（表格视图）HTML 模版（内联筛选/排序 JS）
 │   ├── app_page.html         # 整合页 HTML 模版
 │   └── app.js                # 整合页视图路由壳
 ├── topnav.py                 # 各页面共享的统一顶部导航条（单一来源，改一处全局生效）
@@ -405,6 +411,7 @@ apple_supply_chain/
 └── dist/                     # 生成的网页产物
     ├── apple_supply_chain_app.html    # 整合页：图谱 + 报告（单页 SPA，可互跳）
     ├── apple_supply_chain_report.html  # 分析报告（独立页）
+    ├── supplier_table.html       # 企业列表：全部 60 家供应商的筛选 + 排序表格视图
     ├── graph_engine.js           # 共享图谱画布物理引擎（首页 index.html 与整合页共用）
     ├── app.js                    # 整合页视图路由壳
     └── graph_bootstrap.js        # 首页图谱启动脚本

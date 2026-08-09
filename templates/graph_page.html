@@ -18,6 +18,8 @@
   #top .chk { display: flex; align-items: center; gap: 4px; font-size: 13px; cursor: pointer; user-select: none; }
   #top button { background: #2f6fed; color: #fff; border: none; border-radius: 8px; padding: 6px 12px; cursor: pointer; font-size: 13px; }
   #top button.ghost { background: #2a3450; }
+  #top a.tlink { background: #2a3450; color: #dbeafe; text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 8px; white-space: nowrap; transition: background .15s; }
+  #top a.tlink:hover { background: #3a4a6e; color: #fff; }
   #top .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
   #hint { position: absolute; bottom: 12px; left: 12px; font-size: 12px; color: #7c8aa8; background: rgba(20,26,42,.7); padding: 6px 10px; border-radius: 8px; z-index: 10; }
   #panel { position: absolute; top: 122px; right: 12px; width: 320px; max-height: calc(100% - 134px); overflow: auto;
@@ -50,6 +52,7 @@ __TOPNAV__
   <div class="grp"><label>产品线</label>
     <select id="line"><option value="">全部</option></select>
   </div>
+  <a class="tlink" href="dist/supplier_table.html">📋 企业表格</a>
   <button id="reset" class="ghost">重置视图</button>
 </div>
 <div id="panel"><span class="close" id="pc">×</span><div id="pbody"></div></div>

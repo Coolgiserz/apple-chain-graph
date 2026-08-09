@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>苹果供应链 · 企业列表</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #0f1320; color: #e8ecf4; }
+  body { padding-top: 52px; }
+  main { padding: 16px 18px 48px; max-width: 1280px; margin: 0 auto; }
+  h1 { font-size: 20px; margin: 6px 0 4px; }
+  .desc { color: #9fb0d0; font-size: 13px; margin-bottom: 14px; }
+  .desc b { color: #cfe0ff; }
+  #top { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; background: rgba(20,26,42,.7);
+         border: 1px solid #2a3450; border-radius: 12px; padding: 12px 14px; margin-bottom: 14px; }
+  #top .grp { display: flex; align-items: center; gap: 6px; }
+  #top label { font-size: 12px; color: #9fb0d0; white-space: nowrap; }
+  #top input[type=search], #top select { background: #0c1020; border: 1px solid #2a3450; color: #e8ecf4;
+         border-radius: 8px; padding: 6px 10px; outline: none; font-size: 13px; }
+  #top input[type=search] { width: 240px; }
+  #top button { background: #2f6fed; color: #fff; border: none; border-radius: 8px; padding: 6px 12px; cursor: pointer; font-size: 13px; }
+  #top button.ghost { background: #2a3450; }
+  #count { color: #9fb0d0; font-size: 13px; margin-left: auto; white-space: nowrap; }
+  .wrap { overflow: auto; border: 1px solid #2a3450; border-radius: 12px; max-height: calc(100vh - 200px); }
+  table { border-collapse: collapse; width: 100%; font-size: 13px; min-width: 880px; }
+  thead th { position: sticky; top: 0; background: #15203a; color: #cfe0ff; text-align: left; padding: 11px 12px;
+             cursor: pointer; user-select: none; white-space: nowrap; border-bottom: 1px solid #2a3450; }
+  thead th:hover { background: #1b2b4d; }
+  thead th .ar { color: #6ea0ff; font-size: 11px; margin-left: 4px; }
+  tbody td { padding: 9px 12px; border-bottom: 1px solid #1c2740; white-space: nowrap; }
+  tbody tr:hover { background: rgba(47,111,237,.10); }
+  td.name a { color: #6ea0ff; text-decoration: none; font-weight: 600; }
+  td.name a:hover { text-decoration: underline; }
+  .pill { display: inline-block; font-size: 11px; padding: 2px 9px; border-radius: 999px; background: #1b2742; color: #9fc1ff; }
+  .tier1 { background: #163a2a; color: #67e0a3; }
+  .tier2 { background: #3a2e16; color: #f5c45e; }
+  .acts a { margin-right: 10px; font-size: 12px; }
+  a { color: #6ea0ff; }
+  .lk { color: #6ea0ff; text-decoration: none; border-bottom: 1px dashed #6ea0ff; cursor: pointer; }
+  .lk:hover { background: rgba(110,160,255,.15); }
+  .empty { padding: 28px; text-align: center; color: #7c8aa8; }
+__TOPNAV_CSS__
+</style>
+</head>
+<body>
+__TOPNAV__
+<main>
+  <h1>📋 供应链企业列表</h1>
+  <div class="desc">图谱中共有 <b id="total">0</b> 家企业（供应商节点）。可按地区 / 国家 / 类别 / 层级筛选，点击列标题排序；点名称可在图谱中定位该企业。</div>
+  <div id="top">
+    <div class="grp"><input type="search" id="q" placeholder="搜索 名称 / 简称 / 英文名 / ID…"></div>
+    <div class="grp"><label>地区</label><select id="fRegion"><option value="">全部</option></select></div>
+    <div class="grp"><label>国家/地区</label><select id="fCountry"><option value="">全部</option></select></div>
+    <div class="grp"><label>类别</label><select id="fCategory"><option value="">全部</option></select></div>
+    <div class="grp"><label>层级</label><select id="fTier"><option value="">全部</option></select></div>
+    <button id="reset" class="ghost">重置筛选</button>
+    <span id="count"></span>
+  </div>
+  <div class="wrap">
+    <table id="tbl">
+      <thead><tr>
+        <th data-k="name">名称 <span class="ar"></span></th>
+        <th data-k="short_name">简称 <span class="ar"></span></th>
+        <th data-k="english_name">英文名 <span class="ar"></span></th>
+        <th data-k="country">国家/地区 <span class="ar"></span></th>
+        <th data-k="region">地区 <span class="ar"></span></th>
+        <th data-k="category">类别 <span class="ar"></span></th>
+        <th data-k="tier">层级 <span class="ar"></span></th>
+        <th>操作</th>
+      </tr></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+  </div>
+</main>
+<script>window.SUPPLIERS = __DATA__;</script>
+<script>
+(function () {
+  "use strict";
+  var REGION_ZH = { "East Asia": "东亚", "North America": "北美", "Europe": "欧洲" };
+  var data = (window.SUPPLIERS || []).map(function (s) {
+    var o = {};
+    for (var k in s) { o[k] = s[k]; }
+    o.region_zh = REGION_ZH[s.region] || s.region;
+    return o;
+  });
+
+  var q = document.getElementById("q"),
+      fR = document.getElementById("fRegion"),
+      fC = document.getElementById("fCountry"),
+      fCat = document.getElementById("fCategory"),
+      fT = document.getElementById("fTier"),
+      tbody = document.getElementById("tbody"),
+      count = document.getElementById("count"),
+      total = document.getElementById("total");
+
+  total.textContent = data.length;
+
+  function uniq(arr) { return Array.from(new Set(arr)); }
+  function fill(sel, vals) {
+    vals.slice().sort(function (a, b) { return String(a) < String(b) ? -1 : (String(a) > String(b) ? 1 : 0); })
+        .forEach(function (v) { var o = document.createElement("option"); o.value = v; o.textContent = v; sel.appendChild(o); });
+  }
+  fill(fR, uniq(data.map(function (s) { return s.region; })));
+  fill(fC, uniq(data.map(function (s) { return s.country; })));
+  fill(fCat, uniq(data.map(function (s) { return s.category; })));
+  fill(fT, uniq(data.map(function (s) { return s.tier; })));
+
+  var sortKey = null, sortDir = 1;
+
+  function esc(s) {
+    return String(s == null ? "" : s).replace(/[&<>"]/g, function (c) {
+      return { "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;" }[c];
+    });
+  }
+
+  function render() {
+    var kw = q.value.trim().toLowerCase();
+    var rows = data.filter(function (s) {
+      if (fR.value && s.region !== fR.value) return false;
+      if (fC.value && s.country !== fC.value) return false;
+      if (fCat.value && s.category !== fCat.value) return false;
+      if (fT.value && String(s.tier) !== fT.value) return false;
+      if (kw) {
+        var hay = [s.name, s.short_name, s.english_name, s.id, s.country, s.category].join(" ").toLowerCase();
+        if (hay.indexOf(kw) === -1) return false;
+      }
+      return true;
+    });
+
+    if (sortKey) {
+      rows.sort(function (a, b) {
+        var va = a[sortKey], vb = b[sortKey];
+        if (sortKey === "tier") { va = +va; vb = +vb; }
+        if (va == null) va = ""; if (vb == null) vb = "";
+        if (va < vb) return -1 * sortDir;
+        if (va > vb) return 1 * sortDir;
+        return 0;
+      });
+    }
+
+    document.querySelectorAll("#tbl thead th[data-k]").forEach(function (th) {
+      var ar = th.querySelector(".ar");
+      ar.textContent = (th.dataset.k === sortKey) ? (sortDir > 0 ? "▲" : "▼") : "";
+    });
+
+    if (!rows.length) {
+      tbody.innerHTML = '<tr><td class="empty" colspan="8">没有符合条件的企业，请放宽筛选条件。</td></tr>';
+    } else {
+      tbody.innerHTML = rows.map(function (s) {
+        var tierCls = s.tier === 1 ? "tier1" : (s.tier === 2 ? "tier2" : "");
+        return "<tr>"
+          + '<td class="name"><a href="../index.html?focus=S:' + esc(s.id) + '">' + esc(s.name) + "</a></td>"
+          + "<td>" + esc(s.short_name) + "</td>"
+          + "<td>" + esc(s.english_name) + "</td>"
+          + "<td>" + esc(s.country) + "</td>"
+          + '<td><span class="pill">' + esc(s.region_zh) + "</span></td>"
+          + "<td>" + esc(s.category) + "</td>"
+          + '<td><span class="pill ' + tierCls + '">T' + esc(s.tier) + "</span></td>"
+          + '<td class="acts"><a class="lk" href="../index.html?focus=S:' + esc(s.id) + '">图谱</a>'
+          + '<a class="lk" href="../tools/visualizations/supplier_geo.html?supplier=' + esc(s.id) + '">地图</a></td>'
+          + "</tr>";
+      }).join("");
+    }
+    count.textContent = "显示 " + rows.length + " / " + data.length + " 家";
+  }
+
+  [q, fR, fC, fCat, fT].forEach(function (el) {
+    el.addEventListener("input", render);
+    el.addEventListener("change", render);
+  });
+  document.getElementById("reset").addEventListener("click", function () {
+    q.value = ""; fR.value = ""; fC.value = ""; fCat.value = ""; fT.value = ""; sortKey = null; sortDir = 1; render();
+  });
+  document.querySelectorAll("#tbl thead th[data-k]").forEach(function (th) {
+    th.addEventListener("click", function () {
+      var k = th.dataset.k;
+      if (sortKey === k) { sortDir = -sortDir; } else { sortKey = k; sortDir = 1; }
+      render();
+    });
+  });
+
+  render();
+})();
+</script>
+</body>
+</html>

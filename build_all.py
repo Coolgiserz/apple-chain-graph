@@ -20,6 +20,7 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 # 故 run_analysis 必须排在 geo_build 之前；其余页面脚本互不依赖，可按页面逻辑排列。
 STEPS = [
     ("供应链图谱  index.html（首页）",      "scripts/build_viewer.py"),
+    ("企业列表    supplier_table.html",     "scripts/build_table.py"),
     ("上下游报告  apple_supply_chain_report.html", "scripts/report.py"),
     ("整合应用    apple_supply_chain_app.html",    "scripts/build_app.py"),
     ("供应商估值  supplier_analysis.json",  "tools/run_analysis.py"),

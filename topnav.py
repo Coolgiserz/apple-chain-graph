@@ -9,10 +9,11 @@
   - dist 下的页面（报告 / 整合页）：            root = "../"
   - tools/visualizations 下的页面（地图 / 看板 / 融合）：root = "../../"
 
-`active` 为当前页的 key：graph / report / app / map / dash / combined（用于高亮）。
+`active` 为当前页的 key：graph / table / report / app / map / dash / combined（用于高亮）。
 """
 NAV_ITEMS = [
     ("graph",  "🕸️ 供应链图谱", "index.html"),
+    ("table",  "📋 企业列表",    "dist/supplier_table.html"),
     ("report", "📄 上下游报告",  "dist/apple_supply_chain_report.html"),
     ("app",    "🧩 整合页",      "dist/apple_supply_chain_app.html"),
     ("map",    "🗺️ 供应商地图", "tools/visualizations/supplier_geo.html"),
