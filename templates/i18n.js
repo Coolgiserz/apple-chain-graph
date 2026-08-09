@@ -15,7 +15,7 @@
 (function () {
   var SUPPORTED = ["zh", "en", "fr", "ja"];
   var DEFAULT = "zh";
-  var ASSET_VERSION = "20260809f"; // 资源版本号：改动语言包/引导脚本后递增，破除浏览器缓存
+  var ASSET_VERSION = "20260809h"; // 资源版本号：改动语言包/引导脚本后递增，破除浏览器缓存
 
   // 中文源内联兜底（镜像 locales/zh.json）
   var ZH = {
@@ -30,7 +30,9 @@
     "field.release_date": "发布时间", "field.status": "状态", "field.price": "起售价(USD)",
     "field.soc": "SoC", "field.display": "显示屏", "field.alias": "别名", "field.assembly": "代工",
     "field.category": "类别", "field.subcategory": "子类", "field.short_name": "简称",
-    "field.country": "国家/地区", "field.region": "区域", "field.tier": "层级"
+    "field.country": "国家/地区", "field.region": "区域", "field.tier": "层级",
+    "status.onsale": "在售", "status.rumor": "传闻/未发布",
+    "link.report": "在报告中查看 →", "link.map": "在地图中查看 →"
   };
 
   function detect() {
@@ -75,10 +77,17 @@
       console.warn("[i18n] i18next 未加载，跳过国际化（保留中文）");
       return;
     }
+    // 资源构建：每种语言都优先用 locales/*.json 的「完整包」（经 build_viewer 内联为
+    // window.I18N_LOCALES），而非仅用下面那个会过期的硬编码 ZH 子集；内联 ZH 仅作为
+    // zh 的安全兜底（当完整包因故缺失某些 key 时仍能显示中文）。
+    // 此前 zh 只用了内联 ZH 子集，导致 status.onsale / navGraph / report.* 等不在子集内的
+    // key 在中文环境下回退为 key 本身。
     var bundles = window.I18N_LOCALES || {};
-    var resources = { zh: { translation: ZH } }; // zh 始终有内联兜底
+    var resources = {};
     SUPPORTED.forEach(function (l) {
-      if (l !== DEFAULT && bundles[l]) resources[l] = { translation: bundles[l] };
+      var base = (l === DEFAULT) ? Object.assign({}, ZH) : {};
+      if (bundles[l]) Object.assign(base, bundles[l]); // 完整包覆盖兜底子集
+      resources[l] = { translation: base };
     });
     window.i18next.init({
       lng: current,

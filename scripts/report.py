@@ -7,6 +7,9 @@ Refactored for reusability: report content is assembled from small builders
 a `jump` flag. With jump=True entity names become clickable spans that deep-link into
 the standalone graph / map pages. Technical-tutorial material (Neo4j import guide,
 field dictionary) lives in docs/ rather than the web report — docs_section() points there.
+
+国际化：所有面向用户的静态文案均通过 i18n() 包裹为 <span data-i18n="report.*">，
+运行时由 dist/i18n.js（window.I18n）替换为对应语言；zh.json 作为中文默认值兜底。
 """
 import json, os, sys
 from collections import defaultdict, Counter
@@ -23,6 +26,24 @@ def load_graph():
 
 def esc(x):
     return (str(x).replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;"))
+
+# 中文源（兜底默认值），供未加载 JS 时也有可读内容
+try:
+    ZH = json.load(open(os.path.join(ROOT, "locales", "zh.json"), encoding="utf-8"))
+except Exception:
+    ZH = {}
+
+def i18n(key, default=None):
+    """返回带 data-i18n 标记的 HTML 片段（普通 str）；运行时由 i18n.js 替换为对应语言。
+    默认值取 zh.json 中的中文，确保脚本未执行时页面仍有可读文本。"""
+    txt = default if default is not None else ZH.get(key, key)
+    return "<span data-i18n=\"%s\">%s</span>" % (key, esc(txt))
+
+def i18na(key, href, target="_blank", rel="noopener"):
+    """带 data-i18n 的链接（<a> 自带 data-i18n，i18n.js 只改其 textContent，保留 href）。"""
+    txt = ZH.get(key, key)
+    return "<a class='lk' href='%s' target='%s' rel='%s' data-i18n='%s'>%s</a>" \
+           % (esc(href), target, rel, key, esc(txt))
 
 
 class Safe:
@@ -92,10 +113,26 @@ footer{text-align:center;color:var(--muted);font-size:12.5px;padding:20px}
 
 
 def table(headers, rows, cls=""):
-    h = "".join("<th>%s</th>" % esc(x) for x in headers)
+    hparts = []
+    for x in headers:
+        # 表头若是 i18n() 片段（含 data-i18n）或 Safe（link 等已转义内容），保留原样；否则转义
+        if isinstance(x, Safe):
+            hparts.append("<th>%s</th>" % x.s)
+        elif isinstance(x, str) and "data-i18n" in x:
+            hparts.append("<th>%s</th>" % x)
+        else:
+            hparts.append("<th>%s</th>" % esc(x))
+    h = "".join(hparts)
     body = ""
     for r in rows:
-        cells = ("<td>%s</td>" % (x.s if isinstance(x, Safe) else esc(x)) for x in r)
+        cells = []
+        for x in r:
+            if isinstance(x, Safe):
+                cells.append("<td>%s</td>" % x.s)
+            elif isinstance(x, str) and "data-i18n" in x:
+                cells.append("<td>%s</td>" % x)  # i18n() 片段（含 data-i18n）保留原样，交由前端翻译
+            else:
+                cells.append("<td>%s</td>" % esc(x))
         body += "<tr>" + "".join(cells) + "</tr>"
     return '<div class="scroll"><table class="%s"><thead><tr>%s</tr></thead><tbody>%s</tbody></table></div>' % (cls, h, body)
 
@@ -128,12 +165,18 @@ def report_kpi(G):
     products = G["nodes"]["products"]; components = G["nodes"]["components"]; suppliers = G["nodes"]["suppliers"]
     uses = G["edges"]["uses_component"]; supplied_by = G["edges"]["supplied_by"]; assembled_by = G["edges"]["assembled_by"]
     return ("<div class='kpi'>"
-            "<div><b>%d</b><span>产品型号</span></div>" % len(products) +
-            "<div><b>%d</b><span>核心零部件</span></div>" % len(components) +
-            "<div><b>%d</b><span>供应商/代工厂</span></div>" % len(suppliers) +
-            "<div><b>%d</b><span>图谱关系边</span></div>" % (len(uses) + len(supplied_by) + len(assembled_by)) +
+            "<div><b>%d</b><span>%s</span></div>" % (len(products), i18n("report.kpi.products")) +
+            "<div><b>%d</b><span>%s</span></div>" % (len(components), i18n("report.kpi.components")) +
+            "<div><b>%d</b><span>%s</span></div>" % (len(suppliers), i18n("report.kpi.suppliers")) +
+            "<div><b>%d</b><span>%s</span></div>" % (len(uses) + len(supplied_by) + len(assembled_by), i18n("report.kpi.edges")) +
             "</div>")
 
+
+# 产品状态枚举：数据集里是中文值（在售 / 传闻/未发布），需按语言翻译
+_STATUS_KEYS = {"在售": "status.onsale", "传闻/未发布": "status.rumor"}
+def status_i18n(val):
+    k = _STATUS_KEYS.get(val)
+    return i18n(k) if k else (val or "")
 
 def product_table(G, jump=False, mode="spa"):
     _, sup_by_id, prod_assembly, _, _ = _indexes(G)
@@ -143,9 +186,11 @@ def product_table(G, jump=False, mode="spa"):
         assemblers = [sup_by_id[a]["short_name"] for a in prod_assembly[p["id"]]]
         alias = p["alias"] if p["alias"] else Safe("<span style='color:#9aa7b5'>—</span>")
         rows.append([link(p["name"], "P:" + p["id"], jump, mode), p["product_line"], p["english_name"], alias,
-                     p["release_date"], p["status"], p["soc"], p["display"],
+                     p["release_date"], status_i18n(p["status"]), p["soc"], p["display"],
                      "$%s" % p["price_usd"], str(len(comps)), " / ".join(assemblers)])
-    return table(["型号全称", "产品线", "英文名", "别名/代号", "发布时间", "状态", "主芯片", "显示", "起售价", "零部件数", "代工厂"], rows)
+    return table([i18n("report.th.fullName"), i18n("home.line"), i18n("report.th.engName"), i18n("report.th.aliasCode"),
+                  i18n("field.release_date"), i18n("field.status"), i18n("report.th.soc"), i18n("field.display"),
+                  i18n("field.price"), i18n("report.th.compCount"), i18n("report.th.assembler")], rows)
 
 
 def component_table(G, jump=False, mode="spa"):
@@ -160,7 +205,8 @@ def component_table(G, jump=False, mode="spa"):
                      (link(sup_by_id[s]["short_name"], "S:" + s, jump, mode), esc(sup_by_id[s]["name"])) for s in sups]
             sups_names = Safe(" / ".join(str(p) for p in parts))
         rows.append([link(c["name"], "C:" + c["id"], jump, mode), c["english_name"], c["category"], c["subcategory"], sups_names, str(len(sups))])
-    return table(["零部件(中)", "英文名", "大类", "子类", "主要供应商", "供应商数"], rows)
+    return table([i18n("report.th.compZh"), i18n("report.th.engName"), i18n("report.th.category"), i18n("field.subcategory"),
+                  i18n("report.th.mainSuppliers"), i18n("report.th.supCount")], rows)
 
 
 def supplier_table(G, jump=False, mode="spa"):
@@ -171,7 +217,9 @@ def supplier_table(G, jump=False, mode="spa"):
         rows.append([link(s["name"], "S:" + s["id"], jump, mode), s["english_name"],
                      link(s["short_name"], "S:" + s["id"], jump, mode),
                      s["country"], s["region"], s["category"], s["tier"], str(reach)])
-    return table(["全称", "英文名称", "简称", "国家/地区", "区域", "类别", "层级", "触及产品数"], rows)
+    return table([i18n("report.th.fullName"), i18n("report.th.engName"), i18n("field.short_name"),
+                  i18n("table.country"), i18n("field.region"), i18n("table.category"), i18n("table.tier"),
+                  i18n("report.th.reach")], rows)
 
 
 def concentration(G, jump=False, mode="spa"):
@@ -188,26 +236,28 @@ def concentration(G, jump=False, mode="spa"):
     top_rows = [[link(sup_by_id[sid]["name"], "S:" + sid, jump, mode), sup_by_id[sid]["short_name"],
                  sup_by_id[sid]["country"], sup_by_id[sid]["category"], str(len(plist))]
                 for sid, plist in top_suppliers[:18]]
-    top_table = table(["全称", "简称", "国家/地区", "类别", "触及产品型号数"], top_rows)
+    top_table = table([i18n("report.th.fullName"), i18n("field.short_name"), i18n("table.country"),
+                       i18n("table.category"), i18n("report.th.reachModels")], top_rows)
     cat_rows = [[k, str(v)] for k, v in cat_counter.most_common()]
-    cat_table = table(["供应商类别", "数量"], cat_rows)
-    return ("<h3>6.1 区域分布</h3>" + region_bars +
-            "<h3>6.2 供应商类别分布</h3>" + cat_table +
-            "<h3>6.3 触及产品型号最多的供应商（供应链影响力）</h3>" +
-            "<p>下表按「被多少款产品型号直接或间接使用」排序，反映供应商在苹果体系中的嵌入深度。</p>" + top_table)
+    cat_table = table([i18n("report.th.supCategory"), i18n("report.th.count")], cat_rows)
+    return ("<h3>%s</h3>" % i18n("report.geo.h31") + region_bars +
+            "<h3>%s</h3>" % i18n("report.geo.h32") + cat_table +
+            "<h3>%s</h3>" % i18n("report.geo.h33") +
+            "<p>%s</p>" % i18n("report.geo.p33") + top_table)
 
 
 def summary_section(G):
-    components = G["nodes"]["components"]; suppliers = G["nodes"]["suppliers"]
-    return ("<section id='sec-summary'><h2>一、执行摘要</h2>"
-            "<p>本报告以<strong>具体产品型号</strong>为起点，逐层向上游拆解出核心零部件（SoC、显示面板、图像传感器、存储、调制解调器、电池、结构件、封装等 %d 类）及其供应商/代工厂（%d 家），构建「产品 → 零部件 → 供应商」三层有向图。数据表明苹果供应链呈现三大特征：</p>" % (len(components), len(suppliers)) +
-            "<ul>"
-            "<li><b>亚洲中枢、日韩把持技术命脉：</b>超过 80% 的核心供应商在大陆/台湾设厂；日本索尼独占高端 CIS、韩国三星/LG 主导 OLED、台积电(台湾)独家代工最先进制程芯片。</li>"
-            "<li><b>多源化策略对冲风险：</b>几乎所有关键零部件都有 ≥2 家供应商（如 DRAM 三家、NAND 五家、OLED 三家），以维持议价权与供应韧性。</li>"
-            "<li><b>「中国 + N」产能外移：</b>iPhone 主力组装向印度、AirPods/Watch/Vision Pro 向越南、部分 Mac 向泰/马转移，但核心精密零部件仍高度依赖东亚。</li>"
-            "</ul>"
-            "<div class='note'><b>本版（v2）属性增强：</b>供应商节点已拆分 <b>全称(name) / 英文名称(english_name) / 简称(short_name)</b> 三个独立字段；产品节点新增 <b>英文名称、别名/代号、发布时间(release_date)、状态(status)、起售价(price_usd)</b> 等属性；组件节点新增英文名称。字段含义与可获取性见项目文档《数据模型与字段字典》。</div>"
-            "</section>")
+    return "".join([
+        "<section id='sec-summary'><h2>", i18n("report.sec.summary"), "</h2>",
+        "<p>", i18n("report.summary.p1"), "</p>",
+        "<ul>",
+        "<li>", i18n("report.summary.b1"), "</li>",
+        "<li>", i18n("report.summary.b2"), "</li>",
+        "<li>", i18n("report.summary.b3"), "</li>",
+        "</ul>",
+        "<div class='note'>", i18n("report.summary.note"), "</div>",
+        "</section>",
+    ])
 
 
 def model_section(G):
@@ -236,53 +286,61 @@ def model_section(G):
  <text x='456' y='88' text-anchor='middle' font-size='10' fill='#0e7c4f'>SUPPLIED_BY</text>
  <defs><marker id='ar' markerWidth='8' markerHeight='8' refX='6' refY='3' orient='auto'><path d='M0,0 L6,3 L0,6 Z' fill='#444'/></marker></defs>
  </svg>'''
-    return ("<section id='sec-model'><h2>二、供应链分层模型</h2>"
-            "<p>图谱采用三层节点 + 三类关系，反映上下游传导路径：</p>"
-            "<p><code>Product ──USES_COMPONENT──▶ Component ──SUPPLIED_BY──▶ Supplier</code><br>"
-            "<code>Product ──ASSEMBLED_BY──▶ Supplier(代工)</code></p>"
-            "<h3>层级定义</h3>"
-            "<ul>"
-            "<li><b>第 0 层 终端产品（Product）：</b>精确到具体型号，如 iPhone 17 Pro、MacBook Pro 14\" (M4)、Apple Vision Pro (M5)；含发布时间、状态、起售价等属性。</li>"
-            "<li><b>第 1 层 核心零部件（Component）：</b>SoC、显示面板、CIS、镜头、存储、调制解调器、 PMIC、电池、结构件、FPC/载板、先进封装等；含中英文名称。</li>"
-            "<li><b>第 2 层 供应商/代工厂（Supplier）：</b>按类别分为晶圆代工、显示、存储、半导体、声学、结构件、FPC/载板、OSAT、组装等；全称/英文名/简称分列，tier=1 为核心/技术壁垒高者，tier=2 为次级/可替代性较强者。</li>"
-            "</ul>" + svg + "</section>")
+    return "".join([
+        "<section id='sec-model'><h2>", i18n("report.sec.model"), "</h2>",
+        "<p>", i18n("report.model.intro"), "</p>",
+        "<p><code>", esc(ZH.get("report.model.rel1", "Product ──USES_COMPONENT──▶ Component ──SUPPLIED_BY──▶ Supplier")), "</code><br>",
+        "<code>", esc(ZH.get("report.model.rel2", "Product ──ASSEMBLED_BY──▶ Supplier (EMS)")), "</code></p>",
+        "<h3>", i18n("report.model.h3"), "</h3>",
+        "<ul>",
+        "<li>", i18n("report.model.l0"), "</li>",
+        "<li>", i18n("report.model.l1"), "</li>",
+        "<li>", i18n("report.model.l2"), "</li>",
+        "</ul>", svg, "</section>",
+    ])
 
 
 def risk_section():
-    return ("<section id='sec-risk'><h2>七、关键风险点</h2>"
-            "<div class='risk'><b>① 晶圆代工单点依赖（台积电 / 台湾）：</b>A19 / A19 Pro / M 系列等最先进芯片 100% 由台积电台湾厂代工（3nm N3E/N3P），且先进制程依法不得外移。地缘风险高度集中，亚利桑那厂目前仅承接旧款 A16 及封装环节。</div>"
-            "<div class='risk'><b>② 图像传感器单点依赖（索尼 / 日本）：</b>iPhone 主摄 CIS 由索尼独占，单部 iPhone 摄像头组件中日本元件占比超 60%，短期内难以替代（三星仅为未来潜在二供）。</div>"
-            "<div class='risk'><b>③ 显示面板双雄格局（三星显示 / LG 显示）：</b>OLED 由韩厂主导；京东方(BOE)在 iPhone 17/17 Air 与 MacBook Air 快速上量（MacBook 面板份额达 51%），但高端 Pro 机型仍以韩厂为主。</div>"
-            "<div class='risk'><b>④ 关税与「中国 + N」重构：</b>美国对华关税推动组装外移印度/越南，但核心零部件仍大量自东亚进口（印度 iPhone 约 52% 核心组件需自华空运），转移速度与良率受限。</div>"
-            "<div class='risk'><b>⑤ 先进封装短板：</b>台积电亚利桑那产出的晶圆仍需在亚洲完成 InFO/CoWoS 等先进封装，Amkor 美国厂预计 2028 年才投产，短期难闭环。</div>"
-            "</section>")
+    return "".join([
+        "<section id='sec-risk'><h2>", i18n("report.sec.risk"), "</h2>",
+        "<div class='risk'>", i18n("report.risk.r1"), "</div>",
+        "<div class='risk'>", i18n("report.risk.r2"), "</div>",
+        "<div class='risk'>", i18n("report.risk.r3"), "</div>",
+        "<div class='risk'>", i18n("report.risk.r4"), "</div>",
+        "<div class='risk'>", i18n("report.risk.r5"), "</div>",
+        "</section>",
+    ])
 
 
 def docs_section():
     """技术参考文档入口：把原本网页里的「Neo4j 导入指南 / 数据字段字典」等教程型内容
     收敛到项目 docs/（docs/neo4j-import.md、docs/data-model.md），网页只留一个入口盒。"""
-    return ("<section id='sec-docs'><h2>技术参考文档</h2>"
-            "<div class='note'>"
-            "<p>本报告聚焦供应链分析；原置于网页的<strong>技术教程与字段参考</strong>已迁移到项目文档，便于离线查阅与维护：</p>"
-            "<ul style='margin:6px 0 0'>"
-            "<li><a class='lk' href='../docs/neo4j-import.md' target='_blank' rel='noopener'>Neo4j 图数据库导入指南（neo4j-admin 离线批量 / LOAD CSV 在线）</a></li>"
-            "<li><a class='lk' href='../docs/data-model.md' target='_blank' rel='noopener'>数据模型与字段字典（节点 / 关系 / 字段含义与可获取性）</a></li>"
-            "</ul></div></section>")
+    return "".join([
+        "<section id='sec-docs'><h2>", i18n("report.sec.docs"), "</h2>",
+        "<div class='note'>",
+        "<p>", i18n("report.docs.intro"), "</p>",
+        "<ul style='margin:6px 0 0'>",
+        "<li>", i18na("report.docs.li1", "../docs/neo4j-import.md"), "</li>",
+        "<li>", i18na("report.docs.li2", "../docs/data-model.md"), "</li>",
+        "</ul></div></section>",
+    ])
 
 
 def limits_section():
-    return ("<section id='sec-limits'><h2>八、数据口径与局限</h2>"
-            "<ul>"
-            "<li>型号覆盖截至 2025–2026 年苹果在售/已发布主力机型；部分尚未发布机型（如折叠屏 iPhone）仅作前瞻未纳入。</li>"
-            "<li>供应商份额（share）仅对公开披露较明确的少数环节（如 MacBook 面板 BOE 51%、DRAM 三星约 60–70%）标注，其余以「主要供应商」定性描述，未逐一量化。</li>"
-            "<li>零部件-供应商映射基于公开拆解/BOM 与供应链报道，反映主流配置；同一型号不同批次/地区可能存在二供差异。</li>"
-            "<li>别名(alias)仅记录公开可信的发布前代号或别称，无则留空；发布时间以发布会/发售日期为准，未确认机型标注年份。</li>"
-            "<li>数据用于产业链结构研究与教学，不构成任何投资或采购建议。</li>"
-            "</ul></section>")
+    return "".join([
+        "<section id='sec-limits'><h2>", i18n("report.sec.limits"), "</h2>",
+        "<ul>",
+        "<li>", i18n("report.limits.l1"), "</li>",
+        "<li>", i18n("report.limits.l2"), "</li>",
+        "<li>", i18n("report.limits.l3"), "</li>",
+        "<li>", i18n("report.limits.l4"), "</li>",
+        "<li>", i18n("report.limits.l5"), "</li>",
+        "</ul></section>",
+    ])
 
 
 def footer_html():
-    return "<footer>Generated by WorkBuddy · Apple Supply Chain Graph v2 · 2026-08-04</footer>"
+    return "<footer>%s</footer>" % i18n("report.footer")
 
 
 def build_report_inner(G, jump=False, mode="spa"):
@@ -292,18 +350,18 @@ def build_report_inner(G, jump=False, mode="spa"):
     s.append(summary_section(G))
     s.append(docs_section())
     s.append(model_section(G))
-    s.append("<section id='sec-products'><h2>三、产品线 · 具体型号总览</h2>")
-    s.append("<p>覆盖 iPhone / Mac / iPad / Apple Watch / Vision Pro / AirPods·HomePod 六大产品线，共 %d 个型号（按发布时间排序）。</p>" % len(G["nodes"]["products"]))
+    s.append("<section id='sec-products'><h2>%s</h2>" % i18n("report.sec.products"))
+    s.append("<p>%s</p>" % i18n("report.intro.products"))
     s.append(product_table(G, jump, mode))
     s.append("</section>")
-    s.append("<section id='sec-components'><h2>四、核心零部件 → 供应商映射</h2>")
+    s.append("<section id='sec-components'><h2>%s</h2>" % i18n("report.sec.components"))
     s.append(component_table(G, jump, mode))
     s.append("</section>")
-    s.append("<section id='sec-suppliers'><h2>五、供应商 / 代工厂目录</h2>")
-    s.append("<p>全称、英文名称、简称分列；层级 tier=1 为核心/高壁垒供应商。按区域排序。</p>")
+    s.append("<section id='sec-suppliers'><h2>%s</h2>" % i18n("report.sec.suppliers"))
+    s.append("<p>%s</p>" % i18n("report.intro.suppliers"))
     s.append(supplier_table(G, jump, mode))
     s.append("</section>")
-    s.append("<section id='sec-geo'><h2>六、地理与集中度分析</h2>")
+    s.append("<section id='sec-geo'><h2>%s</h2>" % i18n("report.sec.geo"))
     s.append(concentration(G, jump, mode))
     s.append("</section>")
     s.append(risk_section())
@@ -317,12 +375,14 @@ def build_report_full(G, jump=False, mode="web"):
     nav = topnav("../", "report")
     prefix = ("<!DOCTYPE html><html lang='zh-CN'><head><meta charset='utf-8'>"
               "<meta name='viewport' content='width=device-width,initial-scale=1'>"
-              "<title>苹果产品供应链上下游图谱报告（v2 属性增强版）</title>"
-              "<style>" + CSS + TOPNAV_CSS + " body{padding-top:52px}section{scroll-margin-top:60px}</style></head><body>" + nav +
-              "<header><h1>苹果产品供应链上下游图谱报告</h1>"
-              "<p>Apple Product Supply-Chain Graph · 产品线 × 零部件 × 供应商 × 产业链（属性增强版 v2）</p>"
-              "<p>数据来源：公开供应链报告（2024–2026）+ 苹果 2024 年供应商名单（187 家核心供应商，约占直接支出的 98%）</p>"
-              "<p>生成日期：2026-08-04 · 结构化数据（CSV / JSON）已随附，<a href='../docs/neo4j-import.md' target='_blank' rel='noopener' style='color:#fff;text-decoration:underline'>导入 Neo4j 的方法见技术文档</a></p></header>"
+              "<title>%s</title>"
+              "<style>" % esc(ZH.get("report.header.title", "苹果产品供应链上下游图谱报告")) + CSS + TOPNAV_CSS + " body{padding-top:52px}section{scroll-margin-top:60px}</style></head><body>" + nav +
+              "<header><h1>%s</h1>" % i18n("report.header.title") +
+              "<p>%s</p>" % i18n("report.header.subtitle") +
+              "<p>%s</p>" % i18n("report.header.source") +
+              "<p><span data-i18n='report.header.generated'>%s</span> <a class='lk' href='../docs/neo4j-import.md' target='_blank' rel='noopener' style='color:#fff;text-decoration:underline' data-i18n='report.header.neo4jLink'>%s</a></p>"
+              % (esc(ZH.get("report.header.generated", "")), esc(ZH.get("report.header.neo4jLink", ""))) +
+              "</header>"
               "<div class='wrap'>")
     return prefix + build_report_inner(G, jump, mode) + "</div></body></html>"
 

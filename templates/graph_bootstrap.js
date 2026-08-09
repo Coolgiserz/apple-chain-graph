@@ -4,12 +4,16 @@
  *   地图  -> tools/visualizations/supplier_geo.html?supplier=...
  */
 (function () {
+  // 用 JS 翻译（window.i18n.t）而非 data-i18n：面板是点击节点后动态生成的，
+  // 需每次渲染都取当前语言；i18n.t 在未就绪时也会回退中文（见 i18n.js 的 api.t 兜底）。
+  function L(k) { return window.i18n ? window.i18n.t(k) : k; }
+
   var g = window.GraphEngine.init({
     reportLink: function (n, sec) {
-      return "<a class='lk' href='dist/apple_supply_chain_report.html#" + sec + "' target='_blank'>在报告中查看 →</a>";
+      return "<a class='lk' href='dist/apple_supply_chain_report.html#" + sec + "' target='_blank'>" + L("link.report") + "</a>";
     },
     mapLink: function (n) {
-      return "<a class='lk' href='tools/visualizations/supplier_geo.html?supplier=" + window.GraphEngine.esc(n.id) + "' target='_blank'>在地图中查看 →</a>";
+      return "<a class='lk' href='tools/visualizations/supplier_geo.html?supplier=" + window.GraphEngine.esc(n.id) + "' target='_blank'>" + L("link.map") + "</a>";
     }
   });
   g.start();

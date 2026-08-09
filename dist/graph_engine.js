@@ -237,6 +237,8 @@
     renderPanel(n);
     if (panel) panel.style.display = "block";
   }
+  // 产品状态枚举：数据集里是中文值（在售 / 传闻/未发布），按语言翻译
+  var STATUS_MAP = { "在售": "status.onsale", "传闻/未发布": "status.rumor" };
   function renderPanel(n) {
     var p = document.getElementById("pbody"); if (!p) return;
     var col = COLORS[n.type];
@@ -244,7 +246,11 @@
     h += "<span class='tag' style='background:" + col + "22;color:" + col + ";border:1px solid " + col + "'>" + n.type + "</span>";
     if (n.type === "Product" && n.product_line) h += "<span class='tag' style='background:#2a3450;color:#cfe0ff'>" + esc(n.product_line) + "</span>";
     h += "<dl>";
-    function fieldRow(k, v) { return [i18nText("field." + k), v]; }
+    function fieldRow(k, v) {
+      var val = v;
+      if (k === "status" && STATUS_MAP[v]) val = i18nText(STATUS_MAP[v]);
+      return [i18nText("field." + k), val];
+    }
     var assemblyTxt = (n.assembly || []).map(function (id) { return nm("S", id); }).join("、");
     var fields = n.type === "Product"
       ? [fieldRow("release_date", n.release_date), fieldRow("status", n.status), fieldRow("price", n.price_usd ? ("$" + n.price_usd) : ""), fieldRow("soc", n.soc), fieldRow("display", n.display), fieldRow("alias", n.alias), fieldRow("assembly", assemblyTxt)]
