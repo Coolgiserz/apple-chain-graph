@@ -36,7 +36,9 @@ jobs:
 
       - name: Assemble site
         run: |
-          mkdir -p _site
+          # 必须先把目标父目录建好：cp -r src _site/tools/visualizations 在 _site/tools
+          # 不存在时会报 "cannot create directory"（cp 不会自动创建多级目标父目录）。
+          mkdir -p _site _site/tools _site/docs
           cp index.html _site/
           cp -r dist _site/
           cp -r tools/visualizations _site/tools/visualizations
