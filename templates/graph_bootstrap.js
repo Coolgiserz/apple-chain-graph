@@ -21,8 +21,13 @@
   var rt = document.getElementById("riskToggle");
   var legend = document.getElementById("legend");
   if (rt) rt.addEventListener("change", function () {
-    g.setRiskMode(rt.checked);
-    if (legend) legend.style.display = rt.checked ? "flex" : "none";
+    try {
+      g.setRiskMode(rt.checked);
+      if (legend) legend.style.display = rt.checked ? "flex" : "none";
+    } catch (e) {
+      // 不再静默吞错：引擎脚本若被旧缓存加载（缺 setRiskMode）会在此暴露，便于排查
+      console.error("[riskView] setRiskMode 失败：", e);
+    }
   });
   // 深链：从其它页面带 ?focus=KEY 跳转过来时，自动选中并居中该节点
   var pk = new URLSearchParams(location.search).get("focus");
