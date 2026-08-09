@@ -22,7 +22,7 @@
   // —— 模块级状态（init 时填充）————————————————————————————————————————————
   var nodes = [], links = [], adj = {}, idMap = {};
   var cv, ctx, view = { ox: 0, oy: 0, scale: 1 };
-  var alpha = 1, running = false, rafId = null;
+  var alpha = 1, running = false, animating = false, rafId = null, canvasReady = false;
   var selected = null, hover = null, dragNode = null, panning = false, last = { x: 0, y: 0 }, moved = false;
   var reportLink = null, mapLink = null;
   var pendingFocus = null;   // 布局未就绪时暂缓居中，待首帧自愈后再执行
@@ -114,9 +114,8 @@
     return set;
   }
 
-  function physics() {
+  function physics(vis) {
     if (alpha < ALPHA_MIN) return;
-    var vis = visibleSet();
     var arr = nodes.filter(function (n) { return vis.has(n._key); });
     arr.forEach(function (n) { n.fx = 0; n.fy = 0; });
     for (var i = 0; i < arr.length; i++) for (var j = i + 1; j < arr.length; j++) {
@@ -155,21 +154,23 @@
     if (cv.width === bw && cv.height === bh) return false;
     cv.width = bw; cv.height = bh;
     ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    canvasReady = true;
     return true;
   }
   function resize() {
-    if (syncSize()) draw();                           // 尺寸变化才重绘（停止模拟后也能更新画面）
+    var changed = syncSize();
+    if (running) kick();                              // 尺寸变化后重启循环（或借已有循环重绘）
+    else if (changed) draw(visibleSet());             // 已停止时至少重绘一次当前帧
   }
 
   function label(n) { return n.name || n.english_name || n.id; }
   function esc(s) { return String(s).replace(/[&<>]/g, function (c) { return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]); }); }
   function nm(t, id) { var o = idMap[t + ":" + id]; return o ? label(o) : id; }
 
-  function draw() {
+  function draw(vis) {
     syncSize();                                      // 每次绘制前保证后备尺寸正确（首屏布局晚到 / 窗口缩放自愈）
     if (pendingFocus && W() && H()) { var nf = pendingFocus; pendingFocus = null; applyFocus(nf); }
     ctx.clearRect(0, 0, W(), H());
-    var vis = visibleSet();
     var sel = selected ? selected._key : null;
     var nb = sel ? new Set([sel].concat(adj[sel].map(function (e) { return e.other._key; }))) : null;
     ctx.save(); ctx.translate(view.ox, view.oy); ctx.scale(view.scale, view.scale);
@@ -256,6 +257,7 @@
       var n = pick(e.clientX, e.clientY);
       if (n) { dragNode = n; n.fixed = true; reheat(0.3); }
       else { panning = true; cv.classList.add("dragging"); }
+      kick();
     });
     cv.addEventListener("mousemove", function (e) {
       var dx = e.clientX - last.x, dy = e.clientY - last.y;
@@ -264,21 +266,24 @@
       else if (panning) { view.ox += dx; view.oy += dy; }
       else { hover = pick(e.clientX, e.clientY); cv.style.cursor = hover ? "pointer" : "grab"; }
       last = { x: e.clientX, y: e.clientY };
+      kick();
     });
     global.addEventListener("mouseup", function (e) {
       if (dragNode) { dragNode.fixed = false; dragNode = null; }
       panning = false; cv.classList.remove("dragging");
       if (!moved) { var n = pick(e.clientX, e.clientY); selectNode(n); }
+      kick();
     });
     cv.addEventListener("wheel", function (e) {
       e.preventDefault();
       var factor = e.deltaY < 0 ? 1.1 : 0.9, mx = e.clientX, my = e.clientY;
       var wx = (mx - view.ox) / view.scale, wy = (my - view.oy) / view.scale;
       view.scale *= factor; view.ox = mx - wx * view.scale; view.oy = my - wy * view.scale;
+      kick();
     }, { passive: false });
     global.addEventListener("resize", resize);
 
-    var pc = document.getElementById("pc"); if (pc) pc.onclick = function () { selectNode(null); };
+    var pc = document.getElementById("pc"); if (pc) pc.onclick = function () { selectNode(null); kick(); };
     var reset = document.getElementById("reset");
     if (reset) reset.onclick = function () {
       view = { ox: 0, oy: 0, scale: 1 }; selectNode(null);
@@ -293,8 +298,26 @@
     });
   }
 
-  function loop() { if (!running) return; physics(); draw(); rafId = global.requestAnimationFrame(loop); }
-  function reheat(a) { alpha = Math.max(alpha, (a == null ? 0.5 : a)); }
+  // 仅在需要重绘时启动 rAF 循环；模拟静止且无交互时循环自动停止，
+  // 避免对全屏（含 retina）画布做无谓的 60fps 持续重绘（这是此前"非常卡"的根因）。
+  function kick() {
+    if (!running || animating) return;
+    animating = true;
+    rafId = global.requestAnimationFrame(loop);
+  }
+  function loop() {
+    if (!running) { animating = false; return; }
+    var vis = visibleSet();                 // 每帧只算一次可见集，physics 与 draw 共用
+    physics(vis);
+    draw(vis);
+    // 静止 + 无拖拽/平移 + 画布已就绪 -> 停止循环（画布保留最后一帧），等下次交互/resize 再 kick
+    if (alpha < ALPHA_MIN && !dragNode && !panning && canvasReady) {
+      animating = false;
+      return;
+    }
+    rafId = global.requestAnimationFrame(loop);
+  }
+  function reheat(a) { alpha = Math.max(alpha, (a == null ? 0.5 : a)); kick(); }
   function applyFocus(n) {
     selected = n; reheat(1);
     view.ox = W() / 2 - n.x * view.scale; view.oy = H() / 2 - n.y * view.scale;
@@ -321,8 +344,8 @@
   }
   var api = {
     init: init,
-    start: function () { if (running) return; running = true; resize(); reheat(1); loop(); },
-    stop: function () { running = false; if (rafId) global.cancelAnimationFrame(rafId); },
+    start: function () { if (running) return; running = true; syncSize(); reheat(1); },
+    stop: function () { running = false; animating = false; if (rafId) global.cancelAnimationFrame(rafId); },
     focus: focus,
     reheat: reheat,
     resize: resize,
