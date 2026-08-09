@@ -17,6 +17,9 @@ Thumbs.db
 # Local Docker build env (mirror registry etc.) — keep .env.example tracked
 .env
 
+# TLS 证书（生产 HTTPS 用，切勿提交）
+certs/
+
 # WorkBuddy project-local memory (not source)
 .workbuddy/
 

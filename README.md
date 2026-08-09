@@ -31,6 +31,7 @@ zero-dependency interactive visualizations.
   - [0. 整合页：图谱 + 报告（推荐）](#0-整合页图谱--报告推荐)
   - [0.1 四页统一导航（多页互跳，非孤岛）](#01-四页统一导航多页互跳非孤岛)
   - [0.2 使用 Docker 一键启动（推荐用于发布 / 统计）](#02-使用-docker-一键启动推荐用于发布--统计)
+  - [0.3 启用 HTTPS（有域名 + 证书）](#03-启用-https有域名--证书)
   - [1. 浏览图谱（零依赖）](#1-浏览图谱零依赖)
   - [2. 导入 Neo4j（你已有的实例）](#2-导入-neo4j你已有的实例)
   - [3. 从源码重新生成](#3-从源码重新生成)
@@ -144,6 +145,25 @@ make serve     # 不用 Docker 时，本地直接起 Python 静态服务器（�
 > ⚠️ **供应商地图页**依赖腾讯位置服务 GL JS，需要**真实域名 + 有效 Key**（替换页面里的
 > `__WB_TMAP_SECRET__` 占位符），`localhost` 下地图不会渲染——其余页面不受影响。
 > 容器构建时会执行 `build_all.py` 重生成全部页面，改完数据后 `make up` 会自动重新构建。
+
+### 0.3 启用 HTTPS（有域名 + 证书）
+
+默认 `make up` 走 **HTTP**（端口 `8080`），适合本地调试、或暂无条件配置证书时由你选择 HTTP 部署。
+当你已有域名和有效证书（如 Let's Encrypt 的 `fullchain.pem` + `privkey.pem`）时，用「生产覆盖」在
+容器内终止 TLS、HTTP 自动跳转 HTTPS，**无需改动默认 HTTP 流程**：
+
+```bash
+mkdir -p certs
+cp /path/to/fullchain.pem certs/fullchain.pem
+cp /path/to/privkey.pem   certs/privkey.pem
+make up-prod        # = docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+# 浏览器访问 https://你的域名 （HTTP 自动 301 跳转 HTTPS）
+```
+
+- 证书放在 `certs/`，**已被 .gitignore 忽略，不会提交**；`nginx.prod.conf` 从中读取（路径不符时改该文件即可）。
+- 生产配置 `nginx.prod.conf` 监听 443（SSL）+ 80（跳转），含 TLS 1.2/1.3、强加密套件、HSTS 注释项。
+- 若不想在容器内终止 TLS，也可在**反向代理 / Cloudflare / 云负载均衡**处终止，容器保持默认 HTTP 即可（只用 `make up`）。
+- 想同时保留 HTTP 直连（不跳转）：把 `nginx.prod.conf` 里 80 端口的 `return 301` 换成正常 `location /` 服务即可。
 
 ### 1. 浏览图谱（零依赖）
 

@@ -1,0 +1,16 @@
+# HTTPS 生产覆盖：与 docker-compose.yml 一起使用
+#   docker compose -f docker-compose.yml -f docker-compose.prod.yml up -d --build
+#   # 或快捷键： make up-prod
+#
+# 前置：把证书放到 ./certs/ 下，文件名为 fullchain.pem 与 privkey.pem（证书不进仓库）。
+# 该覆盖仅替换端口映射与 nginx 配置、挂载证书；构建参数（PYTHON_IMG/NGINX_IMG）仍来自 docker-compose.yml / .env。
+services:
+  web:
+    ports:
+      - "80:80"
+      - "443:443"
+    volumes:
+      # 用生产配置替换容器内默认的 HTTP 配置
+      - ./nginx.prod.conf:/etc/nginx/conf.d/app.conf:ro
+      # 挂载证书（只读）；证书缺失时容器会启动失败，请先放好证书
+      - ./certs:/certs:ro
