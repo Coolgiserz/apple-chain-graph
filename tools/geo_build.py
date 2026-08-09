@@ -631,20 +631,37 @@ __TOPNAV_CSS__
     serviceHost: 'http://127.0.0.1:__WB_HTTP_PORT__/_TMapService/_wbt/__WB_TMAP_SECRET__',
   }};
 </script>
-<script src="https://map.qq.com/api/gljs?v=1.exp"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://map.qq.com/api/gljs?v=1.exp"></script>
 </head>
 <body>
 __TOPNAV__
 <div id="map"></div>
 {panel}
 <script>
+  // 地图后端选择：serviceHost 仍为本地 127.0.0.1 占位符（未配腾讯代理）时，
+  // 默认用 Leaflet + OpenStreetMap（纯前端、免 Key、免代理，GitHub Pages 等静态托管直接可用）；
+  // 若已配置真实代理域名（自建签名代理 + Key），则保留腾讯地图 GL 原样式。
+  const __SH = 'http://127.0.0.1:__WB_HTTP_PORT__/_TMapService/_wbt/__WB_TMAP_SECRET__';
+  const __USE_TMAP = !__SH.includes('127.0.0.1') && typeof TMap !== 'undefined';
+  const __HEX = {{ '低估':'#2563eb', '高估':'#dc2626', '困境':'#d97706', '基准':'#111827', '其他':'#94a3b8', 'market':'#f59e0b', 'downstream':'#7c3aed' }};
+
   const RAW = {json.dumps(geometries, ensure_ascii=False)};
-  const GEOMS = RAW.map(r => ({{ id: r.id, styleId: r.styleId, sid: r.sid, position: new TMap.LatLng(r.lat, r.lng), properties: {{ html: r.html, name: r.name, cat: r.cat }} }}));
+  const GEOMS = RAW.map(r => ({{ id: r.id, styleId: r.styleId, sid: r.sid, lat: r.lat, lng: r.lng, html: r.html, name: r.name, cat: r.cat }}));
   const ALL_CATS = {json.dumps(all_cats, ensure_ascii=False)};
   let activeCats = new Set(ALL_CATS);
-  function applyFilter() {{
-    markers.setGeometries(GEOMS.filter(g => activeCats.has(g.properties.cat)));
-  }}
+  let upVisible = true, downVisible = true, flowOn = false, flowRAF = null, flowT = 0.5;
+
+  const MARKET_RAW = {json.dumps(market_geoms, ensure_ascii=False)};
+  const MARKET_GEOMS = MARKET_RAW.map(r => ({{ id: r.id, lat: r.lat, lng: r.lng, html: r.html, name: r.name }}));
+  const UP_RAW = {json.dumps(line_geoms, ensure_ascii=False)};
+  const UP_LINES = UP_RAW.map(r => ({{ id: r.id, styleId: r.styleId, plat: r.plat, plng: r.plng, alat: r.alat, alng: r.alng }}));
+  const DOWN_RAW = {json.dumps(down_geoms, ensure_ascii=False)};
+  const DOWN_LINES = DOWN_RAW.map(r => ({{ id: r.id, styleId: r.styleId, plat: r.plat, plng: r.plng, alat: r.alat, alng: r.alng }}));
+  const ARROW_META = {json.dumps(arrow_meta_list, ensure_ascii=False)};
+
+  // 品类过滤（后端无关，仅更新 activeCats 后调用后端刷新）
   document.querySelectorAll('.fbtn[data-cat]').forEach(b => {{
     b.addEventListener('click', () => {{
       const c = b.dataset.cat;
@@ -655,95 +672,102 @@ __TOPNAV__
         const on = cc === '__ALL__' ? activeCats.size === ALL_CATS.length : activeCats.has(cc);
         x.classList.toggle('on', on);
       }});
-      applyFilter();
+      if (window.__B) window.__B.filter();
     }});
   }});
-  const map = new TMap.Map('map', {{
-    zoom: 3,
-    center: new TMap.LatLng(28, 112)
-  }});
-  const markers = new TMap.MultiMarker({{
-    map: map,
-    styles: {{
-{styles_js}
-    }},
-    geometries: GEOMS
-  }});
-  const info = new TMap.InfoWindow({{ map: map, position: new TMap.LatLng(28, 112), content: '', visible: false }});
-  markers.on('click', (e) => {{
-    const g = GEOMS.find(x => x.id === e.geometry.id);
-    if (!g) return;
-    info.setPosition(e.geometry.position);
-    info.setContent(g.properties.html);
-    info.open();
-  }});
 
-  // 深链：从其它页面带 ?supplier=<id> 跳转过来时，自动定位并弹出该供应商基地
+  // ---------- Leaflet 后端（默认，静态托管可用） ----------
+  function initLeaflet() {{
+    const map = L.map('map', {{ zoomControl: true }}).setView([28, 112], 3);
+    L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{ maxZoom: 19, attribution: '© OpenStreetMap' }}).addTo(map);
+    const supLayer = L.layerGroup().addTo(map);
+    const upLayer = L.layerGroup().addTo(map);
+    const downLayer = L.layerGroup().addTo(map);
+    const arrowLayer = L.layerGroup().addTo(map);
+    const marketLayer = L.layerGroup().addTo(map);
+    const colorOf = (s) => __HEX[s] || '#94a3b8';
+    function renderSuppliers() {{
+      supLayer.clearLayers();
+      GEOMS.filter(g => activeCats.has(g.cat)).forEach(g => {{
+        const m = L.circleMarker([g.lat, g.lng], {{ radius: 7, color: '#fff', weight: 2, fillColor: colorOf(g.styleId), fillOpacity: 1 }});
+        m.bindPopup(g.html); supLayer.addLayer(m);
+      }});
+    }}
+    function renderMarkets() {{
+      marketLayer.clearLayers();
+      MARKET_GEOMS.forEach(g => {{
+        const m = L.circleMarker([g.lat, g.lng], {{ radius: 8, color: '#fff', weight: 2, fillColor: colorOf('market'), fillOpacity: 1 }});
+        m.bindPopup(g.html); marketLayer.addLayer(m);
+      }});
+    }}
+    function renderLines() {{
+      upLayer.clearLayers(); downLayer.clearLayers();
+      if (upVisible) UP_LINES.forEach(l => upLayer.addLayer(L.polyline([[l.plat, l.plng], [l.alat, l.alng]], {{ color: colorOf(l.styleId), weight: 1.5, opacity: 0.7 }})));
+      if (downVisible) DOWN_LINES.forEach(l => downLayer.addLayer(L.polyline([[l.plat, l.plng], [l.alat, l.alng]], {{ color: colorOf(l.styleId), weight: 1.5, opacity: 0.7 }})));
+    }}
+    function renderArrows() {{
+      arrowLayer.clearLayers();
+      ARROW_META.filter(a => (a.tier==='up'&&upVisible) || (a.tier==='down'&&downVisible)).forEach(a => {{
+        const lat = a.start[0] + (a.end[0]-a.start[0])*flowT;
+        const lng = a.start[1] + (a.end[1]-a.start[1])*flowT;
+        const ang = Math.atan2(a.end[0]-a.start[0], a.end[1]-a.start[1]) * 180 / Math.PI;
+        const ic = L.divIcon({{ className:'', html: "<div style='transform:rotate("+ang.toFixed(1)+"deg);color:"+colorOf(a.styleId)+";font-size:14px;line-height:1'>➤</div>", iconSize:[14,14], iconAnchor:[7,7] }});
+        arrowLayer.addLayer(L.marker([lat, lng], {{ icon: ic }}));
+      }});
+    }}
+    renderSuppliers(); renderMarkets(); renderLines(); renderArrows();
+    window.__B = {{
+      filter: renderSuppliers,
+      applyUp: function() {{ renderLines(); renderArrows(); }},
+      applyDown: function() {{ renderLines(); renderArrows(); }},
+      refreshArrows: renderArrows,
+      invalidate: function() {{ map.invalidateSize(); }},
+      openSupplier: function(sid) {{
+        const g = GEOMS.find(x => x.sid === sid) || GEOMS.find(x => String(x.id) === sid);
+        if (!g) return;
+        map.setView([g.lat, g.lng], 6);
+        L.popup().setLatLng([g.lat, g.lng]).setContent(g.html).openOn(map);
+      }}
+    }};
+  }}
+
+  // ---------- 腾讯地图后端（配置了真实代理 + Key 时） ----------
+  function initTMap() {{
+    const map = new TMap.Map('map', {{ zoom: 3, center: new TMap.LatLng(28, 112) }});
+    const markers = new TMap.MultiMarker({{ map: map, styles: {{{styles_js}\n      }}, geometries: GEOMS.map(g => ({{ id: g.id, styleId: g.styleId, position: new TMap.LatLng(g.lat, g.lng), properties: {{ html: g.html, name: g.name, cat: g.cat }} }})) }});
+    const info = new TMap.InfoWindow({{ map: map, position: new TMap.LatLng(28, 112), content: '', visible: false }});
+    markers.on('click', (e) => {{ const g = GEOMS.find(x => x.id === e.geometry.id); if (!g) return; info.setPosition(e.geometry.position); info.setContent(g.properties.html); info.open(); }});
+    const marketLayer = new TMap.MultiMarker({{ map: map, styles: {{ market: new TMap.MarkerStyle({{ width: 24, height: 24, src: '{market_svg()}' }}) }}, geometries: MARKET_GEOMS.map(g => ({{ id: g.id, styleId: 'market', position: new TMap.LatLng(g.lat, g.lng), properties: {{ html: g.html, name: g.name }} }})) }});
+    marketLayer.on('click', (e) => {{ const g = MARKET_GEOMS.find(x => x.id === e.geometry.id); if (!g) return; info.setPosition(e.geometry.position); info.setContent(g.properties.html); info.open(); }});
+    const upLayer = new TMap.MultiPolyline({{ map: map, styles: {{{line_styles_js}\n      }}, geometries: UP_LINES.map(l => ({{ id: l.id, styleId: l.styleId, paths: [new TMap.LatLng(l.plat, l.plng), new TMap.LatLng(l.alat, l.alng)] }})) }});
+    const downLayer = new TMap.MultiPolyline({{ map: map, styles: {{{line_styles_js}\n      }}, geometries: DOWN_LINES.map(l => ({{ id: l.id, styleId: l.styleId, paths: [new TMap.LatLng(l.plat, l.plng), new TMap.LatLng(l.alat, l.alng)] }})) }});
+    const arrowLayer = new TMap.MultiMarker({{ map: map, styles: {{{arrow_styles_js}\n      }}, geometries: [] }});
+    function arrowPosAt(a, t) {{ return {{ id: a.id, styleId: a.styleId, position: new TMap.LatLng(a.start[0]+(a.end[0]-a.start[0])*t, a.start[1]+(a.end[1]-a.start[1])*t) }}; }}
+    function refreshArrows() {{ const arr = ARROW_META.filter(a => (a.tier==='up'&&upVisible)||(a.tier==='down'&&downVisible)).map(a => arrowPosAt(a, flowT)); arrowLayer.setGeometries(arr); }}
+    refreshArrows();
+    window.__B = {{
+      filter: function() {{ markers.setGeometries(GEOMS.filter(g => activeCats.has(g.cat)).map(g => ({{ id: g.id, styleId: g.styleId, position: new TMap.LatLng(g.lat, g.lng), properties: {{ html: g.html, name: g.name, cat: g.cat }} }}))); }},
+      applyUp: function() {{ upLayer.setGeometries(upVisible ? UP_LINES.map(l => ({{ id: l.id, styleId: l.styleId, paths: [new TMap.LatLng(l.plat, l.plng), new TMap.LatLng(l.alat, l.alng)] }})) : []); refreshArrows(); }},
+      applyDown: function() {{ downLayer.setGeometries(downVisible ? DOWN_LINES.map(l => ({{ id: l.id, styleId: l.styleId, paths: [new TMap.LatLng(l.plat, l.plng), new TMap.LatLng(l.alat, l.alng)] }})) : []); refreshArrows(); }},
+      refreshArrows: refreshArrows,
+      invalidate: function() {{}},
+      openSupplier: function(sid) {{ const g = GEOMS.find(x => x.sid === sid) || GEOMS.find(x => String(x.id) === sid); if (!g) return; map.setCenter(new TMap.LatLng(g.lat, g.lng)); map.setZoom(6); info.setPosition(new TMap.LatLng(g.lat, g.lng)); info.setContent(g.html); info.open(); }}
+    }};
+  }}
+
+  if (__USE_TMAP) initTMap(); else initLeaflet();
+
+  // 深链：带 ?supplier=<id> 时自动定位并弹出该供应商基地
   (function () {{
     const sid = new URLSearchParams(location.search).get('supplier');
     if (!sid) return;
-    const g = GEOMS.find(x => x.sid === sid) || GEOMS.find(x => String(x.id) === sid);
-    if (!g) return;
-    map.setCenter(g.position);
-    map.setZoom(6);
-    info.setPosition(g.position);
-    info.setContent(g.properties.html);
-    info.open();
+    if (window.__B) window.__B.openSupplier(sid);
   }})();
 
-  // 终端市场标记
-  const MARKET_RAW = {json.dumps(market_geoms, ensure_ascii=False)};
-  const MARKET_GEOMS = MARKET_RAW.map(r => ({{ id: r.id, styleId: 'market', position: new TMap.LatLng(r.lat, r.lng), properties: {{ html: r.html, name: r.name }} }}));
-  const marketLayer = new TMap.MultiMarker({{ map: map, styles: {{ market: new TMap.MarkerStyle({{ width: 24, height: 24, src: '{market_svg()}' }}) }}, geometries: MARKET_GEOMS }});
-  marketLayer.on('click', (e) => {{
-    const g = MARKET_GEOMS.find(x => x.id === e.geometry.id);
-    if (!g) return;
-    info.setPosition(e.geometry.position);
-    info.setContent(g.properties.html);
-    info.open();
-  }});
-
-  // 上游连线：供应商 -> 组装厂
-  const UP_RAW = {json.dumps(line_geoms, ensure_ascii=False)};
-  const UP_LINES = UP_RAW.map(r => ({{ id: r.id, styleId: r.styleId, paths: [new TMap.LatLng(r.plat, r.plng), new TMap.LatLng(r.alat, r.alng)] }}));
-  const upLayer = new TMap.MultiPolyline({{ map: map, styles: {{{line_styles_js}\n    }}, geometries: UP_LINES }});
-
-  // 下游连线：组装厂 -> 终端市场
-  const DOWN_RAW = {json.dumps(down_geoms, ensure_ascii=False)};
-  const DOWN_LINES = DOWN_RAW.map(r => ({{ id: r.id, styleId: r.styleId, paths: [new TMap.LatLng(r.plat, r.plng), new TMap.LatLng(r.alat, r.alng)] }}));
-  const downLayer = new TMap.MultiPolyline({{ map: map, styles: {{{line_styles_js}\n    }}, geometries: DOWN_LINES }});
-
-  // 箭头（流向指示 + 流动动画）
-  const ARROW_META = {json.dumps(arrow_meta_list, ensure_ascii=False)};
-  const arrowLayer = new TMap.MultiMarker({{ map: map, styles: {{{arrow_styles_js}\n    }}, geometries: [] }});
-  let upVisible = true, downVisible = true, flowOn = false, flowRAF = null, flowT = 0.5;
-  function arrowPosAt(a, t) {{
-    return {{ id: a.id, styleId: a.styleId,
-      position: new TMap.LatLng(a.start[0] + (a.end[0]-a.start[0])*t, a.start[1] + (a.end[1]-a.start[1])*t) }};
-  }}
-  function refreshArrows() {{
-    const arr = ARROW_META.filter(a => (a.tier==='up'&&upVisible) || (a.tier==='down'&&downVisible)).map(a => arrowPosAt(a, flowT));
-    arrowLayer.setGeometries(arr);
-  }}
-  refreshArrows();
-  function flowStep() {{
-    flowT = (performance.now()/2500) % 1;
-    refreshArrows();
-    flowRAF = requestAnimationFrame(flowStep);
-  }}
-  function toggleFlow(btn) {{
-    flowOn = !flowOn; btn.classList.toggle('on', flowOn);
-    btn.textContent = flowOn ? '⏸ 停止动画' : '▶ 流动动画';
-    if (flowOn) flowStep(); else {{ cancelAnimationFrame(flowRAF); flowT = 0.5; refreshArrows(); }}
-  }}
-  function toggleUp(btn) {{
-    upVisible = !upVisible; upLayer.setGeometries(upVisible ? UP_LINES : []);
-    btn.textContent = upVisible ? '隐藏供应连线' : '显示供应连线'; btn.classList.toggle('on', upVisible); refreshArrows();
-  }}
-  function toggleDown(btn) {{
-    downVisible = !downVisible; downLayer.setGeometries(downVisible ? DOWN_LINES : []);
-    btn.textContent = downVisible ? '隐藏下游连线' : '显示下游连线'; btn.classList.toggle('on', downVisible); refreshArrows();
-  }}
+  function flowStep() {{ flowT = (performance.now()/2500) % 1; if (window.__B) window.__B.refreshArrows(); flowRAF = requestAnimationFrame(flowStep); }}
+  function toggleFlow(btn) {{ flowOn = !flowOn; btn.classList.toggle('on', flowOn); btn.textContent = flowOn ? '⏸ 停止动画' : '▶ 流动动画'; if (flowOn) flowStep(); else {{ cancelAnimationFrame(flowRAF); flowT = 0.5; if (window.__B) window.__B.refreshArrows(); }} }}
+  function toggleUp(btn) {{ upVisible = !upVisible; if (window.__B) window.__B.applyUp(); btn.classList.toggle('on', upVisible); btn.textContent = upVisible ? '隐藏供应连线' : '显示供应连线'; }}
+  function toggleDown(btn) {{ downVisible = !downVisible; if (window.__B) window.__B.applyDown(); btn.classList.toggle('on', downVisible); btn.textContent = downVisible ? '隐藏下游连线' : '显示下游连线'; }}
 </script>
 </body>
 </html>
@@ -788,7 +812,9 @@ def build_combined(recs, insights):
     serviceHost: 'http://127.0.0.1:__WB_HTTP_PORT__/_TMapService/_wbt/__WB_TMAP_SECRET__',
   };
 </script>
-<script src="https://map.qq.com/api/gljs?v=1.exp"></script>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="https://map.qq.com/api/gljs?v=1.exp"></script>
 <style>
   :root{ --bg:#f5f7fa; --card:#fff; --ink:#1f2937; --muted:#6b7280; --blue:#2563eb; --red:#dc2626; --green:#16a34a; --amber:#d97706; --line:#e5e7eb; --soft:#eef2f7; }
   html,body{margin:0;padding:0;height:100%;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;}
@@ -883,13 +909,18 @@ __DASH_SCRIPT__
 
 <script>
 /* ===== 地理供应链地图（懒加载：首次切到地图页才初始化，避免 0 尺寸静默失败）===== */
+// 后端选择：serviceHost 仍为本地 127.0.0.1（未配腾讯代理）时用 Leaflet（免 Key、静态托管可用），
+// 配了真实代理 + Key 时保留腾讯地图 GL 原样式。
+const __SH2 = 'http://127.0.0.1:__WB_HTTP_PORT__/_TMapService/_wbt/__WB_TMAP_SECRET__';
+const __USE_TMAP2 = !__SH2.includes('127.0.0.1') && typeof TMap !== 'undefined';
+const __HEX2 = { '低估':'#2563eb', '高估':'#dc2626', '困境':'#d97706', '基准':'#111827', '其他':'#94a3b8', 'market':'#f59e0b', 'downstream':'#7c3aed' };
+
 const RAW = __RAW__;
-const GEOMS = RAW.map(r => ({ id: r.id, styleId: r.styleId, sid: r.sid, position: new TMap.LatLng(r.lat, r.lng), properties: { html: r.html, name: r.name, cat: r.cat } }));
+const GEOMS = RAW.map(r => ({ id: r.id, styleId: r.styleId, sid: r.sid, lat: r.lat, lng: r.lng, html: r.html, name: r.name, cat: r.cat }));
 const ALL_CATS = __ALL_CATS__;
 let activeCats = new Set(ALL_CATS);
-let map, markers, info, marketLayer, upLayer, downLayer, arrowLayer;
 let upVisible = true, downVisible = true, flowOn = false, flowRAF = null, flowT = 0.5;
-function applyFilter(){ if(!markers) return; markers.setGeometries(GEOMS.filter(g => activeCats.has(g.properties.cat))); }
+function applyFilter(){ if(window.__B) window.__B.filter(); }
 document.querySelectorAll('.fbtn[data-cat]').forEach(b => {
   b.addEventListener('click', () => {
     const c = b.dataset.cat;
@@ -904,38 +935,97 @@ document.querySelectorAll('.fbtn[data-cat]').forEach(b => {
   });
 });
 const MARKET_RAW = __MARKET_RAW__;
-const MARKET_GEOMS = MARKET_RAW.map(r => ({ id: r.id, styleId: 'market', position: new TMap.LatLng(r.lat, r.lng), properties: { html: r.html, name: r.name } }));
+const MARKET_GEOMS = MARKET_RAW.map(r => ({ id: r.id, lat: r.lat, lng: r.lng, html: r.html, name: r.name }));
 const UP_RAW = __UP_RAW__;
-const UP_LINES = UP_RAW.map(r => ({ id: r.id, styleId: r.styleId, paths: [new TMap.LatLng(r.plat, r.plng), new TMap.LatLng(r.alat, r.alng)] }));
+const UP_LINES = UP_RAW.map(r => ({ id: r.id, styleId: r.styleId, plat: r.plat, plng: r.plng, alat: r.alat, alng: r.alng }));
 const DOWN_RAW = __DOWN_RAW__;
-const DOWN_LINES = DOWN_RAW.map(r => ({ id: r.id, styleId: r.styleId, paths: [new TMap.LatLng(r.plat, r.plng), new TMap.LatLng(r.alat, r.alng)] }));
+const DOWN_LINES = DOWN_RAW.map(r => ({ id: r.id, styleId: r.styleId, plat: r.plat, plng: r.plng, alat: r.alat, alng: r.alng }));
 const ARROW_META = __ARROW_META__;
-function arrowPosAt(a, t){ return { id: a.id, styleId: a.styleId, position: new TMap.LatLng(a.start[0] + (a.end[0]-a.start[0])*t, a.start[1] + (a.end[1]-a.start[1])*t) }; }
-function refreshArrows(){ const arr = ARROW_META.filter(a => (a.tier==='up'&&upVisible) || (a.tier==='down'&&downVisible)).map(a => arrowPosAt(a, flowT)); if(arrowLayer) arrowLayer.setGeometries(arr); }
-function flowStep(){ flowT = (performance.now()/2500) % 1; refreshArrows(); flowRAF = requestAnimationFrame(flowStep); }
-function toggleFlow(btn){ flowOn = !flowOn; btn.classList.toggle('on', flowOn); btn.textContent = flowOn ? '⏸ 停止动画' : '▶ 流动动画'; if (flowOn) flowStep(); else { cancelAnimationFrame(flowRAF); flowT = 0.5; refreshArrows(); } }
-function toggleUp(btn){ if(!upLayer) return; upVisible = !upVisible; upLayer.setGeometries(upVisible ? UP_LINES : []); btn.textContent = upVisible ? '隐藏供应连线' : '显示供应连线'; btn.classList.toggle('on', upVisible); refreshArrows(); }
-function toggleDown(btn){ if(!downLayer) return; downVisible = !downVisible; downLayer.setGeometries(downVisible ? DOWN_LINES : []); btn.textContent = downVisible ? '隐藏下游连线' : '显示下游连线'; btn.classList.toggle('on', downVisible); refreshArrows(); }
-function initGeo(){
-  map = new TMap.Map('map', { zoom: 3, center: new TMap.LatLng(28, 112) });
-  markers = new TMap.MultiMarker({ map: map, styles: { __MARKER_STYLES__ }, geometries: GEOMS });
-  info = new TMap.InfoWindow({ map: map, position: new TMap.LatLng(28, 112), content: '', visible: false });
+
+// ---------- Leaflet 后端（默认，静态托管可用） ----------
+function initLeaflet2() {
+  const map = L.map('map', { zoomControl: true }).setView([28, 112], 3);
+  L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19, attribution: '© OpenStreetMap' }).addTo(map);
+  const supLayer = L.layerGroup().addTo(map);
+  const upLayer = L.layerGroup().addTo(map);
+  const downLayer = L.layerGroup().addTo(map);
+  const arrowLayer = L.layerGroup().addTo(map);
+  const marketLayer = L.layerGroup().addTo(map);
+  const colorOf = (s) => __HEX2[s] || '#94a3b8';
+  function renderSuppliers() {
+    supLayer.clearLayers();
+    GEOMS.filter(g => activeCats.has(g.cat)).forEach(g => {
+      const m = L.circleMarker([g.lat, g.lng], { radius: 7, color: '#fff', weight: 2, fillColor: colorOf(g.styleId), fillOpacity: 1 });
+      m.bindPopup(g.html); supLayer.addLayer(m);
+    });
+  }
+  function renderMarkets() {
+    marketLayer.clearLayers();
+    MARKET_GEOMS.forEach(g => {
+      const m = L.circleMarker([g.lat, g.lng], { radius: 8, color: '#fff', weight: 2, fillColor: colorOf('market'), fillOpacity: 1 });
+      m.bindPopup(g.html); marketLayer.addLayer(m);
+    });
+  }
+  function renderLines() {
+    upLayer.clearLayers(); downLayer.clearLayers();
+    if (upVisible) UP_LINES.forEach(l => upLayer.addLayer(L.polyline([[l.plat, l.plng], [l.alat, l.alng]], { color: colorOf(l.styleId), weight: 1.5, opacity: 0.7 })));
+    if (downVisible) DOWN_LINES.forEach(l => downLayer.addLayer(L.polyline([[l.plat, l.plng], [l.alat, l.alng]], { color: colorOf(l.styleId), weight: 1.5, opacity: 0.7 })));
+  }
+  function renderArrows() {
+    arrowLayer.clearLayers();
+    ARROW_META.filter(a => (a.tier==='up'&&upVisible) || (a.tier==='down'&&downVisible)).forEach(a => {
+      const lat = a.start[0] + (a.end[0]-a.start[0])*flowT;
+      const lng = a.start[1] + (a.end[1]-a.start[1])*flowT;
+      const ang = Math.atan2(a.end[0]-a.start[0], a.end[1]-a.start[1]) * 180 / Math.PI;
+      const ic = L.divIcon({ className:'', html: "<div style='transform:rotate("+ang.toFixed(1)+"deg);color:"+colorOf(a.styleId)+";font-size:14px;line-height:1'>➤</div>", iconSize:[14,14], iconAnchor:[7,7] });
+      arrowLayer.addLayer(L.marker([lat, lng], { icon: ic }));
+    });
+  }
+  renderSuppliers(); renderMarkets(); renderLines(); renderArrows();
+  window.__B = {
+    filter: renderSuppliers,
+    applyUp: function() { renderLines(); renderArrows(); },
+    applyDown: function() { renderLines(); renderArrows(); },
+    refreshArrows: renderArrows,
+    invalidate: function() { map.invalidateSize(); },
+    openSupplier: function(sid) {
+      const g = GEOMS.find(x => x.sid === sid) || GEOMS.find(x => String(x.id) === sid);
+      if (!g) return;
+      map.setView([g.lat, g.lng], 6);
+      L.popup().setLatLng([g.lat, g.lng]).setContent(g.html).openOn(map);
+    }
+  };
+}
+
+// ---------- 腾讯地图后端（配置了真实代理 + Key 时） ----------
+function initTMap2() {
+  const map = new TMap.Map('map', { zoom: 3, center: new TMap.LatLng(28, 112) });
+  const markers = new TMap.MultiMarker({ map: map, styles: { __MARKER_STYLES__ }, geometries: GEOMS.map(g => ({ id: g.id, styleId: g.styleId, position: new TMap.LatLng(g.lat, g.lng), properties: { html: g.html, name: g.name, cat: g.cat } })) });
+  const info = new TMap.InfoWindow({ map: map, position: new TMap.LatLng(28, 112), content: '', visible: false });
   markers.on('click', (e) => { const g = GEOMS.find(x => x.id === e.geometry.id); if (!g) return; info.setPosition(e.geometry.position); info.setContent(g.properties.html); info.open(); });
-  // 深链：带 ?supplier=<id> 时自动定位并弹出该供应商基地
-  (function () {
-    const _sid = new URLSearchParams(location.search).get('supplier');
-    if (!_sid) return;
-    const _g = GEOMS.find(x => x.sid === _sid) || GEOMS.find(x => String(x.id) === _sid);
-    if (!_g) return;
-    map.setCenter(_g.position); map.setZoom(6);
-    info.setPosition(_g.position); info.setContent(_g.properties.html); info.open();
-  })();
-  marketLayer = new TMap.MultiMarker({ map: map, styles: { market: new TMap.MarkerStyle({ width: 24, height: 24, src: '__MARKET_SVG__' }) }, geometries: MARKET_GEOMS });
+  const marketLayer = new TMap.MultiMarker({ map: map, styles: { market: new TMap.MarkerStyle({ width: 24, height: 24, src: '__MARKET_SVG__' }) }, geometries: MARKET_GEOMS.map(g => ({ id: g.id, styleId: 'market', position: new TMap.LatLng(g.lat, g.lng), properties: { html: g.html, name: g.name } })) });
   marketLayer.on('click', (e) => { const g = MARKET_GEOMS.find(x => x.id === e.geometry.id); if (!g) return; info.setPosition(e.geometry.position); info.setContent(g.properties.html); info.open(); });
-  upLayer = new TMap.MultiPolyline({ map: map, styles: { __LINE_STYLES__ }, geometries: UP_LINES });
-  downLayer = new TMap.MultiPolyline({ map: map, styles: { __LINE_STYLES__ }, geometries: DOWN_LINES });
-  arrowLayer = new TMap.MultiMarker({ map: map, styles: { __ARROW_STYLES__ }, geometries: [] });
+  const upLayer = new TMap.MultiPolyline({ map: map, styles: { __LINE_STYLES__ }, geometries: UP_LINES.map(l => ({ id: l.id, styleId: l.styleId, paths: [new TMap.LatLng(l.plat, l.plng), new TMap.LatLng(l.alat, l.alng)] })) });
+  const downLayer = new TMap.MultiPolyline({ map: map, styles: { __LINE_STYLES__ }, geometries: DOWN_LINES.map(l => ({ id: l.id, styleId: l.styleId, paths: [new TMap.LatLng(l.plat, l.plng), new TMap.LatLng(l.alat, l.alng)] })) });
+  const arrowLayer = new TMap.MultiMarker({ map: map, styles: { __ARROW_STYLES__ }, geometries: [] });
+  function arrowPosAt(a, t){ return { id: a.id, styleId: a.styleId, position: new TMap.LatLng(a.start[0]+(a.end[0]-a.start[0])*t, a.start[1]+(a.end[1]-a.start[1])*t) }; }
+  function refreshArrows(){ const arr = ARROW_META.filter(a => (a.tier==='up'&&upVisible)||(a.tier==='down'&&downVisible)).map(a => arrowPosAt(a, flowT)); arrowLayer.setGeometries(arr); }
   refreshArrows();
+  window.__B = {
+    filter: function() { markers.setGeometries(GEOMS.filter(g => activeCats.has(g.cat)).map(g => ({ id: g.id, styleId: g.styleId, position: new TMap.LatLng(g.lat, g.lng), properties: { html: g.html, name: g.name, cat: g.cat } }))); },
+    applyUp: function() { upLayer.setGeometries(upVisible ? UP_LINES.map(l => ({ id: l.id, styleId: l.styleId, paths: [new TMap.LatLng(l.plat, l.plng), new TMap.LatLng(l.alat, l.alng)] })) : []); refreshArrows(); },
+    applyDown: function() { downLayer.setGeometries(downVisible ? DOWN_LINES.map(l => ({ id: l.id, styleId: l.styleId, paths: [new TMap.LatLng(l.plat, l.plng), new TMap.LatLng(l.alat, l.alng)] })) : []); refreshArrows(); },
+    refreshArrows: refreshArrows,
+    invalidate: function() {},
+    openSupplier: function(sid) { const g = GEOMS.find(x => x.sid === sid) || GEOMS.find(x => String(x.id) === sid); if (!g) return; map.setCenter(new TMap.LatLng(g.lat, g.lng)); map.setZoom(6); info.setPosition(new TMap.LatLng(g.lat, g.lng)); info.setContent(g.html); info.open(); }
+  };
+}
+
+function initGeo(){
+  if (__USE_TMAP2) initTMap2(); else initLeaflet2();
+  // 深链：带 ?supplier=<id> 进入融合页时，自动定位并弹出该供应商基地
+  const _sid = new URLSearchParams(location.search).get('supplier');
+  if (_sid && window.__B) window.__B.openSupplier(_sid);
 }
 window.__geoReady = false;
 </script>
@@ -952,6 +1042,7 @@ function switchTab(tab){
     geo.style.display = 'block'; dash.style.display = 'none';
     void geo.offsetWidth; /* 强制回流，确保地图容器拿到真实尺寸 */
     if (!window.__geoReady){ initGeo(); window.__geoReady = true; }
+    if (window.__B) window.__B.invalidate();
   }
   document.querySelectorAll('.topnav button').forEach(function(b){ b.classList.toggle('active', b.dataset.tab === tab); });
 }

@@ -186,15 +186,16 @@ make up-prod        # = docker compose -f docker-compose.yml -f docker-compose.p
 **发布内容**：CI 只挑选静态产物 —— `index.html`、`dist/`、`tools/visualizations/`、`docs/`、
 以及 `README.md` / `LICENSE` / `CONTRIBUTING.md`；**不发布** Python 源码、`data/`、`tools/*.py`、`.env`、`certs/`。
 
-**地图页限制（重要）**：供应商地图页（`supplier_geo.html` / `supplier_combined.html`）使用腾讯地图 GL JS，
-其 `serviceHost` 默认指向**本地签名代理**（`http://127.0.0.1:...`），纯静态 Pages 上没有该后端，
-**地图不会渲染**，其余页面不受影响。要让地图在 Pages 上可用，二选一：
+**地图页（默认免 Key，静态托管直接可用）**：供应商地图页（`supplier_geo.html` / `supplier_combined.html`）运行时自动选择渲染后端——
 
-- 自建一个公开的腾讯地图签名代理服务（独立部署），把页面里的 `serviceHost` 改为
-  `https://你的代理域名/_TMapService/_wbt/<key>`（也可在 workflow 用 Secrets 自动注入，见其注释）；或
-- 改用纯前端免 Key 的地图方案（如 Leaflet + OpenStreetMap 瓦片），彻底摆脱代理与 Key。
+- **默认 Leaflet + OpenStreetMap**：纯前端、免 Key、免代理，GitHub Pages 等任意静态托管**直接渲染**，
+  无需任何配置（标记按估值着色、物流连线、流动动画、品类过滤、深链 `?supplier=` 全部可用）。
+- **腾讯地图 GL（可选增强）**：当你自建了公开的腾讯地图签名代理、并把页面里的 `serviceHost`
+  （`http://127.0.0.1:__WB_HTTP_PORT__/...`）替换为真实代理域名 + Key 时，地图自动改用腾讯原样式
+  （可在 `.github/workflows/pages.yml` 用 Secrets 自动注入，见其注释）。未配置时不影响 Leaflet 默认渲染。
 
-> 注：`.nojekyll` 已加入发布产物，禁用 Jekyll 以保证 `_` 前缀目录原样发布并加速构建。
+> 注：OSM 瓦片在国内访问可能偏慢，可在生成的地图页里把 `tile.openstreetmap.org` 换成 CartoDB / 高德等瓦片源。
+> `.nojekyll` 已加入发布产物，禁用 Jekyll 以保证 `_` 前缀目录原样发布并加速构建。
 > 若只想要手动发布而不用 CI，也可在仓库 Settings → Pages 选「Deploy from a branch」并把
 > `main` 分支的 `/` 或 `/docs` 设为源——但需自行把构建产物提交进仓库。
 
