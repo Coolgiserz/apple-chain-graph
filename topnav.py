@@ -13,6 +13,9 @@
 
 `active` 为当前页的 key：graph / table / report / map / dash（用于高亮）。
 """
+
+import os
+
 NAV_ITEMS = [
     ("graph",  "🕸️ 供应链图谱", "index.html"),
     ("table",  "📋 企业列表",    "dist/supplier_table.html"),
@@ -72,43 +75,62 @@ def topnav(root="../", active=None):
 # 访问统计（隐私友好第三方，可选；默认关闭，配置后启用）
 # ---------------------------------------------------------------------------
 # 支持 Umami（默认，自托管 / umami.is 云，隐私友好、数据可自持）与 GoatCounter（备用）。
-# 启用：填 ANALYTICS_PROVIDER + 对应参数；留空则不加载任何脚本、不发任何外部请求
-# （本地 file:// 预览 / 未配置时零副作用）。脚本仅在 http(s) 域名下才发送数据。
+# 全部配置项均通过「环境变量」注入，源码不再硬编码任何 UUID / 地址；
+# 未通过环境变量提供时回退到下方 __DEFAULTS__（项目演示站的占位值），不影响构建。
+#
+# 配置方式（优先级：进程环境变量 > 仓库根 .env 文件 > 内置默认值）：
+#   1) 本地 / 自建：把值写进仓库根目录的 .env（已被 .gitignore 忽略，不会提交到仓库）。
+#   2) GitHub Pages CI：在仓库 Settings → Secrets 添加同名 secret，
+#      并在 .github/workflows/pages.yml 的 Build 步骤用 env: 注入（见文件内注释示例）。
+#   3) 留空则不加载任何脚本、不发任何外部请求（本地 file:// 预览 / 未配置时零副作用）。
+#      脚本仅在 http(s) 域名下才发送数据（见 analytics_js 的 location.protocol 门控）。
 #
 # Umami 用法：
 #   1) 自托管 Umami（Docker）或用 umami.is 云，登录后台 Add Website 得到 Website ID（UUID）
 #      与脚本地址（umami.is 云为 https://analytics.umami.is/script.js；自托管换成你的域名，
 #      如 https://analytics.你的域名/script.js）。
-#   2) 把 ANALYTICS_WEBSITE_ID 改成你的 Website ID（自托管且脚本与 API 不同域时，
-#      把 ANALYTICS_UMAMI_SRC 也改成你的地址，必要时在 analytics_js() 里加
+#   2) 把上面得到的 Website ID 设到环境变量 ANALYTICS_WEBSITE_ID（自托管且脚本与 API 不同域时，
+#      把 ANALYTICS_UMAMI_SRC 也设成你的地址，必要时在 analytics_js() 里加
 #      s.dataset.hostUrl='https://你的实例域名'）。
-#   3) 重生成四页。
-ANALYTICS_PROVIDER = "umami"             # "umami" 或 "goatcounter"
-ANALYTICS_WEBSITE_ID = "126e2a2e-a550-4669-8f17-f31fb60d0861"   # <-- Umami 后台的 Website ID（UUID）
-ANALYTICS_UMAMI_SRC = "https://cloud.umami.is/script.js"
-# GoatCounter 备用
-ANALYTICS_CODE = ""                      # 仅 provider="goatcounter" 时生效
+#   3) 重生成页面（python build_all.py）。
+
+# 内置默认值：仅当未通过环境变量提供时使用（项目演示站占位，可安全覆盖 / 留空禁用）。
+__DEFAULTS__ = {
+    "ANALYTICS_PROVIDER":   "umami",
+    "ANALYTICS_WEBSITE_ID": "126e2a2e-a550-4669-8f17-f31fb60d0861",  # 演示站 Website ID（UUID）
+    "ANALYTICS_UMAMI_SRC":  "https://cloud.umami.is/script.js",
+    "ANALYTICS_CODE":       "",   # 仅 provider="goatcounter" 时生效
+}
+
+
+def _analytics_config():
+    """合并环境变量与默认值，返回访问统计配置字典（源码不持有真实密钥）。"""
+    return {k: os.environ.get(k, v) for k, v in __DEFAULTS__.items()}
 
 
 def analytics_js():
     """返回隐私友好统计的注入脚本；未配置时返回空字符串（不加载、不发请求）。"""
-    if ANALYTICS_PROVIDER == "umami":
-        if not ANALYTICS_WEBSITE_ID:
+    cfg = _analytics_config()
+    provider = cfg["ANALYTICS_PROVIDER"]
+    if provider == "umami":
+        website_id = cfg["ANALYTICS_WEBSITE_ID"]
+        if not website_id:
             return ""
         return ("<script>(function(){"
                 "if(location.protocol.indexOf('http')!==0)return;"   # file:// 不计
                 "var s=document.createElement('script');s.async=true;"
                 "s.src=%r;s.dataset.websiteId=%r;"
                 "document.head.appendChild(s);})();</script>"
-                % (ANALYTICS_UMAMI_SRC, ANALYTICS_WEBSITE_ID))
-    if ANALYTICS_PROVIDER == "goatcounter":
-        if not ANALYTICS_CODE:
+                % (cfg["ANALYTICS_UMAMI_SRC"], website_id))
+    if provider == "goatcounter":
+        code = cfg["ANALYTICS_CODE"]
+        if not code:
             return ""
         return ("<script>(function(){"
                 "if(location.protocol.indexOf('http')!==0)return;"
                 "var s=document.createElement('script');s.async=true;"
                 "s.src='https://gc.zgo.at/count.js';"
                 "s.dataset.goatcounter='https://%s.goatcounter.com/count';"
-                "document.head.appendChild(s);})();</script>" % ANALYTICS_CODE)
+                "document.head.appendChild(s);})();</script>" % code)
     return ""
 

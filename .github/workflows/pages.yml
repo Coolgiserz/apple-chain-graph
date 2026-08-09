@@ -32,6 +32,15 @@ jobs:
           python-version: '3.11'
 
       - name: Build all static pages
+        # 可选 —— 访问统计：若要在 GitHub Pages 上启用你自己的 Umami / GoatCounter，
+        # 先在仓库 Settings → Secrets 添加 ANALYTICS_WEBSITE_ID（等），再取消下面
+        # env: 注释，把配置注入构建环境（build_all.py 与 topnav.py 会读取这些变量；
+        # 注意：CI 中无法读取仓库根目录的 .env，必须走这里的环境变量注入）。
+        # env:
+        #   ANALYTICS_PROVIDER: umami
+        #   ANALYTICS_WEBSITE_ID: ${{ secrets.ANALYTICS_WEBSITE_ID }}
+        #   ANALYTICS_UMAMI_SRC: https://cloud.umami.is/script.js
+        #   ANALYTICS_CODE: ${{ secrets.ANALYTICS_CODE }}
         run: python build_all.py
 
       - name: Assemble site

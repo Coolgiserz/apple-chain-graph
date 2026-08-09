@@ -125,7 +125,7 @@ zero-dependency interactive visualizations.
 
 把整站装进一个 **nginx 容器**，**一条命令**即可在 `http://localhost:8080` 提供全部页面（含入口落地页）。
 
-通过 **http 访问**后，Umami 访问统计才会真正上报——本地 `file://` 双击打开时统计脚本被主动跳过（见 `topnav.py` 的 `location.protocol` 门控）。所以若要统计访问频次，**用 Docker / 任意 http 服务托管**是更合适的启动方式。
+通过 **http 访问**后，Umami 访问统计才会真正上报——本地 `file://` 双击打开时统计脚本被主动跳过（见 `topnav.py` 的 `location.protocol` 门控）。所以若要统计访问频次，**用 Docker / 任意 http 服务托管**是更合适的启动方式。统计配置（Website ID 等）已改为**环境变量**注入，不再硬编码在源码中：本地把值写进仓库根的 `.env`（已被 `.gitignore` 忽略），CI 则通过 `pages.yml` 的 `env:` 注入（详见 `.env.example` 与 `topnav.py`）。
 
 前置：本机已安装 Docker（含 Compose v2）。
 
@@ -180,7 +180,7 @@ make up-prod        # = docker compose -f docker-compose.yml -f docker-compose.p
 - 项目子路径：`https://<user>.github.io/apple-chain-graph/`（默认，无需自定义域名）
 - 自定义域名：Settings → Pages → Custom domain
 
-跨页导航都不会 404。Umami 统计在 **https 下正常上报**（`file://` 门控不触发）。
+跨页导航都不会 404。Umami 统计在 **https 下正常上报**（`file://` 门控不触发）；统计开关与 Website ID 通过环境变量 `ANALYTICS_WEBSITE_ID` 配置，详见 `topnav.py` 与 `.env.example`。
 
 **自动部署（推荐）**：仓库已含 `.github/workflows/pages.yml`，push 到 `main` 即自动构建并发布。
 

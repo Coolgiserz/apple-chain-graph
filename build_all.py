@@ -28,7 +28,29 @@ STEPS = [
 ]
 
 
+def load_local_env():
+    """读取仓库根目录的 .env（若存在），把 KEY=VALUE 写入 os.environ（仅当该键尚未设置）。
+
+    零三方依赖；用于本地 / CI 把 ANALYTICS_* 等配置注入构建环境。解析规则：
+    忽略空行与 # 注释行，跳过不含 "=" 的行，值首尾的引号会被剥除。找不到文件或任何
+    单行出错都不会中断构建。子进程会继承 os.environ，故所有页面脚本都能读到这些变量。
+    """
+    env_path = os.path.join(ROOT, ".env")
+    if not os.path.exists(env_path):
+        return
+    with open(env_path, encoding="utf-8") as f:
+        for raw in f:
+            line = raw.strip()
+            if not line or line.startswith("#") or "=" not in line:
+                continue
+            key, val = line.split("=", 1)
+            key, val = key.strip(), val.strip().strip('"').strip("'")
+            if key and key not in os.environ:
+                os.environ[key] = val
+
+
 def main():
+    load_local_env()  # 必须在构建子进程启动前完成，使其继承 ANALYTICS_* 等环境变量
     check_only = "--check" in sys.argv[1:]
     for name, rel in STEPS:
         path = os.path.join(ROOT, rel)
