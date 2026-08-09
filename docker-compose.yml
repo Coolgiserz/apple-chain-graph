@@ -18,5 +18,5 @@ services:
     image: apple-supply-chain:latest
     container_name: apple-supply-chain-web
     ports:
-      - "8080:80"
+      - "16161:80"
     restart: unless-stopped

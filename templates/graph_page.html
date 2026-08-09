@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>苹果供应链上下游图谱</title>
+<style>
+  * { box-sizing: border-box; }
+  html, body { margin: 0; height: 100%; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #0f1320; color: #e8ecf4; overflow: hidden; }
+  #cv { position: absolute; top: 52px; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; cursor: grab; }
+  #cv.dragging { cursor: grabbing; }
+  #top { position: absolute; top: 64px; left: 12px; right: 12px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
+         background: rgba(20,26,42,.85); border: 1px solid #2a3450; border-radius: 12px; padding: 10px 14px; backdrop-filter: blur(8px); z-index: 10; }
+  #top .grp { display: flex; align-items: center; gap: 6px; }
+  #top label { font-size: 12px; color: #9fb0d0; }
+  #top input[type=search] { background: #0c1020; border: 1px solid #2a3450; color: #e8ecf4; border-radius: 8px; padding: 6px 10px; width: 200px; outline: none; }
+  #top select { background: #0c1020; border: 1px solid #2a3450; color: #e8ecf4; border-radius: 8px; padding: 6px 8px; outline: none; }
+  #top .chk { display: flex; align-items: center; gap: 4px; font-size: 13px; cursor: pointer; user-select: none; }
+  #top button { background: #2f6fed; color: #fff; border: none; border-radius: 8px; padding: 6px 12px; cursor: pointer; font-size: 13px; }
+  #top button.ghost { background: #2a3450; }
+  #top .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  #hint { position: absolute; bottom: 12px; left: 12px; font-size: 12px; color: #7c8aa8; background: rgba(20,26,42,.7); padding: 6px 10px; border-radius: 8px; z-index: 10; }
+  #panel { position: absolute; top: 122px; right: 12px; width: 320px; max-height: calc(100% - 134px); overflow: auto;
+           background: rgba(20,26,42,.95); border: 1px solid #2a3450; border-radius: 12px; padding: 16px; z-index: 9; display: none; }
+  #panel h3 { margin: 0 0 4px; font-size: 16px; }
+  #panel .sub { font-size: 12px; color: #9fb0d0; margin-bottom: 10px; }
+  #panel .tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 999px; margin: 0 6px 8px 0; }
+  #panel dl { margin: 0; font-size: 13px; }
+  #panel dt { color: #9fb0d0; font-size: 11px; margin-top: 8px; }
+  #panel dd { margin: 2px 0 0; line-height: 1.5; }
+  #panel .close { position: absolute; top: 10px; right: 12px; cursor: pointer; color: #9fb0d0; font-size: 18px; }
+  #panel ul { margin: 4px 0 0; padding-left: 16px; }
+  #panel li { margin: 2px 0; }
+  a { color: #6ea0ff; }
+  .lk { color: #6ea0ff; text-decoration: none; border-bottom: 1px dashed #6ea0ff; cursor: pointer; }
+  .lk:hover { background: rgba(110,160,255,.15); }
+__TOPNAV_CSS__
+</style>
+</head>
+<body>
+__TOPNAV__
+<canvas id="cv"></canvas>
+<div id="top">
+  <div class="grp"><input type="search" id="q" placeholder="搜索产品/零部件/供应商…"></div>
+  <div class="grp">
+    <label class="chk"><input type="checkbox" id="cbP" checked><span class="dot" style="background:#2f6fed"></span>产品</label>
+    <label class="chk"><input type="checkbox" id="cbC" checked><span class="dot" style="background:#f59e0b"></span>零部件</label>
+    <label class="chk"><input type="checkbox" id="cbS" checked><span class="dot" style="background:#10b981"></span>供应商</label>
+  </div>
+  <div class="grp"><label>产品线</label>
+    <select id="line"><option value="">全部</option></select>
+  </div>
+  <button id="reset" class="ghost">重置视图</button>
+</div>
+<div id="panel"><span class="close" id="pc">×</span><div id="pbody"></div></div>
+<div id="hint">滚轮缩放 · 拖拽画布平移 · 拖动节点 · 单击节点看详情</div>
+<script>window.SUPPLY_DATA = __DATA__;</script>
+<script src="__ENGINE_SRC__"></script>
+<script src="__BOOTSTRAP_SRC__"></script>
+</body>
+</html>

@@ -46,7 +46,7 @@ def link(name, key, jump, mode="spa"):
         return name
     if mode == "web":
         kind, sid = key.split(":", 1)
-        g = "graph_viewer.html?focus=%s" % esc(key)
+        g = "../index.html?focus=%s" % esc(key)
         out = "<a class='lk' href='%s' title='在图谱中查看'>%s</a>" % (g, name)
         if kind == "S":
             m = "../tools/visualizations/supplier_geo.html?supplier=%s" % esc(sid)

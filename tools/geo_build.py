@@ -439,7 +439,7 @@ def build_geo_data(recs, insights):
                 f"判定：{EMOJI.get(vshort,'')} {r['verdict']}<br>"
                 f"市值：{mcap_s} 十亿美元</div>"
                 f"<div style='margin-top:6px'>"
-                f"<a href='../../dist/graph_viewer.html?focus=S:{r['supplier_id']}' target='_blank' style='color:#2563eb'>在图谱中查看 →</a>"
+                f"<a href='../../index.html?focus=S:{r['supplier_id']}' target='_blank' style='color:#2563eb'>在图谱中查看 →</a>"
                 f" &nbsp; <a href='../../dist/apple_supply_chain_report.html#sec-suppliers' target='_blank' style='color:#2563eb'>在报告中查看 →</a>"
                 f"</div>")
         geometries.append({
@@ -818,15 +818,15 @@ def build_combined(recs, insights):
 <style>
   :root{ --bg:#f5f7fa; --card:#fff; --ink:#1f2937; --muted:#6b7280; --blue:#2563eb; --red:#dc2626; --green:#16a34a; --amber:#d97706; --line:#e5e7eb; --soft:#eef2f7; }
   html,body{margin:0;padding:0;height:100%;font-family:-apple-system,"PingFang SC","Microsoft YaHei",sans-serif;background:var(--bg);color:var(--ink);line-height:1.5;}
-  .topnav{position:sticky;top:0;height:54px;display:flex;align-items:center;gap:16px;padding:0 20px;background:linear-gradient(120deg,#0f172a,#1e3a8a);color:#fff;z-index:3000;}
-  .topnav .brand{font-weight:700;font-size:16px;letter-spacing:.4px;}
-  .topnav button{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.28);color:#e5e7eb;border-radius:8px;padding:7px 16px;font-size:13.5px;cursor:pointer;transition:.15s;}
-  .topnav button:hover{background:rgba(255,255,255,.22);}
-  .topnav button.active{background:#fff;color:#1e3a8a;font-weight:700;border-color:#fff;}
-  .topnav a.tn-link{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.28);color:#e5e7eb;border-radius:8px;padding:7px 16px;font-size:13.5px;cursor:pointer;transition:.15s;text-decoration:none;}
-  .topnav a.tn-link:hover{background:rgba(255,255,255,.22);}
-  .topnav .hint{margin-left:auto;font-size:12px;color:#cbd5e1;}
-  #view-dash{display:block;}
+  __TOPNAV_CSS__
+  /* 融合页的二级标签栏：位于统一顶部导航之下，负责看板 / 地图视图内切换 */
+  #appsub{position:fixed;top:52px;left:0;right:0;height:46px;display:flex;align-items:center;gap:10px;padding:0 18px;background:rgba(15,23,42,.96);color:#fff;z-index:2900;box-shadow:0 1px 6px rgba(0,0,0,.2);}
+  #appsub button{background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.25);color:#e5e7eb;border-radius:8px;padding:7px 16px;font-size:13.5px;cursor:pointer;transition:.15s;}
+  #appsub button:hover{background:rgba(255,255,255,.22);}
+  #appsub button.active{background:#fff;color:#1e3a8a;font-weight:700;border-color:#fff;}
+  #appsub .hint{margin-left:auto;font-size:12px;color:#cbd5e1;}
+  #view-dash{display:block;position:absolute;top:98px;left:0;right:0;bottom:0;overflow:auto;}
+  #view-geo{display:none;position:absolute;top:98px;left:0;right:0;bottom:0;overflow:hidden;}
   .wrap{max-width:1180px;margin:0 auto;padding:24px 20px 60px;}
   .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:22px 0 8px;}
   .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;box-shadow:0 1px 3px rgba(0,0,0,.04);}
@@ -852,7 +852,7 @@ def build_combined(recs, insights):
   .legend span{display:inline-flex;align-items:center;gap:6px;}
   @media(max-width:880px){.cards{grid-template-columns:repeat(2,1fr);}.grid2{grid-template-columns:1fr;}}
   #view-geo{display:none;}
-  .geo-view{position:relative;height:calc(100vh - 54px);}
+  .geo-view{position:relative;height:100%;}
   #map{width:100%;height:100%;}
   #panel{position:absolute;top:12px;right:12px;width:340px;max-height:calc(100vh - 78px);overflow-y:auto;background:rgba(255,255,255,0.96);border-radius:12px;box-shadow:0 8px 30px rgba(0,0,0,0.18);padding:16px 18px;font-size:13px;color:#1f2937;z-index:1000;}
   #panel h1{font-size:16px;margin:0 0 4px;}
@@ -882,14 +882,12 @@ def build_combined(recs, insights):
 </style>
 </head>
 <body>
-<nav class="topnav">
-  <span class="brand">苹果供应链 · 全景分析</span>
-  <a class="tn-link" href="../../dist/graph_viewer.html">🕸️ 供应链图谱</a>
-  <a class="tn-link" href="../../dist/apple_supply_chain_report.html">📄 上下游报告</a>
+__TOPNAV__
+<div id="appsub">
   <button data-tab="dash" class="active" onclick="switchTab('dash')">📊 基本面看板</button>
   <button data-tab="geo" onclick="switchTab('geo')">🗺️ 地理供应链地图</button>
   <span class="hint">估值 × 舆情 × 生产基地 × 物流全链路</span>
-</nav>
+</div>
 __ANALYTICS__
 
 <div id="view-dash">
@@ -1044,7 +1042,7 @@ function switchTab(tab){
     if (!window.__geoReady){ initGeo(); window.__geoReady = true; }
     if (window.__B) window.__B.invalidate();
   }
-  document.querySelectorAll('.topnav button').forEach(function(b){ b.classList.toggle('active', b.dataset.tab === tab); });
+  document.querySelectorAll('#appsub button[data-tab]').forEach(function(b){ b.classList.toggle('active', b.dataset.tab === tab); });
 }
 // 带 ?supplier=<id> 进入融合页时，自动切到地图页以触发上面的深链定位
 if (new URLSearchParams(location.search).get('supplier')) switchTab('geo');
@@ -1053,6 +1051,8 @@ if (new URLSearchParams(location.search).get('supplier')) switchTab('geo');
 </html>
 """
     html = (COMBINED
+            .replace("__TOPNAV_CSS__", TOPNAV_CSS)
+            .replace("__TOPNAV__", topnav("../../", "combined"))
             .replace("__DASH_MARKUP__", dash_markup)
             .replace("__DASH_SCRIPT__", dash_script)
             .replace("__ANALYTICS__", analytics_js())

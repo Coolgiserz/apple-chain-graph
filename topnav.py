@@ -1,20 +1,23 @@
 # -*- coding: utf-8 -*-
 """统一的跨页面顶部导航条（共享组件）。
 
-四个独立页面（图谱 / 报告 / 地图 / 看板）共用同一导航，互相可点击跳转，
-不再彼此孤立。
+所有页面（首页图谱 / 报告 / 整合页 / 地图 / 看板 / 融合页）共用同一导航，
+互相可点击跳转，不再彼此孤立。首页即供应链图谱（仓库根目录 index.html）。
 
 `root` 是当前页面相对于「仓库根目录」的相对路径：
-  - dist 下的页面（图谱 / 报告）：              root = "../"
-  - tools/visualizations 下的页面（地图 / 看板）：root = "../../"
+  - 根目录首页（图谱）：                        root = ""
+  - dist 下的页面（报告 / 整合页）：            root = "../"
+  - tools/visualizations 下的页面（地图 / 看板 / 融合）：root = "../../"
 
-`active` 为当前页的 key：graph / report / map / dash（用于高亮）。
+`active` 为当前页的 key：graph / report / app / map / dash / combined（用于高亮）。
 """
 NAV_ITEMS = [
-    ("graph",  "🕸️ 供应链图谱", "dist/graph_viewer.html"),
+    ("graph",  "🕸️ 供应链图谱", "index.html"),
     ("report", "📄 上下游报告",  "dist/apple_supply_chain_report.html"),
+    ("app",    "🧩 整合页",      "dist/apple_supply_chain_app.html"),
     ("map",    "🗺️ 供应商地图", "tools/visualizations/supplier_geo.html"),
     ("dash",   "📊 估值看板",    "tools/visualizations/supplier_dashboard.html"),
+    ("combined", "🔗 融合页",    "tools/visualizations/supplier_combined.html"),
 ]
 
 # 导航条自身的样式（注入到各页面 <style> 中）。固定定位，z-index 最高。

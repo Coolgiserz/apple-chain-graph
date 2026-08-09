@@ -71,8 +71,8 @@ zero-dependency interactive visualizations.
 - **精确到型号**：覆盖 iPhone / Mac / iPad / Apple Watch / Vision Pro / AirPods·HomePod 六大产品线，精确到具体型号（如 `iPhone 17 Pro`、`MacBook Pro 14" (M4)`、`Apple Vision Pro (M5)`）。
 - **属性增强**：供应商节点拆分 `全称 / 英文名称 / 简称`；产品节点含 `英文名称、别名、发布时间、状态、起售价、主芯片、显示规格`。
 - **图数据库就绪**：6 个 Neo4j 官方批量导入格式 CSV（`:ID` / `:LABEL` / `:START_ID` / `:END_ID` / `:TYPE` 表头），离线 / 在线两种导入方式任选。
-- **零依赖可视化**：`dist/graph_viewer.html` 等网页数据内嵌，双击即开，无需联网或数据库（看板图表依赖 CDN 上的 Chart.js，首次打开需联网）。
-- **多页互跳、非孤岛**：图谱 / 报告 / 地图 / 看板四页共享同一套顶部导航，`topnav.py` 一处维护、全局生效；跨页深链直达具体实体。
+- **零依赖可视化**：根目录 `index.html`（首页供应链图谱）等网页数据内嵌，双击即开，无需联网或数据库（看板图表依赖 CDN 上的 Chart.js，首次打开需联网）。
+- **多页互跳、非孤岛**：首页图谱 / 报告 / 整合页 / 地图 / 看板 / 融合页 共享同一套顶部导航（`topnav.py` 一处维护、全局生效）；跨页深链直达具体实体。
 - **供应商研究层**：对 15 家重点供应商做同业相对估值 + 舆情分析，结论以看板与报告形式呈现。
 - **可复现**：纯 Python 标准库，无任何第三方依赖，从单一数据源可重生成全部产物。
 
@@ -98,17 +98,18 @@ zero-dependency interactive visualizations.
 - 顶部「📄 查看报告 →」按钮在任意图谱视图下跳转报告；
 - URL 带 `#/graph/S:tsmc` 这类 hash，**可直接分享、刷新可还原视图与定位**。
 
-### 0.1 四页统一导航（多页互跳，非孤岛）
+### 0.1 各页面统一导航（多页互跳，非孤岛）
 
-四个独立页面——**图谱** (`dist/graph_viewer.html`)、**上下游报告** (`dist/apple_supply_chain_report.html`)、
-**供应商地图** (`tools/visualizations/supplier_geo.html`)、**估值看板** (`tools/visualizations/supplier_dashboard.html`)——
-顶部都带**同一套导航条**（`topnav.py` 生成），可一键在四页间跳转，不再是彼此孤立的页面。
+各页面——**首页图谱** (`index.html`)、**上下游报告** (`dist/apple_supply_chain_report.html`)、
+**整合页** (`dist/apple_supply_chain_app.html`)、**供应商地图** (`tools/visualizations/supplier_geo.html`)、
+**估值看板** (`tools/visualizations/supplier_dashboard.html`)、**融合页** (`tools/visualizations/supplier_combined.html`)——
+顶部都带**同一套导航条**（`topnav.py` 生成），可一键在各页面间跳转，不再是彼此孤立的页面。
 
 深链（跨页直达具体实体）：
 
 | 来源 | 跳转 | 形式 |
 |------|------|------|
-| 报告表格中的实体 | → 图谱定位该节点 | `graph_viewer.html?focus=S:tsmc` |
+| 报告表格中的实体 | → 图谱定位该节点 | `index.html?focus=S:tsmc` |
 | 报告中的供应商 | → 地图定位该供应商 | `supplier_geo.html?supplier=tsmc` |
 | 图谱节点详情 | → 报告对应章节 / 地图定位 | 链接 `apple_supply_chain_report.html#sec-suppliers` 与 `supplier_geo.html?supplier=…` |
 | 地图标记弹窗 | → 图谱 / 报告 | 弹窗内「在图谱中查看 →」「在报告中查看 →」 |
@@ -213,7 +214,7 @@ make up-prod        # = docker compose -f docker-compose.yml -f docker-compose.p
 
 ### 1. 浏览图谱（零依赖）
 
-直接双击打开 **`dist/graph_viewer.html`**（或拖进浏览器）。数据已内嵌，无需联网或数据库：
+直接双击打开根目录 **`index.html`**（或拖进浏览器）。数据已内嵌，无需联网或数据库：
 
 - 滚轮缩放、拖拽平移、拖动节点；
 - 单击节点看详情（发布时间、状态、起售价、关联供应商等）；
@@ -246,21 +247,21 @@ python3 build_all.py
 # 也可单独运行（等价）
 python3 scripts/generate.py     # 生成 data/neo4j/*.csv + data/apple_supply_chain.json
 python3 scripts/report.py       # 生成 dist/apple_supply_chain_report.html（独立报告）
-python3 scripts/build_viewer.py # 生成 dist/graph_viewer.html（独立图谱）+ dist/graph_engine.js（画布引擎）
+python3 scripts/build_viewer.py # 生成根目录 index.html（首页图谱）+ dist/graph_engine.js（共享画布引擎）
 python3 scripts/build_app.py    # 生成 dist/apple_supply_chain_app.html（整合页 SPA）
 python3 tools/geo_build.py      # 生成 tools/visualizations/supplier_geo.html（地图）+ supplier_combined.html（融合页）
 # 估值看板 tools/visualizations/supplier_dashboard.html 为静态页面，已注入统一导航条
 ```
 
-> 图谱的画布物理引擎已抽成独立文件 **`dist/graph_engine.js`**（数据由 `graph_viewer.html`
-> 内联的 `var DATA = …` 注入），可被 ESLint / Node 单测、IDE 也能做语法校验。**部署时请把它和
-> `graph_viewer.html` 放在同一目录**，否则双击打开会加载不到脚本。
+> 图谱的画布物理引擎已抽成独立文件 **`dist/graph_engine.js`**（数据由页面内联的
+> `window.SUPPLY_DATA = …` 注入），可被 ESLint / Node 单测、IDE 也能做语法校验。该引擎被首页图谱与
+> 整合页**共用**（`templates/graph_engine.js` 为单一事实来源），部署时首页与 `dist/` 一并发布即可。
 
 > 整合页与独立页共用同一份 `data/apple_supply_chain.json`；报告内容由 `report.py` 的
 > 可复用 builder 渲染（传 `jump=True, mode="web"` 时实体自动带上跨页 `<a>` 深链，
 > `mode="spa"` 时带 `data-jump` 供整合页内部跳转），新增视图只需在
 > `build_app.py` 里 `App.register(view)` 注册一个实现 `activate/deactivate/focus` 的对象。
-> 四个独立页面共享 `topnav.py` 的统一导航条，改一处即可全局生效。
+> 各页面共享 `topnav.py` 的统一导航条，改一处即可全局生效。
 
 ## 数据模型
 
@@ -334,7 +335,7 @@ python3 tools/run_sentiment.py --id qualcomm    # 只看某一家
 | 层 | 技术 | 说明 |
 |----|------|------|
 | 数据处理 | Python 3.9+（标准库） | `scripts/` 与 `tools/` 下生成脚本，**零第三方依赖** |
-| 图谱可视化 | 原生 Canvas + 自写力导向布局 | `dist/graph_viewer.html`，数据内嵌，双击即开 |
+| 首页图谱可视化 | 原生 Canvas + 自写力导向布局 | `index.html`（首页），数据内嵌，双击即开 |
 | 看板可视化 | Chart.js（CDN） | `supplier_dashboard.html`，首次打开需联网 |
 | 地图 | 腾讯位置服务 GL JS | `supplier_geo.html`（需在你自己的域名下运行） |
 | 图数据库 | Neo4j（官方批量导入格式 CSV） | 6 个 CSV，离线 / 在线导入任选 |
@@ -370,9 +371,16 @@ apple_supply_chain/
 ├── scripts/                  # 数据生成脚本（可复现）
 │   ├── generate.py           # 生成 CSV + JSON
 │   ├── report.py             # 生成 HTML 分析报告（可复用 builder，支持 jump 深链）
-│   ├── build_viewer.py       # 生成独立交互式图谱网页（引擎外置为 dist/graph_engine.js）
+│   ├── build_viewer.py       # 生成首页交互式图谱（根 index.html，引擎复用 templates/graph_engine.js）
 │   └── build_app.py          # 生成整合页：图谱 + 报告单页 SPA（view-router）
-├── topnav.py                 # 四页共享的统一顶部导航条（单一来源，改一处全局生效）
+├── index.html                # 首页：供应链图谱（力导向交互，双击即开）
+├── templates/                # 网页前端模版（HTML/JS/CSS 单独维护，脚本填数据生成页面）
+│   ├── graph_engine.js       # 共享图谱画布物理引擎（首页与整合页共用，单一事实来源）
+│   ├── graph_page.html       # 首页图谱 HTML 模版
+│   ├── graph_bootstrap.js    # 首页图谱启动脚本
+│   ├── app_page.html         # 整合页 HTML 模版
+│   └── app.js                # 整合页视图路由壳
+├── topnav.py                 # 各页面共享的统一顶部导航条（单一来源，改一处全局生效）
 ├── tools/                    # 供应商基本面与相对估值分析（可复现，纯标准库）
 │   ├── run_analysis.py        # CLI：合并三源 → 跑估值 → 输出 md/json
 │   ├── run_sentiment.py       # CLI：生成供应商舆情分析报告
@@ -396,9 +404,10 @@ apple_supply_chain/
 │   └── screenshots/          # README 截图（见「截图预览」一节）
 └── dist/                     # 生成的网页产物
     ├── apple_supply_chain_app.html    # 整合页：图谱 + 报告（单页 SPA，可互跳）
-    ├── graph_viewer.html         # 交互式图谱（双击打开，独立页）
-    ├── graph_engine.js           # 图谱画布物理引擎（与 graph_viewer.html 同目录部署）
-    └── apple_supply_chain_report.html  # 分析报告（独立页）
+    ├── apple_supply_chain_report.html  # 分析报告（独立页）
+    ├── graph_engine.js           # 共享图谱画布物理引擎（首页 index.html 与整合页共用）
+    ├── app.js                    # 整合页视图路由壳
+    └── graph_bootstrap.js        # 首页图谱启动脚本
 ```
 
 ## 路线图
@@ -406,7 +415,7 @@ apple_supply_chain/
 - [x] 三层有向图 + Neo4j 官方导入格式
 - [x] 零依赖交互式图谱（力导向、筛选、搜索、定位）
 - [x] 上下游报告 + 跨页深链
-- [x] 四页统一导航（多页互跳）
+- [x] 各页面统一导航（多页互跳）
 - [x] 15 家重点供应商：同业相对估值 + 舆情分析 + 可视化看板
 - [ ] 数据时效自动化更新（行情快照刷新脚本）
 - [ ] 更多产品线 / 未发布机型的覆盖补全
