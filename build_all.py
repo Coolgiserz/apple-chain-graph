@@ -22,9 +22,8 @@ STEPS = [
     ("供应链图谱  index.html（首页）",      "scripts/build_viewer.py"),
     ("企业列表    supplier_table.html",     "scripts/build_table.py"),
     ("上下游报告  apple_supply_chain_report.html", "scripts/report.py"),
-    ("整合应用    apple_supply_chain_app.html",    "scripts/build_app.py"),
     ("供应商估值  supplier_analysis.json",  "tools/run_analysis.py"),
-    ("供应商地图  supplier_geo.html / combined",    "tools/geo_build.py"),
+    ("供应商地图  supplier_geo.html",       "tools/geo_build.py"),
 ]
 
 

@@ -1,24 +1,24 @@
 # -*- coding: utf-8 -*-
 """统一的跨页面顶部导航条（共享组件）。
 
-所有页面（首页图谱 / 报告 / 整合页 / 地图 / 看板 / 融合页）共用同一导航，
-互相可点击跳转，不再彼此孤立。首页即供应链图谱（仓库根目录 index.html）。
+这就是用户最初想要的「融合」——一个固定在每个页面顶部的导航栏，
+让用户能在各板块之间互相点击跳转，无需再为每个板块单独造一个
+「整合页 / 融合页」式的页面。当前板块：首页图谱 / 企业列表 / 上下游报告 /
+供应商地图 / 估值看板。首页即供应链图谱（仓库根目录 index.html）。
 
 `root` 是当前页面相对于「仓库根目录」的相对路径：
-  - 根目录首页（图谱）：                        root = ""
-  - dist 下的页面（报告 / 整合页）：            root = "../"
-  - tools/visualizations 下的页面（地图 / 看板 / 融合）：root = "../../"
+  - 根目录首页（图谱）：              root = ""
+  - dist 下的页面（报告 / 列表）：    root = "../"
+  - tools/visualizations 下的页面（地图 / 看板）：root = "../../"
 
-`active` 为当前页的 key：graph / table / report / app / map / dash / combined（用于高亮）。
+`active` 为当前页的 key：graph / table / report / map / dash（用于高亮）。
 """
 NAV_ITEMS = [
     ("graph",  "🕸️ 供应链图谱", "index.html"),
     ("table",  "📋 企业列表",    "dist/supplier_table.html"),
     ("report", "📄 上下游报告",  "dist/apple_supply_chain_report.html"),
-    ("app",    "🧩 整合页",      "dist/apple_supply_chain_app.html"),
     ("map",    "🗺️ 供应商地图", "tools/visualizations/supplier_geo.html"),
     ("dash",   "📊 估值看板",    "tools/visualizations/supplier_dashboard.html"),
-    ("combined", "🔗 融合页",    "tools/visualizations/supplier_combined.html"),
 ]
 
 # 导航条自身的样式（注入到各页面 <style> 中）。固定定位，z-index 最高。

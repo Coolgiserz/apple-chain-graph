@@ -7,7 +7,7 @@
 <style>
   * { box-sizing: border-box; }
   html, body { margin: 0; height: 100%; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #0f1320; color: #e8ecf4; overflow: hidden; }
-  #cv { position: absolute; top: 52px; left: 0; right: 0; bottom: 0; width: 100%; height: 100%; cursor: grab; }
+  #cv { position: absolute; top: 52px; left: 0; right: 0; bottom: 0; cursor: grab; }
   #cv.dragging { cursor: grabbing; }
   #top { position: absolute; top: 64px; left: 12px; right: 12px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
          background: rgba(20,26,42,.85); border: 1px solid #2a3450; border-radius: 12px; padding: 10px 14px; backdrop-filter: blur(8px); z-index: 10; }
@@ -18,6 +18,8 @@
   #top .chk { display: flex; align-items: center; gap: 4px; font-size: 13px; cursor: pointer; user-select: none; }
   #top button { background: #2f6fed; color: #fff; border: none; border-radius: 8px; padding: 6px 12px; cursor: pointer; font-size: 13px; }
   #top button.ghost { background: #2a3450; }
+  #top a.tlink { background: #2a3450; color: #dbeafe; text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 8px; white-space: nowrap; transition: background .15s; }
+  #top a.tlink:hover { background: #3a4a6e; color: #fff; }
   #top .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
   #hint { position: absolute; bottom: 12px; left: 12px; font-size: 12px; color: #7c8aa8; background: rgba(20,26,42,.7); padding: 6px 10px; border-radius: 8px; z-index: 10; }
   #panel { position: absolute; top: 122px; right: 12px; width: 320px; max-height: calc(100% - 134px); overflow: auto;
@@ -50,7 +52,7 @@
 </style>
 </head>
 <body>
-<nav class='wb-topnav'><span class='brand'>Apple 供应链</span><a href='index.html' class='active'>🕸️ 供应链图谱</a><a href='dist/apple_supply_chain_report.html'>📄 上下游报告</a><a href='dist/apple_supply_chain_app.html'>🧩 整合页</a><a href='tools/visualizations/supplier_geo.html'>🗺️ 供应商地图</a><a href='tools/visualizations/supplier_dashboard.html'>📊 估值看板</a><a href='tools/visualizations/supplier_combined.html'>🔗 融合页</a><span class='spacer'></span></nav><script>(function(){if(location.protocol.indexOf('http')!==0)return;var s=document.createElement('script');s.async=true;s.src='https://cloud.umami.is/script.js';s.dataset.websiteId='126e2a2e-a550-4669-8f17-f31fb60d0861';document.head.appendChild(s);})();</script>
+<nav class='wb-topnav'><span class='brand'>Apple 供应链</span><a href='index.html' class='active'>🕸️ 供应链图谱</a><a href='dist/supplier_table.html'>📋 企业列表</a><a href='dist/apple_supply_chain_report.html'>📄 上下游报告</a><a href='tools/visualizations/supplier_geo.html'>🗺️ 供应商地图</a><a href='tools/visualizations/supplier_dashboard.html'>📊 估值看板</a><span class='spacer'></span></nav><script>(function(){if(location.protocol.indexOf('http')!==0)return;var s=document.createElement('script');s.async=true;s.src='https://cloud.umami.is/script.js';s.dataset.websiteId='126e2a2e-a550-4669-8f17-f31fb60d0861';document.head.appendChild(s);})();</script>
 <canvas id="cv"></canvas>
 <div id="top">
   <div class="grp"><input type="search" id="q" placeholder="搜索产品/零部件/供应商…"></div>
@@ -62,6 +64,7 @@
   <div class="grp"><label>产品线</label>
     <select id="line"><option value="">全部</option></select>
   </div>
+  <a class="tlink" href="dist/supplier_table.html">📋 企业表格</a>
   <button id="reset" class="ghost">重置视图</button>
 </div>
 <div id="panel"><span class="close" id="pc">×</span><div id="pbody"></div></div>

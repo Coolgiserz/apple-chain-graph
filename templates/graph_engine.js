@@ -25,6 +25,7 @@
   var alpha = 1, running = false, rafId = null;
   var selected = null, hover = null, dragNode = null, panning = false, last = { x: 0, y: 0 }, moved = false;
   var reportLink = null, mapLink = null;
+  var pendingFocus = null;   // 布局未就绪时暂缓居中，待首帧自愈后再执行
 
   var ALPHA_MIN = 0.005, ALPHA_DEC = 0.008;
   function W() { return (cv ? cv.clientWidth : 0) || global.innerWidth; }
@@ -142,12 +143,22 @@
     alpha = Math.max(0, alpha - ALPHA_DEC);
   }
 
+  // 同步画布后备尺寸与元素实际 CSS 尺寸；尺寸无变化或布局未就绪时跳过。
+  // 返回 true 表示本次确实改变了尺寸（用于触发重绘）。
+  function syncSize() {
+    if (!cv) return false;
+    var dpr = global.devicePixelRatio || 1;
+    var w = cv.clientWidth || (cv.parentNode && cv.parentNode.clientWidth) || global.innerWidth;
+    var h = cv.clientHeight || (cv.parentNode && cv.parentNode.clientHeight) || global.innerHeight;
+    if (!w || !h) return false;                       // 布局尚未就绪：保持原样，等下一帧自愈
+    var bw = Math.round(w * dpr), bh = Math.round(h * dpr);
+    if (cv.width === bw && cv.height === bh) return false;
+    cv.width = bw; cv.height = bh;
+    ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+    return true;
+  }
   function resize() {
-    if (!cv) return;
-    var w = cv.clientWidth || global.innerWidth, h = cv.clientHeight || global.innerHeight;
-    cv.width = w * (global.devicePixelRatio || 1);
-    cv.height = h * (global.devicePixelRatio || 1);
-    ctx.setTransform(global.devicePixelRatio || 1, 0, 0, global.devicePixelRatio || 1, 0, 0);
+    if (syncSize()) draw();                           // 尺寸变化才重绘（停止模拟后也能更新画面）
   }
 
   function label(n) { return n.name || n.english_name || n.id; }
@@ -155,6 +166,8 @@
   function nm(t, id) { var o = idMap[t + ":" + id]; return o ? label(o) : id; }
 
   function draw() {
+    syncSize();                                      // 每次绘制前保证后备尺寸正确（首屏布局晚到 / 窗口缩放自愈）
+    if (pendingFocus && W() && H()) { var nf = pendingFocus; pendingFocus = null; applyFocus(nf); }
     ctx.clearRect(0, 0, W(), H());
     var vis = visibleSet();
     var sel = selected ? selected._key : null;
@@ -282,12 +295,16 @@
 
   function loop() { if (!running) return; physics(); draw(); rafId = global.requestAnimationFrame(loop); }
   function reheat(a) { alpha = Math.max(alpha, (a == null ? 0.5 : a)); }
-  function focus(key) {
-    var n = idMap[key]; if (!n) return;
+  function applyFocus(n) {
     selected = n; reheat(1);
     view.ox = W() / 2 - n.x * view.scale; view.oy = H() / 2 - n.y * view.scale;
     renderPanel(n);
     var panel = document.getElementById("panel"); if (panel) panel.style.display = "block";
+  }
+  function focus(key) {
+    var n = idMap[key]; if (!n) return;
+    if (!W() || !H()) { pendingFocus = n; return; }   // 画布尚未量到尺寸，等 draw() 自愈后再居中
+    applyFocus(n);
   }
 
   // —— 对外 API ————————————————————————————————————————————————————————————
