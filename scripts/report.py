@@ -312,20 +312,6 @@ def risk_section():
     ])
 
 
-def docs_section():
-    """技术参考文档入口：把原本网页里的「Neo4j 导入指南 / 数据字段字典」等教程型内容
-    收敛到项目 docs/（docs/neo4j-import.md、docs/data-model.md），网页只留一个入口盒。"""
-    return "".join([
-        "<section id='sec-docs'><h2>", i18n("report.sec.docs"), "</h2>",
-        "<div class='note'>",
-        "<p>", i18n("report.docs.intro"), "</p>",
-        "<ul style='margin:6px 0 0'>",
-        "<li>", i18na("report.docs.li1", "../docs/neo4j-import.md"), "</li>",
-        "<li>", i18na("report.docs.li2", "../docs/data-model.md"), "</li>",
-        "</ul></div></section>",
-    ])
-
-
 def limits_section():
     return "".join([
         "<section id='sec-limits'><h2>", i18n("report.sec.limits"), "</h2>",
@@ -348,7 +334,6 @@ def build_report_inner(G, jump=False, mode="spa"):
     s = []
     s.append("<section>%s</section>" % report_kpi(G))
     s.append(summary_section(G))
-    s.append(docs_section())
     s.append(model_section(G))
     s.append("<section id='sec-products'><h2>%s</h2>" % i18n("report.sec.products"))
     s.append("<p>%s</p>" % i18n("report.intro.products"))
