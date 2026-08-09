@@ -88,11 +88,13 @@ def topnav(root="../", active=None):
     parts.append("<link rel='stylesheet' href='%sdist/vendor/responsive-nav.css'>" % root)
     parts.append("<script src='%sdist/vendor/responsive-nav.min.js'></script>" % root)
     parts.append("<script>responsiveNav('.nav-collapse', { transition: true, label: '☰' });</script>")
-    # 国际化框架（i18next + http-backend，本地 vendored；i18n.js 自初始化并按页面深度加载 locales/）
+    # 国际化框架（i18next，本地 vendored）。
+    # dist/locales.js 由 build_viewer.py 从 locales/*.json 内联生成，i18n.js 直接读取，
+    # 不依赖运行时 fetch —— 规避「部署遗漏 locales/ 目录 → 404」与 file:// 的 CORS 限制。
     # ?v= 资源版本号：改动语言包/引导脚本后递增，强制浏览器放弃旧缓存
-    parts.append("<script src='%sdist/vendor/i18next.min.js?v=20260809b'></script>" % root)
-    parts.append("<script src='%sdist/vendor/i18nextHttpBackend.min.js?v=20260809b'></script>" % root)
-    parts.append("<script src='%sdist/i18n.js?v=20260809b'></script>" % root)
+    parts.append("<script src='%sdist/vendor/i18next.min.js?v=20260809f'></script>" % root)
+    parts.append("<script src='%sdist/locales.js?v=20260809f'></script>" % root)
+    parts.append("<script src='%sdist/i18n.js?v=20260809f'></script>" % root)
     parts.append(analytics_js())
     return "".join(parts)
 

@@ -52,6 +52,9 @@ jobs:
           cp -r dist _site/
           cp -r tools/visualizations _site/tools/visualizations
           cp -r docs _site/docs 2>/dev/null || true
+          # locales/ 一并发布：翻译包虽已内联进 dist/locales.js，但保留根目录副本
+          # 作为兜底，避免任何直接引用 /locales/*.json 的路径在未来产生 404。
+          cp -r locales _site/locales 2>/dev/null || true
           cp README.md LICENSE CONTRIBUTING.md _site/ 2>/dev/null || true
           # 禁用 Jekyll：本项目无 _config.yml，但避免 _ 前缀目录被忽略、并加速构建
           touch _site/.nojekyll

@@ -43,6 +43,24 @@ def main():
     for fname in ("graph_engine.js", "graph_bootstrap.js", "graph_table_panel.js", "i18n.js"):
         shutil.copyfile(os.path.join(TEMPLATES, fname), os.path.join(ROOT, "dist", fname))
 
+    # 把 locales/*.json 内联成一个 vendored JS 全局（dist/locales.js），
+    # 由 i18n.js 直接读取——不再依赖运行时 fetch/XHR。
+    # 这样无论部署到 GitHub Pages（dist/ 之外的根目录资源可能没发布）、
+    # 还是本地用 file:// 直接打开，翻译都能加载，彻底规避「语言包 404 / 切换无效」。
+    try:
+        bundles = {}
+        for lng in ("zh", "en", "fr", "ja"):
+            lp = os.path.join(ROOT, "locales", lng + ".json")
+            if os.path.exists(lp):
+                with open(lp, encoding="utf-8") as lf:
+                    bundles[lng] = json.load(lf)
+        with open(os.path.join(ROOT, "dist", "locales.js"), "w", encoding="utf-8") as bf:
+            bf.write("/* 自动生成：locales/*.json 内联为全局，供 i18n.js 使用。勿手改，改 locales/*.json 后重跑 build_all.py */\n")
+            bf.write("window.I18N_LOCALES = " + json.dumps(bundles, ensure_ascii=False) + ";\n")
+        print("generated:", "dist/locales.js", "packs:", list(bundles.keys()))
+    except Exception as e:
+        print("WARN: 生成 dist/locales.js 失败：", e)
+
     print("written:", dst, "bytes:", len(page))
     print("copied :", "dist/graph_engine.js, dist/graph_bootstrap.js, dist/graph_table_panel.js, dist/i18n.js")
 
