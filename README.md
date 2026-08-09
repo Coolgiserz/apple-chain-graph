@@ -11,6 +11,8 @@
 product models down to components and suppliers, exportable to Neo4j, with
 zero-dependency interactive visualizations.
 
+> 🌐 **English version: [README_en.md](README_en.md)** · 中文文档见本文件。
+
 [![Nodes](https://img.shields.io/badge/nodes-115-blue)](data/neo4j)
 [![Products](https://img.shields.io/badge/products-28-green)](data/neo4j)
 [![Components](https://img.shields.io/badge/components-27-green)](data/neo4j)
@@ -201,7 +203,7 @@ make up-prod        # = docker compose -f docker-compose.yml -f docker-compose.p
 >   `concurrency.group`（如在同一个仓库里两个 workflow 都用 `group: pages` 会互相取消），跨仓库则无此问题。
 
 **发布内容**：CI 只挑选静态产物 —— `index.html`、`dist/`、`tools/visualizations/`、`docs/`、
-以及 `README.md` / `LICENSE` / `CONTRIBUTING.md`；**不发布** Python 源码、`data/`、`tools/*.py`、`.env`、`certs/`。
+以及 `README.md` / `README_en.md` / `LICENSE` / `CONTRIBUTING.md`；**不发布** Python 源码、`data/`、`tools/*.py`、`.env`、`certs/`。
 
 **地图页（默认免 Key，静态托管直接可用）**：供应商地图页（`supplier_geo.html`）运行时自动选择渲染后端——
 
@@ -347,7 +349,8 @@ python3 tools/run_sentiment.py --id qualcomm    # 只看某一家
 
 ```
 apple_supply_chain/
-├── README.md                 # 本文件
+├── README.md                 # 中文文档（本文件）
+├── README_en.md              # 英文文档（English version）
 ├── LICENSE                   # MIT
 ├── CONTRIBUTING.md           # 贡献指南
 ├── requirements.txt          # 依赖清单（仅标准库，无第三方依赖）
@@ -420,7 +423,7 @@ apple_supply_chain/
 - [ ] 数据时效自动化更新（行情快照刷新脚本）
 - [ ] 更多产品线 / 未发布机型的覆盖补全
 - [ ] 图谱与地图的双向联动（点击供应商同时在高亮其上下游链路）
-- [ ] 英文版文档与多语言界面
+- [x] 英文版文档与多语言界面（README_en.md + 界面 i18n：zh/en/fr/ja）
 
 ## 分析方法局限性
 
@@ -454,6 +457,7 @@ apple_supply_chain/
 
 ## 文档
 
+- [README_en.md](README_en.md) — 英文版文档（English version）
 - [docs/neo4j-import.md](docs/neo4j-import.md) — Neo4j 导入详细教程（聚焦你已有的实例）
 - [docs/data-model.md](docs/data-model.md) — 数据模型与字段字典
 - [docs/supplier-analysis.md](docs/supplier-analysis.md) — 供应商基本面与相对估值：方法 / 口径 / 局限
