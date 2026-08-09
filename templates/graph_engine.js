@@ -251,10 +251,12 @@
     var out = [];
     adj[n._key].forEach(function (e) { if (e.dir === "out") out.push(e); });
     if (out.length) {
-      h += "<dt style='margin-top:12px;color:#9fb0d0;font-size:11px'>关联（" + out.length + "）</dt><dd><ul>";
+      // 「关联」邻居节点可点击：点击即聚焦该邻居（同步图谱高亮 + 右侧信息框）。
+      h += "<dt style='margin-top:12px;color:#9fb0d0;font-size:11px'>关联（" + out.length + " · 点击可聚焦）</dt><dd><ul>";
       out.forEach(function (e) {
         var extra = e.link.share ? " · 份额 " + e.link.share + "%" : "";
-        h += "<li><b>" + e.link.type + "</b> → " + esc(label(e.other)) + extra + "</li>";
+        h += "<li class='rel' data-key='" + esc(e.other._key) + "' title='点击聚焦：" + esc(label(e.other)) + "'>"
+          + "<b>" + e.link.type + "</b> → " + esc(label(e.other)) + extra + "</li>";
       });
       h += "</ul></dd>";
     }
@@ -312,6 +314,15 @@
     global.addEventListener("resize", resize);
 
     var pc = document.getElementById("pc"); if (pc) pc.onclick = function () { selectNode(null); kick(); };
+    // 「关联」邻居可点击：点击右侧信息框里的关联节点 → 聚焦该邻居（图 + 框同步）。
+    // 事件委托在 #pbody 上，renderPanel 反复替换 innerHTML 也不丢失监听。
+    var pbody = document.getElementById("pbody");
+    if (pbody) pbody.addEventListener("click", function (e) {
+      var li = e.target.closest ? e.target.closest("li.rel") : null;
+      if (!li) return;
+      var key = li.getAttribute("data-key");
+      if (key) focus(key);
+    });
     var reset = document.getElementById("reset");
     if (reset) reset.onclick = function () {
       view = { ox: 0, oy: 0, scale: 1 }; selectNode(null);
@@ -347,7 +358,13 @@
   }
   function reheat(a) { alpha = Math.max(alpha, (a == null ? 0.5 : a)); kick(); }
   function applyFocus(n) {
-    selected = n; reheat(1);
+    selected = n;
+    // 若目标节点因筛选被隐藏，自动开启其类型复选框，保证聚焦后能在图谱中看到
+    // （与「点击关联 → 同步图谱高亮节点」的预期一致；只增可见性，不缩减其它类型）
+    var cbId = n.type === "Product" ? "cbP" : n.type === "Component" ? "cbC" : "cbS";
+    var cb = document.getElementById(cbId);
+    if (cb && !cb.checked) cb.checked = true;
+    reheat(1);
     view.ox = W() / 2 - n.x * view.scale; view.oy = H() / 2 - n.y * view.scale;
     renderPanel(n);
     var panel = document.getElementById("panel"); if (panel) panel.style.display = "block";

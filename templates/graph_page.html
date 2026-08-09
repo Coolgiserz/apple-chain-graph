@@ -37,6 +37,9 @@
   #panel .close { position: absolute; top: 10px; right: 12px; cursor: pointer; color: #9fb0d0; font-size: 18px; }
   #panel ul { margin: 4px 0 0; padding-left: 16px; }
   #panel li { margin: 2px 0; }
+  /* 关联邻居可点击：指向 + 悬停高亮，提示可聚焦 */
+  #panel li.rel { cursor: pointer; padding: 2px 6px; border-radius: 6px; transition: background .12s, color .12s; }
+  #panel li.rel:hover { background: #1b2742; color: #cfe0ff; }
   a { color: #6ea0ff; }
   .lk { color: #6ea0ff; text-decoration: none; border-bottom: 1px dashed #6ea0ff; cursor: pointer; }
   .lk:hover { background: rgba(110,160,255,.15); }
