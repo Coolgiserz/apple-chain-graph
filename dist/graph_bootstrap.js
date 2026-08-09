@@ -17,6 +17,13 @@
     }
   });
   g.start();
+  // 风险视图开关：勾选后图谱按脆弱性着色 + 单点标记，并显示颜色图例
+  var rt = document.getElementById("riskToggle");
+  var legend = document.getElementById("legend");
+  if (rt) rt.addEventListener("change", function () {
+    g.setRiskMode(rt.checked);
+    if (legend) legend.style.display = rt.checked ? "flex" : "none";
+  });
   // 深链：从其它页面带 ?focus=KEY 跳转过来时，自动选中并居中该节点
   var pk = new URLSearchParams(location.search).get("focus");
   if (pk) g.focus(pk);

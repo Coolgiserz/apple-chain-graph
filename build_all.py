@@ -17,13 +17,14 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 
 # (步骤名, 脚本相对仓库根的路径)
 # 注意顺序有依赖：geo_build 依赖 run_analysis 产出的 tools/output/supplier_analysis.json，
-# 故 run_analysis 必须排在 geo_build 之前；其余页面脚本互不依赖，可按页面逻辑排列。
+# build_viewer 的「风险视图」依赖 run_risk 产出的 tools/output/supply_chain_risk.json，
+# 故 run_analysis / run_risk 必须排在各自依赖它们的页面脚本之前；其余页面脚本互不依赖。
 STEPS = [
+    ("供应商估值  supplier_analysis.json",  "tools/run_analysis.py"),
+    ("供应链风险  supply_chain_risk.json",  "tools/run_risk.py"),
     ("供应链图谱  index.html（首页）",      "scripts/build_viewer.py"),
     ("企业列表    supplier_table.html",     "scripts/build_table.py"),
     ("上下游报告  apple_supply_chain_report.html", "scripts/report.py"),
-    ("供应商估值  supplier_analysis.json",  "tools/run_analysis.py"),
-    ("供应链风险  supply_chain_risk.json",  "tools/run_risk.py"),
     ("供应商地图  supplier_geo.html",       "tools/geo_build.py"),
     ("估值看板    supplier_dashboard.html", "tools/build_dashboard.py"),
 ]

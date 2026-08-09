@@ -21,14 +21,48 @@ from topnav import topnav, TOPNAV_CSS
 DATA = json.load(open(os.path.join(ROOT, "data", "apple_supply_chain.json"), encoding="utf-8"))
 
 
+def merge_risk(data):
+    """把供应链脆弱性分析结果合并进图节点（组件 / 产品），供图谱「风险视图」使用。
+
+    风险数据来源 tools/output/supply_chain_risk.json（run_risk 产出，与图谱同源单一来源）。
+    组件节点加 vuln / n_suppliers / single_point；产品节点加 vuln / sp_count / weakest / weakest_component。
+    文件缺失或解析失败时原样返回（不报错、不白屏），图谱仅缺风险着色。
+    """
+    rp = os.path.join(ROOT, "tools", "output", "supply_chain_risk.json")
+    if not os.path.exists(rp):
+        return data
+    try:
+        risk = json.load(open(rp, encoding="utf-8"))
+    except Exception as e:
+        print("WARN: 读取供应链风险数据失败，跳过风险注入：", e)
+        return data
+    comp = {c["component_id"]: c for c in risk.get("components", [])}
+    prod = {p["product_id"]: p for p in risk.get("products", [])}
+    for c in data["nodes"]["components"]:
+        r = comp.get(c["id"])
+        if r:
+            c["vuln"] = r["vuln"]
+            c["n_suppliers"] = r["n_suppliers"]
+            c["single_point"] = r["single_point"]
+    for p in data["nodes"]["products"]:
+        r = prod.get(p["id"])
+        if r:
+            p["vuln"] = r["product_vuln"]
+            p["sp_count"] = r["sp_count"]
+            p["weakest"] = r["weakest"]
+            p["weakest_component"] = r["weakest_component"]
+    return data
+
+
 def load(name):
     with open(os.path.join(TEMPLATES, name), encoding="utf-8") as f:
         return f.read()
 
 
 def main():
+    DATA_merged = merge_risk(DATA)
     page = (load("graph_page.html")
-            .replace("__DATA__", json.dumps(DATA, ensure_ascii=False))
+            .replace("__DATA__", json.dumps(DATA_merged, ensure_ascii=False))
             .replace("__TOPNAV_CSS__", TOPNAV_CSS)
             .replace("__TOPNAV__", topnav("", "graph"))        # 首页在根目录，root=""
             .replace("__ENGINE_SRC__", "dist/graph_engine.js")

@@ -247,5 +247,17 @@
   "dash.axis.roe": "ROE (%)",
   "dash.axis.mcap": "十亿美元",
   "dash.tt.score": "得分",
-  "dash.unit.firm": "家"
+  "dash.unit.firm": "家",
+  "field.vuln": "脆弱性",
+  "field.n_suppliers": "供应商数",
+  "field.single_point_yes": "⚠ 是（单点依赖）",
+  "field.single_point_no": "否",
+  "field.sp_count": "单点部件数",
+  "field.weakest": "最弱环节",
+  "field.single_point": "单点依赖",
+  "home.riskMode": "风险视图",
+  "home.riskHigh": "高",
+  "home.riskMid": "中",
+  "home.riskLow": "低",
+  "home.riskSingle": "单点依赖"
 }

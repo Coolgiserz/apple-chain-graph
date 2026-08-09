@@ -247,5 +247,17 @@
   "dash.axis.roe": "ROE (%)",
   "dash.axis.mcap": "十億米ドル",
   "dash.tt.score": "スコア",
-  "dash.unit.firm": "社"
+  "dash.unit.firm": "社",
+  "field.vuln": "脆弱性",
+  "field.n_suppliers": "供給企業数",
+  "field.single_point_yes": "⚠ はい（単一障害点）",
+  "field.single_point_no": "いいえ",
+  "field.sp_count": "単一障害部品数",
+  "field.weakest": "最弱リンク",
+  "field.single_point": "単一障害点",
+  "home.riskMode": "リスク表示",
+  "home.riskHigh": "高",
+  "home.riskMid": "中",
+  "home.riskLow": "低",
+  "home.riskSingle": "単一障害点"
 }

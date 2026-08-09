@@ -30,6 +30,7 @@
   var DRAG_THRESH = 5;                         // 按下后位移超过该值(px)才视为拖拽/平移，否则按「点击」处理
   var reportLink = null, mapLink = null;
   var pendingFocus = null;   // 布局未就绪时暂缓居中，待首帧自愈后再执行
+  var riskMode = false;     // 「风险视图」开关：按脆弱性着色 + 单点标记（由页面开关控制）
 
   var ALPHA_MIN = 0.005, ALPHA_DEC = 0.008;
   function W() { return (cv ? cv.clientWidth : 0) || global.innerWidth; }
@@ -176,6 +177,13 @@
 
   function label(n) { return n.name || n.english_name || n.id; }
   function esc(s) { return String(s).replace(/[&<>]/g, function (c) { return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]); }); }
+  // 脆弱性颜色比例尺（与 risk.py 的 HIGH_THRESHOLD=0.6 / MEDIUM_THRESHOLD=0.3 对齐）
+  var RISK_HIGH = 0.6, RISK_MED = 0.3;
+  function vulnColor(v) {
+    if (v >= RISK_HIGH) return "#ef4444";   // 高 → 红
+    if (v >= RISK_MED) return "#f59e0b";     // 中 → 琥珀
+    return "#10b981";                        // 低 → 绿
+  }
   // 国际化：缺失 key 时回退到中文源（zh 为 fallbackLng），避免显示原始 key
   function i18nText(k) { return (window.i18n && window.i18n.ready) ? window.i18n.t(k) : k; }
   function nm(t, id) { var o = idMap[t + ":" + id]; return o ? label(o) : id; }
@@ -200,10 +208,17 @@
       var dim = nb && !nb.has(n._key);
       ctx.globalAlpha = dim ? 0.18 : 1;
       ctx.beginPath(); ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
-      ctx.fillStyle = COLORS[n.type]; ctx.fill();
+      // 风险视图：组件/产品节点按脆弱性着色（供应商节点保持原类型色）
+      ctx.fillStyle = (riskMode && n.type !== "Supplier" && n.vuln != null) ? vulnColor(n.vuln) : COLORS[n.type];
+      ctx.fill();
       ctx.lineWidth = (selected === n) ? 3 : 1.2;
       ctx.strokeStyle = (selected === n) ? "#fff" : "rgba(255,255,255,.35)";
       ctx.stroke();
+      // 风险视图：单点依赖组件加红色警示外圈
+      if (riskMode && n.type === "Component" && n.single_point) {
+        ctx.beginPath(); ctx.arc(n.x, n.y, r + 3, 0, Math.PI * 2);
+        ctx.strokeStyle = "#ef4444"; ctx.lineWidth = 2; ctx.stroke();
+      }
       if (view.scale > 0.7 || n.type === "Product" || selected === n || hover === n) {
         ctx.globalAlpha = dim ? 0.25 : 1;
         ctx.fillStyle = "#dfe7f7"; ctx.font = "11px sans-serif"; ctx.textAlign = "center";
@@ -265,10 +280,19 @@
       return [i18nText("field." + k), val];
     }
     var assemblyTxt = (n.assembly || []).map(function (id) { return nm("S", id); }).join("、");
+    // 风险视图字段（节点未注入风险数据时 n.vuln 等为 undefined，fieldRow 会跳过空值）
+    var weakestTxt = n.weakest_component ? (nm("C", n.weakest_component) + "（" + (n.weakest != null ? n.weakest.toFixed(3) : "") + "）") : "";
+    var spTxt = n.single_point === undefined ? "" : (n.single_point ? i18nText("field.single_point_yes") : i18nText("field.single_point_no"));
     var fields = n.type === "Product"
-      ? [fieldRow("release_date", n.release_date), fieldRow("status", n.status), fieldRow("price", n.price_usd ? ("$" + n.price_usd) : ""), fieldRow("soc", n.soc), fieldRow("display", n.display), fieldRow("alias", n.alias), fieldRow("assembly", assemblyTxt)]
+      ? [fieldRow("release_date", n.release_date), fieldRow("status", n.status), fieldRow("price", n.price_usd ? ("$" + n.price_usd) : ""), fieldRow("soc", n.soc), fieldRow("display", n.display), fieldRow("alias", n.alias), fieldRow("assembly", assemblyTxt),
+         fieldRow("vuln", n.vuln != null ? n.vuln.toFixed(3) : ""),
+         fieldRow("sp_count", n.sp_count != null ? n.sp_count : ""),
+         fieldRow("weakest", weakestTxt)]
       : n.type === "Component"
-        ? [fieldRow("category", n.category), fieldRow("subcategory", n.subcategory)]
+        ? [fieldRow("category", n.category), fieldRow("subcategory", n.subcategory),
+           fieldRow("vuln", n.vuln != null ? n.vuln.toFixed(3) : ""),
+           fieldRow("n_suppliers", n.n_suppliers != null ? n.n_suppliers : ""),
+           fieldRow("single_point", spTxt)]
         : [fieldRow("short_name", n.short_name), fieldRow("country", n.country), fieldRow("region", n.region), fieldRow("category", n.category), fieldRow("tier", n.tier)];
     fields.forEach(function (kv) { if (kv[1]) h += "<dt>" + kv[0] + "</dt><dd>" + esc(String(kv[1])) + "</dd>"; });
     h += "</dl>";
@@ -483,6 +507,13 @@
     resize: resize,
     esc: esc,
     visibleNodes: visibleNodes,
+    // 风险视图开关：开启后节点按脆弱性着色 + 单点标记；重绘当前帧（循环停止时直接 draw，运行中则 kick 重启）
+    setRiskMode: function (on) {
+      riskMode = !!on;
+      if (selected) renderPanel(selected);
+      if (running) kick();
+      else if (cv) draw(visibleSet());
+    },
     getViewport: function () { return { ox: view.ox, oy: view.oy, scale: view.scale }; }
   };
   global.GraphEngine = api;

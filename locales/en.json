@@ -247,5 +247,17 @@
   "dash.axis.roe": "ROE (%)",
   "dash.axis.mcap": "USD billions",
   "dash.tt.score": "Score",
-  "dash.unit.firm": "firms"
+  "dash.unit.firm": "firms",
+  "field.vuln": "Vulnerability",
+  "field.n_suppliers": "Suppliers",
+  "field.single_point_yes": "⚠ Yes (single point)",
+  "field.single_point_no": "No",
+  "field.sp_count": "Single-point parts",
+  "field.weakest": "Weakest link",
+  "field.single_point": "Single point",
+  "home.riskMode": "Risk view",
+  "home.riskHigh": "High",
+  "home.riskMid": "Medium",
+  "home.riskLow": "Low",
+  "home.riskSingle": "Single point"
 }

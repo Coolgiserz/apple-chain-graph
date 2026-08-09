@@ -102,6 +102,13 @@ __TOPNAV__
     <select id="line"><option value="" data-i18n="home.all">全部</option></select>
   </div>
   <button id="toggleTable" class="ghost" data-i18n="home.tableBtn">📋 企业表格</button>
+  <label class="chk"><input type="checkbox" id="riskToggle"><span data-i18n="home.riskMode">风险视图</span></label>
+  <div class="grp" id="legend" style="display:none; gap:10px; align-items:center;">
+    <span class="dot" style="background:#ef4444"></span><span data-i18n="home.riskHigh">高</span>
+    <span class="dot" style="background:#f59e0b"></span><span data-i18n="home.riskMid">中</span>
+    <span class="dot" style="background:#10b981"></span><span data-i18n="home.riskLow">低</span>
+    <span style="color:#ef4444;font-weight:700">⚠</span><span data-i18n="home.riskSingle">单点依赖</span>
+  </div>
   <button id="reset" class="ghost" data-i18n="home.resetView">重置视图</button>
 </div>
 <div id="panel"><span class="close" id="pc">×</span><div id="pbody"></div></div>

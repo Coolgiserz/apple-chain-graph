@@ -247,5 +247,17 @@
   "dash.axis.roe": "ROE (%)",
   "dash.axis.mcap": "Milliards USD",
   "dash.tt.score": "Score",
-  "dash.unit.firm": "entreprises"
+  "dash.unit.firm": "entreprises",
+  "field.vuln": "Vulnérabilité",
+  "field.n_suppliers": "Fournisseurs",
+  "field.single_point_yes": "⚠ Oui (point unique)",
+  "field.single_point_no": "Non",
+  "field.sp_count": "Composants à point unique",
+  "field.weakest": "Maillon faible",
+  "field.single_point": "Point unique",
+  "home.riskMode": "Vue des risques",
+  "home.riskHigh": "Élevé",
+  "home.riskMid": "Moyen",
+  "home.riskLow": "Faible",
+  "home.riskSingle": "Point unique"
 }
