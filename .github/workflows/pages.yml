@@ -11,7 +11,10 @@ permissions:
   pages: write
   id-token: write
 
-# 同一时间只允许一个部署，避免并发覆盖
+# 同一时间只允许一个部署，避免并发覆盖。
+# 注意：concurrency group 是「仓库级别作用域」—— 同名 group 只在本仓库内互斥，
+# 不会干扰你其它仓库的 Actions。若将来在本仓库内新增第二个 Pages workflow，
+# 请给它不同的 group（如 pages-docs），否则两个 workflow 会互相取消。
 concurrency:
   group: pages
   cancel-in-progress: true

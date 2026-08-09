@@ -183,6 +183,18 @@ make up-prod        # = docker compose -f docker-compose.yml -f docker-compose.p
 2. 本机把含该 workflow 的提交推送到 `main`，GitHub 自动跑 CI 并发布。
 3. 访问地址见上方三种情况；自定义域名还需在 Settings → Pages → Custom domain 填域名并按提示加 DNS。
 
+> **多仓库共存 / 命名冲突说明（重要）**
+> - **项目站点按仓库名隔离在 URL 路径下**：本仓库发布后为 `https://Coolgiserz.github.io/apple-chain-graph/`，
+>   每个仓库各自拥有独立的 `/<repo>/` 路径段。你其它已发布的 GitHub Pages（如 `/other-repo/`）**完全不受影响**，
+>   二者 URL 路径天然不同，**不存在站点级命名冲突**。
+> - **唯一全局共享的命名空间是「自定义域名」**：一个自定义域名在同一时间只能被**一个**仓库占用。
+>   因此请**不要**把别的仓库已在使用的域名设到本仓库。保持默认的 `*.github.io/apple-chain-graph/` 形式即可零冲突发布。
+> - **CI 资源均为仓库级别作用域**：workflow 里的 `concurrency.group`、Pages artifact 名称、`github-pages` 环境、
+>   以及部署用的 `GITHUB_TOKEN` 都只作用于**本仓库**的 Actions，**不会**干扰你其它仓库的部署或互相加锁。
+> - **未来新增仓库**：每个新仓库只需自带一份 `.github/workflows/pages.yml`，各自得到 `/<其仓库名>/`，无需任何跨仓库协调
+>   （同样只需遵守上面的自定义域名唯一规则）。若你在本仓库内**再建第二个** Pages workflow，请给它一个不同的
+>   `concurrency.group`（如在同一个仓库里两个 workflow 都用 `group: pages` 会互相取消），跨仓库则无此问题。
+
 **发布内容**：CI 只挑选静态产物 —— `index.html`、`dist/`、`tools/visualizations/`、`docs/`、
 以及 `README.md` / `LICENSE` / `CONTRIBUTING.md`；**不发布** Python 源码、`data/`、`tools/*.py`、`.env`、`certs/`。
 
