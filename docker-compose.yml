@@ -1,0 +1,18 @@
+# 一键启动苹果供应链图谱前端（静态站点，nginx 托管）
+#
+# 用法：
+#   docker compose up -d --build   # 构建镜像并后台启动
+#   docker compose down            # 停止并移除容器
+#   浏览器打开 http://localhost:8080
+#
+# 也可用 Makefile 快捷键：make up / make down / make logs / make serve
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    image: apple-supply-chain:latest
+    container_name: apple-supply-chain-web
+    ports:
+      - "8080:80"
+    restart: unless-stopped

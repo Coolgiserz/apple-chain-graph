@@ -1,10 +1,10 @@
 # Apple Supply Chain Graph · 苹果产品供应链上下游图谱
 
 > 以**具体产品型号**为起点，逐层向上游拆解出核心零部件与其供应商 / 代工厂，
-> 构建「产品 → 零部件 → 供应商」三层有向图，并产出可导入 **Neo4j** 图数据库的结构化数据。
+> 构建「产品 → 零部件 → 供应商」三层有向图，包含可导入 **Neo4j** 图数据库的结构化数据。
 > 配套零依赖的交互式可视化与各供应商基本面 / 估值 / 舆情分析。
 >
-> 本项目同时是一个用 **AI 编程（WorkBuddy）** 端到端产出的**演示 / 探索性作品**，
+> 本项目同时是一个用 **AI 编程（WorkBuddy Hy3）** 端到端产出的**演示 / 探索性作品**，
 > 侧重可复现的工程实现与交互体验，**并非正式的行业或投资分析**（详见「分析方法局限性」与「免责声明」）。
 
 **An open, reproducible map of Apple's product supply chain** — from finished
@@ -30,6 +30,7 @@ zero-dependency interactive visualizations.
 - [快速开始](#快速开始)
   - [0. 整合页：图谱 + 报告（推荐）](#0-整合页图谱--报告推荐)
   - [0.1 四页统一导航（多页互跳，非孤岛）](#01-四页统一导航多页互跳非孤岛)
+  - [0.2 使用 Docker 一键启动（推荐用于发布 / 统计）](#02-使用-docker-一键启动推荐用于发布--统计)
   - [1. 浏览图谱（零依赖）](#1-浏览图谱零依赖)
   - [2. 导入 Neo4j（你已有的实例）](#2-导入-neo4j你已有的实例)
   - [3. 从源码重新生成](#3-从源码重新生成)
@@ -73,21 +74,6 @@ zero-dependency interactive visualizations.
 - **供应商研究层**：对 15 家重点供应商做同业相对估值 + 舆情分析，结论以看板与报告形式呈现。
 - **可复现**：纯 Python 标准库，无任何第三方依赖，从单一数据源可重生成全部产物。
 
-## 截图预览
-
-> ⚠️ **截图占位（待补充）**：下列位置为预留的截图槽位。请按「需要提供的截图清单」一节
-> 的说明，把对应 PNG 保存到 `docs/screenshots/` 下对应文件名即可，README 会自动渲染。
-> 在补充截图前，这些位置会显示为破图，属正常占位。
-
-<!--
-===== 需要提供的截图清单（请把 PNG 保存到 docs/screenshots/ 下）=====
-1. graph.png        —— 供应链图谱主界面：力导向布局，节点按产品/零部件/供应商着色，关系边可见
-2. report.png       —— 上下游报告「三、产品线·具体型号总览」表格，最好能看到带下划线的跨页深链实体
-3. map.png          —— 供应商地图：标记点 + 生产基地→组装厂的物流连线
-4. dashboard.png    —— 估值看板：重点展示「② 情绪—估值背离矩阵」气泡图
-5. app.png          —— 整合页 SPA：顶部 Tab 切换（图谱 / 报告）的界面
-保存后删除本注释块即可。
--->
 
 | 页面 | 预览 |
 |------|------|
@@ -127,6 +113,29 @@ zero-dependency interactive visualizations.
 
 > 地图 / 看板为静态或 `geo_build.py` 生成的页面，其导航条同样由 `topnav.py` 注入；
 > 融合页 `supplier_combined.html` 内嵌看板时会自动剥离看板自带导航，避免与自身导航重复。
+
+### 0.2 使用 Docker 一键启动（推荐用于发布 / 统计）
+
+把整站装进一个 **nginx 容器**，**一条命令**即可在 `http://localhost:8080` 提供全部页面（含入口落地页）。
+
+通过 **http 访问**后，Umami 访问统计才会真正上报——本地 `file://` 双击打开时统计脚本被主动跳过（见 `topnav.py` 的 `location.protocol` 门控）。所以若要统计访问频次，**用 Docker / 任意 http 服务托管**是更合适的启动方式。
+
+前置：本机已安装 Docker（含 Compose v2）。
+
+```bash
+make up        # = docker compose up -d --build，构建镜像并后台启动
+# 浏览器打开 http://localhost:8080
+make down      # 停止并移除容器
+make logs      # 查看容器日志
+make build     # 仅构建镜像
+make serve     # 不用 Docker 时，本地直接起 Python 静态服务器（同端口）
+```
+
+> 不想用 Docker？`make serve` 或 `python3 -m http.server 8080` 直接起本地静态服务器即可，
+> 效果与 Docker 一致（同样是 http 托管）。
+> ⚠️ **供应商地图页**依赖腾讯位置服务 GL JS，需要**真实域名 + 有效 Key**（替换页面里的
+> `__WB_TMAP_SECRET__` 占位符），`localhost` 下地图不会渲染——其余页面不受影响。
+> 容器构建时会执行 `build_all.py` 重生成全部页面，改完数据后 `make up` 会自动重新构建。
 
 ### 1. 浏览图谱（零依赖）
 
@@ -266,6 +275,12 @@ apple_supply_chain/
 ├── CONTRIBUTING.md           # 贡献指南
 ├── requirements.txt          # 依赖清单（仅标准库，无第三方依赖）
 ├── build_all.py              # 统一构建入口：一条命令重生成全部页面
+├── Dockerfile                # 多阶段构建：python 生成静态页 → nginx 托管
+├── docker-compose.yml        # 一键启动（make up）
+├── Makefile                  # 常用快捷键（up / down / logs / serve / build）
+├── nginx.conf                # 容器内 nginx 配置（UTF-8 / gzip / 长缓存）
+├── .dockerignore             # 构建上下文排除项
+├── index.html                # 站点入口落地页（聚合四页 + 整合页）
 ├── .gitignore
 ├── data/                     # 数据产物
 │   ├── apple_supply_chain.json   # 完整图数据（nodes + edges + 数据字段字典）

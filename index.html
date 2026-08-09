@@ -1,0 +1,65 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Apple 供应链图谱 · 入口</title>
+<style>
+  :root{
+    --ink:#0a2540; --blue:#0a66c2; --soft:#dbeafe; --muted:#5b6b7c; --bg:#f5f7fa;
+  }
+  *{box-sizing:border-box}
+  body{margin:0;font-family:-apple-system,'Segoe UI',Roboto,'PingFang SC','Microsoft YaHei',sans-serif;
+    background:linear-gradient(135deg,#0a2540,#0a66c2);color:#fff;min-height:100vh}
+  header{padding:48px 24px 24px;text-align:center}
+  header h1{margin:0 0 8px;font-size:30px}
+  header p{margin:0;color:var(--soft);font-size:15px}
+  main{max-width:980px;margin:0 auto;padding:24px;display:grid;gap:18px;
+    grid-template-columns:repeat(auto-fit,minmax(240px,1fr))}
+  a.card{display:block;text-decoration:none;background:rgba(255,255,255,.96);color:var(--ink);
+    border-radius:14px;padding:20px 18px;box-shadow:0 6px 18px rgba(0,0,0,.18);transition:transform .15s,box-shadow .15s}
+  a.card:hover{transform:translateY(-3px);box-shadow:0 12px 28px rgba(0,0,0,.26)}
+  a.card .ico{font-size:26px}
+  a.card h2{margin:10px 0 6px;font-size:17px}
+  a.card p{margin:0;color:var(--muted);font-size:13px;line-height:1.5}
+  footer{text-align:center;color:var(--soft);font-size:12.5px;padding:18px 24px 36px}
+  footer a{color:#fff}
+</style>
+</head>
+<body>
+<header>
+  <h1>🍎 Apple 供应链图谱 · 入口</h1>
+  <p>以具体产品型号为起点，逐层向上拆解零部件与供应商的交互式可视化项目</p>
+</header>
+<main>
+  <a class="card" href="dist/apple_supply_chain_app.html">
+    <div class="ico">🧩</div><h2>整合页 SPA</h2>
+    <p>图谱 + 上下游报告单页互跳，推荐首选入口。</p>
+  </a>
+  <a class="card" href="dist/graph_viewer.html">
+    <div class="ico">🕸️</div><h2>供应链图谱</h2>
+    <p>力导向交互：缩放、拖拽、筛选、搜索、定位节点。</p>
+  </a>
+  <a class="card" href="dist/apple_supply_chain_report.html">
+    <div class="ico">📄</div><h2>上下游报告</h2>
+    <p>型号总览 + 跨页深链，点击实体直达图谱 / 地图。</p>
+  </a>
+  <a class="card" href="tools/visualizations/supplier_geo.html">
+    <div class="ico">🗺️</div><h2>供应商地图</h2>
+    <p>供应商基地标记 + 物流连线（需真实域名 + 地图 Key）。</p>
+  </a>
+  <a class="card" href="tools/visualizations/supplier_dashboard.html">
+    <div class="ico">📊</div><h2>估值看板</h2>
+    <p>情绪—估值背离矩阵等 6 张图（Chart.js，首开需联网）。</p>
+  </a>
+  <a class="card" href="tools/visualizations/supplier_combined.html">
+    <div class="ico">🔗</div><h2>融合页</h2>
+    <p>地图 + 看板同屏，统一导航，避免重复统计。</p>
+  </a>
+</main>
+<footer>
+  本项目为 AI 编程（WorkBuddy）演示作品，数据来源于公开资料整合，仅供参考与学习交流，不构成投资建议。<br>
+  详情见 <a href="README.md">README</a>。
+</footer>
+</body>
+</html>

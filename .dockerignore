@@ -1,0 +1,9 @@
+.git
+.idea
+.workbuddy
+__pycache__
+*.pyc
+node_modules
+.DS_Store
+docs
+tools/output
