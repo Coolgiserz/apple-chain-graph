@@ -92,28 +92,28 @@ __TOPNAV_CSS__
 __TOPNAV__
 <canvas id="cv"></canvas>
 <div id="top">
-  <div class="grp"><input type="search" id="q" placeholder="搜索产品/零部件/供应商…"></div>
+  <div class="grp"><input type="search" id="q" data-i18n-attr="placeholder:home.search" placeholder="搜索产品/零部件/供应商…"></div>
   <div class="grp">
-    <label class="chk"><input type="checkbox" id="cbP" checked><span class="dot" style="background:#2f6fed"></span>产品</label>
-    <label class="chk"><input type="checkbox" id="cbC" checked><span class="dot" style="background:#f59e0b"></span>零部件</label>
-    <label class="chk"><input type="checkbox" id="cbS" checked><span class="dot" style="background:#10b981"></span>供应商</label>
+    <label class="chk"><input type="checkbox" id="cbP" checked><span class="dot" style="background:#2f6fed"></span><span data-i18n="home.prod">产品</span></label>
+    <label class="chk"><input type="checkbox" id="cbC" checked><span class="dot" style="background:#f59e0b"></span><span data-i18n="home.part">零部件</span></label>
+    <label class="chk"><input type="checkbox" id="cbS" checked><span class="dot" style="background:#10b981"></span><span data-i18n="home.supp">供应商</span></label>
   </div>
-  <div class="grp"><label>产品线</label>
-    <select id="line"><option value="">全部</option></select>
+  <div class="grp"><label data-i18n="home.line">产品线</label>
+    <select id="line"><option value="" data-i18n="home.all">全部</option></select>
   </div>
-  <button id="toggleTable" class="ghost">📋 企业表格</button>
-  <button id="reset" class="ghost">重置视图</button>
+  <button id="toggleTable" class="ghost" data-i18n="home.tableBtn">📋 企业表格</button>
+  <button id="reset" class="ghost" data-i18n="home.resetView">重置视图</button>
 </div>
 <div id="panel"><span class="close" id="pc">×</span><div id="pbody"></div></div>
-<div id="hint">滚轮缩放 · 拖拽画布平移 · 拖动节点 · 单击节点看详情</div>
+<div id="hint" data-i18n="home.hint">滚轮缩放 · 拖拽画布平移 · 拖动节点 · 单击节点看详情</div>
 <div id="side" style="display:none">
   <header>
-    <h2>企业表格 <span class="cnt">(<span id="sideCount">0</span>)</span></h2>
+    <h2><span data-i18n="home.sideTitle">企业表格</span> <span class="cnt">(<span id="sideCount">0</span>)</span></h2>
     <span class="close" id="sideClose" title="关闭">×</span>
   </header>
   <div class="scroll">
     <table>
-      <thead><tr><th>名称</th><th>国家/地区</th><th>类别</th><th>层级</th></tr></thead>
+      <thead><tr><th data-i18n="table.name">名称</th><th data-i18n="table.country">国家/地区</th><th data-i18n="table.category">类别</th><th data-i18n="table.tier">层级</th></tr></thead>
       <tbody id="sideBody"></tbody>
     </table>
   </div>

@@ -176,6 +176,8 @@
 
   function label(n) { return n.name || n.english_name || n.id; }
   function esc(s) { return String(s).replace(/[&<>]/g, function (c) { return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]); }); }
+  // 国际化：缺失 key 时回退到中文源（zh 为 fallbackLng），避免显示原始 key
+  function i18nText(k) { return (window.i18n && window.i18n.ready) ? window.i18n.t(k) : k; }
   function nm(t, id) { var o = idMap[t + ":" + id]; return o ? label(o) : id; }
 
   function draw(vis) {
@@ -242,18 +244,20 @@
     h += "<span class='tag' style='background:" + col + "22;color:" + col + ";border:1px solid " + col + "'>" + n.type + "</span>";
     if (n.type === "Product" && n.product_line) h += "<span class='tag' style='background:#2a3450;color:#cfe0ff'>" + esc(n.product_line) + "</span>";
     h += "<dl>";
+    function fieldRow(k, v) { return [i18nText("field." + k), v]; }
+    var assemblyTxt = (n.assembly || []).map(function (id) { return nm("S", id); }).join("、");
     var fields = n.type === "Product"
-      ? [["发布时间", n.release_date], ["状态", n.status], ["起售价(USD)", n.price_usd ? ("$" + n.price_usd) : ""], ["SoC", n.soc], ["显示屏", n.display], ["别名", n.alias], ["代工", (n.assembly || []).map(function (id) { return nm("S", id); }).join("、")]]
+      ? [fieldRow("release_date", n.release_date), fieldRow("status", n.status), fieldRow("price", n.price_usd ? ("$" + n.price_usd) : ""), fieldRow("soc", n.soc), fieldRow("display", n.display), fieldRow("alias", n.alias), fieldRow("assembly", assemblyTxt)]
       : n.type === "Component"
-        ? [["类别", n.category], ["子类", n.subcategory]]
-        : [["简称", n.short_name], ["国家/地区", n.country], ["区域", n.region], ["类别", n.category], ["层级", n.tier]];
+        ? [fieldRow("category", n.category), fieldRow("subcategory", n.subcategory)]
+        : [fieldRow("short_name", n.short_name), fieldRow("country", n.country), fieldRow("region", n.region), fieldRow("category", n.category), fieldRow("tier", n.tier)];
     fields.forEach(function (kv) { if (kv[1]) h += "<dt>" + kv[0] + "</dt><dd>" + esc(String(kv[1])) + "</dd>"; });
     h += "</dl>";
     var out = [];
     adj[n._key].forEach(function (e) { if (e.dir === "out") out.push(e); });
     if (out.length) {
       // 「关联」邻居节点可点击：点击即聚焦该邻居（同步图谱高亮 + 右侧信息框）。
-      h += "<dt style='margin-top:12px;color:#9fb0d0;font-size:11px'>关联（" + out.length + " · 点击可聚焦）</dt><dd><ul>";
+      h += "<dt style='margin-top:12px;color:#9fb0d0;font-size:11px'>" + i18nText("panel.rel") + "（" + out.length + " · " + i18nText("panel.relHint") + "）</dt><dd><ul>";
       out.forEach(function (e) {
         var extra = e.link.share ? " · 份额 " + e.link.share + "%" : "";
         h += "<li class='rel' data-key='" + esc(e.other._key) + "' title='点击聚焦：" + esc(label(e.other)) + "'>"
@@ -396,6 +400,9 @@
       var el = document.getElementById(id);
       if (el) el.addEventListener("input", function () { if (id !== "q") selectNode(null); reheat(0.7); });
     });
+    // 语言切换时，若右侧信息框已打开则重渲染（同步翻译）；i18n:ready 也补一次（处理 ?focus= 深链早于加载完成的情况）
+    document.addEventListener("i18n:ready", function () { if (selected) renderPanel(selected); });
+    document.addEventListener("i18n:changed", function () { if (selected) renderPanel(selected); });
   }
 
   // 仅在需要重绘时启动 rAF 循环；模拟静止且无交互时循环自动停止，

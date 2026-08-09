@@ -1,0 +1,22 @@
+{
+  "nav.graph": "Graphe de la chaîne",
+  "nav.table": "Entreprises",
+  "nav.report": "Rapport amont-aval",
+  "nav.map": "Carte fournisseurs",
+  "nav.dash": "Tableau de valorisation",
+  "home.search": "搜索产品/零部件/供应商…",
+  "home.prod": "产品",
+  "home.part": "零部件",
+  "home.supp": "供应商",
+  "home.line": "产品线",
+  "home.all": "全部",
+  "home.tableBtn": "企业表格",
+  "home.resetView": "重置视图",
+  "home.hint": "滚轮缩放 · 拖拽画布平移 · 拖动节点 · 单击节点看详情",
+  "home.sideTitle": "企业表格",
+  "panel.rel": "关联",
+  "table.name": "名称",
+  "table.country": "国家/地区",
+  "table.category": "类别",
+  "table.tier": "层级"
+}

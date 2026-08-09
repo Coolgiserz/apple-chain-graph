@@ -40,11 +40,11 @@ def main():
         f.write(page)
 
     # 共享引擎与启动脚本复制到 dist/（与整合 SPA 共用、一并发布）
-    for fname in ("graph_engine.js", "graph_bootstrap.js", "graph_table_panel.js"):
+    for fname in ("graph_engine.js", "graph_bootstrap.js", "graph_table_panel.js", "i18n.js"):
         shutil.copyfile(os.path.join(TEMPLATES, fname), os.path.join(ROOT, "dist", fname))
 
     print("written:", dst, "bytes:", len(page))
-    print("copied :", "dist/graph_engine.js, dist/graph_bootstrap.js, dist/graph_table_panel.js")
+    print("copied :", "dist/graph_engine.js, dist/graph_bootstrap.js, dist/graph_table_panel.js, dist/i18n.js")
 
 
 if __name__ == "__main__":

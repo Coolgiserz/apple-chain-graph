@@ -17,11 +17,11 @@
 import os
 
 NAV_ITEMS = [
-    ("graph",  "🕸️ 供应链图谱", "index.html"),
-    ("table",  "📋 企业列表",    "dist/supplier_table.html"),
-    ("report", "📄 上下游报告",  "dist/apple_supply_chain_report.html"),
-    ("map",    "🗺️ 供应商地图", "tools/visualizations/supplier_geo.html"),
-    ("dash",   "📊 估值看板",    "tools/visualizations/supplier_dashboard.html"),
+    ("graph",  "供应链图谱", "index.html"),
+    ("table",  "企业列表",    "dist/supplier_table.html"),
+    ("report", "上下游报告",  "dist/apple_supply_chain_report.html"),
+    ("map",    "供应商地图", "tools/visualizations/supplier_geo.html"),
+    ("dash",   "估值看板",    "tools/visualizations/supplier_dashboard.html"),
 ]
 
 # 源码仓库（GitHub）图标按钮：放在导航条最右侧，所有页面共享。
@@ -55,6 +55,10 @@ TOPNAV_CSS = """
 .wb-topnav .wb-github{display:flex;align-items:center;justify-content:center;width:34px;height:34px;
   margin-left:6px;border-radius:8px;color:#fff;opacity:.9;transition:background .15s,opacity .15s}
 .wb-topnav .wb-github:hover{background:rgba(255,255,255,.16);color:#fff;opacity:1}
+.wb-topnav #langSwitch{height:34px;margin-left:6px;border-radius:8px;border:1px solid rgba(255,255,255,.25);
+  background:rgba(255,255,255,.08);color:#fff;font-size:13px;padding:0 6px;cursor:pointer}
+.wb-topnav #langSwitch:hover{background:rgba(255,255,255,.16);color:#fff}
+.wb-topnav #langSwitch option{color:#111}
 """
 
 
@@ -70,8 +74,13 @@ def topnav(root="../", active=None):
     parts.append("<nav class='nav-collapse'><ul>")
     for key, label, path in NAV_ITEMS:
         cls = " class='active'" if key == active else ""
-        parts.append("<li><a href='%s'%s>%s</a></li>" % (root + path, cls, label))
+        parts.append("<li><a href='%s'%s data-i18n='nav.%s'>%s</a></li>" % (root + path, cls, key, label))
     parts.append("</ul></nav>")
+    # 语言切换下拉（始终可见，移动端也不折叠进汉堡）
+    parts.append("<select id='langSwitch' aria-label='Language' "
+                  "onchange='window.i18n&&window.i18n.changeLanguage(this.value)'>"
+                  "<option value='zh'>中文</option><option value='en'>English</option>"
+                  "<option value='fr'>Français</option><option value='ja'>日本語</option></select>")
     parts.append("<span class='spacer'></span>")
     parts.append(GITHUB_LINK % GITHUB_URL)
     parts.append("</nav>")
@@ -79,6 +88,10 @@ def topnav(root="../", active=None):
     parts.append("<link rel='stylesheet' href='%sdist/vendor/responsive-nav.css'>" % root)
     parts.append("<script src='%sdist/vendor/responsive-nav.min.js'></script>" % root)
     parts.append("<script>responsiveNav('.nav-collapse', { transition: true, label: '☰' });</script>")
+    # 国际化框架（i18next + http-backend，本地 vendored；i18n.js 自初始化并按页面深度加载 locales/）
+    parts.append("<script src='%sdist/vendor/i18next.min.js'></script>" % root)
+    parts.append("<script src='%sdist/vendor/i18nextHttpBackend.min.js'></script>" % root)
+    parts.append("<script src='%sdist/i18n.js'></script>" % root)
     parts.append(analytics_js())
     return "".join(parts)
 
