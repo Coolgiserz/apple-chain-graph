@@ -15,7 +15,7 @@
 (function () {
   var SUPPORTED = ["zh", "en", "fr", "ja"];
   var DEFAULT = "zh";
-  var ASSET_VERSION = "20260809i"; // 资源版本号：改动语言包/引导脚本后递增，破除浏览器缓存
+  var ASSET_VERSION = "20260809j"; // 资源版本号：改动语言包/引导脚本后递增，破除浏览器缓存
 
   // 中文源内联兜底（镜像 locales/zh.json）
   var ZH = {

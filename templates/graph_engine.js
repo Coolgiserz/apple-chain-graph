@@ -237,18 +237,31 @@
     renderPanel(n);
     if (panel) panel.style.display = "block";
   }
-  // 产品状态枚举：数据集里是中文值（在售 / 传闻/未发布），按语言翻译
-  var STATUS_MAP = { "在售": "status.onsale", "传闻/未发布": "status.rumor" };
+  // 数据集里的枚举值（region / category / country / tier / status / product_line / subcategory）
+  // 经 i18n 翻译：raw -> <domain>.<key> -> 对应语言文本。映射（raw->键）单一来源是
+  // window.I18N_ENUM_MAP（由 build_viewer.py 从 locales/enum_map.json 内联），译文在 locales/*.json，
+  // 运行时由 i18n.js 解析——不在 JS 里硬编码任何译文。
+  function i18nVal(domain, raw) {
+    if (raw === undefined || raw === null || raw === "") return "";
+    var key = (window.I18N_ENUM_MAP && window.I18N_ENUM_MAP[domain] && window.I18N_ENUM_MAP[domain][String(raw)]) || null;
+    return key ? i18nText(domain + "." + key) : String(raw);
+  }
   function renderPanel(n) {
     var p = document.getElementById("pbody"); if (!p) return;
     var col = COLORS[n.type];
     var h = "<h3>" + esc(n.name || n.id) + "</h3><div class='sub'>" + esc(n.english_name || "") + "</div>";
     h += "<span class='tag' style='background:" + col + "22;color:" + col + ";border:1px solid " + col + "'>" + n.type + "</span>";
-    if (n.type === "Product" && n.product_line) h += "<span class='tag' style='background:#2a3450;color:#cfe0ff'>" + esc(n.product_line) + "</span>";
+    if (n.type === "Product" && n.product_line) h += "<span class='tag' style='background:#2a3450;color:#cfe0ff'>" + esc(i18nVal("product_line", n.product_line)) + "</span>";
     h += "<dl>";
     function fieldRow(k, v) {
       var val = v;
-      if (k === "status" && STATUS_MAP[v]) val = i18nText(STATUS_MAP[v]);
+      if (k === "status") val = i18nVal("status", v);
+      else if (k === "country") val = i18nVal("country", v);
+      else if (k === "region") val = i18nVal("region", v);
+      else if (k === "category") val = i18nVal("category", v);
+      else if (k === "subcategory") val = i18nVal("subcategory", v);
+      else if (k === "tier") val = i18nVal("tier", v);
+      else if (k === "product_line") val = i18nVal("product_line", v);
       return [i18nText("field." + k), val];
     }
     var assemblyTxt = (n.assembly || []).map(function (id) { return nm("S", id); }).join("、");

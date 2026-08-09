@@ -57,6 +57,13 @@ def main():
         with open(os.path.join(ROOT, "dist", "locales.js"), "w", encoding="utf-8") as bf:
             bf.write("/* 自动生成：locales/*.json 内联为全局，供 i18n.js 使用。勿手改，改 locales/*.json 后重跑 build_all.py */\n")
             bf.write("window.I18N_LOCALES = " + json.dumps(bundles, ensure_ascii=False) + ";\n")
+            # 数据枚举值的 raw->键 映射（locales/enum_map.json），graph_engine.js 运行时用来把
+            # 数据集里的枚举值转成 i18n 键（译文仍在 locales/*.json，不在 JS 里硬编码）。
+            enum_map_path = os.path.join(ROOT, "locales", "enum_map.json")
+            if os.path.exists(enum_map_path):
+                with open(enum_map_path, encoding="utf-8") as emf:
+                    enum_map = json.load(emf)
+                bf.write("window.I18N_ENUM_MAP = " + json.dumps(enum_map, ensure_ascii=False) + ";\n")
         print("generated:", "dist/locales.js", "packs:", list(bundles.keys()))
     except Exception as e:
         print("WARN: 生成 dist/locales.js 失败：", e)

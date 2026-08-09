@@ -45,6 +45,24 @@ def i18na(key, href, target="_blank", rel="noopener"):
     return "<a class='lk' href='%s' target='%s' rel='%s' data-i18n='%s'>%s</a>" \
            % (esc(href), target, rel, key, esc(txt))
 
+# 数据枚举值的 i18n 映射（raw -> 键后缀），单一来源：locales/enum_map.json。
+# 注意：这里只映射「标识符」，真实译文在 locales/*.json 里，由 i18n 运行时解析——
+# 不在任何语言里硬编码译文（满足「通过 i18N 自动翻译，不是硬编码翻译」）。
+try:
+    ENUM_MAP = json.load(open(os.path.join(ROOT, "locales", "enum_map.json"), encoding="utf-8"))
+except Exception:
+    ENUM_MAP = {}
+
+def tval(domain, raw):
+    """把数据集里的枚举值经 i18n 翻译：raw -> <domain>.<key> -> 对应语言文本。
+    未登记的值（专有名词等）原样转义返回。"""
+    if raw is None or raw == "":
+        return ""
+    key = ENUM_MAP.get(domain, {}).get(str(raw))
+    if not key:
+        return esc(raw)
+    return i18n("%s.%s" % (domain, key), default=raw)
+
 
 class Safe:
     """Wrap a string that is already valid/safe HTML; table() will NOT re-escape it.
@@ -173,11 +191,6 @@ def report_kpi(G):
 
 
 # 产品状态枚举：数据集里是中文值（在售 / 传闻/未发布），需按语言翻译
-_STATUS_KEYS = {"在售": "status.onsale", "传闻/未发布": "status.rumor"}
-def status_i18n(val):
-    k = _STATUS_KEYS.get(val)
-    return i18n(k) if k else (val or "")
-
 def product_table(G, jump=False, mode="spa"):
     _, sup_by_id, prod_assembly, _, _ = _indexes(G)
     rows = []
@@ -185,8 +198,8 @@ def product_table(G, jump=False, mode="spa"):
         comps = [c["name"] for c in G["nodes"]["components"] if c["id"] in p["components"]]
         assemblers = [sup_by_id[a]["short_name"] for a in prod_assembly[p["id"]]]
         alias = p["alias"] if p["alias"] else Safe("<span style='color:#9aa7b5'>—</span>")
-        rows.append([link(p["name"], "P:" + p["id"], jump, mode), p["product_line"], p["english_name"], alias,
-                     p["release_date"], status_i18n(p["status"]), p["soc"], p["display"],
+        rows.append([link(p["name"], "P:" + p["id"], jump, mode), tval("product_line", p["product_line"]), p["english_name"], alias,
+                     p["release_date"], tval("status", p["status"]), p["soc"], p["display"],
                      "$%s" % p["price_usd"], str(len(comps)), " / ".join(assemblers)])
     return table([i18n("report.th.fullName"), i18n("home.line"), i18n("report.th.engName"), i18n("report.th.aliasCode"),
                   i18n("field.release_date"), i18n("field.status"), i18n("report.th.soc"), i18n("field.display"),
@@ -204,7 +217,7 @@ def component_table(G, jump=False, mode="spa"):
             parts = ["<b>%s</b> <span style='color:#5b6b7d'>(%s)</span>" %
                      (link(sup_by_id[s]["short_name"], "S:" + s, jump, mode), esc(sup_by_id[s]["name"])) for s in sups]
             sups_names = Safe(" / ".join(str(p) for p in parts))
-        rows.append([link(c["name"], "C:" + c["id"], jump, mode), c["english_name"], c["category"], c["subcategory"], sups_names, str(len(sups))])
+        rows.append([link(c["name"], "C:" + c["id"], jump, mode), c["english_name"], tval("category", c["category"]), tval("subcategory", c["subcategory"]), sups_names, str(len(sups))])
     return table([i18n("report.th.compZh"), i18n("report.th.engName"), i18n("report.th.category"), i18n("field.subcategory"),
                   i18n("report.th.mainSuppliers"), i18n("report.th.supCount")], rows)
 
@@ -216,7 +229,7 @@ def supplier_table(G, jump=False, mode="spa"):
         reach = len(sup_products.get(s["id"], []))
         rows.append([link(s["name"], "S:" + s["id"], jump, mode), s["english_name"],
                      link(s["short_name"], "S:" + s["id"], jump, mode),
-                     s["country"], s["region"], s["category"], s["tier"], str(reach)])
+                     tval("country", s["country"]), tval("region", s["region"]), tval("category", s["category"]), tval("tier", s["tier"]), str(reach)])
     return table([i18n("report.th.fullName"), i18n("report.th.engName"), i18n("field.short_name"),
                   i18n("table.country"), i18n("field.region"), i18n("table.category"), i18n("table.tier"),
                   i18n("report.th.reach")], rows)
@@ -232,13 +245,13 @@ def concentration(G, jump=False, mode="spa"):
     region_bars = ""
     for reg, cnt in region_counter.most_common():
         w = int(round(460 * cnt / maxr))
-        region_bars += "<div style='margin:6px 0'><span style='display:inline-block;width:120px'>%s</span><span class='bar' style='width:%dpx'></span> <b>%d</b></div>" % (esc(reg), w, cnt)
+        region_bars += "<div style='margin:6px 0'><span style='display:inline-block;width:120px'>%s</span><span class='bar' style='width:%dpx'></span> <b>%d</b></div>" % (tval("region", reg), w, cnt)
     top_rows = [[link(sup_by_id[sid]["name"], "S:" + sid, jump, mode), sup_by_id[sid]["short_name"],
-                 sup_by_id[sid]["country"], sup_by_id[sid]["category"], str(len(plist))]
+                 tval("country", sup_by_id[sid]["country"]), tval("category", sup_by_id[sid]["category"]), str(len(plist))]
                 for sid, plist in top_suppliers[:18]]
     top_table = table([i18n("report.th.fullName"), i18n("field.short_name"), i18n("table.country"),
                        i18n("table.category"), i18n("report.th.reachModels")], top_rows)
-    cat_rows = [[k, str(v)] for k, v in cat_counter.most_common()]
+    cat_rows = [[tval("category", k), str(v)] for k, v in cat_counter.most_common()]
     cat_table = table([i18n("report.th.supCategory"), i18n("report.th.count")], cat_rows)
     return ("<h3>%s</h3>" % i18n("report.geo.h31") + region_bars +
             "<h3>%s</h3>" % i18n("report.geo.h32") + cat_table +
