@@ -133,11 +133,11 @@ make serve     # 不用 Docker 时，本地直接起 Python 静态服务器（�
 
 > 🌐 **网络受限环境（如国内）**：若 `docker.io` 拉取超时，复制一份本地配置并填入镜像源：
 > ```bash
-> cp .env.example .env      # 默认已写入华为云 docker.io 镜像源
-> make up                   # compose 自动读取 .env 的 BASE_REGISTRY 作为构建参数
+> cp .env.example .env      # 默认已写入华为云 docker.io 镜像源（完整镜像名 PYTHON_IMG/NGINX_IMG）
+> make up                   # compose 自动读取 .env 的 PYTHON_IMG / NGINX_IMG 作为构建参数
 > ```
-> 海外可直连 `docker.io` 时无需此步（不设 `.env` 即用官方源）。也可在 Docker Desktop
-> 的 Settings → Docker Engine 加入 `"registry-mirrors": ["https://镜像源"]` 一劳永逸。
+> 海外可直连 `docker.io` 时无需此步（不设 `.env` 即用官方源 `python:3.11-slim` / `nginx:1.27-alpine`）。
+> 也可在 Docker Desktop 的 Settings → Docker Engine 加入 `"registry-mirrors": ["https://镜像源"]` 一劳永逸。
 >
 > 不想用 Docker？`make serve` 或 `python3 -m http.server 8080` 直接起本地静态服务器即可，
 > 效果与 Docker 一致（同样是 http 托管）。

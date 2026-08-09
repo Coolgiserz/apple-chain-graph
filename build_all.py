@@ -15,11 +15,14 @@ import subprocess
 
 ROOT = os.path.dirname(os.path.abspath(__file__))
 
-# (步骤名, 脚本相对仓库根的路径) —— 顺序无关，但按页面逻辑排列更直观
+# (步骤名, 脚本相对仓库根的路径)
+# 注意顺序有依赖：geo_build 依赖 run_analysis 产出的 tools/output/supplier_analysis.json，
+# 故 run_analysis 必须排在 geo_build 之前；其余页面脚本互不依赖，可按页面逻辑排列。
 STEPS = [
     ("供应链图谱  graph_viewer.html",       "scripts/build_viewer.py"),
     ("上下游报告  apple_supply_chain_report.html", "scripts/report.py"),
     ("整合应用    apple_supply_chain_app.html",    "scripts/build_app.py"),
+    ("供应商估值  supplier_analysis.json",  "tools/run_analysis.py"),
     ("供应商地图  supplier_geo.html / combined",    "tools/geo_build.py"),
 ]
 
