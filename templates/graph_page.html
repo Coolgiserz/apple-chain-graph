@@ -7,7 +7,9 @@
 <style>
   * { box-sizing: border-box; }
   html, body { margin: 0; height: 100%; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #0f1320; color: #e8ecf4; overflow: hidden; }
-  #cv { position: absolute; top: 52px; left: 0; right: 0; bottom: 0; cursor: grab; }
+  /* canvas 是替换元素：仅靠 top/bottom/left/right 不会拉伸，必须用显式 width/height
+     否则回退到固有 300x150，导致图谱只画在左上角一小块（"看不到图谱"）。 */
+  #cv { position: absolute; top: 52px; left: 0; width: 100%; height: calc(100% - 52px); display: block; cursor: grab; }
   #cv.dragging { cursor: grabbing; }
   #top { position: absolute; top: 64px; left: 12px; right: 12px; display: flex; flex-wrap: wrap; gap: 10px; align-items: center;
          background: rgba(20,26,42,.85); border: 1px solid #2a3450; border-radius: 12px; padding: 10px 14px; backdrop-filter: blur(8px); z-index: 10; }
