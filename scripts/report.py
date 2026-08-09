@@ -2,10 +2,11 @@
 """Build the HTML report (v2) from the generated JSON graph.
 
 Refactored for reusability: report content is assembled from small builders
-(product_table / component_table / supplier_table / concentration / data_dictionary
-/ summary_section / model_section / ...) that all accept a `jump` flag. With
-jump=True entity names become clickable spans (<span class="lk" data-jump="graph:KEY">)
-so the standalone report and the integrated SPA share one source of truth.
+(product_table / component_table / supplier_table / concentration / summary_section
+/ model_section / risk_section / limits_section / docs_section / ...) that all accept
+a `jump` flag. With jump=True entity names become clickable spans that deep-link into
+the standalone graph / map pages. Technical-tutorial material (Neo4j import guide,
+field dictionary) lives in docs/ rather than the web report — docs_section() points there.
 """
 import json, os, sys
 from collections import defaultdict, Counter
@@ -196,17 +197,6 @@ def concentration(G, jump=False, mode="spa"):
             "<p>下表按「被多少款产品型号直接或间接使用」排序，反映供应商在苹果体系中的嵌入深度。</p>" + top_table)
 
 
-def data_dictionary(G):
-    ddict = G["meta"].get("data_dictionary", {})
-    def dd_table(rows):
-        return table(["字段", "含义", "可获取性"], [[r["field"], r["desc"], r["obtainable"]] for r in rows])
-    html = ""
-    for node, fields in ddict.items():
-        html += "<h3>%s 节点</h3>" % esc(node)
-        html += dd_table(fields)
-    return html
-
-
 def summary_section(G):
     components = G["nodes"]["components"]; suppliers = G["nodes"]["suppliers"]
     return ("<section id='sec-summary'><h2>一、执行摘要</h2>"
@@ -216,7 +206,7 @@ def summary_section(G):
             "<li><b>多源化策略对冲风险：</b>几乎所有关键零部件都有 ≥2 家供应商（如 DRAM 三家、NAND 五家、OLED 三家），以维持议价权与供应韧性。</li>"
             "<li><b>「中国 + N」产能外移：</b>iPhone 主力组装向印度、AirPods/Watch/Vision Pro 向越南、部分 Mac 向泰/马转移，但核心精密零部件仍高度依赖东亚。</li>"
             "</ul>"
-            "<div class='note'><b>本版（v2）属性增强：</b>供应商节点已拆分 <b>全称(name) / 英文名称(english_name) / 简称(short_name)</b> 三个独立字段；产品节点新增 <b>英文名称、别名/代号、发布时间(release_date)、状态(status)、起售价(price_usd)</b> 等属性；组件节点新增英文名称。字段含义与可获取性见第九节「数据字段字典」。</div>"
+            "<div class='note'><b>本版（v2）属性增强：</b>供应商节点已拆分 <b>全称(name) / 英文名称(english_name) / 简称(short_name)</b> 三个独立字段；产品节点新增 <b>英文名称、别名/代号、发布时间(release_date)、状态(status)、起售价(price_usd)</b> 等属性；组件节点新增英文名称。字段含义与可获取性见项目文档《数据模型与字段字典》。</div>"
             "</section>")
 
 
@@ -268,30 +258,20 @@ def risk_section():
             "</section>")
 
 
-def neo4j_section():
-    return ("<section id='sec-neo4j'><h2>八、Neo4j 图数据库导入指南</h2>"
-            "<p>随附文件位于 <code>data/neo4j/</code> 目录：</p>"
-            "<ul>"
-            "<li><code>products.csv</code> · <code>components.csv</code> · <code>suppliers.csv</code> — 节点文件（含 :ID / :LABEL）</li>"
-            "<li><code>rel_product_component.csv</code> · <code>rel_component_supplier.csv</code> · <code>rel_product_assembly.csv</code> — 关系文件（含 :START_ID / :END_ID / :TYPE）</li>"
-            "<li><code>import_admin.sh</code> — <b>推荐</b>：Neo4j 原生离线批量导入脚本（neo4j-admin），已写死 CSV 绝对路径，无需 import/ 目录，从任意目录运行即可</li>"
-            "<li><code>refresh_import.sh</code> — 把最新 6 个 CSV 同步进你的 <code>import/neo4j/</code> 目录（若你用 neo4j-admin 指向 import 目录的布局)</li>"
-            "<li><code>apple_supply_chain.json</code> — 完整图数据（nodes + edges + 数据字段字典）</li>"
-            "</ul>"
-            "<p><b>推荐导入步骤（Neo4j 原生批量导入，最稳最快）：</b></p>"
-            "<pre style='background:#0a2540;color:#dbeafe;padding:12px;border-radius:8px;overflow:auto;font-size:12.5px'>bash data/neo4j/import_admin.sh            # 默认库名 apple-supply-chain\n# 或自定义库名：  bash data/neo4j/import_admin.sh mydb\n# 等价手写命令（CSV 须绝对路径；neo4j-admin 从 PATH 或 NEO4J_HOME 取）：\nneo4j-admin database import full apple-supply-chain \\\n  --nodes=data/neo4j/products.csv \\\n  --nodes=data/neo4j/components.csv \\\n  --nodes=data/neo4j/suppliers.csv \\\n  --relationships=data/neo4j/rel_product_component.csv \\\n  --relationships=data/neo4j/rel_component_supplier.csv \\\n  --relationships=data/neo4j/rel_product_assembly.csv \\\n  --overwrite-destination</pre>"
-            "<p>前提：目标数据库<b>必须停机</b>（Neo4j Desktop 中先 Stop，再 Open Terminal 运行；服务器版先停服务）。本机报错 <code>Unable to find the parent of the path: products.csv</code> 正是因为传了裸文件名——改成上面的绝对路径即可。<code>--overwrite-destination</code> 让重复导入可覆盖。</p>"
-            "<p><b>关于导入格式：</b>Neo4j 官方支持的批量导入就是 <code>neo4j-admin database import</code> 读取上面这 6 个带 <code>:ID</code>/<code>:LABEL</code>/<code>:START_ID</code>/<code>:END_ID</code>/<code>:TYPE</code> 表头的 CSV —— CSV 本身就是导入文件，不需要任何 Cypher 脚本。若你的库无法停机（如 Aura 云库），才需用 Cypher 的 <code>LOAD CSV</code> 作为替代方案，但那属于「运行中的库」场景，不在本次离线批量导入范围内。</p>"
-            "<h3>示例查询</h3>"
-            "<p>查询某型号完整上游链（含供应商全称/英文名/简称）：</p>"
-            "<pre style='background:#0a2540;color:#dbeafe;padding:12px;border-radius:8px;overflow:auto;font-size:12.5px'>MATCH (p:Product {name:'iPhone 17 Pro'})-[:USES_COMPONENT]-&gt;(c:Component)-[:SUPPLIED_BY]-&gt;(s:Supplier)\nRETURN p.name, c.name, s.name, s.english_name, s.short_name, s.country, s.tier\nORDER BY c.category, s.tier;</pre>"
-            "<p>按发布时间查看产品时间线：</p>"
-            "<pre style='background:#0a2540;color:#dbeafe;padding:12px;border-radius:8px;overflow:auto;font-size:12.5px'>MATCH (p:Product)\nRETURN p.release_date AS ReleaseDate, p.name AS Product, p.product_line AS Line,\n       p.price_usd AS PriceUSD, p.status AS Status\nORDER BY p.release_date;</pre>"
-            "</section>")
+def docs_section():
+    """技术参考文档入口：把原本网页里的「Neo4j 导入指南 / 数据字段字典」等教程型内容
+    收敛到项目 docs/（docs/neo4j-import.md、docs/data-model.md），网页只留一个入口盒。"""
+    return ("<section id='sec-docs'><h2>技术参考文档</h2>"
+            "<div class='note'>"
+            "<p>本报告聚焦供应链分析；原置于网页的<strong>技术教程与字段参考</strong>已迁移到项目文档，便于离线查阅与维护：</p>"
+            "<ul style='margin:6px 0 0'>"
+            "<li><a class='lk' href='../docs/neo4j-import.md' target='_blank' rel='noopener'>Neo4j 图数据库导入指南（neo4j-admin 离线批量 / LOAD CSV 在线）</a></li>"
+            "<li><a class='lk' href='../docs/data-model.md' target='_blank' rel='noopener'>数据模型与字段字典（节点 / 关系 / 字段含义与可获取性）</a></li>"
+            "</ul></div></section>")
 
 
 def limits_section():
-    return ("<section id='sec-limits'><h2>十、数据口径与局限</h2>"
+    return ("<section id='sec-limits'><h2>八、数据口径与局限</h2>"
             "<ul>"
             "<li>型号覆盖截至 2025–2026 年苹果在售/已发布主力机型；部分尚未发布机型（如折叠屏 iPhone）仅作前瞻未纳入。</li>"
             "<li>供应商份额（share）仅对公开披露较明确的少数环节（如 MacBook 面板 BOE 51%、DRAM 三星约 60–70%）标注，其余以「主要供应商」定性描述，未逐一量化。</li>"
@@ -310,6 +290,7 @@ def build_report_inner(G, jump=False, mode="spa"):
     s = []
     s.append("<section>%s</section>" % report_kpi(G))
     s.append(summary_section(G))
+    s.append(docs_section())
     s.append(model_section(G))
     s.append("<section id='sec-products'><h2>三、产品线 · 具体型号总览</h2>")
     s.append("<p>覆盖 iPhone / Mac / iPad / Apple Watch / Vision Pro / AirPods·HomePod 六大产品线，共 %d 个型号（按发布时间排序）。</p>" % len(G["nodes"]["products"]))
@@ -326,11 +307,6 @@ def build_report_inner(G, jump=False, mode="spa"):
     s.append(concentration(G, jump, mode))
     s.append("</section>")
     s.append(risk_section())
-    s.append(neo4j_section())
-    s.append("<section id='sec-dict'><h2>九、数据字段字典（字段含义与可获取性）</h2>")
-    s.append("<p>以下说明每个节点/关系的属性字段、含义与数据可获取性，便于后续维护与扩展。</p>")
-    s.append(data_dictionary(G))
-    s.append("</section>")
     s.append(limits_section())
     s.append(footer_html())
     return "".join(s)
@@ -346,7 +322,7 @@ def build_report_full(G, jump=False, mode="web"):
               "<header><h1>苹果产品供应链上下游图谱报告</h1>"
               "<p>Apple Product Supply-Chain Graph · 产品线 × 零部件 × 供应商 × 产业链（属性增强版 v2）</p>"
               "<p>数据来源：公开供应链报告（2024–2026）+ 苹果 2024 年供应商名单（187 家核心供应商，约占直接支出的 98%）</p>"
-              "<p>生成日期：2026-08-04 · 可导入 Neo4j 图数据库的结构化数据已随附（CSV 官方导入文件 / JSON）</p></header>"
+              "<p>生成日期：2026-08-04 · 结构化数据（CSV / JSON）已随附，<a href='../docs/neo4j-import.md' target='_blank' rel='noopener' style='color:#fff;text-decoration:underline'>导入 Neo4j 的方法见技术文档</a></p></header>"
               "<div class='wrap'>")
     return prefix + build_report_inner(G, jump, mode) + "</div></body></html>"
 

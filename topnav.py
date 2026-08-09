@@ -21,6 +21,21 @@ NAV_ITEMS = [
     ("dash",   "📊 估值看板",    "tools/visualizations/supplier_dashboard.html"),
 ]
 
+# 源码仓库（GitHub）图标按钮：放在导航条最右侧，所有页面共享。
+GITHUB_URL = "https://github.com/Coolgiserz/apple-chain-graph"
+GITHUB_LINK = (
+    "<a class='wb-github' href='%s' target='_blank' rel='noopener' "
+    "title='在 GitHub 查看本项目源码'>"
+    "<svg width='20' height='20' viewBox='0 0 16 16' fill='currentColor' aria-hidden='true'>"
+    "<path d='M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 "
+    "0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 "
+    "1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 "
+    "0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 "
+    "2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 "
+    "3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0 0 16 8c0-4.42-3.58-8-8-8z'/>"
+    "</svg></a>"
+)
+
 # 导航条自身的样式（注入到各页面 <style> 中）。固定定位，z-index 最高。
 TOPNAV_CSS = """
 .wb-topnav{position:fixed;top:0;left:0;right:0;height:52px;z-index:9999;
@@ -34,6 +49,9 @@ TOPNAV_CSS = """
 .wb-topnav a:hover{background:rgba(255,255,255,.16);color:#fff}
 .wb-topnav a.active{background:#fff;color:#0a2540;font-weight:700}
 .wb-topnav .spacer{flex:1}
+.wb-topnav .wb-github{display:flex;align-items:center;justify-content:center;width:34px;height:34px;
+  margin-left:6px;border-radius:8px;color:#fff;opacity:.9;transition:background .15s,opacity .15s}
+.wb-topnav .wb-github:hover{background:rgba(255,255,255,.16);color:#fff;opacity:1}
 """
 
 
@@ -44,6 +62,7 @@ def topnav(root="../", active=None):
         cls = " class='active'" if key == active else ""
         parts.append("<a href='%s'%s>%s</a>" % (root + path, cls, label))
     parts.append("<span class='spacer'></span>")
+    parts.append(GITHUB_LINK % GITHUB_URL)
     parts.append("</nav>")
     parts.append(analytics_js())
     return "".join(parts)
