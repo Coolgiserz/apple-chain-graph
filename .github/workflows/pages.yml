@@ -1,0 +1,69 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# 部署 GitHub Pages 所必需的权限
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+# 同一时间只允许一个部署，避免并发覆盖
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: '3.11'
+
+      - name: Build all static pages
+        run: python build_all.py
+
+      - name: Assemble site
+        run: |
+          mkdir -p _site
+          cp index.html _site/
+          cp -r dist _site/
+          cp -r tools/visualizations _site/tools/visualizations
+          cp -r docs _site/docs 2>/dev/null || true
+          cp README.md LICENSE CONTRIBUTING.md _site/ 2>/dev/null || true
+          # 禁用 Jekyll：本项目无 _config.yml，但避免 _ 前缀目录被忽略、并加速构建
+          touch _site/.nojekyll
+          # 可选 —— 供应商地图页依赖腾讯地图签名代理（serviceHost 默认指向本地 127.0.0.1，
+          # 纯静态 Pages 上没有该后端，地图不会渲染）。若你自建了公开签名代理，并已配置
+          # 仓库 Secrets（TMAP_PROXY_HOST / TMAP_SECRET），可在此替换占位符：
+          #   sed -i "s#http://127.0.0.1:__WB_HTTP_PORT__#${TMAP_PROXY_HOST}#g" \
+          #     _site/tools/visualizations/supplier_geo.html \
+          #     _site/tools/visualizations/supplier_combined.html
+          #   sed -i "s#__WB_TMAP_SECRET__#${TMAP_SECRET}#g" \
+          #     _site/tools/visualizations/supplier_geo.html \
+          #     _site/tools/visualizations/supplier_combined.html
+          # 否则地图页在 Pages 上不渲染，其余页面不受影响。
+
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: _site
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

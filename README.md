@@ -32,6 +32,7 @@ zero-dependency interactive visualizations.
   - [0.1 四页统一导航（多页互跳，非孤岛）](#01-四页统一导航多页互跳非孤岛)
   - [0.2 使用 Docker 一键启动（推荐用于发布 / 统计）](#02-使用-docker-一键启动推荐用于发布--统计)
   - [0.3 启用 HTTPS（有域名 + 证书）](#03-启用-https有域名--证书)
+  - [0.4 部署到 GitHub Pages（纯静态托管）](#04-部署到-github-pages纯静态托管)
   - [1. 浏览图谱（零依赖）](#1-浏览图谱零依赖)
   - [2. 导入 Neo4j（你已有的实例）](#2-导入-neo4j你已有的实例)
   - [3. 从源码重新生成](#3-从源码重新生成)
@@ -164,6 +165,38 @@ make up-prod        # = docker compose -f docker-compose.yml -f docker-compose.p
 - 生产配置 `nginx.prod.conf` 监听 443（SSL）+ 80（跳转），含 TLS 1.2/1.3、强加密套件、HSTS 注释项。
 - 若不想在容器内终止 TLS，也可在**反向代理 / Cloudflare / 云负载均衡**处终止，容器保持默认 HTTP 即可（只用 `make up`）。
 - 想同时保留 HTTP 直连（不跳转）：把 `nginx.prod.conf` 里 80 端口的 `return 301` 换成正常 `location /` 服务即可。
+
+### 0.4 部署到 GitHub Pages（纯静态托管）
+
+本项目所有页面均为**零依赖静态文件**，天然适配 GitHub Pages。且导航全部用**相对路径**
+（`topnav` 用 `../`、`../../` 拼接 `dist/...` / `tools/visualizations/...`），无论部署在：
+
+- 用户 / 组织根域名：`https://<user>.github.io/`
+- 项目子路径：`https://<user>.github.io/apple-chain-graph/`（默认，无需自定义域名）
+- 自定义域名：Settings → Pages → Custom domain
+
+跨页导航都不会 404。Umami 统计在 **https 下正常上报**（`file://` 门控不触发）。
+
+**自动部署（推荐）**：仓库已含 `.github/workflows/pages.yml`，push 到 `main` 即自动构建并发布。
+
+1. 首次部署前，仓库 **Settings → Pages → Build and deployment → Source** 选 **GitHub Actions**。
+2. 本机把含该 workflow 的提交推送到 `main`，GitHub 自动跑 CI 并发布。
+3. 访问地址见上方三种情况；自定义域名还需在 Settings → Pages → Custom domain 填域名并按提示加 DNS。
+
+**发布内容**：CI 只挑选静态产物 —— `index.html`、`dist/`、`tools/visualizations/`、`docs/`、
+以及 `README.md` / `LICENSE` / `CONTRIBUTING.md`；**不发布** Python 源码、`data/`、`tools/*.py`、`.env`、`certs/`。
+
+**地图页限制（重要）**：供应商地图页（`supplier_geo.html` / `supplier_combined.html`）使用腾讯地图 GL JS，
+其 `serviceHost` 默认指向**本地签名代理**（`http://127.0.0.1:...`），纯静态 Pages 上没有该后端，
+**地图不会渲染**，其余页面不受影响。要让地图在 Pages 上可用，二选一：
+
+- 自建一个公开的腾讯地图签名代理服务（独立部署），把页面里的 `serviceHost` 改为
+  `https://你的代理域名/_TMapService/_wbt/<key>`（也可在 workflow 用 Secrets 自动注入，见其注释）；或
+- 改用纯前端免 Key 的地图方案（如 Leaflet + OpenStreetMap 瓦片），彻底摆脱代理与 Key。
+
+> 注：`.nojekyll` 已加入发布产物，禁用 Jekyll 以保证 `_` 前缀目录原样发布并加速构建。
+> 若只想要手动发布而不用 CI，也可在仓库 Settings → Pages 选「Deploy from a branch」并把
+> `main` 分支的 `/` 或 `/docs` 设为源——但需自行把构建产物提交进仓库。
 
 ### 1. 浏览图谱（零依赖）
 
