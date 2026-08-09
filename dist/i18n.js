@@ -15,7 +15,7 @@
 (function () {
   var SUPPORTED = ["zh", "en", "fr", "ja"];
   var DEFAULT = "zh";
-  var ASSET_VERSION = "20260809h"; // 资源版本号：改动语言包/引导脚本后递增，破除浏览器缓存
+  var ASSET_VERSION = "20260809i"; // 资源版本号：改动语言包/引导脚本后递增，破除浏览器缓存
 
   // 中文源内联兜底（镜像 locales/zh.json）
   var ZH = {
@@ -32,13 +32,20 @@
     "field.category": "类别", "field.subcategory": "子类", "field.short_name": "简称",
     "field.country": "国家/地区", "field.region": "区域", "field.tier": "层级",
     "status.onsale": "在售", "status.rumor": "传闻/未发布",
-    "link.report": "在报告中查看 →", "link.map": "在地图中查看 →"
+    "link.report": "在报告中查看 →", "link.map": "在地图中查看 →",
+    "brand": "Apple 供应链"
   };
+
+  // 安全读写 localStorage：在沙箱 iframe（无 allow-same-origin）、隐私模式等环境
+  // 下 localStorage 会抛错，必须 try/catch，否则会中断整段 i18n 初始化，导致「插件」
+  // 嵌入后整页脚本崩溃。读不到时回退到默认语言即可。
+  function lsGet(k) { try { return localStorage.getItem(k); } catch (e) { return null; } }
+  function lsSet(k, v) { try { localStorage.setItem(k, v); } catch (e) {} }
 
   function detect() {
     var p = new URLSearchParams(location.search).get("lang");
     if (p && SUPPORTED.indexOf(p) >= 0) return p;
-    var s = localStorage.getItem("site_lang");
+    var s = lsGet("site_lang");
     if (s && SUPPORTED.indexOf(s) >= 0) return s;
     return DEFAULT; // 默认中文
   }
@@ -117,7 +124,7 @@
     if (SUPPORTED.indexOf(lng) < 0) lng = DEFAULT;
     current = lng;
     api.lng = lng;
-    localStorage.setItem("site_lang", lng);
+    lsSet("site_lang", lng);
     try {
       var u = new URL(location.href);
       u.searchParams.set("lang", lng);

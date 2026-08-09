@@ -100,5 +100,6 @@
   "report.th.count": "数量",
   "report.header.neo4jLink": "Neo4j のインポート方法は技術ドキュメント参照",
   "status.onsale": "販売中",
-  "status.rumor": "未発表（うわさ）"
+  "status.rumor": "未発表（うわさ）",
+  "brand": "Apple サプライチェーン"
 }

@@ -69,7 +69,7 @@ def topnav(root="../", active=None):
     折叠为汉堡菜单、宽屏保持横向排列，从而解决移动端导航栏「显示不全」。
     库 CSS/JS 经 `root` 拼接路径，离线 / 国内访问均可用。
     """
-    parts = ["<nav class='wb-topnav'>", "<span class='brand'>Apple 供应链</span>"]
+    parts = ["<nav class='wb-topnav'>", "<span class='brand' data-i18n='brand'>Apple 供应链</span>"]
     # 菜单区：响应式框架管理，窄屏折叠为汉堡
     parts.append("<nav class='nav-collapse'><ul>")
     for key, label, path in NAV_ITEMS:
@@ -92,9 +92,9 @@ def topnav(root="../", active=None):
     # dist/locales.js 由 build_viewer.py 从 locales/*.json 内联生成，i18n.js 直接读取，
     # 不依赖运行时 fetch —— 规避「部署遗漏 locales/ 目录 → 404」与 file:// 的 CORS 限制。
     # ?v= 资源版本号：改动语言包/引导脚本后递增，强制浏览器放弃旧缓存
-    parts.append("<script src='%sdist/vendor/i18next.min.js?v=20260809h'></script>" % root)
-    parts.append("<script src='%sdist/locales.js?v=20260809h'></script>" % root)
-    parts.append("<script src='%sdist/i18n.js?v=20260809h'></script>" % root)
+    parts.append("<script src='%sdist/vendor/i18next.min.js?v=20260809i'></script>" % root)
+    parts.append("<script src='%sdist/locales.js?v=20260809i'></script>" % root)
+    parts.append("<script src='%sdist/i18n.js?v=20260809i'></script>" % root)
     parts.append(analytics_js())
     return "".join(parts)
 

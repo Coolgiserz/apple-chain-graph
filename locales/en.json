@@ -100,5 +100,6 @@
   "report.th.count": "Count",
   "report.header.neo4jLink": "See technical docs for Neo4j import",
   "status.onsale": "On Sale",
-  "status.rumor": "Unreleased (rumored)"
+  "status.rumor": "Unreleased (rumored)",
+  "brand": "Apple Supply Chain"
 }

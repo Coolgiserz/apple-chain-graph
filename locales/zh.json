@@ -100,5 +100,6 @@
   "report.th.count": "数量",
   "report.header.neo4jLink": "导入 Neo4j 的方法见技术文档",
   "status.onsale": "在售",
-  "status.rumor": "传闻/未发布"
+  "status.rumor": "传闻/未发布",
+  "brand": "Apple 供应链"
 }
