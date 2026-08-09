@@ -42,6 +42,7 @@ zero-dependency interactive visualizations.
 - [供应商基本面与相对估值分析](#供应商基本面与相对估值分析)
 - [供应商舆情分析](#供应商舆情分析)
 - [供应商分析可视化看板](#供应商分析可视化看板)
+- [供应链脆弱性分析（零部件 → 产品 → 产品线）](#供应链脆弱性分析零部件--产品--产品线)
 - [技术栈](#技术栈)
 - [目录结构](#目录结构)
 - [路线图](#路线图)
@@ -293,6 +294,8 @@ python3 tools/geo_build.py      # 生成 tools/visualizations/supplier_geo.html�
 python3 tools/run_analysis.py                 # 全量分析 → tools/output/{supplier_analysis.md,json}
 python3 tools/run_analysis.py --id tsmc       # 只看某一家（打印到 stdout）
 python3 tools/run_analysis.py --md out.md --json out.json
+python3 tools/run_risk.py                    # 供应链脆弱性 → tools/output/{supply_chain_risk.md,json}
+python3 tools/run_risk.py --top 5            # 仅打印 Top5 最脆弱产品线/产品/零部件
 ```
 
 - 估值方法：当前倍数 ÷ **同业组（sector）中位** → 取 P/E、P/B、EV/EBITDA 三比值均值。
@@ -333,6 +336,26 @@ python3 tools/run_sentiment.py --id qualcomm    # 只看某一家
 
 > 数据源：`tools/data/supplier_fundamentals.csv` + `supplier_sentiment.csv` +
 > `tools/output/supplier_analysis.json`。图表依赖 CDN 上的 Chart.js（首次打开需联网）。
+
+## 供应链脆弱性分析（零部件 → 产品 → 产品线）
+
+在估值 / 舆情之外，新增一层**图结构视角的供应链风险分析**：从「每个零部件有多少供应商」
+出发，自下而上聚合出产品、再上卷到产品线的脆弱性，回答「哪条产品线面临的供应链风险最大」。
+
+模型（朴素 / 基础口径，详见 **[docs/supply-chain-risk.md](docs/supply-chain-risk.md)**）：
+
+- **零部件脆弱性** `V = 1 / n`（n = 该组件供应商数）：供应商越少越脆弱；`n = 1` 即单点依赖（断供即停产），`V = 1.0`；`n = 0`（缺供应数据）同样按最脆弱处理。
+- **产品脆弱性** = `0.5 × 零部件脆弱性均值`（整体暴露） + `0.3 × 最弱环节`（最大单部件脆弱性） + `0.2 × 单点部件占比`，综合得 `[0,1]` 区间分数。
+- **产品线脆弱性** = 其下产品脆弱性的均值上卷，并汇总最弱环节与单点部件总数。
+
+```bash
+python3 tools/run_risk.py                 # 全量分析 → tools/output/{supply_chain_risk.md,json}
+python3 tools/run_risk.py --top 5         # 仅打印 Top5 最脆弱产品线/产品/零部件
+python3 tools/run_risk.py --md out.md --json out.json
+```
+
+- 结论完全由图数据驱动（`data/apple_supply_chain.json` 单一来源），纯标准库、零三方依赖。
+- 当前口径以「供应商数量」为主信号；组件供应商的**地理分散度**（覆盖国家数）作为参考字段一并输出——同国多源不算真冗余，便于人工识别「伪冗余」陷阱。**不构成任何采购或投资建议**。
 
 ## 技术栈
 
@@ -388,6 +411,7 @@ apple_supply_chain/
 ├── tools/                    # 供应商基本面与相对估值分析（可复现，纯标准库）
 │   ├── run_analysis.py        # CLI：合并三源 → 跑估值 → 输出 md/json
 │   ├── run_sentiment.py       # CLI：生成供应商舆情分析报告
+│   ├── run_risk.py            # CLI：供应链脆弱性分析（零部件→产品→产品线）→ 输出 md/json
 │   ├── data/
 │   │   ├── supplier_fundamentals.csv  # 15 家重点供应商基本面+倍数+来源
 │   │   └── supplier_sentiment.csv     # 15 家重点供应商舆情（新闻/分析师/催化剂/风险/来源）
@@ -396,11 +420,14 @@ apple_supply_chain/
 │   │   ├── analysis.py        # 三源合并编排
 │   │   ├── valuation.py       # 同业相对估值引擎（当前倍数 vs 同业中位）
 │   │   ├── report.py          # 渲染 valuation markdown + json
-│   │   └── sentiment.py       # 舆情加载与渲染
+│   │   ├── sentiment.py       # 舆情加载与渲染
+│   │   └── risk.py            # 供应链脆弱性引擎（零部件脆弱性 + 产品/产品线聚合）
 │   └── output/                # 生成的供应商分析产物
 │       ├── supplier_analysis.md
 │       ├── supplier_analysis.json
-│       └── supplier_sentiment.md
+│       ├── supplier_sentiment.md
+│       ├── supply_chain_risk.md
+│       └── supply_chain_risk.json
 ├── docs/                     # 文档
 │   ├── neo4j-import.md       # Neo4j 导入详细教程（你自己的实例）
 │   ├── data-model.md         # 数据模型与字段字典
@@ -420,6 +447,7 @@ apple_supply_chain/
 - [x] 上下游报告 + 跨页深链
 - [x] 各页面统一导航（多页互跳）
 - [x] 15 家重点供应商：同业相对估值 + 舆情分析 + 可视化看板
+- [x] 供应链脆弱性分析（零部件 → 产品 → 产品线，图结构单点依赖视角）
 - [ ] 数据时效自动化更新（行情快照刷新脚本）
 - [ ] 更多产品线 / 未发布机型的覆盖补全
 - [ ] 图谱与地图的双向联动（点击供应商同时在高亮其上下游链路）
@@ -461,6 +489,7 @@ apple_supply_chain/
 - [docs/neo4j-import.md](docs/neo4j-import.md) — Neo4j 导入详细教程（聚焦你已有的实例）
 - [docs/data-model.md](docs/data-model.md) — 数据模型与字段字典
 - [docs/supplier-analysis.md](docs/supplier-analysis.md) — 供应商基本面与相对估值：方法 / 口径 / 局限
+- [docs/supply-chain-risk.md](docs/supply-chain-risk.md) — 供应链脆弱性（零部件→产品→产品线）：模型 / 权重 / 局限
 
 ## 数据来源与口径
 

@@ -23,6 +23,7 @@ STEPS = [
     ("企业列表    supplier_table.html",     "scripts/build_table.py"),
     ("上下游报告  apple_supply_chain_report.html", "scripts/report.py"),
     ("供应商估值  supplier_analysis.json",  "tools/run_analysis.py"),
+    ("供应链风险  supply_chain_risk.json",  "tools/run_risk.py"),
     ("供应商地图  supplier_geo.html",       "tools/geo_build.py"),
     ("估值看板    supplier_dashboard.html", "tools/build_dashboard.py"),
 ]

@@ -37,6 +37,7 @@
 - [Supplier fundamentals & relative valuation analysis](#supplier-fundamentals--relative-valuation-analysis)
 - [Supplier sentiment analysis](#supplier-sentiment-analysis)
 - [Supplier analysis dashboard](#supplier-analysis-dashboard)
+- [Supply chain vulnerability analysis (Component → Product → Product line)](#supply-chain-vulnerability-analysis-component--product--product-line)
 - [Tech stack](#tech-stack)
 - [Directory structure](#directory-structure)
 - [Roadmap](#roadmap)
@@ -254,6 +255,8 @@ The tool is entirely based on the Python standard library, with data and code se
 python3 tools/run_analysis.py                 # full analysis → tools/output/{supplier_analysis.md,json}
 python3 tools/run_analysis.py --id tsmc       # view a single supplier only (print to stdout)
 python3 tools/run_analysis.py --md out.md --json out.json
+python3 tools/run_risk.py                    # supply chain vulnerability → tools/output/{supply_chain_risk.md,json}
+python3 tools/run_risk.py --top 5            # print only Top5 most vulnerable lines/products/components
 ```
 
 - Valuation method: current multiple ÷ **peer group (sector) median** → mean of the three ratios P/E, P/B, EV/EBITDA. `< 0.85` undervalued, `> 1.15` overvalued, otherwise fairly valued; when peers are insufficient, fall back to the full-sample median (marked in the report).
@@ -285,6 +288,25 @@ python3 tools/run_sentiment.py --id qualcomm    # view a single supplier only
 5. **Sector market-cap distribution + detail table** — per-sector total market-cap bar chart + 15-supplier key-metrics table.
 
 > Data sources: `tools/data/supplier_fundamentals.csv` + `supplier_sentiment.csv` + `tools/output/supplier_analysis.json`. Charts rely on Chart.js from CDN (network needed on first open).
+
+## Supply chain vulnerability analysis (Component → Product → Product line)
+
+Beyond valuation / sentiment, a new **graph-structure view of supply chain risk**: starting from "how many suppliers each component has", aggregate bottom-up to products, then roll up to product lines, to answer "which product line faces the greatest supply chain risk".
+
+Model (naive / basic convention; full detail in **[docs/supply-chain-risk.md](docs/supply-chain-risk.md)**):
+
+- **Component vulnerability** `V = 1 / n` (n = number of suppliers for that component): fewer suppliers → more vulnerable; `n = 1` is a single point of failure (stop-ship on disruption), `V = 1.0`; `n = 0` (missing data) also treated as most vulnerable.
+- **Product vulnerability** = `0.5 × mean component vulnerability` (overall exposure) + `0.3 × weakest link` (max single-component vulnerability) + `0.2 × single-point share`, yielding a `[0,1]` score.
+- **Product line vulnerability** = the mean of its products' vulnerability, with weakest link and total single-point count summarized.
+
+```bash
+python3 tools/run_risk.py                    # full analysis → tools/output/{supply_chain_risk.md,json}
+python3 tools/run_risk.py --top 5            # print only Top5 most vulnerable lines/products/components
+python3 tools/run_risk.py --md out.md --json out.json
+```
+
+- Driven entirely by the graph data (`data/apple_supply_chain.json`, single source of truth); pure standard library, zero third-party dependencies.
+- The current convention uses "supplier count" as the primary signal; a component's **geographic dispersion** (number of distinct countries) is output as a reference field — multiple suppliers in one country is not true redundancy, helping spot "pseudo-redundancy" traps. **Not investment or procurement advice.**
 
 ## Tech stack
 
@@ -340,6 +362,7 @@ apple_supply_chain/
 ├── tools/                    # supplier fundamentals & relative valuation analysis (reproducible, pure standard library)
 │   ├── run_analysis.py        # CLI: merge three sources → run valuation → output md/json
 │   ├── run_sentiment.py       # CLI: generate supplier sentiment analysis report
+│   ├── run_risk.py            # CLI: supply chain vulnerability (component→product→line) → output md/json
 │   ├── data/
 │   │   ├── supplier_fundamentals.csv  # 15 key suppliers' fundamentals + multiples + sources
 │   │   └── supplier_sentiment.csv     # 15 key suppliers' sentiment (news/analyst/catalysts/risks/sources)
@@ -348,11 +371,14 @@ apple_supply_chain/
 │   │   ├── analysis.py        # three-source merge orchestration
 │   │   ├── valuation.py       # peer-relative valuation engine (current multiple vs peer median)
 │   │   ├── report.py          # render valuation markdown + json
-│   │   └── sentiment.py       # sentiment loading & rendering
+│   │   ├── sentiment.py       # sentiment loading & rendering
+│   │   └── risk.py            # supply chain vulnerability engine (component vuln + product/line aggregation)
 │   └── output/                # generated supplier analysis artifacts
 │       ├── supplier_analysis.md
 │       ├── supplier_analysis.json
-│       └── supplier_sentiment.md
+│       ├── supplier_sentiment.md
+│       ├── supply_chain_risk.md
+│       └── supply_chain_risk.json
 ├── docs/                     # documentation
 │   ├── neo4j-import.md       # detailed Neo4j import tutorial (your own instance)
 │   ├── data-model.md         # data model & field dictionary
@@ -372,6 +398,7 @@ apple_supply_chain/
 - [x] Upstream/downstream report + cross-page deep links
 - [x] Unified navigation across pages (multi-page jump)
 - [x] 15 key suppliers: peer-relative valuation + sentiment analysis + visualization dashboard
+- [x] Supply chain vulnerability analysis (component → product → product line, graph single-point-dependency view)
 - [x] Bilingual docs (English README) & multi-language UI (i18n for zh/en/fr/ja)
 - [ ] Automated data-freshness updates (market snapshot refresh script)
 - [ ] Broader coverage of more product lines / unreleased models
@@ -413,6 +440,7 @@ To address the above limitations, future work can improve along three dimensions
 - [docs/neo4j-import.md](docs/neo4j-import.md) — detailed Neo4j import tutorial (focused on your existing instance)
 - [docs/data-model.md](docs/data-model.md) — data model & field dictionary
 - [docs/supplier-analysis.md](docs/supplier-analysis.md) — supplier fundamentals & relative valuation: method / conventions / limitations
+- [docs/supply-chain-risk.md](docs/supply-chain-risk.md) — supply chain vulnerability (component→product→line): model / weights / limitations
 - 中文文档：[README.md](README.md)
 
 ## Data sources & conventions
