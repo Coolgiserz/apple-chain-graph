@@ -41,7 +41,7 @@ GITHUB_LINK = (
 
 # 导航条自身的样式（注入到各页面 <style> 中）。固定定位，z-index 最高。
 TOPNAV_CSS = """
-.wb-topnav{position:fixed;top:0;left:0;right:0;height:52px;z-index:9999;
+.wb-topnav{position:fixed;top:0;left:0;right:0;height:calc(52px + env(safe-area-inset-top));padding-top:env(safe-area-inset-top);z-index:9999;
   display:flex;align-items:center;gap:6px;padding:0 14px;
   background:linear-gradient(135deg,#0a2540,#0a66c2);color:#fff;
   font-family:-apple-system,'Segoe UI',Roboto,'PingFang SC','Microsoft YaHei',sans-serif;
