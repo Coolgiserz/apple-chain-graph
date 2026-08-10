@@ -2,12 +2,17 @@
 # -*- coding: utf-8 -*-
 """生成首页供应链图谱（仓库根目录 index.html）。
 
-前端已抽离到 templates/ 单独维护：
-  - templates/graph_engine.js   共享力导向引擎（首页与整合 SPA 共用，单一事实来源）
-  - templates/graph_page.html   首页 HTML 模版（CSS 内联，仅留数据/导航/资源占位符）
-  - templates/graph_bootstrap.js 首页启动脚本（注入跨页链接、启动、?focus= 深链）
+前端脚本分两类来源：
+  - 由 esbuild 打包（单一事实来源，src/ 下 ES Module）：
+      src/engine/index.js -> dist/graph_engine.js   共享力导向引擎（首页与整合 SPA 共用）
+      src/i18n.js          -> dist/i18n.js           站点国际化引导层
+    这一步由 build_all.py 的 run_node_build() 在跑本脚本之前完成（npm ci + npm run build）。
+  - 仍由 templates/ 内联维护（非 ESM、随页面特有的胶水代码）：
+      templates/graph_page.html    首页 HTML 模版（CSS 内联，仅留数据/导航/资源占位符）
+      templates/graph_bootstrap.js 首页启动脚本（注入跨页链接、启动、?focus= 深链）
+      templates/graph_table_panel.js 企业表格侧栏面板
 
-本脚本只负责：读 JSON -> 填模版 -> 输出根 index.html + 复制引擎/启动脚本到 dist/。
+本脚本只负责：读 JSON -> 填模版 -> 输出根 index.html；并把 templates/ 下的胶水脚本复制到 dist/。
 首页即图谱，导航由 topnav.py 统一生成在页面顶部；不再单独生成 dist/graph_viewer.html。
 """
 import hashlib, html, json, os, shutil, sys
@@ -61,6 +66,16 @@ def merge_risk(data):
 def load(name):
     with open(os.path.join(TEMPLATES, name), encoding="utf-8") as f:
         return f.read()
+
+
+def inline_json(obj):
+    """把对象序列化为可安全内联进 <script> 标签的 JSON 字符串。
+
+    数据来自 AI 联网抓取的供应商 / 零部件文本，可能含 "</script>" 片段；
+    json.dumps 默认不转义 <，故把 < 替换为 \\u003c（合法 JSON 转义，JS 解析后
+    还原为 <），避免脚本注入与页面结构破坏。供测试直接断言此不变量。
+    """
+    return json.dumps(obj, ensure_ascii=False).replace("<", "\\u003c")
 
 
 def asset_url(relpath):
@@ -307,9 +322,18 @@ def write_og_cover(path, w=1200, h=630):
 def main():
     DATA_merged = merge_risk(DATA)
 
-    # 先复制共享引擎与启动脚本到 dist/（与整合 SPA 共用、一并发布）——
+    # dist/graph_engine.js 与 dist/i18n.js 已由 build_all.py 的 run_node_build()
+    # （esbuild 打包 src/）在跑本脚本之前生成。此处校验它们存在，避免带着未更新的
+    # 旧引擎 / 缺 i18n 静默发布。这两个文件是「团队就绪」重构后的唯一事实来源。
+    for built in ("graph_engine.js", "i18n.js"):
+        if not os.path.exists(os.path.join(ROOT, "dist", built)):
+            print("✗ 缺少前端构建产物 dist/%s，请先运行 `npm run build`（或 `python build_all.py`）。"
+                  % built, file=sys.stderr)
+            sys.exit(1)
+
+    # 复制 templates/ 下仍以内联方式维护的胶水脚本到 dist/（与整合 SPA 共用、一并发布）——
     # 必须在算哈希之前，否则 ?v= 戳会是上一版内容、与即将写入的新文件不匹配。
-    for fname in ("graph_engine.js", "graph_bootstrap.js", "graph_table_panel.js", "i18n.js"):
+    for fname in ("graph_bootstrap.js", "graph_table_panel.js"):
         shutil.copyfile(os.path.join(TEMPLATES, fname), os.path.join(ROOT, "dist", fname))
 
     # 把 locales/*.json 内联成一个 vendored JS 全局（dist/locales.js），
@@ -342,7 +366,7 @@ def main():
     # 内联 JSON 防 </script> 逃逸：DATA 含 AI 抓取的供应商/零部件文本，可能含
     # "</script>" 片段；json.dumps 不转义 <，故把 < 替换为 \u003c（合法 JSON 转义，
     # JS 解析后还原为 <），避免脚本注入与页面结构破坏。
-    data_json = json.dumps(DATA_merged, ensure_ascii=False).replace("<", "\\u003c")
+    data_json = inline_json(DATA_merged)
     page = (load("graph_page.html")
             .replace("__DATA__", data_json)
             .replace("__TOPNAV_CSS__", TOPNAV_CSS)
@@ -372,7 +396,7 @@ def main():
         print("WARN: 生成 SEO 基础设施失败：", e)
 
     print("written:", dst, "bytes:", len(page))
-    print("copied :", "dist/graph_engine.js, dist/graph_bootstrap.js, dist/graph_table_panel.js, dist/i18n.js")
+    print("copied :", "dist/graph_bootstrap.js, dist/graph_table_panel.js  (graph_engine.js / i18n.js 由 esbuild 生成)")
 
 
 if __name__ == "__main__":

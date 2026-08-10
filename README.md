@@ -129,7 +129,7 @@ zero-dependency interactive visualizations.
 
 ### 0.2 使用 Docker 一键启动（推荐用于发布 / 统计）
 
-把整站装进一个 **nginx 容器**，**一条命令**即可在 `http://localhost:8080` 提供全部页面（含入口落地页）。
+把整站装进一个 **nginx 容器**，**一条命令**即可在 `http://localhost:16161` 提供全部页面（含入口落地页）。
 
 通过 **http 访问**后，Umami 访问统计才会真正上报——本地 `file://` 双击打开时统计脚本被主动跳过（见 `topnav.py` 的 `location.protocol` 门控）。所以若要统计访问频次，**用 Docker / 任意 http 服务托管**是更合适的启动方式。统计配置（Website ID 等）已改为**环境变量**注入，不再硬编码在源码中：本地把值写进仓库根的 `.env`（已被 `.gitignore` 忽略），CI 则通过 `pages.yml` 的 `env:` 注入（详见 `.env.example` 与 `topnav.py`）。
 
@@ -137,7 +137,7 @@ zero-dependency interactive visualizations.
 
 ```bash
 make up        # = docker compose up -d --build，构建镜像并后台启动
-# 浏览器打开 http://localhost:8080
+# 浏览器打开 http://localhost:16161
 make down      # 停止并移除容器
 make logs      # 查看容器日志
 make build     # 仅构建镜像
@@ -152,7 +152,7 @@ make serve     # 不用 Docker 时，本地直接起 Python 静态服务器（�
 > 海外可直连 `docker.io` 时无需此步（不设 `.env` 即用官方源 `python:3.11-slim` / `nginx:1.27-alpine`）。
 > 也可在 Docker Desktop 的 Settings → Docker Engine 加入 `"registry-mirrors": ["https://镜像源"]` 一劳永逸。
 >
-> 不想用 Docker？`make serve` 或 `python3 -m http.server 8080` 直接起本地静态服务器即可，
+> 不想用 Docker？`make serve` 或 `python3 -m http.server 16161` 直接起本地静态服务器即可，
 > 效果与 Docker 一致（同样是 http 托管）。
 > ⚠️ **供应商地图页**依赖腾讯位置服务 GL JS，需要**真实域名 + 有效 Key**（替换页面里的
 > `__WB_TMAP_SECRET__` 占位符），`localhost` 下地图不会渲染——其余页面不受影响。
@@ -160,7 +160,7 @@ make serve     # 不用 Docker 时，本地直接起 Python 静态服务器（�
 
 ### 0.3 启用 HTTPS（有域名 + 证书）
 
-默认 `make up` 走 **HTTP**（端口 `8080`），适合本地调试、或暂无条件配置证书时由你选择 HTTP 部署。
+默认 `make up` 走 **HTTP**（端口 `16161`），适合本地调试、或暂无条件配置证书时由你选择 HTTP 部署。
 当你已有域名和有效证书（如 Let's Encrypt 的 `fullchain.pem` + `privkey.pem`）时，用「生产覆盖」在
 容器内终止 TLS、HTTP 自动跳转 HTTPS，**无需改动默认 HTTP 流程**：
 

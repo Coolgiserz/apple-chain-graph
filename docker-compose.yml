@@ -3,7 +3,7 @@
 # 用法：
 #   docker compose up -d --build   # 构建镜像并后台启动
 #   docker compose down            # 停止并移除容器
-#   浏览器打开 http://localhost:8080
+#   浏览器打开 http://localhost:16161
 #
 # 也可用 Makefile 快捷键：make up / make down / make logs / make serve
 services:

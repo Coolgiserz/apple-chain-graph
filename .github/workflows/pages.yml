@@ -31,7 +31,23 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Frontend build, lint & test
+        # 前端由 esbuild 打包（src/ -> dist/*.js）；先构建再做 lint + 引擎契约测试。
+        run: |
+          npm ci
+          npm run build
+          npm run lint
+          node tests/engine.test.mjs
+
       - name: Build all static pages
+        # 前端产物已在上方「Frontend build」步骤生成，跳过 build_all.py 内的重复 Node 构建。
+        env:
+          SKIP_NODE_BUILD: "1"
         # 可选 —— 访问统计：若要在 GitHub Pages 上启用你自己的 Umami / GoatCounter，
         # 先在仓库 Settings → Secrets 添加 ANALYTICS_WEBSITE_ID（等），再取消下面
         # env: 注释，把配置注入构建环境（build_all.py 与 topnav.py 会读取这些变量；
@@ -68,6 +84,13 @@ jobs:
           #     _site/tools/visualizations/supplier_geo.html \
           #     _site/tools/visualizations/supplier_combined.html
           # 否则地图页在 Pages 上不渲染，其余页面不受影响。
+
+      - name: Python lint & tests
+        run: |
+          python -m pip install -r requirements-dev.txt
+          python -m unittest discover -s tests -p "test_*.py"
+        # flake8 作为渐进式风格门禁：先不阻断部署，待存量代码清理后改为 blocking。
+        continue-on-error: true
 
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3

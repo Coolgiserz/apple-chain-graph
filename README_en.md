@@ -120,7 +120,7 @@ Deep links (cross-page jump to a specific entity):
 
 ### 0.2 One-click Docker launch (recommended for publishing / analytics)
 
-Package the whole site into an **nginx container** and serve all pages (including the entry landing page) at `http://localhost:8080` with **one command**.
+Package the whole site into an **nginx container** and serve all pages (including the entry landing page) at `http://localhost:16161` with **one command**.
 
 Only after accessing via **http** will Umami analytics actually report — when opened locally via `file://`, the analytics script is deliberately skipped (see the `location.protocol` gate in `topnav.py`). So if you want visit-frequency analytics, hosting via **Docker / any http server** is the better launch method. Analytics config (Website ID, etc.) is now injected via **environment variables** instead of being hard-coded in source: locally write values into a repo-root `.env` (already git-ignored), and in CI inject via the `env:` block in `pages.yml` (see `.env.example` and `topnav.py`).
 
@@ -128,7 +128,7 @@ Prerequisite: Docker installed (with Compose v2).
 
 ```bash
 make up        # = docker compose up -d --build, build image and start in background
-# open http://localhost:8080 in browser
+# open http://localhost:16161 in browser
 make down      # stop and remove containers
 make logs      # view container logs
 make build     # build image only
@@ -142,13 +142,13 @@ make serve     # without Docker, start a local Python static server (same port)
 > ```
 > Overseas, directly pulling `docker.io` needs no such step (no `.env` → official sources `python:3.11-slim` / `nginx:1.27-alpine`). You can also add `"registry-mirrors": ["https://<mirror>"]` in Docker Desktop Settings → Docker Engine once and for all.
 >
-> Don't want Docker? `make serve` or `python3 -m http.server 8080` starts a local static server directly — same effect as Docker (also http hosting).
+> Don't want Docker? `make serve` or `python3 -m http.server 16161` starts a local static server directly — same effect as Docker (also http hosting).
 > ⚠️ The **supplier map page** relies on Tencent Location Service GL JS, which needs a **real domain + valid Key** (replace the `__WB_TMAP_SECRET__` placeholder in the page). Under `localhost` the map won't render — other pages are unaffected.
 > The container build runs `build_all.py` to regenerate all pages; after changing data, `make up` rebuilds automatically.
 
 ### 0.3 Enable HTTPS (domain + certificate)
 
-By default `make up` serves **HTTP** (port `8080`), suitable for local debugging, or HTTP deployment when you are not yet ready to configure a certificate. When you already have a domain and valid certificate (e.g. Let's Encrypt `fullchain.pem` + `privkey.pem`), use the "production override" to terminate TLS inside the container and auto-redirect HTTP → HTTPS, **without changing the default HTTP flow**:
+By default `make up` serves **HTTP** (port `16161`), suitable for local debugging, or HTTP deployment when you are not yet ready to configure a certificate. When you already have a domain and valid certificate (e.g. Let's Encrypt `fullchain.pem` + `privkey.pem`), use the "production override" to terminate TLS inside the container and auto-redirect HTTP → HTTPS, **without changing the default HTTP flow**:
 
 ```bash
 mkdir -p certs

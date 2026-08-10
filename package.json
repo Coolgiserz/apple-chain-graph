@@ -1,0 +1,21 @@
+{
+  "name": "apple-supply-chain-web",
+  "version": "1.0.0",
+  "private": true,
+  "type": "module",
+  "description": "前端脚本由 npm/esbuild 管理：src/ 下的 ES Module 源经 esbuild 打包内联为 dist/i18n.js 与 dist/graph_engine.js（IIFE）。i18next 运行时由 vendored dist/vendor/i18next.min.js 以全局 window.i18next 提供。",
+  "scripts": {
+    "build:i18n": "esbuild src/i18n.js --bundle --minify --format=iife --outfile=dist/i18n.js",
+    "build:engine": "esbuild src/engine/index.js --bundle --minify --format=iife --outfile=dist/graph_engine.js",
+    "build": "npm run build:i18n && npm run build:engine",
+    "watch": "npm run build:i18n -- --watch & npm run build:engine -- --watch",
+    "lint": "eslint src"
+  },
+  "dependencies": {
+    "i18next": "23.11.5"
+  },
+  "devDependencies": {
+    "esbuild": "^0.23.1",
+    "eslint": "^9.13.0"
+  }
+}
