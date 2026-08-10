@@ -284,17 +284,12 @@ export function loop() {
 export function reheat(a) { S.alpha = Math.max(S.alpha, (a == null ? 0.5 : a)); kick(); }
 
 export function applyFocus(n) {
-  S.selected = n;
+  selectNode(n);   // 复用 selectNode：设置 S.selected + 右侧面板，并广播 sc:select（反向联动表格）
   var cbId = n.type === "Product" ? "cbP" : n.type === "Component" ? "cbC" : "cbS";
   var cb = document.getElementById(cbId);
   if (cb && !cb.checked) cb.checked = true;
   reheat(1);
   S.view.ox = W() / 2 - n.x * S.view.scale; S.view.oy = H() / 2 - n.y * S.view.scale;
-  if (S.riskMode) { renderRiskPanel(n); showRiskPanel(true); }
-  else {
-    renderPanel(n);
-    var panel = document.getElementById("panel"); if (panel) panel.style.display = "block";
-  }
 }
 export function focus(key) {
   var n = S.idMap[key]; if (!n) return;

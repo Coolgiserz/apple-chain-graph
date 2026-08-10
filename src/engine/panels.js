@@ -8,8 +8,21 @@ export function showRiskPanel(on) {
   if (rp) rp.style.display = on ? "flex" : "none";
 }
 
+// 选中变化广播（P0 反向联动）：让「企业表格」等外部面板能订阅图谱选中事件，
+// 从而把图谱/右侧面板的选中状态同步回表格高亮。key 为 null 表示清空选中。
+function emitSelect(n) {
+  try {
+    if (typeof document !== "undefined" && document.dispatchEvent && typeof CustomEvent !== "undefined") {
+      document.dispatchEvent(new CustomEvent("sc:select", {
+        detail: { key: n ? n._key : null, type: n ? n.type : null, name: n ? (n.name || n.id) : null }
+      }));
+    }
+  } catch (e) { /* DOM 桩环境无 CustomEvent 时静默跳过（make test 安全） */ }
+}
+
 export function selectNode(n) {
   S.selected = n;
+  emitSelect(n);   // 广播选中变化（含清空）；所有选中路径经此函数，表格据此同步高亮
   var panel = document.getElementById("panel");
   if (!n) {
     if (panel) panel.style.display = "none";
