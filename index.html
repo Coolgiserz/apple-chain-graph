@@ -3,7 +3,28 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>苹果供应链上下游图谱</title>
+  <title>苹果供应链上下游图谱</title>
+  <!--SEO-->
+  <meta name="description" content="苹果产品供应链上下游知识图谱：以「产品→零部件→供应商」三层模型覆盖6大产品线（iPhone、Mac、iPad、Apple Watch、Vision Pro、AirPods）、28款产品、27个核心零部件、60家供应商，量化单点依赖与供应脆弱性并给出最脆弱产品线排名；数据源自公开供应链报告与苹果供应商名单，以 MIT 许可开源。">
+    <link rel="canonical" href="https://coolgiserz.github.io/apple-chain-graph/">
+    <meta property="og:type" content="website">
+    <meta property="og:title" content="苹果供应链上下游图谱">
+    <meta property="og:description" content="苹果产品供应链上下游知识图谱：以「产品→零部件→供应商」三层模型覆盖6大产品线（iPhone、Mac、iPad、Apple Watch、Vision Pro、AirPods）、28款产品、27个核心零部件、60家供应商，量化单点依赖与供应脆弱性并给出最脆弱产品线排名；数据源自公开供应链报告与苹果供应商名单，以 MIT 许可开源。">
+    <meta property="og:url" content="https://coolgiserz.github.io/apple-chain-graph/">
+    <meta property="og:image" content="https://coolgiserz.github.io/apple-chain-graph/assets/og-cover.png">
+    <meta property="og:site_name" content="Apple Chain Graph">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="苹果供应链上下游图谱">
+    <meta name="twitter:description" content="苹果产品供应链上下游知识图谱：以「产品→零部件→供应商」三层模型覆盖6大产品线（iPhone、Mac、iPad、Apple Watch、Vision Pro、AirPods）、28款产品、27个核心零部件、60家供应商，量化单点依赖与供应脆弱性并给出最脆弱产品线排名；数据源自公开供应链报告与苹果供应商名单，以 MIT 许可开源。">
+    <meta name="twitter:image" content="https://coolgiserz.github.io/apple-chain-graph/assets/og-cover.png">
+    <link rel="alternate" hreflang="zh" href="https://coolgiserz.github.io/apple-chain-graph/?lang=zh">
+    <link rel="alternate" hreflang="en" href="https://coolgiserz.github.io/apple-chain-graph/?lang=en">
+    <link rel="alternate" hreflang="fr" href="https://coolgiserz.github.io/apple-chain-graph/?lang=fr">
+    <link rel="alternate" hreflang="ja" href="https://coolgiserz.github.io/apple-chain-graph/?lang=ja">
+    <link rel="alternate" hreflang="x-default" href="https://coolgiserz.github.io/apple-chain-graph/?lang=zh">
+  <script type="application/ld+json">
+[{"@context": "https://schema.org", "@type": "Organization", "name": "Apple Chain Graph", "url": "https://coolgiserz.github.io/apple-chain-graph/"}, {"@context": "https://schema.org", "@type": "WebSite", "name": "Apple Supply Chain Knowledge Graph", "url": "https://coolgiserz.github.io/apple-chain-graph/"}, {"@context": "https://schema.org", "@type": "Dataset", "name": "Apple Supply Chain Knowledge Graph", "alternateName": "苹果产品供应链上下游图谱", "description": "Apple product supply-chain knowledge graph modelling Product→Component→Supplier relations, quantifying single-point dependency and supply-chain vulnerability across 28 products, 27 components and 60 suppliers.", "url": "https://coolgiserz.github.io/apple-chain-graph/", "creator": {"@type": "Organization", "name": "Apple Chain Graph"}, "license": "https://opensource.org/licenses/MIT", "keywords": ["Apple supply chain", "supply chain risk", "single-point dependency", "TSMC", "Sony", "BOE", "OLED", "CIS", "knowledge graph", "supplier concentration"], "spatialCoverage": {"@type": "Place", "name": "Global (East Asia concentrated)"}, "variableMeasured": ["component vulnerability", "product vulnerability", "supplier count", "single-point dependency rate"], "distribution": {"@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": "https://coolgiserz.github.io/apple-chain-graph/data/apple_supply_chain.json"}, "about": {"@type": "Thing", "name": "Apple Inc. supply chain and supplier risk"}}, {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://coolgiserz.github.io/apple-chain-graph/"}, {"@type": "ListItem", "position": 2, "name": "Report", "item": "https://coolgiserz.github.io/apple-chain-graph/dist/apple_supply_chain_report.html"}]}]
+</script>
 <style>
   * { box-sizing: border-box; }
   html, body { margin: 0; height: 100%; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #0f1320; color: #e8ecf4; overflow: hidden; }
@@ -64,6 +85,10 @@
   /* 关联邻居可点击：指向 + 悬停高亮，提示可聚焦 */
   #panel li.rel { cursor: pointer; padding: 2px 6px; border-radius: 6px; transition: background .12s, color .12s; }
   #panel li.rel:hover { background: #1b2742; color: #cfe0ff; }
+  /* SEO：给爬虫的可索引文本（忠实反映图谱内容），视觉上裁掉、仍在 DOM 中 */
+  .seo-text { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; color: #e8ecf4; }
+  .seo-text h2 { font-size: 16px; }
+  .seo-text p, .seo-text li { font-size: 13px; line-height: 1.7; }
   a { color: #6ea0ff; }
   .lk { color: #6ea0ff; text-decoration: none; border-bottom: 1px dashed #6ea0ff; cursor: pointer; }
   .lk:hover { background: rgba(110,160,255,.15); }
@@ -190,5 +215,9 @@
 <script src="dist/graph_engine.js?v=278fbe10f5"></script>
 <script src="dist/graph_bootstrap.js?v=5f2481e946"></script>
 <script src="dist/graph_table_panel.js?v=435f037ce2"></script>
+<!--SEO-->
+<div class="seo-text">
+<h2>苹果产品供应链上下游知识图谱（Apple Supply Chain Knowledge Graph）</h2><p>以「产品 → 零部件 → 供应商」三层有向图建模苹果供应链，量化单点依赖与供应脆弱性。</p><p><b>数据规模：</b>覆盖 6 大产品线（iPhone、Mac、iPad、Apple Watch、Vision Pro、AirPods），共 28 款产品型号、27 个核心零部件、60 家供应商与代工厂、510 条上下游关系边。</p><p><b>脆弱性模型：</b>零部件脆弱性 V = 1 / n（n = 供应商数；n=1 即单点依赖，V=1.0）；产品脆弱性 = 0.5×均值 + 0.3×最弱环节 + 0.2×单点率。</p><p><b>单点依赖部件（独家供应商）：</b></p><ul><li>音频编解码与触觉芯片：由 Cirrus Logic, Inc. 独家供应（脆弱性 1.00）。</li></ul><p><b>最脆弱产品线：</b>iPhone 产品线（脆弱性 0.502）。</p><p><b>数据来源：</b>2024–2026 年公开供应链报告与苹果 2024 年供应商名单（约覆盖 98% 直接支出），以 MIT 许可开源，附 CSV / JSON 结构化数据可导入 Neo4j。完整上下游分析见报告页。</p>
+</div>
 </body>
 </html>
