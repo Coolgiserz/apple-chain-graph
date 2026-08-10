@@ -302,5 +302,9 @@
   "home.guideOk": "知道了",
   "home.insightLineHas": " 线有 ",
   "home.insightSingleFrag": " 个单点依赖部件",
-  "home.insightAction": "，建议优先关注 "
+  "home.insightAction": "，建议优先关注 ",
+  "edge.USES": "使用",
+  "edge.SUPPLIES": "供应",
+  "edge.ASSEMBLES": "组装",
+  "edge.LINE": "归属"
 }

@@ -52,6 +52,8 @@ const registry = {
   cbS: makeEl({ classList: { add: () => {}, remove: () => {}, toggle: () => {} } }),   // 现为「展开全部」按钮（onclick 切换 S.showAll）
   flow: makeEl({ classList: { add: () => {}, remove: () => {}, toggle: () => {} } }),
   panel: makeEl(),
+  pbody: makeEl(),
+  reset: makeEl(),
   langSwitch: makeEl({ value: "" }),
   insightCard: makeEl({ style: { display: "none" } }),
   insScale: makeEl(),
@@ -63,13 +65,15 @@ const registry = {
 };
 
 globalThis.window = globalThis;
+const dispatched = [];   // 记录 document.dispatchEvent 派发的事件类型（验证 sc:select / sc:view 联动契约）
+globalThis.CustomEvent = class { constructor(type, init) { this.type = type; this.detail = (init && init.detail) || {}; } };
 globalThis.document = {
   getElementById: (id) => registry[id] || null,
   createElement: () => makeEl(),
   addEventListener: () => {},
   querySelectorAll: () => [],
   readyState: "complete",
-  dispatchEvent: () => {},
+  dispatchEvent: (evt) => { dispatched.push(evt.type); return true; },
 };
 globalThis.location = { search: "", href: "http://localhost/" };
 globalThis.history = { replaceState: () => {} };
@@ -171,6 +175,35 @@ check("settle 后关键洞察浮层弹出且填充内容", () => {
   assert.equal(card.style.display, "block", "静止后浮层应显示（display=block），实际 " + card.style.display);
   assert.ok(registry.insScale.textContent.length > 0, "规模文本应非空");
   assert.ok(registry.insFocus.textContent.length > 0, "重点关注节点文本应非空");
+});
+
+// ---- 新增联动 / 交互契约（严苛标准）----
+check("focus() 派发 sc:select 且使隐藏供应商变为可见（修复 P2 选中找不到）", () => {
+  dispatched.length = 0;
+  api.focus("S:tsmc");
+  assert.ok(dispatched.includes("sc:select"), "focus 应广播 sc:select（反向联动表格/面板）");
+  const vis = api.visibleNodes().some((n) => n._key === "S:tsmc");
+  assert.ok(vis, "聚焦隐藏供应商后该节点应变为可见（否则「选中了却找不到」）");
+});
+
+check("右侧面板为供应商展示上下游关系（修复空关系列表 + 不再输出原始边类型码）", () => {
+  const html = registry.pbody.innerHTML || "";
+  assert.ok(html.includes("SoC") && html.includes("iPhone"),
+    "供应商面板应包含其上游节点（SoC / iPhone）关系，实际：" + html.slice(0, 160));
+  assert.ok(!html.includes("<b>"), "不应再输出原始边类型码 <b>USES</b> 等");
+});
+
+check("点击「展开全部」派发 sc:view（表格据此刷新，修复联动断点）", () => {
+  dispatched.length = 0;
+  registry.cbS.onclick();        // 展开全部
+  assert.ok(dispatched.includes("sc:view"), "cbS 切换应广播 sc:view（按钮不触发 input，表格靠此刷新）");
+  registry.cbS.onclick();        // 收起全部，回到默认
+});
+
+check("重置视图派发 sc:view", () => {
+  dispatched.length = 0;
+  registry.reset.onclick();
+  assert.ok(dispatched.includes("sc:view"), "reset 应广播 sc:view");
 });
 
 if (failures > 0) {

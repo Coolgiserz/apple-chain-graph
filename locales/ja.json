@@ -302,5 +302,9 @@
   "home.insightSingleFrag": " 個の単一障害点部品",
   "home.insightAction": "、優先推奨：",
   "report.risk.r6": "単一供給コンポーネント（単点障害）：オーディオコーデック＆ハプティクスチップ（audio_codec）は本データセットでは Cirrus（Cirrus Logic）1 社のみが供給する、唯一の単点依存；供給途絶や歩留まり問題がラインアップ全体の音声・触覚フィードバックに影響するため、セカンドソースの進展を注視すべき。",
-  "report.risk.note": "上記の比率と時期（BOE パネル 51%、Samsung DRAM 約 60–70%、Sony CIS 独占、カメラ部品の日本製比率 60% 超、TSMC アリゾナは旧 A16 のみ、Amkor 米国工場 2028 年見込み等）は、公開分解調査および市場リサーチ（Counterpoint / Nikkei / TrendForce / stockanalysis）とベンダー開示に基づき、2025–2026 年の主流構成を反映；時とともに変化し得り、サプライチェーン構造の研究目的のみで提供。"
+  "report.risk.note": "上記の比率と時期（BOE パネル 51%、Samsung DRAM 約 60–70%、Sony CIS 独占、カメラ部品の日本製比率 60% 超、TSMC アリゾナは旧 A16 のみ、Amkor 米国工場 2028 年見込み等）は、公開分解調査および市場リサーチ（Counterpoint / Nikkei / TrendForce / stockanalysis）とベンダー開示に基づき、2025–2026 年の主流構成を反映；時とともに変化し得り、サプライチェーン構造の研究目的のみで提供。",
+  "edge.USES": "使用",
+  "edge.SUPPLIES": "供給",
+  "edge.ASSEMBLES": "組立",
+  "edge.LINE": "ライン"
 }

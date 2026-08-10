@@ -302,5 +302,9 @@
   "home.insightSingleFrag": " single-point components",
   "home.insightAction": ", prioritize ",
   "report.risk.r6": "Single-source component (single point of failure): the audio codec & haptics chip (audio_codec) is supplied by only Cirrus (Cirrus Logic) in this dataset — the sole single-point dependency; any supply disruption or yield issue would affect audio and haptics across the lineup, so secondary-supplier progress must be tracked closely.",
-  "report.risk.note": "The shares and dates above (BOE panel 51%, Samsung DRAM ~60–70%, Sony CIS monopoly, Japanese components >60% in camera, TSMC Arizona only legacy A16, Amkor US plant ~2028, etc.) are drawn from public teardowns and market research (Counterpoint / Nikkei / TrendForce / stockanalysis) and vendor disclosures, reflecting mainstream configurations of 2025–2026; they may change over time and are provided for supply-chain structure research only."
+  "report.risk.note": "The shares and dates above (BOE panel 51%, Samsung DRAM ~60–70%, Sony CIS monopoly, Japanese components >60% in camera, TSMC Arizona only legacy A16, Amkor US plant ~2028, etc.) are drawn from public teardowns and market research (Counterpoint / Nikkei / TrendForce / stockanalysis) and vendor disclosures, reflecting mainstream configurations of 2025–2026; they may change over time and are provided for supply-chain structure research only.",
+  "edge.USES": "uses",
+  "edge.SUPPLIES": "supplies",
+  "edge.ASSEMBLES": "assembles",
+  "edge.LINE": "line"
 }
