@@ -12,6 +12,8 @@ product models down to components and suppliers, exportable to Neo4j, with
 zero-dependency interactive visualizations.
 
 > 🌐 **English version: [README_en.md](README_en.md)** · 中文文档见本文件。
+>
+> 📊 **研究用途**：本数据集可作为供应链图分析、脆弱性建模与图神经网络（GNN）基准的**可复现实验数据集**（MIT 许可，详见下方「作为研究 / 分析用实验数据集」）。
 
 [![Nodes](https://img.shields.io/badge/nodes-115-blue)](data/neo4j)
 [![Products](https://img.shields.io/badge/products-28-green)](data/neo4j)
@@ -39,6 +41,7 @@ zero-dependency interactive visualizations.
   - [2. 导入 Neo4j（你已有的实例）](#2-导入-neo4j你已有的实例)
   - [3. 从源码重新生成](#3-从源码重新生成)
 - [数据模型](#数据模型)
+- [作为研究 / 分析用实验数据集](#作为研究--分析用实验数据集)
 - [供应商基本面与相对估值分析](#供应商基本面与相对估值分析)
 - [供应商舆情分析](#供应商舆情分析)
 - [供应商分析可视化看板](#供应商分析可视化看板)
@@ -281,6 +284,30 @@ python3 tools/geo_build.py      # 生成 tools/visualizations/supplier_geo.html�
 关系：`Product -[USES_COMPONENT]-> Component`、`Component -[SUPPLIED_BY]-> Supplier`、
 `Product -[ASSEMBLED_BY]-> Supplier`（代工）。完整字段含义见
 **[docs/data-model.md](docs/data-model.md)**。
+
+## 作为研究 / 分析用实验数据集
+
+本仓库的全部产出（图数据、Neo4j 导入 CSV、脆弱性分析结果、可视化）都可被当作一份
+**可复现的研究 / 分析用实验数据集**使用——而非仅作「演示」用途：
+
+- **图结构基准**：三层有向图（`Product → Component → Supplier`）规模固定、可复现
+  （当前约 115 节点 / 510 关系），适合作为**图神经网络（GNN）节点分类、链路预测、
+  社群检测**的教学或基准数据；边的方向语义清晰，无需额外清洗即可喂给 `networkx` /
+  `PyG` / `DGL` 等工具。
+- **供应链风险建模样本**：`tools/run_risk.py` 产出的「单点依赖 / 脆弱性」结果
+  （含真实的单点部件如 `audio_codec → Cirrus Logic`、最脆弱产品线 `iPhone 约 0.50`）
+  可作为**供应链脆弱性建模、风险传导、鲁棒性分析**的输入特征或标签。
+- **端到端可复现**：纯 Python 标准库、单一数据源（`data/apple_supply_chain.json`），
+  一条 `python3 build_all.py` 即可重生成全部产物，**数据与代码彻底分离**——
+  改 CSV / JSON 即重算，便于复现、对照实验与二次开发。
+- **许可与署名**：以 **MIT 许可**发布，可自由用于学术、教学与二次创作。
+  但请**注明数据口径与局限性**（本数据是 AI 联网检索公开资料的二手整合、单点快照，
+  见「[分析方法局限性](#分析方法局限性)」与「[数据来源与口径](#数据来源与口径)」），
+  不要把它当作一手事实或正式投资 / 采购依据。
+
+> 想把图谱转成 GNN 训练数据？直接用 `data/apple_supply_chain.json` 的 `nodes`/`edges`
+> 即可构造邻接矩阵；或把 6 个 Neo4j CSV 用 LOAD CSV 导入后导出为边表。
+> 引用时建议同时给出版本（commit）与数据快照时间，以保证实验可复现。
 
 ## 供应商基本面与相对估值分析
 

@@ -151,7 +151,8 @@ def seo_description(risk):
     nlines = len(lines_zh.split("、"))
     return ("苹果产品供应链上下游知识图谱：以「产品→零部件→供应商」三层模型覆盖%d大产品线（%s）、%d款产品、"
             "%d个核心零部件、%d家供应商，量化单点依赖与供应脆弱性并给出最脆弱产品线排名；"
-            "数据源自公开供应链报告与苹果供应商名单，以 MIT 许可开源。" % (nlines, lines_zh, n_prod, n_comp, n_supp))
+            "数据源自公开供应链报告与苹果供应商名单，以 MIT 许可开源，可作为供应链图分析、脆弱性建模与"
+            "图神经网络（GNN）基准的可复现研究数据集。" % (nlines, lines_zh, n_prod, n_comp, n_supp))
 
 
 def seo_text_html(risk):
@@ -174,6 +175,9 @@ def seo_text_html(risk):
         pl = LINE_ZH.get(wl[0], wl[0])
         h += "<p><b>最脆弱产品线：</b>%s 产品线（脆弱性 %.3f）。</p>" % (pl, wl[1] if wl[1] is not None else 0.0)
     h += "<p><b>数据来源：</b>2024–2026 年公开供应链报告与苹果 2024 年供应商名单（约覆盖 98% 直接支出），以 MIT 许可开源，附 CSV / JSON 结构化数据可导入 Neo4j。完整上下游分析见报告页。</p>"
+    h += ("<p><b>研究用途：</b>本数据集可作为供应链图分析、供应脆弱性建模、图神经网络（GNN）基准与教学实践的"
+          "可复现实验数据集——所有 CSV / JSON / 网页均由脚本从单一数据源重生成，便于复现、二次加工与算法评测。"
+          "使用时应注明数据口径与局限性（详见项目文档）。</p>")
     return h
 
 
@@ -181,7 +185,8 @@ def jsonld(risk):
     """schema.org 结构化数据：Organization + WebSite + Dataset + BreadcrumbList。"""
     n_prod, n_comp, n_supp, n_edge, lines_zh = seo_scope()
     desc = ("Apple product supply-chain knowledge graph modelling Product→Component→Supplier relations, "
-            "quantifying single-point dependency and supply-chain vulnerability across %d products, %d components and %d suppliers."
+            "quantifying single-point dependency and supply-chain vulnerability across %d products, %d components and %d suppliers. "
+            "Released as a reproducible experimental dataset for supply-chain graph analysis, vulnerability modeling and GNN benchmarking under the MIT license."
             % (n_prod, n_comp, n_supp))
     org = {"@context": "https://schema.org", "@type": "Organization", "name": "Apple Chain Graph", "url": SEO_BASE}
     site = {"@context": "https://schema.org", "@type": "WebSite", "name": "Apple Supply Chain Knowledge Graph", "url": SEO_BASE}
@@ -194,8 +199,11 @@ def jsonld(risk):
         "url": SEO_BASE,
         "creator": {"@type": "Organization", "name": "Apple Chain Graph"},
         "license": "https://opensource.org/licenses/MIT",
-        "keywords": ["Apple supply chain", "supply chain risk", "single-point dependency",
-                     "TSMC", "Sony", "BOE", "OLED", "CIS", "knowledge graph", "supplier concentration"],
+        "isAccessibleForFree": True,
+        "keywords": ["Apple supply chain", "supply chain risk", "single-point dependency", "research dataset",
+                     "experimental dataset", "supply chain graph analysis", "vulnerability modeling",
+                     "GNN benchmark", "graph neural network", "TSMC", "Sony", "BOE", "OLED", "CIS",
+                     "knowledge graph", "supplier concentration"],
         "spatialCoverage": {"@type": "Place", "name": "Global (East Asia concentrated)"},
         "variableMeasured": ["component vulnerability", "product vulnerability", "supplier count", "single-point dependency rate"],
         "distribution": {"@type": "DataDownload", "encodingFormat": "application/json",

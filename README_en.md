@@ -8,6 +8,8 @@
 
 **An open, reproducible map of Apple's product supply chain** — from finished product models down to components and suppliers, exportable to Neo4j, with zero-dependency interactive visualizations.
 
+> 📊 **Research use**: this dataset also serves as a **reproducible experimental dataset** for supply-chain graph analysis, vulnerability modeling, and **graph neural network (GNN) benchmarking** (MIT license; see "As a research / analytical experimental dataset" below).
+
 [![Nodes](https://img.shields.io/badge/nodes-115-blue)](data/neo4j)
 [![Products](https://img.shields.io/badge/products-28-green)](data/neo4j)
 [![Components](https://img.shields.io/badge/components-27-green)](data/neo4j)
@@ -34,6 +36,7 @@
   - [2. Import into Neo4j (your existing instance)](#2-import-into-neo4j-your-existing-instance)
   - [3. Regenerate from source](#3-regenerate-from-source)
 - [Data model](#data-model)
+- [As a research / analytical experimental dataset](#as-a-research--analytical-experimental-dataset)
 - [Supplier fundamentals & relative valuation analysis](#supplier-fundamentals--relative-valuation-analysis)
 - [Supplier sentiment analysis](#supplier-sentiment-analysis)
 - [Supplier analysis dashboard](#supplier-analysis-dashboard)
@@ -244,6 +247,17 @@ Three layers of nodes + three types of relationships:
 | **Supplier** | `name` (full name), `english_name`, `short_name`, `country`, `region`, `category`, `tier` |
 
 Relationships: `Product -[USES_COMPONENT]-> Component`, `Component -[SUPPLIED_BY]-> Supplier`, `Product -[ASSEMBLED_BY]-> Supplier` (contract manufacturing). Full field meanings in **[docs/data-model.md](docs/data-model.md)**.
+
+## As a research / analytical experimental dataset
+
+All artifacts in this repo (graph data, Neo4j import CSV, vulnerability analysis results, visualizations) can be used as a **reproducible research / analytical experimental dataset** — not merely as a "demo":
+
+- **Graph-structure benchmark**: the three-layer directed graph (`Product → Component → Supplier`) is fixed-size and reproducible (currently ~115 nodes / 510 edges), well suited as teaching or benchmark data for **graph neural networks (GNN)** — node classification, link prediction, community detection. Edge direction semantics are clean and can be fed to `networkx` / `PyG` / `DGL` with no extra cleaning.
+- **Supply-chain risk-modeling sample**: the "single-point dependency / vulnerability" results from `tools/run_risk.py` (including real single-point components like `audio_codec → Cirrus Logic`, and the most vulnerable line `iPhone ≈ 0.50`) can serve as input features or labels for **supply-chain vulnerability modeling, risk propagation, and robustness analysis**.
+- **End-to-end reproducible**: pure Python standard library, single source of truth (`data/apple_supply_chain.json`), one `python3 build_all.py` regenerates all artifacts, with **data and code fully separated** — edit the CSV / JSON to recompute, convenient for reproduction, controlled experiments, and extension.
+- **License & attribution**: released under the **MIT license**, free to use for academic, teaching, and derivative work. Please **state the data conventions and limitations** (this is a secondary aggregation of AI web-searched public materials, a point-in-time snapshot — see "Methodological limitations" and "Data sources & conventions") and do not treat it as primary fact or formal investment / procurement basis.
+
+> Want to turn the graph into GNN training data? Build an adjacency matrix directly from `data/apple_supply_chain.json`'s `nodes`/`edges`, or import the 6 Neo4j CSVs via LOAD CSV and export an edge list. When citing, please include the version (commit) and the data snapshot time to keep experiments reproducible.
 
 ## Supplier fundamentals & relative valuation analysis
 
