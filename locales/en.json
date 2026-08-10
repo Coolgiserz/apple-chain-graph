@@ -192,7 +192,7 @@
   "subcategory.audio_haptic": "Audio / haptic engine",
   "subcategory.microphone": "Microphone",
   "dash.title": "Apple Supply Chain Key Suppliers · Valuation × Sentiment",
-  "dash.subtitle": "15 core suppliers | peer-relative valuation (cheap / fair / expensive) + market sentiment (news sentiment / sell-side consensus) | snapshot 2026-08-05",
+  "dash.subtitle": "15 core suppliers | peer-relative valuation (cheap / fair / expensive) + market sentiment (news sentiment / sell-side consensus) | snapshot 2026-08-10",
   "dash.sec1": "① Peer-Relative Valuation Distribution",
   "dash.sec1.sub": "Score = mean of (current valuation multiple ÷ peer median multiple): <0.85 undervalued (blue), 0.85–1.15 fair (green), >1.15 overvalued (red).",
   "dash.sec1.note": "Note: when a peer has fewer than 2 comparables, falls back to the full-sample median (valuation conclusion holds, but comparability is slightly lower).",
