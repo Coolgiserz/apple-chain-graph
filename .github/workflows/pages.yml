@@ -3,6 +3,11 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  # PR 校验门禁：任何向 main 的合并请求都会先完整跑一遍流水线（构建+lint+测试+数据校验），
+  # 但 PR 事件下不会触发部署（见下方 deploy 任务的 if 条件）。这样「合入 main」与「push 到 main」
+  # 走的是同一套校验，配合分支保护规则即可在合并前拦截坏代码。
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 # 部署 GitHub Pages 所必需的权限
@@ -15,8 +20,13 @@ permissions:
 # 注意：concurrency group 是「仓库级别作用域」—— 同名 group 只在本仓库内互斥，
 # 不会干扰你其它仓库的 Actions。若将来在本仓库内新增第二个 Pages workflow，
 # 请给它不同的 group（如 pages-docs），否则两个 workflow 会互相取消。
+#
+# group 按事件类型拆分，关键约束：
+#   - push 到 main 一律归入 `…-main-deploy` 组，部署路径独占该组、绝不会被 PR 校验打断；
+#   - 每个 PR 归入独立的 `…-pr-<编号>` 组，仅同一 PR 的重复 push 之间互相取消，
+#     互不干扰其它 PR，也绝不会取消正在进行的 main 部署。
 concurrency:
-  group: pages
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'main-deploy' }}
   cancel-in-progress: true
 
 jobs:
@@ -103,6 +113,10 @@ jobs:
           path: _site
 
   deploy:
+    # 仅当事件为「push 到 main」时才部署。PR 事件下 build 阶段照常校验，但跳过部署，
+    # 避免把未合并的草稿代码发布到 GitHub Pages。合并进 main 产生的 push 事件会走到这里，
+    # 因此「合入 main」必然再次经过完整流水线（校验通过后才部署）。
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
     environment:
