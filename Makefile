@@ -14,7 +14,7 @@
 #   make ps      查看运行状态
 #   make clean   停止并删除本地镜像
 
-.PHONY: help build build-frontend build-site up down up-prod down-prod logs ps serve dev clean lint lint-js lint-py test test-js test-py
+.PHONY: help build build-frontend build-site up down up-prod down-prod logs ps serve dev clean lint lint-js lint-py test test-js test-py validate-data
 
 IMAGE := apple-supply-chain:latest
 PORT  := 16161
@@ -77,13 +77,16 @@ lint-js:
 lint-py:
 	python3 -m flake8 --max-line-length=120 scripts tools
 
-test: test-js test-py
+test: test-js test-py validate-data
 
 test-js:
 	node tests/engine.test.mjs
 
 test-py:
 	python3 -m unittest discover -s tests -p "test_*.py"
+
+validate-data:
+	python3 tools/validate_dataset.py
 
 clean:
 	docker compose down -v

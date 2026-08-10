@@ -59,6 +59,11 @@ jobs:
         #   ANALYTICS_CODE: ${{ secrets.ANALYTICS_CODE }}
         run: python build_all.py
 
+      - name: Validate supply-chain dataset
+        # 数据集内部一致性门禁（引用完整性 / 孤立节点 / 必填字段 / 取值合规）。
+        # 阻断式：发现问题即让构建失败，避免把错误关系带上线。
+        run: python tools/validate_dataset.py
+
       - name: Assemble site
         run: |
           # 必须先把目标父目录建好：cp -r src _site/tools/visualizations 在 _site/tools
