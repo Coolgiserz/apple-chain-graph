@@ -49,7 +49,8 @@ const registry = {
   q: makeEl({ value: "" }),
   cbP: makeEl({ checked: true }),
   cbC: makeEl({ checked: true }),
-  cbS: makeEl({ checked: true }),
+  cbS: makeEl({ checked: false }),   // 新默认：供应商隐藏，需展开/勾选「全部供应商」
+  flow: makeEl({ classList: { add: () => {}, remove: () => {}, toggle: () => {} } }),
   panel: makeEl(),
   langSwitch: makeEl({ value: "" }),
   insightCard: makeEl({ style: { display: "none" } }),
@@ -124,9 +125,20 @@ check("getViewport() 返回有效视口", () => {
   assert.equal(typeof vp.oy, "number");
 });
 
-check("visibleNodes() 默认筛选返回全部 3 个节点", () => {
+check("visibleNodes() 默认隐藏供应商（仅显示 产品线/产品/零部件 三层）", () => {
   const nodes = api.visibleNodes();
-  assert.equal(nodes.length, 3);
+  const types = {};
+  nodes.forEach((n) => { types[n.type] = (types[n.type] || 0) + 1; });
+  assert.equal(types.Supplier, undefined, "默认不应显示供应商节点");
+  assert.ok(types.Line >= 1 && types.Product >= 1 && types.Component >= 1,
+    "默认应含 产品线/产品/零部件（实际 " + JSON.stringify(types) + "）");
+});
+
+check("勾选「展开全部供应商」(cbS) 后供应商出现", () => {
+  registry.cbS.checked = true;
+  const hasSupplier = api.visibleNodes().some((n) => n.type === "Supplier");
+  assert.ok(hasSupplier, "展开全部后应有供应商节点");
+  registry.cbS.checked = false;   // 复位为默认（隐藏）
 });
 
 check("setRiskMode(true/false) 不抛错（真实命中 draw/render）", () => {

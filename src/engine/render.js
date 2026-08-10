@@ -26,12 +26,44 @@ export function resize() {
   else if (changed) draw(visibleSet());              // 已停止时至少重绘一次当前帧
 }
 
+// 某 产品/零部件 是否还有「隐藏的供应商」（用于画可展开 + 提示）
+function hasHiddenSuppliers(n, vis) {
+  var es = S.adj[n._key];
+  for (var i = 0; i < es.length; i++) {
+    var o = es[i].other;
+    if (o.type === "Supplier" && !vis.has(o._key)) return true;
+  }
+  return false;
+}
+
+// 沿可见边绘制流动粒子：方向统一为 link.b → link.a（供应商 → 零部件 → 产品 → 产品线，
+// 表现供应链的「流动」），让图谱始终「活着」而非冻结成静态圆点。
+function drawParticles(vis, nb, now) {
+  if (!S.flow) return;
+  S.links.forEach(function (l) {
+    if (!vis.has(l.a._key) || !vis.has(l.b._key)) return;
+    var inSel = !nb || (nb.has(l.a._key) && nb.has(l.b._key));
+    if (S.selected && !inSel) return;             // 选中时仅高亮子图粒子，其余保持静态线
+    var fx = l.b.x, fy = l.b.y, dx = l.a.x - fx, dy = l.a.y - fy;
+    var speed = 0.28, np = 2;                       // 每秒沿边推进比例 / 每边粒子数
+    for (var p = 0; p < np; p++) {
+      var phase = (now * speed + (l.phase || 0) + p / np) % 1;
+      var x = fx + dx * phase, y = fy + dy * phase;
+      S.ctx.beginPath();
+      S.ctx.arc(x, y, inSel ? 2.6 : 1.8, 0, Math.PI * 2);
+      S.ctx.fillStyle = inSel ? "rgba(140,210,255,0.95)" : "rgba(120,180,235,0.45)";
+      S.ctx.fill();
+    }
+  });
+}
+
 export function draw(vis) {
   syncSize();                                      // 每次绘制前保证后备尺寸正确（首屏布局晚到 / 窗口缩放自愈）
   if (S.pendingFocus && W() && H()) { var nf = S.pendingFocus; S.pendingFocus = null; applyFocus(nf); }
   S.ctx.clearRect(0, 0, W(), H());
   var sel = S.selected ? S.selected._key : null;
   var nb = sel ? new Set([sel].concat(S.adj[sel].map(function (e) { return e.other._key; }))) : null;
+  var now = ((typeof window !== "undefined" && window.performance) ? window.performance.now() : Date.now()) / 1000;
   S.ctx.save(); S.ctx.translate(S.view.ox, S.view.oy); S.ctx.scale(S.view.scale, S.view.scale);
   S.links.forEach(function (l) {
     if (!vis.has(l.a._key) || !vis.has(l.b._key)) return;
@@ -40,6 +72,7 @@ export function draw(vis) {
     S.ctx.lineWidth = hot ? 1.6 : 1;
     S.ctx.beginPath(); S.ctx.moveTo(l.a.x, l.a.y); S.ctx.lineTo(l.b.x, l.b.y); S.ctx.stroke();
   });
+  drawParticles(vis, nb, now);                     // 流动粒子在边之上、节点之下
   S.nodes.forEach(function (n) {
     if (!vis.has(n._key)) return;
     var r = nodeRadius(n);
@@ -62,7 +95,13 @@ export function draw(vis) {
       S.ctx.beginPath(); S.ctx.arc(n.x, n.y, r + 6, 0, Math.PI * 2);
       S.ctx.strokeStyle = "#fbbf24"; S.ctx.lineWidth = 2.5; S.ctx.stroke();
     }
-    if (S.view.scale > 0.7 || n.type === "Product" || S.selected === n || S.hover === n || n._key === S.criticalId) {
+    // 可展开提示：产品/零部件存在隐藏供应商时，右上角画绿色「+」
+    if ((n.type === "Product" || n.type === "Component") && hasHiddenSuppliers(n, vis)) {
+      S.ctx.globalAlpha = 1;
+      S.ctx.fillStyle = "#10b981"; S.ctx.font = "bold 13px sans-serif"; S.ctx.textAlign = "center";
+      S.ctx.fillText("+", n.x + r + 6, n.y - r + 4);
+    }
+    if (S.view.scale > 0.7 || n.type === "Product" || n.type === "Line" || S.selected === n || S.hover === n || n._key === S.criticalId) {
       S.ctx.globalAlpha = dim ? 0.25 : 1;
       S.ctx.fillStyle = "#dfe7f7"; S.ctx.font = "11px sans-serif"; S.ctx.textAlign = "center";
       S.ctx.fillText(label(n), n.x, n.y + r + 12);

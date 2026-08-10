@@ -21,6 +21,17 @@ function pick(px, py) {
   return best;
 }
 
+// 单击节点：产品/零部件切换其供应商子图的展开/收起（渐进式披露）；供应商仅选中看详情。
+function onNodeClick(n) {
+  if (!n) { selectNode(null); return; }
+  if (n.type === "Product" || n.type === "Component") {
+    if (S.expanded.has(n._key)) S.expanded.delete(n._key);
+    else S.expanded.add(n._key);
+    reheat(0.6);
+  }
+  selectNode(n);
+}
+
 export function bindEvents() {
   S.cv.addEventListener("mousedown", function (e) {
     S.downX = e.clientX; S.downY = e.clientY;
@@ -53,7 +64,7 @@ export function bindEvents() {
     var wasClick = !S.dragNode && !S.panning;
     if (S.dragNode) { S.dragNode.fixed = false; S.dragNode = null; }
     if (S.panning) { S.panning = false; S.cv.classList.remove("dragging"); }
-    if (wasClick) selectNode(S.downNode || null);
+    if (wasClick) onNodeClick(S.downNode || null);
     S.downNode = null; S.pointerDown = false;
     kick();
   });
@@ -119,7 +130,7 @@ export function bindEvents() {
     var wasClick = S.touchActive && !S.dragNode && !S.panning;
     if (S.dragNode) { S.dragNode.fixed = false; S.dragNode = null; }
     if (S.panning) S.panning = false;
-    if (wasClick) selectNode(S.downNode || null);
+    if (wasClick) onNodeClick(S.downNode || null);
     S.downNode = null; S.touchActive = false;
     kick();
   }
@@ -138,11 +149,22 @@ export function bindEvents() {
   var reset = document.getElementById("reset");
   if (reset) reset.onclick = function () {
     selectNode(null);
+    S.expanded.clear();                         // 收起所有已展开供应商
     var q = document.getElementById("q"); if (q) q.value = "";
     document.getElementById("cbP").checked = document.getElementById("cbC").checked = document.getElementById("cbS").checked = true;
     var line = document.getElementById("line"); if (line) line.value = "";
     reheat(1); S.fitDone = false; fitView();   // 复位筛选并重新适配视口
   };
+  var flowBtn = document.getElementById("flow");
+  if (flowBtn) flowBtn.onclick = function () {
+    S.flow = !S.flow;
+    if (flowBtn.classList) flowBtn.classList.toggle("on", S.flow);
+    if (S.running) kick(); else if (S.cv) draw(visibleSet());
+  };
+  (typeof document !== "undefined" ? document : globalThis).addEventListener("visibilitychange", function () {
+    if (typeof document !== "undefined" && document.hidden) { S.running = false; }   // 后台标签页停止循环省电
+    else { S.running = true; kick(); }
+  });
   var fitBtn = document.getElementById("fit");
   if (fitBtn) fitBtn.onclick = function () { fitView(); };
   var insClose = document.getElementById("insightClose");
@@ -175,13 +197,18 @@ export function loop() {
   var vis = visibleSet();
   physics(vis);
   draw(vis);
-  if (S.alpha < ALPHA_MIN && !S.dragNode && !S.panning && S.canvasReady) {
-    S.animating = false;
-    if (!S.fitDone) fitView();   // 首屏布局稳定后自动适配视口一次（避免缩在角落/需手动缩放）
-    if (!S.insightsShown) { S.insightsShown = true; showInsights(); }  // 静止后弹一次「关键洞察」浮层
-    return;
+  var settled = S.alpha < ALPHA_MIN && S.canvasReady;
+  if (settled) {
+    if (!S.fitDone) { S.fitDone = true; fitView(); }                     // 首屏布局稳定后自动适配视口一次
+    if (!S.insightsShown) { S.insightsShown = true; showInsights(); }    // 静止后弹一次「关键洞察」浮层
   }
-  S.rafId = (typeof requestAnimationFrame !== "undefined" ? requestAnimationFrame(loop) : 0);
+  // 流动开启 或 仍在物理运动中（或正在交互）→ 持续循环（粒子动画需不断重绘）；
+  // 否则（已静止且关闭流动、无交互）→ 停止循环省电，行为与原版一致。
+  if (S.flow || !settled || S.dragNode || S.panning) {
+    S.rafId = (typeof requestAnimationFrame !== "undefined" ? requestAnimationFrame(loop) : 0);
+  } else {
+    S.animating = false;
+  }
 }
 export function reheat(a) { S.alpha = Math.max(S.alpha, (a == null ? 0.5 : a)); kick(); }
 

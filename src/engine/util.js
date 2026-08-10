@@ -1,8 +1,8 @@
 // util.js — 纯函数工具与常量（无状态依赖，供 render / panels / interaction 复用）。
 import { S, RISK_HIGH, RISK_MED } from "./state.js";
 
-export const COLORS = { Product: "#2f6fed", Component: "#f59e0b", Supplier: "#10b981" };
-export const BASE_R = { Product: 11, Component: 7, Supplier: 6 };
+export const COLORS = { Product: "#2f6fed", Component: "#f59e0b", Supplier: "#10b981", Line: "#8b5cf6" };
+export const BASE_R = { Product: 11, Component: 7, Supplier: 6, Line: 14 };
 
 // 视口相关的节点半径缩放系数：小屏（手机/窄平板）放大世界半径，使节点更大、更易点中；
 // 大屏略放大但不夸张。以 min(宽,高) 为基准（参考尺寸 880px），区间 [0.6, 1.15]。
@@ -28,6 +28,16 @@ export function esc(s) { return String(s).replace(/[&<>]/g, function (c) { retur
 
 export function label(n) { return n.name || n.english_name || n.id; }
 export function nm(t, id) { var o = S.idMap[t + ":" + id]; return o ? label(o) : id; }
+
+// 节点类型标签（用于信息面板 tag 等多语言展示）。Line 为展示层虚拟节点（产品线聚合），
+// 不在数据文件里；其余三种与数据 schema 一致。
+export function typeLabel(t) {
+  if (t === "Line") return i18nText("home.line");
+  if (t === "Product") return i18nText("home.prod");
+  if (t === "Component") return i18nText("home.part");
+  if (t === "Supplier") return i18nText("home.supp");
+  return t;
+}
 
 export function vulnColor(v) {
   if (v >= RISK_HIGH) return "#ef4444";   // 高 → 红

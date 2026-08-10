@@ -1,7 +1,7 @@
 // panels.js — 右侧信息面板渲染（普通面板 + 风险因子面板）。归属「面板」模块，可由专人维护，
 // 与物理/渲染/交互解耦。依赖 S 状态与 util 翻译/转义工具。
 import { S } from "./state.js";
-import { esc, label, i18nText, i18nVal, nm, COLORS, BASE_R } from "./util.js";
+import { esc, label, i18nText, i18nVal, nm, COLORS, BASE_R, typeLabel } from "./util.js";
 
 export function showRiskPanel(on) {
   var rp = document.getElementById("riskPanel");
@@ -40,7 +40,7 @@ export function renderPanel(n) {
   var p = document.getElementById("pbody"); if (!p) return;
   var col = COLORS[n.type];
   var h = "<h3>" + esc(n.name || n.id) + "</h3><div class='sub'>" + esc(n.english_name || "") + "</div>";
-  h += "<span class='tag' style='background:" + col + "22;color:" + col + ";border:1px solid " + col + "'>" + n.type + "</span>";
+  h += "<span class='tag' style='background:" + col + "22;color:" + col + ";border:1px solid " + col + "'>" + typeLabel(n.type) + "</span>";
   if (n.type === "Product" && n.product_line) h += "<span class='tag' style='background:#2a3450;color:#cfe0ff'>" + esc(i18nVal("product_line", n.product_line)) + "</span>";
   h += "<dl>";
   function fieldRow(k, v) {
@@ -92,7 +92,7 @@ export function renderRiskPanel(n) {
   if (!n) { body.innerHTML = "<div class='risk-pick'>" + i18nText("risk.pick") + "</div>"; return; }
   var col = COLORS[n.type];
   var h = "<h3>" + esc(n.name || n.id) + "</h3><div class='sub'>" + esc(n.english_name || "") + "</div>";
-  h += "<span class='tag' style='background:" + col + "22;color:" + col + ";border:1px solid " + col + "'>" + n.type + "</span>";
+  h += "<span class='tag' style='background:" + col + "22;color:" + col + ";border:1px solid " + col + "'>" + typeLabel(n.type) + "</span>";
   if (n.type === "Product" && n.product_line) h += "<span class='tag' style='background:#2a3450;color:#cfe0ff'>" + esc(i18nVal("product_line", n.product_line)) + "</span>";
   if (n.type === "Supplier") {
     h += "<div class='risk-note'>" + i18nText("risk.supplierNote") + "</div>";
