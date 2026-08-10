@@ -23,6 +23,7 @@
   }
 
   var side, tbody, countEl, toggleBtn, closeBtn;
+  var lastKey = null, lastType = null, lastName = null, hintEl = null;
 
   function render() {
     if (!side || side.style.display === "none") return;
@@ -48,6 +49,8 @@
         + "</tr>";
     });
     tbody.innerHTML = html;
+    // 重渲染后恢复当前选中高亮（P2：搜索/筛选导致表格重建时，已选中供应商仍保持高亮）。
+    if (lastKey) highlightRow(lastKey);
   }
 
   function isOpen() { return side && side.style.display !== "none"; }
@@ -66,18 +69,64 @@
   }
   function toggle() { isOpen() ? close() : open(); }
 
-  function focusRow(key) {
-    if (!tbody) return;
-    var rows = tbody.querySelectorAll("tr");
+  // 高亮与 key 匹配的行（无滚动）；返回匹配到的 <tr> 或 null（key 为空或非供应商时清除全部高亮）。
+  function highlightRow(key) {
+    if (!tbody) return null;
+    var rows = tbody.querySelectorAll("tr[data-key]");
+    var found = null;
     for (var i = 0; i < rows.length; i++) {
-      rows[i].classList.toggle("active", rows[i].getAttribute("data-key") === key);
+      var match = !!key && rows[i].getAttribute("data-key") === key;
+      rows[i].classList.toggle("active", match);
+      if (match) found = rows[i];
     }
+    return found;
+  }
+  // 表格行高亮 + 滚动到可见区（P1：选中后定位到该行）。
+  function focusRow(key) {
+    var r = highlightRow(key);
+    if (r && r.scrollIntoView) { try { r.scrollIntoView({ block: "nearest" }); } catch (e) {} }
+    return r;
+  }
+
+  // 范围提示（P1）：当前选中的是产品/零部件时，表格中没有对应行，给出弱提示而非留下错误高亮。
+  function renderScopeHint(isSupplier, rowEl) {
+    if (!hintEl) return;
+    if (!isSupplier && lastName) {
+      var labelTxt = lastType === "Product" ? "产品" : lastType === "Component" ? "零部件" : "节点";
+      hintEl.textContent = "当前选中：" + lastName + "（" + labelTxt + "，不在本供应商表）";
+      hintEl.style.display = "block";
+    } else {
+      hintEl.style.display = "none";
+    }
+  }
+
+  // 订阅引擎广播的选中事件（P0 反向联动）：图谱/右侧面板选中变化时同步本表。
+  function onSelect(e) {
+    var d = (e && e.detail) || {};
+    lastKey = d.key || null;
+    lastType = d.type || null;
+    lastName = d.name || null;
+    var isSupplier = lastType === "Supplier";
+    // 仅当选中的是「可见供应商」且表格当前关闭时，自动打开以便高亮可见（避免空表弹出）。
+    if (!isOpen() && isSupplier && lastKey) open();
+    var rowEl = focusRow(lastKey);   // null 或非供应商 → 清除高亮；供应商 → 高亮+滚动
+    renderScopeHint(isSupplier, rowEl);
   }
 
   function init() {
     side = $("side"); tbody = $("sideBody"); countEl = $("sideCount");
     toggleBtn = $("toggleTable"); closeBtn = $("sideClose");
     if (!side) return;
+    // 范围提示条（P1）：选中产品/零部件时提示「不在本供应商表」。挂到滚动区顶部。
+    hintEl = document.createElement("div");
+    hintEl.id = "sideHint";
+    hintEl.className = "side-hint";
+    hintEl.style.cssText = "display:none;margin:6px;padding:6px 10px;font-size:12px;line-height:1.4;"
+      + "color:#fbbf24;background:rgba(251,191,36,.10);border:1px solid rgba(251,191,36,.35);border-radius:6px;";
+    var scroll = side.querySelector(".scroll");
+    if (scroll) side.insertBefore(hintEl, scroll); else side.appendChild(hintEl);
+    // 订阅引擎选中广播（P0 反向联动 / P0 清空去高亮）。
+    document.addEventListener("sc:select", onSelect);
     if (toggleBtn) toggleBtn.onclick = toggle;
     if (closeBtn) closeBtn.onclick = close;
     if (tbody) tbody.addEventListener("click", function (e) {
