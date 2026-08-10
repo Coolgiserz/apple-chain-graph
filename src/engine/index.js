@@ -3,7 +3,7 @@
 import { S } from "./state.js";
 import { W, H, esc } from "./util.js";
 import { build, visibleSet, visibleNodes } from "./model.js";
-import { bindEvents, focus, reheat, start, stop, kick } from "./interaction.js";
+import { bindEvents, focus, reheat, start, stop, kick, fitView } from "./interaction.js";
 import { selectNode, renderPanel, renderRiskPanel, showRiskPanel } from "./panels.js";
 import { draw, syncSize, resize } from "./render.js";
 
@@ -26,6 +26,7 @@ var api = {
   focus: focus,
   reheat: reheat,
   resize: resize,
+  fitView: fitView,
   esc: esc,
   visibleNodes: visibleNodes,
   // 风险视图开关：开启后节点按脆弱性着色 + 单点标记；弹出右侧「风险因子说明」面板

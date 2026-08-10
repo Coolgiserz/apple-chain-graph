@@ -95,7 +95,7 @@ check("window.GraphEngine 已暴露且为对象", () => {
 
 const api = window.GraphEngine;
 const expected = ["init", "start", "stop", "focus", "reheat", "resize", "esc",
-  "visibleNodes", "setRiskMode", "getViewport"];
+  "visibleNodes", "setRiskMode", "getViewport", "fitView"];
 expected.forEach((m) => {
   check("api." + m + " 是可调用函数", () => {
     assert.equal(typeof api[m], "function", "期望 " + m + " 为函数");
@@ -129,6 +129,12 @@ check("focus() 不抛错", () => {
 
 check("esc() 转义 HTML 特殊字符", () => {
   assert.equal(api.esc("<b>&'</b>"), "&lt;b&gt;&amp;'&lt;/b&gt;");
+});
+
+check("fitView() 不抛错且将视口缩放到有效正值", () => {
+  assert.doesNotThrow(() => api.fitView());
+  const vp = api.getViewport();
+  assert.ok(vp.scale > 0 && Number.isFinite(vp.scale), "scale 应为有限正值，实际 " + vp.scale);
 });
 
 if (failures > 0) {

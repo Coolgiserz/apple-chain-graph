@@ -1,7 +1,7 @@
 // render.js — Canvas 绘制（依赖 S 状态与工具函数；draw 在 pendingFocus 时回调 interaction.applyFocus）。
 // 与 interaction.js 存在循环依赖（interaction 也用 draw/resize），但仅在函数运行时互相调用，esbuild 处理无误。
 import { S } from "./state.js";
-import { W, H, label, vulnColor, COLORS, BASE_R } from "./util.js";
+import { W, H, label, vulnColor, COLORS, nodeRadius } from "./util.js";
 import { applyFocus, kick } from "./interaction.js";
 import { visibleSet } from "./model.js";
 
@@ -42,7 +42,7 @@ export function draw(vis) {
   });
   S.nodes.forEach(function (n) {
     if (!vis.has(n._key)) return;
-    var r = BASE_R[n.type] + Math.min(n.degree, 12) * 0.35;
+    var r = nodeRadius(n);
     var dim = nb && !nb.has(n._key);
     S.ctx.globalAlpha = dim ? 0.18 : 1;
     S.ctx.beginPath(); S.ctx.arc(n.x, n.y, r, 0, Math.PI * 2);

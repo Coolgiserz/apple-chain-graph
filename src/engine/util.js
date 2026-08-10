@@ -4,6 +4,21 @@ import { S, RISK_HIGH, RISK_MED } from "./state.js";
 export const COLORS = { Product: "#2f6fed", Component: "#f59e0b", Supplier: "#10b981" };
 export const BASE_R = { Product: 11, Component: 7, Supplier: 6 };
 
+// 视口相关的节点半径缩放系数：小屏（手机/窄平板）放大世界半径，使节点更大、更易点中；
+// 大屏略放大但不夸张。以 min(宽,高) 为基准（参考尺寸 880px），区间 [0.6, 1.15]。
+// 注：节点半径以「世界单位」绘制（draw 已按 view.scale 变换），fitView 也会在小屏放大 view.scale，
+// 二者叠加保证移动端首屏节点清晰可读、可点。
+export function rScale() {
+  var m = Math.min(W(), H());
+  if (!m) return 1;
+  return Math.max(0.6, Math.min(1.15, m / 880));
+}
+
+// 节点绘制/命中的世界半径（含度数加成，再乘视口系数）。render 与 interaction 统一走这里。
+export function nodeRadius(n) {
+  return (BASE_R[n.type] + Math.min(n.degree || 0, 12) * 0.35) * rScale();
+}
+
 // 画布可视尺寸（优先画布 CSS 尺寸，回退 window）
 export function W() { return (S.cv ? S.cv.clientWidth : 0) || (typeof window !== "undefined" && window.innerWidth) || 0; }
 export function H() { return (S.cv ? S.cv.clientHeight : 0) || (typeof window !== "undefined" && window.innerHeight) || 0; }

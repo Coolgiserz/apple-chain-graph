@@ -13,6 +13,7 @@ export const S = {
   riskMode: false,
   reportLink: null, mapLink: null,
   pendingFocus: null,
+  fitDone: false,
 };
 
 // 物理阻尼与停机阈值

@@ -1,6 +1,6 @@
 // interaction.js — 鼠标/触摸交互、聚焦深链、动画循环（「交互」模块，可独立演进）。
 import { S, ALPHA_MIN } from "./state.js";
-import { W, H, esc, BASE_R } from "./util.js";
+import { W, H, esc, nodeRadius } from "./util.js";
 import { visibleSet } from "./model.js";
 import { draw, syncSize, resize } from "./render.js";
 import { selectNode, renderPanel, renderRiskPanel, showRiskPanel } from "./panels.js";
@@ -15,7 +15,7 @@ function pick(px, py) {
   for (var i = 0; i < S.nodes.length; i++) {
     var n = S.nodes[i]; if (!vis.has(n._key)) continue;
     var dx = n.x - w.x, dy = n.y - w.y, d = dx * dx + dy * dy;
-    var r = BASE_R[n.type] + Math.min(n.degree, 12) * 0.35 + 4;
+    var r = nodeRadius(n) + 4;
     if (d < r * r && d < bd) { best = n; bd = d; }
   }
   return best;
@@ -137,12 +137,14 @@ export function bindEvents() {
   });
   var reset = document.getElementById("reset");
   if (reset) reset.onclick = function () {
-    S.view = { ox: 0, oy: 0, scale: 1 }; selectNode(null);
+    selectNode(null);
     var q = document.getElementById("q"); if (q) q.value = "";
     document.getElementById("cbP").checked = document.getElementById("cbC").checked = document.getElementById("cbS").checked = true;
     var line = document.getElementById("line"); if (line) line.value = "";
-    reheat(1);
+    reheat(1); S.fitDone = false; fitView();   // 复位筛选并重新适配视口
   };
+  var fitBtn = document.getElementById("fit");
+  if (fitBtn) fitBtn.onclick = function () { fitView(); };
   ["q", "cbP", "cbC", "cbS", "line"].forEach(function (id) {
     var el = document.getElementById(id);
     if (el) el.addEventListener("input", function () { if (id !== "q") selectNode(null); reheat(0.7); });
@@ -164,6 +166,7 @@ export function loop() {
   draw(vis);
   if (S.alpha < ALPHA_MIN && !S.dragNode && !S.panning && S.canvasReady) {
     S.animating = false;
+    if (!S.fitDone) fitView();   // 首屏布局稳定后自动适配视口一次（避免缩在角落/需手动缩放）
     return;
   }
   S.rafId = (typeof requestAnimationFrame !== "undefined" ? requestAnimationFrame(loop) : 0);
@@ -187,6 +190,30 @@ export function focus(key) {
   var n = S.idMap[key]; if (!n) return;
   if (!W() || !H()) { S.pendingFocus = n; return; }
   applyFocus(n);
+}
+
+// 将全部节点包围盒缩放到视口内并居中（首屏自动适配 / 「适配」按钮）。
+// 边距随视口收缩：小屏留更少空白以放大节点，提升可读性/可点性。
+export function fitView() {
+  if (!S.nodes || !S.nodes.length || !W() || !H()) return;
+  var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity;
+  for (var i = 0; i < S.nodes.length; i++) {
+    var n = S.nodes[i];
+    if (n.x < minX) minX = n.x;
+    if (n.x > maxX) maxX = n.x;
+    if (n.y < minY) minY = n.y;
+    if (n.y > maxY) maxY = n.y;
+  }
+  var bw = Math.max(maxX - minX, 1), bh = Math.max(maxY - minY, 1);
+  var small = Math.min(W(), H()) < 560;
+  var margin = Math.max(16, Math.min(W(), H()) * (small ? 0.05 : 0.10));
+  var s = Math.min((W() - 2 * margin) / bw, (H() - 2 * margin) / bh);
+  s = Math.max(0.05, Math.min(s, 6));
+  S.view.scale = s;
+  S.view.ox = W() / 2 - (minX + maxX) / 2 * s;
+  S.view.oy = H() / 2 - (minY + maxY) / 2 * s;
+  S.fitDone = true;
+  kick();
 }
 
 export function start() {

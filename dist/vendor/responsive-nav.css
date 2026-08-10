@@ -51,9 +51,10 @@
   color: #fff;
 }
 
-/* ---- 宽屏（≥52em≈832px）：横向菜单，隐藏汉堡 ----
-   用 .wb-topnav 前缀提升优先级，压过基础 display:block，确保桌面不显示汉堡 */
-@media screen and (min-width: 52em) {
+/* ---- 宽屏（≥64em≈1024px）：横向菜单，隐藏汉堡 ----
+   用 .wb-topnav 前缀提升优先级，压过基础 display:block，确保桌面不显示汉堡。
+   阈值提到 1024px：窄平板(768/820)走汉堡，避免中段 nowrap 链接被 body overflow:hidden 裁切。 */
+@media screen and (min-width: 64em) {
   .js .nav-collapse {
     position: relative;
     max-height: none;
@@ -77,8 +78,8 @@
   }
 }
 
-/* ---- 窄屏（<52em）：汉堡展开后的下拉面板，浮在导航栏下方 ---- */
-@media screen and (max-width: 51.99em) {
+/* ---- 窄屏（<64em）：汉堡展开后的下拉面板，浮在导航栏下方 ---- */
+@media screen and (max-width: 63.99em) {
   .wb-topnav .nav-collapse {
     top: 52px;
     left: 0;

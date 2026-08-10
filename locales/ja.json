@@ -12,6 +12,7 @@
   "home.all": "すべて",
   "home.tableBtn": "企業一覧",
   "home.resetView": "ビューをリセット",
+  "home.fitView": "ビューに合わせる",
   "home.hint": "ホイールでズーム · キャンバスをドラッグして移動 · ノードをドラッグ · ノードをクリックで詳細",
   "home.sideTitle": "企業一覧",
   "panel.rel": "関連",

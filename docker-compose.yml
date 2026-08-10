@@ -15,6 +15,7 @@ services:
         # 网络受限时（如国内）在 .env 里把 PYTHON_IMG / NGINX_IMG 设为镜像源完整镜像名
         PYTHON_IMG: ${PYTHON_IMG:-python:3.11-slim}
         NGINX_IMG: ${NGINX_IMG:-nginx:1.27-alpine}
+        NODE_IMG: ${NODE_IMG:-node:20-slim}
     image: apple-supply-chain:latest
     container_name: apple-supply-chain-web
     ports:
