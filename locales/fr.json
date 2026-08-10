@@ -192,7 +192,7 @@
   "subcategory.audio_haptic": "Audio / moteur haptique",
   "subcategory.microphone": "Microphone",
   "dash.title": "Principaux fournisseurs d'Apple · Valorisation × Sentiment",
-  "dash.subtitle": "15 fournisseurs clés | valorisation relative aux pairs (bon marché / raisonnable / chère) + sentiment de marché (sentiment médiatique / consensus sell-side) | instantané 2026-08-05",
+  "dash.subtitle": "15 fournisseurs clés | valorisation relative aux pairs (bon marché / raisonnable / chère) + sentiment de marché (sentiment médiatique / consensus sell-side) | instantané 2026-08-10",
   "dash.sec1": "① Distribution de la valorisation relative aux pairs",
   "dash.sec1.sub": "Score = moyenne de (multiple de valorisation actuel ÷ multiple médian des pairs) : <0.85 sous-évalué (bleu), 0.85–1.15 raisonnable (vert), >1.15 surévalué (rouge).",
   "dash.sec1.note": "Note : lorsqu'un pair compte moins de 2 comparables, on retombe sur la médiane de l'échantillon complet (la conclusion de valorisation tient, mais la comparabilité baisse légèrement).",

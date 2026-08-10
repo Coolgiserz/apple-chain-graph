@@ -33,7 +33,7 @@ def main():
     args = ap.parse_args()
 
     records = analysis.build_dataset()
-    meta = {"generated": "2026-08-05", "as_of": args.as_of or "见各供应商 as_of 字段"}
+    meta = {"generated": "2026-08-10", "as_of": args.as_of or "见各供应商 as_of 字段"}
 
     if args.id:
         rec = next((r for r in records if r["id"] == args.id), None)
