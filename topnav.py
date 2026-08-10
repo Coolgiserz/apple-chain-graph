@@ -40,8 +40,10 @@ GITHUB_LINK = (
 )
 
 # 导航条自身的样式（注入到各页面 <style> 中）。固定定位，z-index 最高。
-# 移动端用原生 <details>/<summary> 汉堡菜单：纯 CSS 折叠，不依赖任何 JS 库，
-# 因此即便脚本未执行，导航菜单也只以「☰ 按钮」形式存在，绝不会横向铺开溢出屏幕。
+# 移动端用纯 CSS「复选框汉堡」：菜单 <ul> 始终是普通子元素，桌面端永远 display:flex 常驻，
+# 移动端点 ☰（label 联动隐藏的 checkbox）才以 :checked 下拉展开。零 JS 依赖，
+# 因此即便脚本未执行，也绝不会把链接横向铺开溢出；且不依赖 <details>，避免其关闭态被
+# 浏览器引擎级隐藏导致桌面端菜单整条消失的问题。
 TOPNAV_CSS = """
 .wb-topnav{position:fixed;top:0;left:0;right:0;height:calc(52px + env(safe-area-inset-top));padding:env(safe-area-inset-top) 12px 0;z-index:9999;
   display:flex;align-items:center;gap:8px;min-width:0;
@@ -54,17 +56,18 @@ TOPNAV_CSS = """
 .wb-topnav a:hover{background:rgba(255,255,255,.16);color:#fff}
 .wb-topnav a.active{background:#fff;color:#0a2540;font-weight:700}
 .wb-topnav .spacer{flex:1 1 auto;min-width:0}
-/* 汉堡（summary）始终可点；移动端显示、桌面端在媒体查询里隐藏 */
-.wb-topnav .nav-collapse{position:relative;flex:0 0 auto}
+/* 隐藏的驱动复选框（label 联动切换）；桌面端一并彻底隐藏 */
+.wb-topnav .nav-toggle-cb{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;margin:0}
+/* 汉堡按钮（label）：移动端显示、桌面端媒体查询隐藏 */
 .wb-topnav .nav-toggle{display:inline-flex;align-items:center;justify-content:center;width:38px;height:34px;
-  margin:0;border-radius:8px;color:#fff;font-size:18px;line-height:1;cursor:pointer;list-style:none;user-select:none}
-.wb-topnav .nav-toggle::-webkit-details-marker{display:none}
+  margin:0;border-radius:8px;color:#fff;font-size:18px;line-height:1;cursor:pointer;user-select:none}
 .wb-topnav .nav-toggle:hover{background:rgba(255,255,255,.16)}
-/* 折叠下拉：默认隐藏，[open] 才显示；移动端点 ☰ 展开为竖向菜单 */
+.wb-topnav .nav-collapse{position:relative;flex:0 0 auto}
+/* 菜单默认隐藏（移动端），由 :checked 切换为下拉 */
 .wb-topnav .nav-collapse > ul{position:absolute;top:calc(100% + 8px);left:0;z-index:1;margin:0;padding:6px;
   list-style:none;display:none;flex-direction:column;gap:2px;min-width:172px;
   background:#0a2540;border:1px solid rgba(255,255,255,.16);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.45)}
-.wb-topnav .nav-collapse[open] > ul{display:flex}
+.wb-topnav .nav-toggle-cb:checked ~ .nav-collapse > ul{display:flex}
 .wb-topnav .nav-collapse > ul a{display:block;width:100%;text-align:left}
 .wb-topnav .wb-github{display:flex;align-items:center;justify-content:center;width:34px;height:34px;
   margin-left:6px;border-radius:8px;color:#fff;opacity:.9;transition:background .15s,opacity .15s;flex:0 0 auto}
@@ -73,9 +76,9 @@ TOPNAV_CSS = """
   background:rgba(255,255,255,.08);color:#fff;font-size:13px;padding:0 6px;cursor:pointer;flex:0 0 auto}
 .wb-topnav #langSwitch:hover{background:rgba(255,255,255,.16);color:#fff}
 .wb-topnav #langSwitch option{color:#111}
-/* 桌面端（≥860px）：菜单常驻横向排列，隐藏汉堡，下拉规则失效 */
+/* 桌面端（≥860px）：菜单常驻横向排列（永远可见），隐藏汉堡与复选框 */
 @media (min-width: 860px){
-  .wb-topnav .nav-toggle{display:none}
+  .wb-topnav .nav-toggle, .wb-topnav .nav-toggle-cb{display:none}
   .wb-topnav .nav-collapse > ul{position:static;display:flex;flex-direction:row;gap:6px;min-width:0;
     background:none;border:none;box-shadow:none;padding:0}
 }
@@ -85,22 +88,23 @@ TOPNAV_CSS = """
 def topnav(root="../", active=None):
     """返回统一导航条的 HTML 片段（含国际化框架 + 访问统计脚本）。
 
-    导航菜单用原生 ``<details>/<summary>`` 实现汉堡折叠：**纯 CSS、零 JS 依赖**，
-    因此即便后续脚本（i18n / 统计）因任何原因未执行，移动端导航也只会显示成
-    一个「☰」按钮，绝不会把 5 个链接横向铺开溢出屏幕（此前第三方 responsive-nav
-    把折叠态挂在 JS 注入的 `.js` 类上，脚本一失败就整条导航溢出，正是移动端
-    "显示不全 / 超出屏幕" 的根因）。宽屏（≥860px）由媒体查询强制菜单横向常驻、
-    隐藏汉堡。
+    导航菜单用纯 CSS「复选框汉堡」实现：**纯 CSS、零 JS 依赖**。菜单 ``<ul>`` 始终是普通
+    子元素——桌面端（≥860px）由媒体查询强制 ``display:flex`` 横向常驻；移动端点 ☰
+    （``<label>`` 联动一个隐藏 ``<input type=checkbox>``）才以 ``:checked`` 下拉展开。
+    因此即便后续脚本未执行，移动端也绝不会把 5 个链接横向铺开溢出屏幕（此前第三方
+    responsive-nav 把折叠态挂在 JS 注入的 ``.js`` 类上，脚本一失败就整条导航溢出）；
+    也不依赖 ``<details>``，避免其关闭态被浏览器引擎级隐藏导致桌面端菜单整条消失。
     """
     parts = ["<nav class='wb-topnav'>", "<span class='brand' data-i18n='brand'>Apple 供应链</span>"]
-    # 菜单区：原生 <details> 汉堡，移动端点 ☰ 展开为竖向下拉，桌面端媒体查询内联常驻
-    parts.append("<details class='nav-collapse'>")
-    parts.append("<summary class='nav-toggle' aria-label='菜单'>&#9776;</summary>")
-    parts.append("<ul>")
+    # 汉堡：隐藏复选框 + 其 label。checkbox 须在 .nav-collapse 之前，使 :checked ~ 兄弟选择器生效。
+    parts.append("<input type='checkbox' id='navToggle' class='nav-toggle-cb' aria-hidden='true'>")
+    parts.append("<label class='nav-toggle' for='navToggle' aria-label='菜单'>&#9776;</label>")
+    # 菜单区：始终为普通 <ul>，桌面端常驻、移动端由 :checked 切换下拉
+    parts.append("<nav class='nav-collapse'><ul>")
     for key, label, path in NAV_ITEMS:
         cls = " class='active'" if key == active else ""
         parts.append("<li><a href='%s'%s data-i18n='nav.%s'>%s</a></li>" % (root + path, cls, key, label))
-    parts.append("</ul></details>")
+    parts.append("</ul></nav>")
     # 语言切换下拉（始终可见，不折叠进汉堡）
     parts.append("<select id='langSwitch' aria-label='Language' "
                   "onchange='window.i18n&&window.i18n.changeLanguage(this.value)'>"
