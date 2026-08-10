@@ -37,6 +37,29 @@
   #panel .close { position: absolute; top: 10px; right: 12px; cursor: pointer; color: #9fb0d0; font-size: 18px; }
   #panel ul { margin: 4px 0 0; padding-left: 16px; }
   #panel li { margin: 2px 0; }
+  /* —— 风险因子说明面板（风险视图开启时弹出，右栏与 #panel 同槽，互不重叠）—————— */
+  #riskPanel { position: absolute; top: 122px; right: 12px; width: 336px; max-height: calc(100% - 134px); overflow: auto;
+               background: rgba(20,26,42,.97); border: 1px solid #2a3450; border-radius: 12px; padding: 16px; z-index: 9; display: none; }
+  #riskPanel h3 { margin: 0 0 4px; font-size: 16px; }
+  #riskPanel .sub { font-size: 12px; color: #9fb0d0; margin-bottom: 10px; line-height: 1.5; }
+  #riskPanel .close { position: absolute; top: 10px; right: 12px; cursor: pointer; color: #9fb0d0; font-size: 18px; }
+  #riskPanel .close:hover { color: #fff; }
+  #riskPanel h4 { margin: 12px 0 4px; font-size: 13px; color: #cfe0ff; font-weight: 600; }
+  #riskPanel .risk-model { background: rgba(12,16,32,.6); border: 1px solid #1c2336; border-radius: 10px; padding: 10px 12px; margin-top: 6px; }
+  #riskPanel .risk-formula { font-size: 11.5px; color: #b9c6e0; line-height: 1.6; margin: 4px 0 2px; font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; }
+  #riskPanel .risk-legend { display: flex; gap: 12px; align-items: center; font-size: 11.5px; color: #9fb0d0; margin-top: 8px; flex-wrap: wrap; }
+  #riskPanel .risk-legend .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  #riskPanel hr { border: none; border-top: 1px solid #1c2336; margin: 12px 0; }
+  #riskPanel .risk-note { font-size: 12.5px; color: #9fb0d0; line-height: 1.6; background: rgba(12,16,32,.5); border-radius: 8px; padding: 8px 10px; margin-top: 8px; }
+  #riskPanel .risk-pick { font-size: 12.5px; color: #9fb0d0; line-height: 1.6; background: rgba(12,16,32,.5); border-radius: 8px; padding: 10px 12px; }
+  /* 风险因子分解表：自变量 / 因变量 */
+  #riskPanel table.rf { width: 100%; border-collapse: collapse; font-size: 12.5px; margin-top: 6px; }
+  #riskPanel table.rf th { text-align: left; color: #9fb0d0; font-weight: 600; font-size: 11px; padding: 6px 8px; border-bottom: 1px solid #1c2336; }
+  #riskPanel table.rf td { padding: 6px 8px; border-bottom: 1px solid #1c2336; vertical-align: top; }
+  #riskPanel table.rf td.role { color: #9fb0d0; font-size: 11px; white-space: nowrap; }
+  #riskPanel table.rf tr.dep td { background: rgba(239,68,68,.12); }
+  #riskPanel table.rf tr.dep td.role { color: #ffb4b4; }
+  #riskPanel table.rf td.val { color: #e8ecf4; font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; white-space: nowrap; }
   /* 关联邻居可点击：指向 + 悬停高亮，提示可聚焦 */
   #panel li.rel { cursor: pointer; padding: 2px 6px; border-radius: 6px; transition: background .12s, color .12s; }
   #panel li.rel:hover { background: #1b2742; color: #cfe0ff; }
@@ -74,7 +97,7 @@
     #top .chk { font-size: 12px; }
     #top button, #top a.tlink { padding: 6px 10px; font-size: 12px; }
     /* 详情面板在窄屏改为上下贴近全宽，避免 320px 溢出 */
-    #panel { top: 104px; left: 12px; right: 12px; width: auto; max-width: none; max-height: calc(100% - 120px); }
+    #panel, #riskPanel { top: 104px; left: 12px; right: 12px; width: auto; max-width: none; max-height: calc(100% - 120px); }
     /* 企业表格在窄屏作为全宽抽屉覆盖画布（不再挤压成不可见），符合移动端习惯 */
     #side { width: 100%; top: 52px; bottom: 0; }
     body.table-open #cv { left: 0; width: 100%; }   /* 画布不动，侧栏在其上覆盖 */
@@ -112,6 +135,24 @@ __TOPNAV__
   <button id="reset" class="ghost" data-i18n="home.resetView">重置视图</button>
 </div>
 <div id="panel"><span class="close" id="pc">×</span><div id="pbody"></div></div>
+<div id="riskPanel"><span class="close" id="riskClose">×</span>
+  <h3 data-i18n="risk.title">风险因子说明</h3>
+  <div class="sub" data-i18n="risk.sub">风险视图按下列指标为节点着色：高 ≥ 0.6（红）/ 中 ≥ 0.3（琥珀）/ 低（绿）。下表列出每个节点的风险因子（自变量 → 因变量）。</div>
+  <div class="risk-model">
+    <h4 data-i18n="risk.compHeading">零部件脆弱性</h4>
+    <p class="risk-formula" data-i18n="risk.formulaComp">公式：V = 1 / n（n = 供应商数；n = 1 即单点依赖，V = 1.0）</p>
+    <h4 data-i18n="risk.prodHeading">产品脆弱性</h4>
+    <p class="risk-formula" data-i18n="risk.formulaProd">公式：V = 0.5 × 均值 + 0.3 × 最弱环节 + 0.2 × 单点率</p>
+    <div class="risk-legend">
+      <span><span class="dot" style="background:#ef4444"></span> <span data-i18n="home.riskHigh">高</span></span>
+      <span><span class="dot" style="background:#f59e0b"></span> <span data-i18n="home.riskMid">中</span></span>
+      <span><span class="dot" style="background:#10b981"></span> <span data-i18n="home.riskLow">低</span></span>
+      <span style="color:#ef4444;font-weight:700">⚠</span> <span data-i18n="home.riskSingle">单点依赖</span>
+    </div>
+  </div>
+  <hr>
+  <div id="riskBody"></div>
+</div>
 <div id="hint" data-i18n="home.hint">滚轮缩放 · 拖拽画布平移 · 拖动节点 · 单击节点看详情</div>
 <div id="side" style="display:none">
   <header>

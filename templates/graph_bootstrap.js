@@ -29,6 +29,13 @@
       console.error("[riskView] setRiskMode 失败：", e);
     }
   });
+  // 风险因子面板关闭按钮：取消勾选并退出风险视图
+  var rc = document.getElementById("riskClose");
+  if (rc) rc.addEventListener("click", function () {
+    if (rt) rt.checked = false;
+    if (legend) legend.style.display = "none";
+    try { g.setRiskMode(false); } catch (e) { console.error("[riskView] 关闭面板失败：", e); }
+  });
   // 深链：从其它页面带 ?focus=KEY 跳转过来时，自动选中并居中该节点
   var pk = new URLSearchParams(location.search).get("focus");
   if (pk) g.focus(pk);

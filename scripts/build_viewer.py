@@ -51,6 +51,10 @@ def merge_risk(data):
             p["sp_count"] = r["sp_count"]
             p["weakest"] = r["weakest"]
             p["weakest_component"] = r["weakest_component"]
+            # 风险因子分解表所需的自变量：部件总数、平均脆弱性、单点率
+            p["n_components"] = r["n_components"]
+            p["mean_v"] = r["mean_v"]
+            p["sp_rate"] = r["sp_rate"]
     return data
 
 

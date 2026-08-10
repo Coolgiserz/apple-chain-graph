@@ -248,9 +248,21 @@
   function selectNode(n) {
     selected = n;
     var panel = document.getElementById("panel");
-    if (!n) { if (panel) panel.style.display = "none"; return; }
-    renderPanel(n);
-    if (panel) panel.style.display = "block";
+    if (!n) {
+      if (panel) panel.style.display = "none";
+      // 风险视图下保留说明面板，仅清空「当前节点」区
+      if (riskMode) renderRiskPanel(null);
+      return;
+    }
+    if (riskMode) { renderRiskPanel(n); showRiskPanel(true); }
+    else {
+      renderPanel(n);
+      if (panel) panel.style.display = "block";
+    }
+  }
+  function showRiskPanel(on) {
+    var rp = document.getElementById("riskPanel");
+    if (rp) rp.style.display = on ? "flex" : "none";
   }
   // 数据集里的枚举值（region / category / country / tier / status / product_line / subcategory）
   // 经 i18n 翻译：raw -> <domain>.<key> -> 对应语言文本。映射（raw->键）单一来源是
@@ -313,6 +325,55 @@
     if (reportLink) h += "<p style='margin-top:10px'>" + reportLink(n, sec) + "</p>";
     if (mapLink && n.type === "Supplier") h += "<p style='margin-top:6px'>" + mapLink(n) + "</p>";
     p.innerHTML = h;
+  }
+
+  // 风险因子表：自变量（输入）→ 因变量（输出）。因变量行高亮，直观区分「指标」与「结果」。
+  function rfTable(rows) {
+    var h = "<table class='rf'><thead><tr><th>" + i18nText("risk.role") + "</th><th>" +
+            i18nText("risk.variable") + "</th><th>" + i18nText("risk.value") + "</th></tr></thead><tbody>";
+    rows.forEach(function (r) {
+      var role = r.role === "dep" ? i18nText("risk.dep") : i18nText("risk.indep");
+      h += "<tr class='" + (r.role === "dep" ? "dep" : "") + "'><td class='role'>" + role +
+           "</td><td>" + esc(r.v) + "</td><td class='val'>" + esc(String(r.val)) + "</td></tr>";
+    });
+    return h + "</tbody></table>";
+  }
+  // 风险视图下，右侧 #riskPanel 的「当前节点」区：列出该节点的风险因子分解。
+  // 供应商不参与评分，仅给说明；组件/产品给出自变量→因变量的因子表与公式。
+  function renderRiskPanel(n) {
+    var body = document.getElementById("riskBody"); if (!body) return;
+    if (!n) { body.innerHTML = "<div class='risk-pick'>" + i18nText("risk.pick") + "</div>"; return; }
+    var col = COLORS[n.type];
+    var h = "<h3>" + esc(n.name || n.id) + "</h3><div class='sub'>" + esc(n.english_name || "") + "</div>";
+    h += "<span class='tag' style='background:" + col + "22;color:" + col + ";border:1px solid " + col + "'>" + n.type + "</span>";
+    if (n.type === "Product" && n.product_line) h += "<span class='tag' style='background:#2a3450;color:#cfe0ff'>" + esc(i18nVal("product_line", n.product_line)) + "</span>";
+    if (n.type === "Supplier") {
+      h += "<div class='risk-note'>" + i18nText("risk.supplierNote") + "</div>";
+    } else if (n.type === "Component") {
+      var sp = n.single_point ? i18nText("field.single_point_yes") : i18nText("field.single_point_no");
+      var rows = [
+        { role: "indep", v: i18nText("risk.cN"), val: (n.n_suppliers != null ? n.n_suppliers : "—") },
+        { role: "indep", v: i18nText("risk.cSingle"), val: sp },
+        { role: "dep", v: i18nText("risk.cV"), val: (n.vuln != null ? n.vuln.toFixed(3) : "—") }
+      ];
+      h += "<h4>" + i18nText("risk.current") + "</h4>" + rfTable(rows) +
+           "<div class='risk-formula'>" + i18nText("risk.formulaComp") + "</div>";
+    } else if (n.type === "Product") {
+      var spRateTxt = (n.sp_count != null && n.n_components) ? (n.sp_count + " / " + n.n_components + " = " + (n.sp_rate != null ? n.sp_rate.toFixed(3) : (n.sp_count / n.n_components).toFixed(3))) : "—";
+      var weakTxt = n.weakest_component ? "（" + nm("C", n.weakest_component) + "）" : "";
+      var rows = [
+        { role: "indep", v: i18nText("risk.pMean"), val: (n.mean_v != null ? n.mean_v.toFixed(3) : "—") },
+        { role: "indep", v: i18nText("risk.pWeakest"), val: (n.weakest != null ? n.weakest.toFixed(3) : "—") + weakTxt },
+        { role: "indep", v: i18nText("risk.pSpRate"), val: spRateTxt },
+        { role: "dep", v: i18nText("risk.pV"), val: (n.vuln != null ? n.vuln.toFixed(3) : "—") }
+      ];
+      h += "<h4>" + i18nText("risk.current") + "</h4>" + rfTable(rows) +
+           "<div class='risk-formula'>" + i18nText("risk.formulaProd") + "</div>";
+    }
+    var sec = n.type === "Product" ? "sec-products" : n.type === "Component" ? "sec-components" : "sec-suppliers";
+    if (reportLink) h += "<p style='margin-top:10px'>" + reportLink(n, sec) + "</p>";
+    if (mapLink && n.type === "Supplier") h += "<p style='margin-top:6px'>" + mapLink(n) + "</p>";
+    body.innerHTML = h;
   }
 
   function bindEvents() {
@@ -477,8 +538,11 @@
     if (cb && !cb.checked) cb.checked = true;
     reheat(1);
     view.ox = W() / 2 - n.x * view.scale; view.oy = H() / 2 - n.y * view.scale;
-    renderPanel(n);
-    var panel = document.getElementById("panel"); if (panel) panel.style.display = "block";
+    if (riskMode) { renderRiskPanel(n); showRiskPanel(true); }
+    else {
+      renderPanel(n);
+      var panel = document.getElementById("panel"); if (panel) panel.style.display = "block";
+    }
   }
   function focus(key) {
     var n = idMap[key]; if (!n) return;
@@ -507,10 +571,18 @@
     resize: resize,
     esc: esc,
     visibleNodes: visibleNodes,
-    // 风险视图开关：开启后节点按脆弱性着色 + 单点标记；重绘当前帧（循环停止时直接 draw，运行中则 kick 重启）
+    // 风险视图开关：开启后节点按脆弱性着色 + 单点标记；弹出右侧「风险因子说明」面板
     setRiskMode: function (on) {
       riskMode = !!on;
-      if (selected) renderPanel(selected);
+      var panel = document.getElementById("panel");
+      if (riskMode) {
+        showRiskPanel(true);
+        if (panel) panel.style.display = "none";
+        renderRiskPanel(selected || null);   // 有选中节点则列其因子，否则给提示
+      } else {
+        showRiskPanel(false);
+        if (selected) { renderPanel(selected); if (panel) panel.style.display = "block"; }
+      }
       if (running) kick();
       else if (cv) draw(visibleSet());
     },
