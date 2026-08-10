@@ -25,10 +25,22 @@
   #top .chk { display: flex; align-items: center; gap: 4px; font-size: 13px; cursor: pointer; user-select: none; }
   #top button { background: #2f6fed; color: #fff; border: none; border-radius: 8px; padding: 6px 12px; cursor: pointer; font-size: 13px; }
   #top button.ghost { background: #2a3450; }
+  #top button.ghost.on { box-shadow: 0 0 0 2px #5b8cff88; background: #33406a; }
   #top a.tlink { background: #2a3450; color: #dbeafe; text-decoration: none; font-size: 13px; padding: 6px 12px; border-radius: 8px; white-space: nowrap; transition: background .15s; }
   #top a.tlink:hover { background: #3a4a6e; color: #fff; }
   #top .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
-  #hint { position: absolute; bottom: 12px; left: 12px; font-size: 12px; color: #7c8aa8; background: rgba(20,26,42,.7); padding: 6px 10px; border-radius: 8px; z-index: 10; pointer-events: none; }
+  #hint { position: absolute; bottom: 12px; right: 12px; font-size: 12px; color: #7c8aa8; background: rgba(20,26,42,.7); padding: 6px 10px; border-radius: 8px; z-index: 10; pointer-events: none; }
+  /* —— 首屏「关键洞察」浮层：图谱静止后弹出，把静态空间变成可读结论 —————— */
+  #insightCard { position: absolute; left: 12px; bottom: 12px; width: 320px; max-width: calc(100% - 24px);
+                 background: rgba(20,26,42,.94); border: 1px solid #2a3450; border-left: 3px solid #f59e0b;
+                 border-radius: 12px; padding: 12px 14px; z-index: 9; display: none; }
+  #insightCard h3 { margin: 0 0 8px; font-size: 14px; color: #fbbf24; }
+  #insightCard .close { position: absolute; top: 8px; right: 10px; cursor: pointer; color: #9fb0d0; font-size: 18px; line-height: 1; }
+  #insightCard .close:hover { color: #fff; }
+  #insightCard .row { display: flex; gap: 8px; font-size: 12.5px; line-height: 1.6; margin: 3px 0; }
+  #insightCard .row .k { color: #9fb0d0; flex: 0 0 70px; }
+  #insightCard .row.focus { margin-top: 8px; padding-top: 8px; border-top: 1px solid #1c2336; }
+  #insightCard .row.focus .lk { font-weight: 600; color: #fbbf24; }
   #panel { position: absolute; top: 122px; right: 12px; width: 320px; max-height: calc(100% - 134px); overflow: auto;
            background: rgba(20,26,42,.95); border: 1px solid #2a3450; border-radius: 12px; padding: 16px; z-index: 9; display: none; }
   #panel h3 { margin: 0 0 4px; font-size: 16px; }
@@ -109,6 +121,8 @@
     /* 企业表格在窄屏作为全宽抽屉覆盖画布（不再挤压成不可见），符合移动端习惯 */
     #side { width: 100%; top: 52px; bottom: 0; }
     body.table-open #cv { left: 0; width: 100%; }   /* 画布不动，侧栏在其上覆盖 */
+    #insightCard { left: 12px; right: 12px; width: auto; max-width: none; }
+    #hint { display: none; }
   }
   @media (max-width: 480px) {
     #top input[type=search] { font-size: 14px; }
@@ -127,7 +141,7 @@ __TOPNAV__
   <div class="grp">
     <label class="chk"><input type="checkbox" id="cbP" checked><span class="dot" style="background:#2f6fed"></span><span data-i18n="home.prod">产品</span></label>
     <label class="chk"><input type="checkbox" id="cbC" checked><span class="dot" style="background:#f59e0b"></span><span data-i18n="home.part">零部件</span></label>
-    <label class="chk"><input type="checkbox" id="cbS" checked><span class="dot" style="background:#10b981"></span><span data-i18n="home.supp">供应商</span></label>
+    <label class="chk"><input type="checkbox" id="cbS"><span class="dot" style="background:#10b981"></span><span data-i18n="home.suppAll">全部供应商</span></label>
   </div>
   <div class="grp"><label data-i18n="home.line">产品线</label>
     <select id="line"><option value="" data-i18n="home.all">全部</option></select>
@@ -141,6 +155,9 @@ __TOPNAV__
     <span style="color:#ef4444;font-weight:700">⚠</span><span data-i18n="home.riskSingle">单点依赖</span>
   </div>
   <button id="reset" class="ghost" data-i18n="home.resetView">重置视图</button>
+  <button id="fit" class="ghost" data-i18n="home.fitView">适配视图</button>
+  <button id="insightToggle" class="ghost" data-i18n="home.insights">关键洞察</button>
+  <button id="flow" class="ghost on" data-i18n="home.flow">流动</button>
 </div>
 <div id="panel"><span class="close" id="pc">×</span><div id="pbody"></div></div>
 <div id="riskPanel"><span class="close" id="riskClose">×</span>
@@ -161,7 +178,15 @@ __TOPNAV__
   <hr>
   <div id="riskBody"></div>
 </div>
-<div id="hint" data-i18n="home.hint">滚轮缩放 · 拖拽画布平移 · 拖动节点 · 单击节点看详情</div>
+<div id="hint" data-i18n="home.hint">滚轮缩放 · 拖拽画布平移 · 拖动节点 · 单击产品/零部件展开其供应商 · 流动粒子表示供应链流向</div>
+<div id="insightCard">
+  <span class="close" id="insightClose">×</span>
+  <h3 data-i18n="home.insights">关键洞察</h3>
+  <div class="row"><span class="k" data-i18n="home.insightScale">规模</span><span id="insScale"></span></div>
+  <div class="row"><span class="k" data-i18n="home.insightVulnLine">最脆弱产品线</span><span id="insLine"></span></div>
+  <div class="row"><span class="k" data-i18n="home.insightSingle">单点依赖</span><span id="insSP"></span></div>
+  <div class="row focus"><span class="k" data-i18n="home.insightFocus">重点关注</span><span class="lk" id="insFocus"></span></div>
+</div>
 <div id="side" style="display:none">
   <header>
     <h2><span data-i18n="home.sideTitle">企业表格</span> <span class="cnt">(<span id="sideCount">0</span>)</span></h2>

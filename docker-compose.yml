@@ -3,7 +3,7 @@
 # 用法：
 #   docker compose up -d --build   # 构建镜像并后台启动
 #   docker compose down            # 停止并移除容器
-#   浏览器打开 http://localhost:8080
+#   浏览器打开 http://localhost:16161
 #
 # 也可用 Makefile 快捷键：make up / make down / make logs / make serve
 services:
@@ -15,6 +15,7 @@ services:
         # 网络受限时（如国内）在 .env 里把 PYTHON_IMG / NGINX_IMG 设为镜像源完整镜像名
         PYTHON_IMG: ${PYTHON_IMG:-python:3.11-slim}
         NGINX_IMG: ${NGINX_IMG:-nginx:1.27-alpine}
+        NODE_IMG: ${NODE_IMG:-node:24-slim}
     image: apple-supply-chain:latest
     container_name: apple-supply-chain-web
     ports:

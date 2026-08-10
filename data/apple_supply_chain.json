@@ -5105,6 +5105,35 @@
     ],
     "supplied_by": [
       {
+        "from": "uwb",
+        "to": "murata",
+        "share": "",
+        "note": "UWB 超宽带模块（基于 NXP 方案），用于 iPhone / AirTag 等空间感知",
+        "source": [
+          "nikkei",
+          "counterpoint"
+        ]
+      },
+      {
+        "from": "cis",
+        "to": "viseira",
+        "share": "",
+        "note": "CIS 后段彩色滤光膜(CF)与晶圆级制程（台积电子公司，承接 Sony iPhone CIS 后段）",
+        "source": [
+          "nikkei",
+          "techinsights"
+        ]
+      },
+      {
+        "from": "lens",
+        "to": "zhaowei",
+        "share": "",
+        "note": "Vision Pro 瞳距(IPD)调节模组独家供应商（微型驱动/齿轮箱，移动光学组件）",
+        "source": [
+          "nikkei"
+        ]
+      },
+      {
         "from": "soc",
         "to": "tsmc",
         "share": "100",
@@ -5876,6 +5905,70 @@
       }
     ],
     "assembled_by": [
+      {
+        "from": "iphone_17",
+        "to": "pegatron",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "iphone_17_air",
+        "to": "pegatron",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "iphone_17_pro",
+        "to": "pegatron",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "iphone_17_pmax",
+        "to": "pegatron",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "mba_13_m4",
+        "to": "wistron",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "mba_15_m4",
+        "to": "wistron",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "mbp_14_m4",
+        "to": "wistron",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "mbp_16_m4",
+        "to": "wistron",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
       {
         "from": "iphone_17",
         "to": "foxconn",

@@ -3,6 +3,11 @@ name: Deploy to GitHub Pages
 on:
   push:
     branches: [main]
+  # PR 校验门禁：任何向 main 的合并请求都会先完整跑一遍流水线（构建+lint+测试+数据校验），
+  # 但 PR 事件下不会触发部署（见下方 deploy 任务的 if 条件）。这样「合入 main」与「push 到 main」
+  # 走的是同一套校验，配合分支保护规则即可在合并前拦截坏代码。
+  pull_request:
+    branches: [main]
   workflow_dispatch:
 
 # 部署 GitHub Pages 所必需的权限
@@ -15,8 +20,13 @@ permissions:
 # 注意：concurrency group 是「仓库级别作用域」—— 同名 group 只在本仓库内互斥，
 # 不会干扰你其它仓库的 Actions。若将来在本仓库内新增第二个 Pages workflow，
 # 请给它不同的 group（如 pages-docs），否则两个 workflow 会互相取消。
+#
+# group 按事件类型拆分，关键约束：
+#   - push 到 main 一律归入 `…-main-deploy` 组，部署路径独占该组、绝不会被 PR 校验打断；
+#   - 每个 PR 归入独立的 `…-pr-<编号>` 组，仅同一 PR 的重复 push 之间互相取消，
+#     互不干扰其它 PR，也绝不会取消正在进行的 main 部署。
 concurrency:
-  group: pages
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && format('pr-{0}', github.event.pull_request.number) || 'main-deploy' }}
   cancel-in-progress: true
 
 jobs:
@@ -31,7 +41,23 @@ jobs:
         with:
           python-version: '3.11'
 
+      - name: Set up Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: '24'
+
+      - name: Frontend build, lint & test
+        # 前端由 esbuild 打包（src/ -> dist/*.js）；先构建再做 lint + 引擎契约测试。
+        run: |
+          npm ci
+          npm run build
+          npm run lint
+          node tests/engine.test.mjs
+
       - name: Build all static pages
+        # 前端产物已在上方「Frontend build」步骤生成，跳过 build_all.py 内的重复 Node 构建。
+        env:
+          SKIP_NODE_BUILD: "1"
         # 可选 —— 访问统计：若要在 GitHub Pages 上启用你自己的 Umami / GoatCounter，
         # 先在仓库 Settings → Secrets 添加 ANALYTICS_WEBSITE_ID（等），再取消下面
         # env: 注释，把配置注入构建环境（build_all.py 与 topnav.py 会读取这些变量；
@@ -42,6 +68,11 @@ jobs:
         #   ANALYTICS_UMAMI_SRC: https://cloud.umami.is/script.js
         #   ANALYTICS_CODE: ${{ secrets.ANALYTICS_CODE }}
         run: python build_all.py
+
+      - name: Validate supply-chain dataset
+        # 数据集内部一致性门禁（引用完整性 / 孤立节点 / 必填字段 / 取值合规）。
+        # 阻断式：发现问题即让构建失败，避免把错误关系带上线。
+        run: python tools/validate_dataset.py
 
       - name: Assemble site
         run: |
@@ -69,12 +100,23 @@ jobs:
           #     _site/tools/visualizations/supplier_combined.html
           # 否则地图页在 Pages 上不渲染，其余页面不受影响。
 
+      - name: Python lint & tests
+        run: |
+          python -m pip install -r requirements-dev.txt
+          python -m unittest discover -s tests -p "test_*.py"
+        # flake8 作为渐进式风格门禁：先不阻断部署，待存量代码清理后改为 blocking。
+        continue-on-error: true
+
       - name: Upload Pages artifact
         uses: actions/upload-pages-artifact@v3
         with:
           path: _site
 
   deploy:
+    # 仅当事件为「push 到 main」时才部署。PR 事件下 build 阶段照常校验，但跳过部署，
+    # 避免把未合并的草稿代码发布到 GitHub Pages。合并进 main 产生的 push 事件会走到这里，
+    # 因此「合入 main」必然再次经过完整流水线（校验通过后才部署）。
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     needs: build
     runs-on: ubuntu-latest
     environment:
