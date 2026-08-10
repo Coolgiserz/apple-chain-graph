@@ -14,6 +14,8 @@ export const S = {
   reportLink: null, mapLink: null,
   pendingFocus: null,
   fitDone: false,
+  criticalId: null,        // 首屏静止后自动高亮的最关键节点（信息浮层用，非动画）
+  insightsShown: false,    // 关键洞察卡是否已在本会话展示过（仅首屏静止时弹一次）
 };
 
 // 物理阻尼与停机阈值

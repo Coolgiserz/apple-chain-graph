@@ -1,6 +1,6 @@
 // interaction.js — 鼠标/触摸交互、聚焦深链、动画循环（「交互」模块，可独立演进）。
 import { S, ALPHA_MIN } from "./state.js";
-import { W, H, esc, nodeRadius } from "./util.js";
+import { W, H, esc, nodeRadius, label, i18nText } from "./util.js";
 import { visibleSet } from "./model.js";
 import { draw, syncSize, resize } from "./render.js";
 import { selectNode, renderPanel, renderRiskPanel, showRiskPanel } from "./panels.js";
@@ -145,12 +145,23 @@ export function bindEvents() {
   };
   var fitBtn = document.getElementById("fit");
   if (fitBtn) fitBtn.onclick = function () { fitView(); };
+  var insClose = document.getElementById("insightClose");
+  if (insClose) insClose.onclick = function () {
+    var c = document.getElementById("insightCard"); if (c) c.style.display = "none";
+    S.criticalId = null; if (S.cv) draw(visibleSet());
+  };
+  var insToggle = document.getElementById("insightToggle");
+  if (insToggle) insToggle.onclick = function () {
+    var c = document.getElementById("insightCard");
+    if (c && c.style.display === "block") { c.style.display = "none"; S.criticalId = null; if (S.cv) draw(visibleSet()); }
+    else { showInsights(); }
+  };
   ["q", "cbP", "cbC", "cbS", "line"].forEach(function (id) {
     var el = document.getElementById(id);
     if (el) el.addEventListener("input", function () { if (id !== "q") selectNode(null); reheat(0.7); });
   });
-  document.addEventListener("i18n:ready", function () { if (S.selected) renderPanel(S.selected); });
-  document.addEventListener("i18n:changed", function () { if (S.selected) renderPanel(S.selected); });
+  document.addEventListener("i18n:ready", function () { if (S.selected) renderPanel(S.selected); if (insightVisible()) showInsights(); });
+  document.addEventListener("i18n:changed", function () { if (S.selected) renderPanel(S.selected); if (insightVisible()) showInsights(); });
 }
 
 // 仅在需要重绘时启动 rAF 循环；模拟静止且无交互时循环自动停止，避免全屏 60fps 持续重绘。
@@ -167,6 +178,7 @@ export function loop() {
   if (S.alpha < ALPHA_MIN && !S.dragNode && !S.panning && S.canvasReady) {
     S.animating = false;
     if (!S.fitDone) fitView();   // 首屏布局稳定后自动适配视口一次（避免缩在角落/需手动缩放）
+    if (!S.insightsShown) { S.insightsShown = true; showInsights(); }  // 静止后弹一次「关键洞察」浮层
     return;
   }
   S.rafId = (typeof requestAnimationFrame !== "undefined" ? requestAnimationFrame(loop) : 0);
@@ -214,6 +226,71 @@ export function fitView() {
   S.view.oy = H() / 2 - (minY + maxY) / 2 * s;
   S.fitDone = true;
   kick();
+}
+
+// 产品线的展示名（与 build_viewer.LINE_ZH 对齐）
+var LINE_DISPLAY = { iPhone: "iPhone", Mac: "Mac", iPad: "iPad", Wearable: "Apple Watch", Spatial: "Vision Pro", Audio: "AirPods", HomePod: "HomePod" };
+
+// 从内联 SUPPLY_DATA 找出某零部件的（代表）供应商显示名
+function compSupplierName(compId) {
+  var data = (typeof window !== "undefined" ? window.SUPPLY_DATA : null);
+  if (!data || !data.edges || !data.edges.supplied_by) return "";
+  for (var i = 0; i < data.edges.supplied_by.length; i++) {
+    if (data.edges.supplied_by[i].from === compId) {
+      var sid = data.edges.supplied_by[i].to;
+      var s = S.idMap["Supplier:" + sid];
+      return s ? (s.english_name || s.name || sid) : sid;
+    }
+  }
+  return "";
+}
+
+// 「关键洞察」浮层：图谱首屏静止后弹出一次，把大片静态空间变成可读结论，
+// 并把最关键节点（单点依赖零部件，缺省取脆弱性最高者）高亮 + 常驻标签。
+function insightVisible() { var c = document.getElementById("insightCard"); return !!(c && c.style.display === "block"); }
+export function showInsights() {
+  var card = document.getElementById("insightCard");
+  if (!card) return;
+  var prods = [], comps = [], supps = [];
+  S.nodes.forEach(function (n) {
+    if (n.type === "Product") prods.push(n);
+    else if (n.type === "Component") comps.push(n);
+    else supps.push(n);
+  });
+  var scaleEl = document.getElementById("insScale");
+  if (scaleEl) scaleEl.textContent = prods.length + " " + i18nText("home.prod") + " · " + comps.length + " " + i18nText("home.part") + " · " + supps.length + " " + i18nText("home.supp");
+
+  // 最脆弱产品线：按 product_line 聚合产品 vuln 取均值
+  var lv = {};
+  prods.forEach(function (p) {
+    if (p.vuln == null || p.product_line == null) return;
+    if (!lv[p.product_line]) lv[p.product_line] = { s: 0, n: 0 };
+    lv[p.product_line].s += p.vuln; lv[p.product_line].n += 1;
+  });
+  var worstLine = null, worstV = -1;
+  Object.keys(lv).forEach(function (k) { var v = lv[k].s / lv[k].n; if (v > worstV) { worstV = v; worstLine = k; } });
+  var lineEl = document.getElementById("insLine");
+  if (lineEl) lineEl.textContent = (LINE_DISPLAY[worstLine] || worstLine || "-") + (worstV >= 0 ? "（" + worstV.toFixed(2) + "）" : "");
+
+  // 单点依赖 + 最关键节点
+  var sp = comps.filter(function (c) { return c.single_point; });
+  var crit = null;
+  function pickMax(arr) { arr.forEach(function (c) { if (!crit || (c.vuln || 0) > (crit.vuln || 0)) crit = c; }); }
+  pickMax(sp);
+  if (!crit) pickMax(comps);   // 兜底：无单点依赖时取脆弱性最高零部件
+  var spEl = document.getElementById("insSP");
+  if (spEl) spEl.textContent = sp.length + " " + i18nText("home.insightSingleUnit");
+  var focusEl = document.getElementById("insFocus");
+  if (focusEl) {
+    if (crit) {
+      var sn = compSupplierName(crit.id);
+      focusEl.textContent = label(crit) + (sn ? " → " + sn : "");
+      focusEl.onclick = function () { focus(crit._key); };
+    } else { focusEl.textContent = "-"; focusEl.onclick = null; }
+  }
+  S.criticalId = crit ? crit._key : null;
+  card.style.display = "block";
+  if (S.cv) draw(visibleSet());   // 立即绘制高亮环 + 常驻标签（静止态也可见）
 }
 
 export function start() {

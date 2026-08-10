@@ -39,7 +39,9 @@ const makeEl = (extra = {}) => Object.assign({
   textContent: "",
 }, extra);
 
-const canvas = makeEl();
+// 画布初始后备尺寸故意与 CSS 尺寸(800x600)不一致，模拟浏览器默认 300x150，
+// 使 syncSize() 触发尺寸设置并把 canvasReady 置真（否则静止分支永不触发）。
+const canvas = makeEl({ width: 300, height: 150 });
 
 const registry = {
   cv: canvas,
@@ -50,6 +52,13 @@ const registry = {
   cbS: makeEl({ checked: true }),
   panel: makeEl(),
   langSwitch: makeEl({ value: "" }),
+  insightCard: makeEl({ style: { display: "none" } }),
+  insScale: makeEl(),
+  insLine: makeEl(),
+  insSP: makeEl(),
+  insFocus: makeEl(),
+  insightClose: makeEl(),
+  insightToggle: makeEl(),
 };
 
 globalThis.window = globalThis;
@@ -63,7 +72,9 @@ globalThis.document = {
 };
 globalThis.location = { search: "", href: "http://localhost/" };
 globalThis.history = { replaceState: () => {} };
-globalThis.requestAnimationFrame = () => 0; // 不递归触发动画循环
+// 队列式 rAF：把回调入队，由测试在 start() 后手动排空，驱动动画循环直到静止（非递归，避免爆栈）。
+let rafQ = [];
+globalThis.requestAnimationFrame = (cb) => { rafQ.push(cb); return rafQ.length; };
 globalThis.cancelAnimationFrame = () => {};
 globalThis.addEventListener = () => {}; // window.addEventListener（mouseup/resize 绑定）
 
@@ -135,6 +146,18 @@ check("fitView() 不抛错且将视口缩放到有效正值", () => {
   assert.doesNotThrow(() => api.fitView());
   const vp = api.getViewport();
   assert.ok(vp.scale > 0 && Number.isFinite(vp.scale), "scale 应为有限正值，实际 " + vp.scale);
+});
+
+// 驱动动画循环到静止，验证「关键洞察」浮层首屏自动弹出并填充内容（Option A）。
+check("settle 后关键洞察浮层弹出且填充内容", () => {
+  rafQ = [];
+  assert.doesNotThrow(() => api.start());
+  let n = 0;
+  while (rafQ.length && n < 6000) { const cb = rafQ.shift(); cb(); n++; }
+  const card = registry.insightCard;
+  assert.equal(card.style.display, "block", "静止后浮层应显示（display=block），实际 " + card.style.display);
+  assert.ok(registry.insScale.textContent.length > 0, "规模文本应非空");
+  assert.ok(registry.insFocus.textContent.length > 0, "重点关注节点文本应非空");
 });
 
 if (failures > 0) {

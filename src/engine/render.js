@@ -57,7 +57,12 @@ export function draw(vis) {
       S.ctx.beginPath(); S.ctx.arc(n.x, n.y, r + 3, 0, Math.PI * 2);
       S.ctx.strokeStyle = "#ef4444"; S.ctx.lineWidth = 2; S.ctx.stroke();
     }
-    if (S.view.scale > 0.7 || n.type === "Product" || S.selected === n || S.hover === n) {
+    // 首屏「关键洞察」浮层自动高亮的最关键节点（琥珀环，静止态也可见，非动画）
+    if (n._key === S.criticalId) {
+      S.ctx.beginPath(); S.ctx.arc(n.x, n.y, r + 6, 0, Math.PI * 2);
+      S.ctx.strokeStyle = "#fbbf24"; S.ctx.lineWidth = 2.5; S.ctx.stroke();
+    }
+    if (S.view.scale > 0.7 || n.type === "Product" || S.selected === n || S.hover === n || n._key === S.criticalId) {
       S.ctx.globalAlpha = dim ? 0.25 : 1;
       S.ctx.fillStyle = "#dfe7f7"; S.ctx.font = "11px sans-serif"; S.ctx.textAlign = "center";
       S.ctx.fillText(label(n), n.x, n.y + r + 12);
