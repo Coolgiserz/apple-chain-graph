@@ -26,7 +26,7 @@ function pick(px, py) {
 function onNodeClick(n) {
   if (!n) { selectNode(null); return; }
   if ((n.type === "Product" || n.type === "Component") && !S.expanded.has(n._key)) {
-    S.expanded.add(n._key); reheat(0.6);
+    S.expanded.add(n._key); reheat(0.6); emitView();   // 展开会露出供应商 → 通知表格刷新（联动断点修复）
   }
   selectNode(n);
 }
@@ -41,6 +41,21 @@ function setSuppBtn() {
   if (b.classList) b.classList.toggle("on", S.showAll);
   if (window.i18n && window.i18n.ready) b.textContent = i18nText(S.showAll ? "home.suppAllOn" : "home.suppAll");
 }
+
+// 视图/筛选变化广播（供「企业表格」订阅刷新）。按钮（如 cbS 是 button）与程序化改值（reset/展开）
+// 不会触发 input/change 事件，表格无法自动感知 —— 统一在此广播 sc:view 弥合联动断点。
+function emitView() {
+  try {
+    if (typeof document !== "undefined" && document.dispatchEvent && typeof CustomEvent !== "undefined")
+      document.dispatchEvent(new CustomEvent("sc:view"));
+  } catch (e) { /* DOM 桩环境静默跳过（make test 安全） */ }
+}
+// 筛选/搜索变化时，仅当「当前选中节点已不可见」才清空选中（修复过度清空：例如选中某产品后，
+// 仅切换「组件」勾选不该清掉仍可见的该产品面板）。
+function maybeDropSelection() {
+  if (S.selected && !visibleSet().has(S.selected._key)) selectNode(null);
+}
+var ZOOM_MIN = 0.1, ZOOM_MAX = 6;   // 缩放上下限（修复滚轮/pinch 可无限放大缩小的交互缺陷）
 
 // 搜索框旁实时显示命中数（P1-7）。跨全部节点匹配，返回「匹配项」数（不含邻居）。
 function updateSearchCount() {
@@ -59,8 +74,8 @@ function updateSearchCount() {
 }
 
 // 逐项展开 / 收起（与「选中看信息」解耦，P0-3/P0-2）。
-function expandNode(key) { if (!S.expanded.has(key)) { S.expanded.add(key); reheat(0.6); } selectNode(S.idMap[key]); }
-function collapseNode(key) { if (S.expanded.has(key)) { S.expanded.delete(key); reheat(0.6); } selectNode(S.idMap[key]); }
+function expandNode(key) { if (!S.expanded.has(key)) { S.expanded.add(key); reheat(0.6); emitView(); } selectNode(S.idMap[key]); }
+function collapseNode(key) { if (S.expanded.has(key)) { S.expanded.delete(key); reheat(0.6); emitView(); } selectNode(S.idMap[key]); }
 
 export function bindEvents() {
   S.cv.addEventListener("mousedown", function (e) {
@@ -105,7 +120,9 @@ export function bindEvents() {
     var l = localXY(e.clientX, e.clientY);
     var factor = e.deltaY < 0 ? 1.1 : 0.9;
     var wx = (l.x - S.view.ox) / S.view.scale, wy = (l.y - S.view.oy) / S.view.scale;
-    S.view.scale *= factor; S.view.ox = l.x - wx * S.view.scale; S.view.oy = l.y - wy * S.view.scale;
+    S.view.scale *= factor;
+    S.view.scale = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, S.view.scale));   // 缩放下限/上限
+    S.view.ox = l.x - wx * S.view.scale; S.view.oy = l.y - wy * S.view.scale;
     kick();
   }, { passive: false });
 
@@ -136,6 +153,7 @@ export function bindEvents() {
         var factor = d / S.pinchDist;
         var wx = (l.x - S.view.ox) / S.view.scale, wy = (l.y - S.view.oy) / S.view.scale;
         S.view.scale = S.pinchScale * factor;
+        S.view.scale = Math.max(ZOOM_MIN, Math.min(ZOOM_MAX, S.view.scale));   // 缩放下限/上限
         S.view.ox = l.x - wx * S.view.scale; S.view.oy = l.y - wy * S.view.scale;
       }
       kick();
@@ -190,6 +208,7 @@ export function bindEvents() {
     document.getElementById("cbP").checked = true;
     document.getElementById("cbC").checked = true;
     var line = document.getElementById("line"); if (line) line.value = "";
+    emitView();                                 // 通知表格随筛选复位刷新
     reheat(1); S.fitDone = false; fitView();   // 复位筛选并重新适配视口
   };
   var flowBtn = document.getElementById("flow");
@@ -206,7 +225,7 @@ export function bindEvents() {
     S.showAll = !S.showAll;
     if (!S.showAll) S.expanded.clear();   // 收起全部 = 清除所有逐项展开
     setSuppBtn();
-    selectNode(null); reheat(0.7);
+    maybeDropSelection(); emitView(); reheat(0.7);   // 仅当当前选中供应商变隐藏才清面板；并通知表格刷新
   };
   (typeof document !== "undefined" ? document : globalThis).addEventListener("visibilitychange", function () {
     if (typeof document !== "undefined" && document.hidden) { S.running = false; }   // 后台标签页停止循环省电
@@ -227,10 +246,10 @@ export function bindEvents() {
   };
   // 搜索框：实时显示命中数（P1-7），并随输入重算可见集
   var qel = document.getElementById("q");
-  if (qel) qel.addEventListener("input", function () { updateSearchCount(); selectNode(null); reheat(0.7); });
+  if (qel) qel.addEventListener("input", function () { updateSearchCount(); maybeDropSelection(); emitView(); reheat(0.7); });
   ["cbP", "cbC", "line"].forEach(function (id) {
     var el = document.getElementById(id);
-    if (el) el.addEventListener("input", function () { selectNode(null); reheat(0.7); });
+    if (el) el.addEventListener("input", function () { maybeDropSelection(); emitView(); reheat(0.7); });
   });
   // 信息面板内的「展开/收起供应商」（逐项展开与选中解耦，P0-3/P0-2）
   var pbody = document.getElementById("pbody");
@@ -283,7 +302,32 @@ export function loop() {
 }
 export function reheat(a) { S.alpha = Math.max(S.alpha, (a == null ? 0.5 : a)); kick(); }
 
+// 聚焦前确保目标节点可见（P2 修复：此前聚焦隐藏供应商/被筛选排除的节点时，
+// 相机居中但该节点不在 visibleSet 中、draw 不渲染，用户「选中了却找不到」）。
+// 最小侵入：清除搜索/产品线筛选、开启对应类别开关、展开上游产品/零部件；
+// 供应商极端无上游时兜底 showAll。修改后下一次 draw 即可见到该节点。
+function ensureVisible(n) {
+  if (visibleSet().has(n._key)) return;
+  // 1) 搜索集会覆盖筛选并掩盖目标 → 清除搜索框
+  var q = document.getElementById("q");
+  if (q && q.value.trim()) { q.value = ""; var qc = document.getElementById("qCount"); if (qc) qc.textContent = ""; }
+  // 2) 开启对应类别开关（供应商需其上游产品/零部件可见才能经 expanded 露出）
+  if (n.type === "Product" || n.type === "Supplier") { var cbP = document.getElementById("cbP"); if (cbP && !cbP.checked) cbP.checked = true; }
+  if (n.type === "Component" || n.type === "Supplier") { var cbC = document.getElementById("cbC"); if (cbC && !cbC.checked) cbC.checked = true; }
+  // 3) 产品线筛选可能隐藏目标节点 → 清除
+  var line = document.getElementById("line");
+  if (line && line.value) line.value = "";
+  // 4) 供应商：展开其相邻的上游产品/零部件（最小侵入，仅露出该供应商及其同级）
+  if (n.type === "Supplier") {
+    var adj = S.adj[n._key] || [];
+    for (var i = 0; i < adj.length; i++) { var o = adj[i].other; if (o.type === "Product" || o.type === "Component") S.expanded.add(o._key); }
+    if (!visibleSet().has(n._key)) { S.showAll = true; setSuppBtn(); }   // 兜底：无上游则全展开
+  }
+  emitView();   // 可见集可能已变（清除搜索/筛选/展开）→ 通知表格刷新
+}
+
 export function applyFocus(n) {
+  ensureVisible(n);   // 先保证可见，再居中（P2）
   selectNode(n);   // 复用 selectNode：设置 S.selected + 右侧面板，并广播 sc:select（反向联动表格）
   var cbId = n.type === "Product" ? "cbP" : n.type === "Component" ? "cbC" : "cbS";
   var cb = document.getElementById(cbId);

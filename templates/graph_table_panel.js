@@ -107,8 +107,8 @@
     lastType = d.type || null;
     lastName = d.name || null;
     var isSupplier = lastType === "Supplier";
-    // 仅当选中的是「可见供应商」且表格当前关闭时，自动打开以便高亮可见（避免空表弹出）。
-    if (!isOpen() && isSupplier && lastKey) open();
+    // 不再自动弹开表格：尊重用户主动关闭表格的操作（避免每次选供应商都被弹回，侵扰）；
+    // 选中状态记入 lastKey，待用户重新打开表格时由 render() 恢复高亮。
     var rowEl = focusRow(lastKey);   // null 或非供应商 → 清除高亮；供应商 → 高亮+滚动
     renderScopeHint(isSupplier, rowEl);
   }
@@ -136,19 +136,9 @@
       if (window.GraphEngine && window.GraphEngine.focus) window.GraphEngine.focus(key);
       focusRow(key);
     });
-    // 筛选 / 搜索变化时实时刷新表格（与图谱共用同一 visibleSet）
-    ["q", "cbP", "cbC", "cbS", "line"].forEach(function (id) {
-      var el = $(id);
-      if (el) {
-        el.addEventListener("input", render);
-        el.addEventListener("change", render);
-      }
-    });
-    // 引擎「重置视图」按钮会改搜索词/勾选/产品线（JS 赋值不触发 input），单独监听
-    var reset = $("reset");
-    if (reset) reset.addEventListener("click", function () { setTimeout(render, 0); });
-    // 跨页深链 ?focus= 选中节点后，若面板已开则同步高亮
-    window.addEventListener("hashchange", function () {});
+    // 订阅引擎「视图/筛选变化」事件统一刷新表格（覆盖 搜索/勾选/产品线/展开全部/逐项展开/重置
+    // 等所有会改变可见供应商集的路径；按钮与程序化改值不触发 input/change，由引擎统一广播 sc:view 弥合）。
+    document.addEventListener("sc:view", render);
   }
 
   if (document.readyState === "loading") document.addEventListener("DOMContentLoaded", init);

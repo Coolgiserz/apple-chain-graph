@@ -83,14 +83,19 @@ export function renderPanel(n) {
       : [fieldRow("short_name", n.short_name), fieldRow("country", n.country), fieldRow("region", n.region), fieldRow("category", n.category), fieldRow("tier", n.tier)];
   fields.forEach(function (kv) { if (kv[1]) h += "<dt>" + kv[0] + "</dt><dd>" + esc(String(kv[1])) + "</dd>"; });
   h += "</dl>";
-  var out = [];
-  S.adj[n._key].forEach(function (e) { if (e.dir === "out") out.push(e); });
-  if (out.length) {
-    h += "<dt style='margin-top:12px;color:#9fb0d0;font-size:11px'>" + i18nText("panel.rel") + "（" + out.length + " · " + i18nText("panel.relHint") + "）</dt><dd><ul>";
-    out.forEach(function (e) {
+  // 关系列表：列出该节点全部相邻边（含上下游两个方向），用友好关系名替代原始边类型码
+  // （ USES/SUPPLIES/ASSEMBLES/LINE ），并修复「供应商节点无任何关系」的空缺（其边均为入方向）。
+  var rels = S.adj[n._key];
+  if (rels.length) {
+    h += "<dt style='margin-top:12px;color:#9fb0d0;font-size:11px'>" + i18nText("panel.rel") + "（" + rels.length + " · " + i18nText("panel.relHint") + "）</dt><dd><ul>";
+    rels.forEach(function (e) {
+      var isOut = e.dir === "out";                       // out：供应链从本节点「流出」（使用/供应/组装）；in：反向
+      var verb = i18nText("edge." + e.link.type);        // 友好关系名（使用/供应/组装/归属）
+      var nm = esc(label(e.other));
+      var phrase = isOut ? (verb + " → " + nm) : (nm + " → " + verb);   // 出方向「动词→对象」，入方向「对象→动词」
       var extra = e.link.share ? " · 份额 " + e.link.share + "%" : "";
       h += "<li class='rel' data-key='" + esc(e.other._key) + "' title='点击聚焦：" + esc(label(e.other)) + "'>"
-        + "<b>" + e.link.type + "</b> → " + esc(label(e.other)) + extra + "</li>";
+        + phrase + extra + "</li>";
     });
     h += "</ul></dd>";
   }

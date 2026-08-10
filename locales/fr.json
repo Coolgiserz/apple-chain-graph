@@ -302,5 +302,9 @@
   "home.insightSingleFrag": " composants à point unique",
   "home.insightAction": ", à prioriser ",
   "report.risk.r6": "Composant à source unique (point de défaillance unique) : la puce codec audio et haptique (audio_codec) n'est fournie que par Cirrus (Cirrus Logic) dans ce jeu de données — la seule dépendance à point unique ; toute rupture d'approvisionnement ou problème de rendement affecterait l'audio et les haptiques sur toute la gamme, d'où la nécessité de suivre de près l'avancement d'un second fournisseur.",
-  "report.risk.note": "Les parts et dates ci-dessus (panneau BOE 51 %, DRAM Samsung ~60–70 %, monopole CIS Sony, composants japonais >60 % dans l'appareil photo, TSMC Arizona uniquement l'A16 héritée, usine américaine Amkor ~2028, etc.) proviennent de démontages publics et d'études de marché (Counterpoint / Nikkei / TrendForce / stockanalysis) et de communications des fournisseurs, reflétant les configurations dominantes de 2025–2026 ; elles peuvent évoluer et ne sont fournies qu'à des fins d'étude de la structure de la chaîne."
+  "report.risk.note": "Les parts et dates ci-dessus (panneau BOE 51 %, DRAM Samsung ~60–70 %, monopole CIS Sony, composants japonais >60 % dans l'appareil photo, TSMC Arizona uniquement l'A16 héritée, usine américaine Amkor ~2028, etc.) proviennent de démontages publics et d'études de marché (Counterpoint / Nikkei / TrendForce / stockanalysis) et de communications des fournisseurs, reflétant les configurations dominantes de 2025–2026 ; elles peuvent évoluer et ne sont fournies qu'à des fins d'étude de la structure de la chaîne.",
+  "edge.USES": "utilise",
+  "edge.SUPPLIES": "fournit",
+  "edge.ASSEMBLES": "assemble",
+  "edge.LINE": "gamme"
 }
