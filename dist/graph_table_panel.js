@@ -23,7 +23,7 @@
   }
 
   var side, tbody, countEl, toggleBtn, closeBtn;
-  var lastKey = null, lastType = null, lastName = null, hintEl = null;
+  var lastKey = null, lastType = null, lastName = null;
 
   function render() {
     if (!side || side.style.display === "none") return;
@@ -88,43 +88,23 @@
     return r;
   }
 
-  // 范围提示（P1）：当前选中的是产品/零部件时，表格中没有对应行，给出弱提示而非留下错误高亮。
-  function renderScopeHint(isSupplier, rowEl) {
-    if (!hintEl) return;
-    if (!isSupplier && lastName) {
-      var labelTxt = lastType === "Product" ? "产品" : lastType === "Component" ? "零部件" : "节点";
-      hintEl.textContent = "当前选中：" + lastName + "（" + labelTxt + "，不在本供应商表）";
-      hintEl.style.display = "block";
-    } else {
-      hintEl.style.display = "none";
-    }
-  }
-
   // 订阅引擎广播的选中事件（P0 反向联动）：图谱/右侧面板选中变化时同步本表。
   function onSelect(e) {
     var d = (e && e.detail) || {};
     lastKey = d.key || null;
     lastType = d.type || null;
     lastName = d.name || null;
-    var isSupplier = lastType === "Supplier";
     // 不再自动弹开表格：尊重用户主动关闭表格的操作（避免每次选供应商都被弹回，侵扰）；
     // 选中状态记入 lastKey，待用户重新打开表格时由 render() 恢复高亮。
-    var rowEl = focusRow(lastKey);   // null 或非供应商 → 清除高亮；供应商 → 高亮+滚动
-    renderScopeHint(isSupplier, rowEl);
+    // 「企业表格」只列供应商；选中产品/零部件时本就不对应任何行，仅清高亮即可，
+    // 不再显示「不在本供应商表」之类的告警提示（产品本就不是供应商，属预期行为，非错误）。
+    focusRow(lastKey);   // null 或非供应商 → 清除高亮；供应商 → 高亮+滚动
   }
 
   function init() {
     side = $("side"); tbody = $("sideBody"); countEl = $("sideCount");
     toggleBtn = $("toggleTable"); closeBtn = $("sideClose");
     if (!side) return;
-    // 范围提示条（P1）：选中产品/零部件时提示「不在本供应商表」。挂到滚动区顶部。
-    hintEl = document.createElement("div");
-    hintEl.id = "sideHint";
-    hintEl.className = "side-hint";
-    hintEl.style.cssText = "display:none;margin:6px;padding:6px 10px;font-size:12px;line-height:1.4;"
-      + "color:#fbbf24;background:rgba(251,191,36,.10);border:1px solid rgba(251,191,36,.35);border-radius:6px;";
-    var scroll = side.querySelector(".scroll");
-    if (scroll) side.insertBefore(hintEl, scroll); else side.appendChild(hintEl);
     // 订阅引擎选中广播（P0 反向联动 / P0 清空去高亮）。
     document.addEventListener("sc:select", onSelect);
     if (toggleBtn) toggleBtn.onclick = toggle;
