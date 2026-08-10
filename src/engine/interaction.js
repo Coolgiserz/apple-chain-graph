@@ -21,19 +21,50 @@ function pick(px, py) {
   return best;
 }
 
-// 单击节点：产品/零部件切换其供应商子图的展开/收起（渐进式披露）；供应商仅选中看详情。
+// 单击节点：产品/零部件「仅展开」其供应商子图（单调递增，绝不因再次单击而误收起）；
+// 选中看信息始终发生，与展开结构解耦（P0-3）。收起改由面板按钮 / 重置 / 取消勾选完成。
 function onNodeClick(n) {
   if (!n) { selectNode(null); return; }
-  if (n.type === "Product" || n.type === "Component") {
-    if (S.expanded.has(n._key)) S.expanded.delete(n._key);
-    else S.expanded.add(n._key);
-    reheat(0.6);
+  if ((n.type === "Product" || n.type === "Component") && !S.expanded.has(n._key)) {
+    S.expanded.add(n._key); reheat(0.6);
   }
   selectNode(n);
 }
 
+// 记录最近一次用户交互时间，用于流动粒子「静止降级」（P0-4）：无交互一段时间后停止 rAF。
+function bump() { try { S.lastInteract = Date.now(); } catch (e) {} }
+
+// 「展开全部/收起全部」按钮文案与高亮态随 S.showAll 同步（P0-2）。
+function setSuppBtn() {
+  var b = document.getElementById("cbS");
+  if (!b) return;
+  if (b.classList) b.classList.toggle("on", S.showAll);
+  if (window.i18n && window.i18n.ready) b.textContent = i18nText(S.showAll ? "home.suppAllOn" : "home.suppAll");
+}
+
+// 搜索框旁实时显示命中数（P1-7）。跨全部节点匹配，返回「匹配项」数（不含邻居）。
+function updateSearchCount() {
+  var qc = document.getElementById("qCount");
+  if (!qc) return;
+  var qel = document.getElementById("q");
+  var q = qel ? qel.value.trim() : "";
+  if (!q) { qc.textContent = ""; return; }
+  var ql = q.toLowerCase(), n = 0;
+  for (var i = 0; i < S.nodes.length; i++) {
+    var m = S.nodes[i];
+    var hay = (m.name + " " + (m.english_name || "") + " " + m.id + " " + (m.short_name || "") + " " + (m.alias || "")).toLowerCase();
+    if (hay.indexOf(ql) !== -1) n++;
+  }
+  qc.textContent = n + " " + i18nText("home.results");
+}
+
+// 逐项展开 / 收起（与「选中看信息」解耦，P0-3/P0-2）。
+function expandNode(key) { if (!S.expanded.has(key)) { S.expanded.add(key); reheat(0.6); } selectNode(S.idMap[key]); }
+function collapseNode(key) { if (S.expanded.has(key)) { S.expanded.delete(key); reheat(0.6); } selectNode(S.idMap[key]); }
+
 export function bindEvents() {
   S.cv.addEventListener("mousedown", function (e) {
+    bump();                                       // 记录交互，重置流动粒子静止降级计时（P0-4）
     S.downX = e.clientX; S.downY = e.clientY;
     S.downNode = pick(e.clientX, e.clientY);   // 仅记录候选，不立即进入拖拽/平移
     S.pointerDown = true;
@@ -70,6 +101,7 @@ export function bindEvents() {
   });
   S.cv.addEventListener("wheel", function (e) {
     e.preventDefault();
+    bump();
     var l = localXY(e.clientX, e.clientY);
     var factor = e.deltaY < 0 ? 1.1 : 0.9;
     var wx = (l.x - S.view.ox) / S.view.scale, wy = (l.y - S.view.oy) / S.view.scale;
@@ -82,6 +114,7 @@ export function bindEvents() {
   function touchMid(e) { var a = e.touches[0], b = e.touches[1]; return { x: (a.clientX + b.clientX) / 2, y: (a.clientY + b.clientY) / 2 }; }
   S.cv.addEventListener("touchstart", function (e) {
     e.preventDefault();
+    bump();
     if (e.touches.length === 1) {
       var t = e.touches[0];
       S.downX = t.clientX; S.downY = t.clientY;
@@ -150,16 +183,30 @@ export function bindEvents() {
   if (reset) reset.onclick = function () {
     selectNode(null);
     S.expanded.clear();                         // 收起所有已展开供应商
+    S.showAll = false; setSuppBtn();            // 回到默认态：供应商隐藏（与首屏一致，P0-1/P0-2）
     var q = document.getElementById("q"); if (q) q.value = "";
-    document.getElementById("cbP").checked = document.getElementById("cbC").checked = document.getElementById("cbS").checked = true;
+    var qc = document.getElementById("qCount"); if (qc) qc.textContent = "";
+    // 回到默认态：产品/零部件可见，供应商默认隐藏（与首屏默认一致，而非「全展开」）(P0-1)
+    document.getElementById("cbP").checked = true;
+    document.getElementById("cbC").checked = true;
     var line = document.getElementById("line"); if (line) line.value = "";
     reheat(1); S.fitDone = false; fitView();   // 复位筛选并重新适配视口
   };
   var flowBtn = document.getElementById("flow");
   if (flowBtn) flowBtn.onclick = function () {
     S.flow = !S.flow;
+    bump();
     if (flowBtn.classList) flowBtn.classList.toggle("on", S.flow);
     if (S.running) kick(); else if (S.cv) draw(visibleSet());
+  };
+  // 「展开全部 / 收起全部」独立按钮：与逐项展开解耦（P0-2）。
+  // 开启=显示全部供应商；关闭=同时清除逐项展开（真正「收起全部」），但再次点击单个节点仍可单独展开。
+  var cbS = document.getElementById("cbS");
+  if (cbS) cbS.onclick = function () {
+    S.showAll = !S.showAll;
+    if (!S.showAll) S.expanded.clear();   // 收起全部 = 清除所有逐项展开
+    setSuppBtn();
+    selectNode(null); reheat(0.7);
   };
   (typeof document !== "undefined" ? document : globalThis).addEventListener("visibilitychange", function () {
     if (typeof document !== "undefined" && document.hidden) { S.running = false; }   // 后台标签页停止循环省电
@@ -178,12 +225,33 @@ export function bindEvents() {
     if (c && c.style.display === "block") { c.style.display = "none"; S.criticalId = null; if (S.cv) draw(visibleSet()); }
     else { showInsights(); }
   };
-  ["q", "cbP", "cbC", "cbS", "line"].forEach(function (id) {
+  // 搜索框：实时显示命中数（P1-7），并随输入重算可见集
+  var qel = document.getElementById("q");
+  if (qel) qel.addEventListener("input", function () { updateSearchCount(); selectNode(null); reheat(0.7); });
+  ["cbP", "cbC", "line"].forEach(function (id) {
     var el = document.getElementById(id);
-    if (el) el.addEventListener("input", function () { if (id !== "q") selectNode(null); reheat(0.7); });
+    if (el) el.addEventListener("input", function () { selectNode(null); reheat(0.7); });
   });
-  document.addEventListener("i18n:ready", function () { if (S.selected) renderPanel(S.selected); if (insightVisible()) showInsights(); });
-  document.addEventListener("i18n:changed", function () { if (S.selected) renderPanel(S.selected); if (insightVisible()) showInsights(); });
+  // 信息面板内的「展开/收起供应商」（逐项展开与选中解耦，P0-3/P0-2）
+  var pbody = document.getElementById("pbody");
+  if (pbody) pbody.addEventListener("click", function (e) {
+    var b = e.target.closest ? e.target.closest(".expand-btn") : null;
+    if (!b) return;
+    var key = b.getAttribute("data-key");
+    if (b.getAttribute("data-act") === "collapse") collapseNode(key); else expandNode(key);
+  });
+  document.addEventListener("i18n:ready", function () { if (S.selected) renderPanel(S.selected); if (insightVisible()) showInsights(); setSuppBtn(); });
+  document.addEventListener("i18n:changed", function () { if (S.selected) renderPanel(S.selected); if (insightVisible()) showInsights(); setSuppBtn(); });
+  // 首屏一次性引导卡：关闭后记忆，下次不再弹（P1 首屏引导）
+  var guide = document.getElementById("guide");
+  if (guide) {
+    function closeGuide() {
+      guide.style.display = "none";
+      try { (typeof localStorage !== "undefined") && localStorage.setItem("sc_guide_done", "1"); } catch (e) {}
+    }
+    var gclose = document.getElementById("guideClose"); if (gclose) gclose.onclick = closeGuide;
+    var gok = document.getElementById("guideOk"); if (gok) gok.onclick = closeGuide;
+  }
 }
 
 // 仅在需要重绘时启动 rAF 循环；模拟静止且无交互时循环自动停止，避免全屏 60fps 持续重绘。
@@ -204,7 +272,10 @@ export function loop() {
   }
   // 流动开启 或 仍在物理运动中（或正在交互）→ 持续循环（粒子动画需不断重绘）；
   // 否则（已静止且关闭流动、无交互）→ 停止循环省电，行为与原版一致。
-  if (S.flow || !settled || S.dragNode || S.panning) {
+  // 静止降级（P0-4）：流动开启但已静止且长时间无交互 → 停止 rAF 省电，任何交互（bump）会重启。
+  var idle = S.flow && settled && !S.dragNode && !S.panning &&
+             (Date.now() - S.lastInteract > S.flowIdle);
+  if (S.flow && !idle || !settled || S.dragNode || S.panning) {
     S.rafId = (typeof requestAnimationFrame !== "undefined" ? requestAnimationFrame(loop) : 0);
   } else {
     S.animating = false;
@@ -309,10 +380,17 @@ export function showInsights() {
   if (spEl) spEl.textContent = sp.length + " " + i18nText("home.insightSingleUnit");
   var focusEl = document.getElementById("insFocus");
   if (focusEl) {
+    var lineName = LINE_DISPLAY[worstLine] || worstLine || "-";
     if (crit) {
       var sn = compSupplierName(crit.id);
-      focusEl.textContent = label(crit) + (sn ? " → " + sn : "");
+      // 可操作建议（P1）：点明最脆弱产品线 + 单点依赖数 + 建议优先关注的具体零部件（可点击聚焦）
+      focusEl.textContent = lineName + i18nText("home.insightLineHas") + sp.length +
+        i18nText("home.insightSingleFrag") + i18nText("home.insightAction") +
+        label(crit) + (sn ? "（" + sn + "）" : "");
       focusEl.onclick = function () { focus(crit._key); };
+    } else if (worstLine) {
+      focusEl.textContent = lineName + i18nText("home.insightLineHas") + sp.length + i18nText("home.insightSingleFrag");
+      focusEl.onclick = null;
     } else { focusEl.textContent = "-"; focusEl.onclick = null; }
   }
   S.criticalId = crit ? crit._key : null;
@@ -322,7 +400,18 @@ export function showInsights() {
 
 export function start() {
   if (S.running) return;
+  setSuppBtn();
   S.running = true; syncSize(); reheat(1);
+  maybeShowGuide();
+}
+
+// 首屏一次性引导卡：未关闭过才显示（localStorage 记忆）。
+function maybeShowGuide() {
+  var guide = document.getElementById("guide");
+  if (!guide) return;
+  var done = false;
+  try { done = (typeof localStorage !== "undefined") && localStorage.getItem("sc_guide_done") === "1"; } catch (e) {}
+  if (!done) guide.style.display = "block";
 }
 export function stop() {
   S.running = false; S.animating = false;

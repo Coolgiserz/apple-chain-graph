@@ -49,7 +49,7 @@ const registry = {
   q: makeEl({ value: "" }),
   cbP: makeEl({ checked: true }),
   cbC: makeEl({ checked: true }),
-  cbS: makeEl({ checked: false }),   // 新默认：供应商隐藏，需展开/勾选「全部供应商」
+  cbS: makeEl({ classList: { add: () => {}, remove: () => {}, toggle: () => {} } }),   // 现为「展开全部」按钮（onclick 切换 S.showAll）
   flow: makeEl({ classList: { add: () => {}, remove: () => {}, toggle: () => {} } }),
   panel: makeEl(),
   langSwitch: makeEl({ value: "" }),
@@ -134,11 +134,12 @@ check("visibleNodes() 默认隐藏供应商（仅显示 产品线/产品/零部�
     "默认应含 产品线/产品/零部件（实际 " + JSON.stringify(types) + "）");
 });
 
-check("勾选「展开全部供应商」(cbS) 后供应商出现", () => {
-  registry.cbS.checked = true;
+check("点击「展开全部供应商」(cbS) 后供应商出现", () => {
+  assert.equal(typeof registry.cbS.onclick, "function", "cbS 应绑定 onclick 切换 S.showAll");
+  registry.cbS.onclick();   // 触发展开全部
   const hasSupplier = api.visibleNodes().some((n) => n.type === "Supplier");
   assert.ok(hasSupplier, "展开全部后应有供应商节点");
-  registry.cbS.checked = false;   // 复位为默认（隐藏）
+  registry.cbS.onclick();   // 再次点击 = 收起全部（同时清除逐项展开），回到默认隐藏
 });
 
 check("setRiskMode(true/false) 不抛错（真实命中 draw/render）", () => {

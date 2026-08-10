@@ -81,6 +81,13 @@ export function renderPanel(n) {
     });
     h += "</ul></dd>";
   }
+  // 逐项展开/收起供应商：与「选中看信息」解耦（点击节点只选中，展开由本按钮或节点上的＋触发）。
+  if (n.type === "Product" || n.type === "Component") {
+    var isExp = S.expanded.has(n._key);
+    h += "<div style='margin-top:10px'><button class='expand-btn' data-key='" + esc(n._key) + "' data-act='" +
+         (isExp ? "collapse" : "expand") + "'>" +
+         (isExp ? i18nText("home.collapseSup") : i18nText("home.expandSup")) + "</button></div>";
+  }
   var sec = n.type === "Product" ? "sec-products" : n.type === "Component" ? "sec-components" : "sec-suppliers";
   if (S.reportLink) h += "<p style='margin-top:10px'>" + S.reportLink(n, sec) + "</p>";
   if (S.mapLink && n.type === "Supplier") h += "<p style='margin-top:6px'>" + S.mapLink(n) + "</p>";

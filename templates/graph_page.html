@@ -30,6 +30,23 @@
   #top a.tlink:hover { background: #3a4a6e; color: #fff; }
   #top .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
   #hint { position: absolute; bottom: 12px; right: 12px; font-size: 12px; color: #7c8aa8; background: rgba(20,26,42,.7); padding: 6px 10px; border-radius: 8px; z-index: 10; pointer-events: none; }
+  /* —— 常驻节点图例（P1-8）：默认显示，说明四类节点与单点依赖标记 —— */
+  #nodeLegend { position: absolute; top: 116px; left: 12px; display: flex; flex-wrap: wrap; gap: 10px 14px; align-items: center;
+                background: rgba(20,26,42,.82); border: 1px solid #2a3450; border-radius: 10px; padding: 7px 12px; z-index: 8; font-size: 12px; color: #cdd8ee; }
+  #nodeLegend .lg { display: flex; align-items: center; gap: 5px; }
+  #nodeLegend .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+  #nodeLegend .box.line { width: 16px; height: 11px; border-radius: 4px; display: inline-block; background: rgba(139,92,246,.18); border: 1.5px dashed #8b5cf6; }
+  /* —— 首屏一次性引导卡（P1 首屏引导） —— */
+  #guide { position: absolute; left: 50%; top: 120px; transform: translateX(-50%); width: 380px; max-width: calc(100% - 24px);
+           background: rgba(20,26,42,.96); border: 1px solid #2a3450; border-left: 3px solid #5b8cff; border-radius: 12px; padding: 14px 16px; z-index: 12; display: none; }
+  #guide h3 { margin: 0 0 8px; font-size: 14px; color: #cfe0ff; }
+  #guide p { margin: 0 0 10px; font-size: 12.5px; line-height: 1.65; color: #cdd8ee; }
+  #guide .close { position: absolute; top: 8px; right: 10px; cursor: pointer; color: #9fb0d0; font-size: 18px; line-height: 1; }
+  #guide .close:hover { color: #fff; }
+  #guide button { background: #2f6fed; color: #fff; border: none; border-radius: 8px; padding: 6px 14px; cursor: pointer; font-size: 13px; }
+  /* 信息面板内的「展开/收起供应商」按钮（与选中解耦，P0-2/P0-3） */
+  #panel .expand-btn, #riskPanel .expand-btn { background: #33406a; color: #dbeafe; border: 1px solid #3f4f7a; border-radius: 8px; padding: 6px 12px; cursor: pointer; font-size: 13px; }
+  #panel .expand-btn:hover, #riskPanel .expand-btn:hover { background: #3f4f7a; }
   /* —— 首屏「关键洞察」浮层：图谱静止后弹出，把静态空间变成可读结论 —————— */
   #insightCard { position: absolute; left: 12px; bottom: 12px; width: 320px; max-width: calc(100% - 24px);
                  background: rgba(20,26,42,.94); border: 1px solid #2a3450; border-left: 3px solid #f59e0b;
@@ -137,7 +154,7 @@ __TOPNAV_CSS__
 __TOPNAV__
 <canvas id="cv"></canvas>
 <div id="top">
-  <div class="grp"><input type="search" id="q" data-i18n-attr="placeholder:home.search" placeholder="搜索产品/零部件/供应商…"></div>
+  <div class="grp"><input type="search" id="q" data-i18n-attr="placeholder:home.search" placeholder="搜索产品/零部件/供应商…"><span id="qCount" style="font-size:12px;color:#9fb0d0;min-width:28px;display:inline-block"></span></div>
   <div class="grp">
     <label class="chk"><input type="checkbox" id="cbP" checked><span class="dot" style="background:#2f6fed"></span><span data-i18n="home.prod">产品</span></label>
     <label class="chk"><input type="checkbox" id="cbC" checked><span class="dot" style="background:#f59e0b"></span><span data-i18n="home.part">零部件</span></label>
@@ -146,6 +163,7 @@ __TOPNAV__
   <div class="grp"><label data-i18n="home.line">产品线</label>
     <select id="line"><option value="" data-i18n="home.all">全部</option></select>
   </div>
+  <button id="cbS" class="ghost" data-i18n="home.suppAll">展开全部供应商</button>
   <button id="toggleTable" class="ghost" data-i18n="home.tableBtn">📋 企业表格</button>
   <label class="chk"><input type="checkbox" id="riskToggle"><span data-i18n="home.riskMode">风险视图</span></label>
   <div class="grp" id="legend" style="display:none; gap:10px; align-items:center;">
@@ -178,7 +196,22 @@ __TOPNAV__
   <hr>
   <div id="riskBody"></div>
 </div>
-<div id="hint" data-i18n="home.hint">滚轮缩放 · 拖拽画布平移 · 拖动节点 · 单击产品/零部件展开其供应商 · 流动粒子表示供应链流向</div>
+<div id="hint" data-i18n="home.hint">滚轮缩放 · 拖拽平移 · 点击节点展开其上游供应商</div>
+<!-- 常驻图例：四类节点配色 + 单点依赖标记（P1-8），默认显示，与风险图例区分 -->
+<div id="nodeLegend">
+  <span class="lg"><span class="box line"></span><span data-i18n="home.line">产品线</span></span>
+  <span class="lg"><span class="dot" style="background:#2f6fed"></span><span data-i18n="home.prod">产品</span></span>
+  <span class="lg"><span class="dot" style="background:#f59e0b"></span><span data-i18n="home.part">零部件</span></span>
+  <span class="lg"><span class="dot" style="background:#10b981"></span><span data-i18n="home.supp">供应商</span></span>
+  <span class="lg"><span style="color:#ef4444;font-weight:700">⚠</span><span data-i18n="home.riskSingle">单点依赖</span></span>
+</div>
+<!-- 首屏一次性引导卡（P1 首屏引导）：未关闭过才显示，localStorage 记忆 -->
+<div id="guide" style="display:none">
+  <span class="close" id="guideClose">×</span>
+  <h3 data-i18n="home.guideTitle">快速上手</h3>
+  <p data-i18n="home.guideBody">默认仅显示「产品线 → 产品 → 零部件」。点击任意产品/零部件，即可展开其上游供应商（节点旁出现绿色 ＋）。再次点击空白处可取消选中。</p>
+  <button id="guideOk" class="ghost" data-i18n="home.guideOk">知道了</button>
+</div>
 <div id="insightCard">
   <span class="close" id="insightClose">×</span>
   <h3 data-i18n="home.insights">关键洞察</h3>
