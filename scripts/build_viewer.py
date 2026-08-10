@@ -10,7 +10,7 @@
 本脚本只负责：读 JSON -> 填模版 -> 输出根 index.html + 复制引擎/启动脚本到 dist/。
 首页即图谱，导航由 topnav.py 统一生成在页面顶部；不再单独生成 dist/graph_viewer.html。
 """
-import hashlib, json, os, shutil, sys
+import hashlib, html, json, os, shutil, sys
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)               # repo root (this script lives in <repo>/scripts/)
@@ -170,7 +170,9 @@ def seo_text_html(risk):
     if sps:
         h += "<p><b>单点依赖部件（独家供应商）：</b></p><ul>"
         for name, sp, vuln in sps[:6]:
-            h += "<li>%s：由 %s 独家供应（脆弱性 %.2f）。</li>" % (name, sp, vuln if vuln is not None else 0.0)
+            # name / sp 来自数据集（AI 抓取的组件/供应商名），必须 HTML 转义，
+            # 否则名称含 < & 等字符会破坏可索引文本甚至形成 HTML 注入。
+            h += "<li>%s：由 %s 独家供应（脆弱性 %.2f）。</li>" % (html.escape(name), html.escape(sp), vuln if vuln is not None else 0.0)
         h += "</ul>"
     if wl:
         pl = LINE_ZH.get(wl[0], wl[0])
@@ -337,8 +339,12 @@ def main():
 
     # 脚本 URL 带内容哈希戳，避免浏览器加载缓存的旧引擎（缺 setRiskMode 时静默失败）
     risk = load_risk()
+    # 内联 JSON 防 </script> 逃逸：DATA 含 AI 抓取的供应商/零部件文本，可能含
+    # "</script>" 片段；json.dumps 不转义 <，故把 < 替换为 \u003c（合法 JSON 转义，
+    # JS 解析后还原为 <），避免脚本注入与页面结构破坏。
+    data_json = json.dumps(DATA_merged, ensure_ascii=False).replace("<", "\\u003c")
     page = (load("graph_page.html")
-            .replace("__DATA__", json.dumps(DATA_merged, ensure_ascii=False))
+            .replace("__DATA__", data_json)
             .replace("__TOPNAV_CSS__", TOPNAV_CSS)
             .replace("__TOPNAV__", topnav("", "graph"))        # 首页在根目录，root=""
             .replace("__ENGINE_SRC__", asset_url("dist/graph_engine.js"))
