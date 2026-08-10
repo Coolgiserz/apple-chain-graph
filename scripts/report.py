@@ -11,7 +11,7 @@ field dictionary) lives in docs/ rather than the web report — docs_section() p
 国际化：所有面向用户的静态文案均通过 i18n() 包裹为 <span data-i18n="report.*">，
 运行时由 dist/i18n.js（window.I18n）替换为对应语言；zh.json 作为中文默认值兜底。
 """
-import json, os, sys
+import json, os, sys, datetime
 from collections import defaultdict, Counter
 
 # Repo root: this script lives in <repo>/scripts/, so two dirname levels up.
@@ -321,6 +321,8 @@ def risk_section():
         "<div class='risk'>", i18n("report.risk.r3"), "</div>",
         "<div class='risk'>", i18n("report.risk.r4"), "</div>",
         "<div class='risk'>", i18n("report.risk.r5"), "</div>",
+        "<div class='risk'>", i18n("report.risk.r6"), "</div>",
+        "<div class='note'>", i18n("report.risk.note"), "</div>",
         "</section>",
     ])
 
@@ -338,11 +340,12 @@ def limits_section():
     ])
 
 
-def footer_html():
-    return "<footer>%s</footer>" % i18n("report.footer")
+def footer_html(today):
+    return "<footer><span data-i18n='report.footer'>%s</span> · 生成日期：%s</footer>" % (
+        esc(ZH.get("report.footer", "由 WorkBuddy 生成 · 苹果供应链图谱 v2")), today)
 
 
-def build_report_inner(G, jump=False, mode="spa"):
+def build_report_inner(G, jump=False, mode="spa", today=""):
     """Assemble the full report body (no <html>/<head> wrapper)."""
     s = []
     s.append("<section>%s</section>" % report_kpi(G))
@@ -364,12 +367,14 @@ def build_report_inner(G, jump=False, mode="spa"):
     s.append("</section>")
     s.append(risk_section())
     s.append(limits_section())
-    s.append(footer_html())
+    s.append(footer_html(today))
     return "".join(s)
 
 
-def build_report_full(G, jump=False, mode="web"):
+def build_report_full(G, jump=False, mode="web", today=None):
     """Standalone full HTML document with the unified cross-page nav bar."""
+    if today is None:
+        today = datetime.date.today().strftime("%Y-%m-%d")
     nav = topnav("../", "report")
     prefix = ("<!DOCTYPE html><html lang='zh-CN'><head><meta charset='utf-8'>"
               "<meta name='viewport' content='width=device-width,initial-scale=1'>"
@@ -378,17 +383,18 @@ def build_report_full(G, jump=False, mode="web"):
               "<header><h1>%s</h1>" % i18n("report.header.title") +
               "<p>%s</p>" % i18n("report.header.subtitle") +
               "<p>%s</p>" % i18n("report.header.source") +
-              "<p><span data-i18n='report.header.generated'>%s</span> <a class='lk' href='../docs/neo4j-import.md' target='_blank' rel='noopener' style='color:#fff;text-decoration:underline' data-i18n='report.header.neo4jLink'>%s</a></p>"
-              % (esc(ZH.get("report.header.generated", "")), esc(ZH.get("report.header.neo4jLink", ""))) +
+              "<p><span>生成日期：<b>%s</b></span> · <span data-i18n='report.header.generated'>%s</span></p>"
+              % (today, esc(ZH.get("report.header.generated", "结构化数据（CSV / JSON）已随附"))) +
               "</header>"
               "<div class='wrap'>")
-    return prefix + build_report_inner(G, jump, mode) + "</div></body></html>"
+    return prefix + build_report_inner(G, jump, mode, today) + "</div></body></html>"
 
 
 def main():
     G = load_graph()
     # 多页模式下，报告实体点击 -> 跳转到独立图谱(聚焦节点)/地图(定位供应商)
-    out = build_report_full(G, jump=True, mode="web")
+    today = datetime.date.today().strftime("%Y-%m-%d")
+    out = build_report_full(G, jump=True, mode="web", today=today)
     dst = os.path.join(ROOT, "dist", "apple_supply_chain_report.html")
     open(dst, "w", encoding="utf-8").write(out)
     print("Report written:", dst, "bytes:", len(out))
