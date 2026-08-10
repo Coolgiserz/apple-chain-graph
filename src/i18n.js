@@ -38,6 +38,15 @@ var ZH = {
   "brand": "Apple 供应链"
 };
 
+// 自动同步：把 locales.js 注入的 zh 官方包并入 ZH 兜底常量。
+// ZH 是「未就绪 / locales 加载失败」时的兜底，且是 zh 语言包的基底（init 里 base = ZH 再并入 bundle）。
+// 若只把新增 key 写进 locales/*.json 而忘了同步这里的 ZH，未就绪/失败时会把原始 key 当文本渲染
+// （本分支曾出现「关键洞察」显示 home.insightLineHas 等原始 key 的回归）。
+// locales.js 在 i18n.js 之前加载，此处可直接并入，确保 ZH 始终与 locales/zh.json 一致，无需手工维护。
+if (typeof window !== "undefined" && window.I18N_LOCALES && window.I18N_LOCALES.zh) {
+  Object.assign(ZH, window.I18N_LOCALES.zh);
+}
+
 // 安全读写 localStorage：在沙箱 iframe（无 allow-same-origin）、隐私模式等环境
 // 下 localStorage 会抛错，必须 try/catch，否则会中断整段 i18n 初始化，导致「插件」
 // 嵌入后整页脚本崩溃。读不到时回退到默认语言即可。

@@ -62,8 +62,7 @@ export function build() {
 export function visibleSet() {
   var qel = document.getElementById("q"), q = qel ? qel.value.trim().toLowerCase() : "";
   var cbP = document.getElementById("cbP").checked,
-      cbC = document.getElementById("cbC").checked,
-      cbS = document.getElementById("cbS").checked;
+      cbC = document.getElementById("cbC").checked;
   var line = document.getElementById("line").value;
   var set = new Set();
   for (var i = 0; i < S.nodes.length; i++) {
@@ -71,8 +70,8 @@ export function visibleSet() {
     if (n.type === "Line") { if (!line || n.line === line) set.add(n._key); continue; }
     if (n.type === "Product") { if (!cbP) continue; if (line && n.product_line !== line) continue; set.add(n._key); continue; }
     if (n.type === "Component") { if (!cbC) continue; set.add(n._key); continue; }
-    // Supplier：默认隐藏；「展开全部」则全显，否则仅显示与已展开节点相邻的供应商
-    if (cbS) { set.add(n._key); continue; }
+    // Supplier：默认隐藏；「展开全部」(S.showAll) 则全显，否则仅显示与已展开节点相邻的供应商
+    if (S.showAll) { set.add(n._key); continue; }
     var adj = S.adj[n._key], shown = false;
     for (var s = 0; s < adj.length; s++) { if (S.expanded.has(adj[s].other._key)) { shown = true; break; } }
     if (shown) set.add(n._key);

@@ -38,20 +38,29 @@ function hasHiddenSuppliers(n, vis) {
 
 // 沿可见边绘制流动粒子：方向统一为 link.b → link.a（供应商 → 零部件 → 产品 → 产品线，
 // 表现供应链的「流动」），让图谱始终「活着」而非冻结成静态圆点。
+// 克制（P1-5）：默认（无选中）仅极轻全局脉动——粒子更小/更慢/更淡；仅选中/悬停的子图流动更亮。
+// 低端/小屏按设备降采样粒子数（P2 性能）。
 function drawParticles(vis, nb, now) {
   if (!S.flow) return;
+  var small = Math.min(W(), H()) < 560;
+  var hasSel = !!S.selected;
   S.links.forEach(function (l) {
     if (!vis.has(l.a._key) || !vis.has(l.b._key)) return;
     var inSel = !nb || (nb.has(l.a._key) && nb.has(l.b._key));
-    if (S.selected && !inSel) return;             // 选中时仅高亮子图粒子，其余保持静态线
+    if (hasSel && !inSel) return;                  // 选中时仅高亮子图粒子，其余保持静态线
     var fx = l.b.x, fy = l.b.y, dx = l.a.x - fx, dy = l.a.y - fy;
-    var speed = 0.28, np = 2;                       // 每秒沿边推进比例 / 每边粒子数
+    // 默认态：极轻脉动；选中子图：更亮更快
+    var speed = hasSel ? 0.30 : 0.10;
+    var np = (small ? 1 : (hasSel ? 2 : 1));
+    var rad = hasSel ? 2.6 : 1.2;
+    var alpha = hasSel ? 0.95 : 0.16;
+    var col = hasSel ? "140,210,255" : "120,180,235";
     for (var p = 0; p < np; p++) {
       var phase = (now * speed + (l.phase || 0) + p / np) % 1;
       var x = fx + dx * phase, y = fy + dy * phase;
       S.ctx.beginPath();
-      S.ctx.arc(x, y, inSel ? 2.6 : 1.8, 0, Math.PI * 2);
-      S.ctx.fillStyle = inSel ? "rgba(140,210,255,0.95)" : "rgba(120,180,235,0.45)";
+      S.ctx.arc(x, y, rad, 0, Math.PI * 2);
+      S.ctx.fillStyle = "rgba(" + col + "," + alpha + ")";
       S.ctx.fill();
     }
   });
@@ -77,6 +86,31 @@ export function draw(vis) {
     if (!vis.has(n._key)) return;
     var r = nodeRadius(n);
     var dim = nb && !nb.has(n._key);
+    // 产品线「聚合/分类」节点：用圆角矩形 + 虚线环区分「实体」实心圆（P1-6），避免被误认为真实供应链一环。
+    if (n.type === "Line") {
+      var rw = r * 2.6, rh = r * 1.5, x0 = n.x - rw / 2, y0 = n.y - rh / 2, rr = rh / 2;
+      S.ctx.globalAlpha = dim ? 0.25 : 1;
+      S.ctx.beginPath();
+      S.ctx.moveTo(x0 + rr, y0);
+      S.ctx.arcTo(x0 + rw, y0, x0 + rw, y0 + rh, rr);
+      S.ctx.arcTo(x0 + rw, y0 + rh, x0, y0 + rh, rr);
+      S.ctx.arcTo(x0, y0 + rh, x0, y0, rr);
+      S.ctx.arcTo(x0, y0, x0 + rw, y0, rr);
+      S.ctx.closePath();
+      S.ctx.fillStyle = "rgba(139,92,246,0.14)";
+      S.ctx.fill();
+      S.ctx.setLineDash([5, 4]);
+      S.ctx.lineWidth = (S.selected === n) ? 3 : 1.6;
+      S.ctx.strokeStyle = (S.selected === n) ? "#fff" : "#8b5cf6";
+      S.ctx.stroke();
+      S.ctx.setLineDash([]);
+      S.ctx.globalAlpha = dim ? 0.3 : 1;
+      S.ctx.fillStyle = "#e9d5ff"; S.ctx.font = "bold 12px sans-serif";
+      S.ctx.textAlign = "center"; S.ctx.textBaseline = "middle";
+      S.ctx.fillText(label(n), n.x, n.y);
+      S.ctx.textBaseline = "alphabetic";
+      return;   // forEach 回调内用 return 跳过当前节点（Line 已绘制完毕）
+    }
     S.ctx.globalAlpha = dim ? 0.18 : 1;
     S.ctx.beginPath(); S.ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
     // 风险视图：组件/产品节点按脆弱性着色（供应商节点保持原类型色）
