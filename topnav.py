@@ -40,43 +40,68 @@ GITHUB_LINK = (
 )
 
 # 导航条自身的样式（注入到各页面 <style> 中）。固定定位，z-index 最高。
+# 移动端用原生 <details>/<summary> 汉堡菜单：纯 CSS 折叠，不依赖任何 JS 库，
+# 因此即便脚本未执行，导航菜单也只以「☰ 按钮」形式存在，绝不会横向铺开溢出屏幕。
 TOPNAV_CSS = """
-.wb-topnav{position:fixed;top:0;left:0;right:0;height:calc(52px + env(safe-area-inset-top));padding-top:env(safe-area-inset-top);z-index:9999;
-  display:flex;align-items:center;gap:6px;padding:0 14px;
+.wb-topnav{position:fixed;top:0;left:0;right:0;height:calc(52px + env(safe-area-inset-top));padding:env(safe-area-inset-top) 12px 0;z-index:9999;
+  display:flex;align-items:center;gap:8px;min-width:0;
   background:linear-gradient(135deg,#0a2540,#0a66c2);color:#fff;
   font-family:-apple-system,'Segoe UI',Roboto,'PingFang SC','Microsoft YaHei',sans-serif;
   box-shadow:0 2px 8px rgba(0,0,0,.18)}
-.wb-topnav .brand{font-weight:700;font-size:14px;margin-right:10px;white-space:nowrap;opacity:.95}
+.wb-topnav .brand{font-weight:700;font-size:14px;margin-right:8px;white-space:nowrap;opacity:.95;flex:0 0 auto}
 .wb-topnav a{color:#dbeafe;text-decoration:none;font-size:13.5px;padding:7px 13px;border-radius:8px;
   white-space:nowrap;transition:background .15s}
 .wb-topnav a:hover{background:rgba(255,255,255,.16);color:#fff}
 .wb-topnav a.active{background:#fff;color:#0a2540;font-weight:700}
-.wb-topnav .spacer{flex:1}
+.wb-topnav .spacer{flex:1 1 auto;min-width:0}
+/* 汉堡（summary）始终可点；移动端显示、桌面端在媒体查询里隐藏 */
+.wb-topnav .nav-collapse{position:relative;flex:0 0 auto}
+.wb-topnav .nav-toggle{display:inline-flex;align-items:center;justify-content:center;width:38px;height:34px;
+  margin:0;border-radius:8px;color:#fff;font-size:18px;line-height:1;cursor:pointer;list-style:none;user-select:none}
+.wb-topnav .nav-toggle::-webkit-details-marker{display:none}
+.wb-topnav .nav-toggle:hover{background:rgba(255,255,255,.16)}
+/* 折叠下拉：默认隐藏，[open] 才显示；移动端点 ☰ 展开为竖向菜单 */
+.wb-topnav .nav-collapse > ul{position:absolute;top:calc(100% + 8px);left:0;z-index:1;margin:0;padding:6px;
+  list-style:none;display:none;flex-direction:column;gap:2px;min-width:172px;
+  background:#0a2540;border:1px solid rgba(255,255,255,.16);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.45)}
+.wb-topnav .nav-collapse[open] > ul{display:flex}
+.wb-topnav .nav-collapse > ul a{display:block;width:100%;text-align:left}
 .wb-topnav .wb-github{display:flex;align-items:center;justify-content:center;width:34px;height:34px;
-  margin-left:6px;border-radius:8px;color:#fff;opacity:.9;transition:background .15s,opacity .15s}
+  margin-left:6px;border-radius:8px;color:#fff;opacity:.9;transition:background .15s,opacity .15s;flex:0 0 auto}
 .wb-topnav .wb-github:hover{background:rgba(255,255,255,.16);color:#fff;opacity:1}
 .wb-topnav #langSwitch{height:34px;margin-left:6px;border-radius:8px;border:1px solid rgba(255,255,255,.25);
-  background:rgba(255,255,255,.08);color:#fff;font-size:13px;padding:0 6px;cursor:pointer}
+  background:rgba(255,255,255,.08);color:#fff;font-size:13px;padding:0 6px;cursor:pointer;flex:0 0 auto}
 .wb-topnav #langSwitch:hover{background:rgba(255,255,255,.16);color:#fff}
 .wb-topnav #langSwitch option{color:#111}
+/* 桌面端（≥860px）：菜单常驻横向排列，隐藏汉堡，下拉规则失效 */
+@media (min-width: 860px){
+  .wb-topnav .nav-toggle{display:none}
+  .wb-topnav .nav-collapse > ul{position:static;display:flex;flex-direction:row;gap:6px;min-width:0;
+    background:none;border:none;box-shadow:none;padding:0}
+}
 """
 
 
 def topnav(root="../", active=None):
-    """返回统一导航条的 HTML 片段（含响应式导航库 + 访问统计脚本）。
+    """返回统一导航条的 HTML 片段（含国际化框架 + 访问统计脚本）。
 
-    菜单包进 `.nav-collapse`，由本地 vendored 的 responsive-nav.js 在窄屏
-    折叠为汉堡菜单、宽屏保持横向排列，从而解决移动端导航栏「显示不全」。
-    库 CSS/JS 经 `root` 拼接路径，离线 / 国内访问均可用。
+    导航菜单用原生 ``<details>/<summary>`` 实现汉堡折叠：**纯 CSS、零 JS 依赖**，
+    因此即便后续脚本（i18n / 统计）因任何原因未执行，移动端导航也只会显示成
+    一个「☰」按钮，绝不会把 5 个链接横向铺开溢出屏幕（此前第三方 responsive-nav
+    把折叠态挂在 JS 注入的 `.js` 类上，脚本一失败就整条导航溢出，正是移动端
+    "显示不全 / 超出屏幕" 的根因）。宽屏（≥860px）由媒体查询强制菜单横向常驻、
+    隐藏汉堡。
     """
     parts = ["<nav class='wb-topnav'>", "<span class='brand' data-i18n='brand'>Apple 供应链</span>"]
-    # 菜单区：响应式框架管理，窄屏折叠为汉堡
-    parts.append("<nav class='nav-collapse'><ul>")
+    # 菜单区：原生 <details> 汉堡，移动端点 ☰ 展开为竖向下拉，桌面端媒体查询内联常驻
+    parts.append("<details class='nav-collapse'>")
+    parts.append("<summary class='nav-toggle' aria-label='菜单'>&#9776;</summary>")
+    parts.append("<ul>")
     for key, label, path in NAV_ITEMS:
         cls = " class='active'" if key == active else ""
         parts.append("<li><a href='%s'%s data-i18n='nav.%s'>%s</a></li>" % (root + path, cls, key, label))
-    parts.append("</ul></nav>")
-    # 语言切换下拉（始终可见，移动端也不折叠进汉堡）
+    parts.append("</ul></details>")
+    # 语言切换下拉（始终可见，不折叠进汉堡）
     parts.append("<select id='langSwitch' aria-label='Language' "
                   "onchange='window.i18n&&window.i18n.changeLanguage(this.value)'>"
                   "<option value='zh'>中文</option><option value='en'>English</option>"
@@ -84,10 +109,6 @@ def topnav(root="../", active=None):
     parts.append("<span class='spacer'></span>")
     parts.append(GITHUB_LINK % GITHUB_URL)
     parts.append("</nav>")
-    # 响应式导航库（本地 vendored，离线可用；库会自动在 .nav-collapse 前生成汉堡 toggle）
-    parts.append("<link rel='stylesheet' href='%sdist/vendor/responsive-nav.css'>" % root)
-    parts.append("<script src='%sdist/vendor/responsive-nav.min.js'></script>" % root)
-    parts.append("<script>responsiveNav('.nav-collapse', { transition: true, label: '☰' });</script>")
     # 国际化框架（i18next，本地 vendored）。
     # dist/locales.js 由 build_viewer.py 从 locales/*.json 内联生成，i18n.js 直接读取，
     # 不依赖运行时 fetch —— 规避「部署遗漏 locales/ 目录 → 404」与 file:// 的 CORS 限制。
