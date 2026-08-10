@@ -22,9 +22,9 @@
       "ev_ebitda": 18.4,
       "valuation": {
         "verdict": "高估",
-        "score": 1.43,
+        "score": 1.44,
         "detail": [
-          "P/E 27.3 × vs 全样本中位(同业不足回退) 26.0 × (比值 1.05)",
+          "P/E 27.3 × vs 全样本中位(同业不足回退) 25.1 × (比值 1.09)",
           "P/B 9.3 × vs 全样本中位(同业不足回退) 4.6 × (比值 2.01)",
           "EV/EBITDA 18.4 × vs 全样本中位(同业不足回退) 14.9 × (比值 1.23)"
         ],
@@ -106,7 +106,7 @@
       "net_income_ttm_usd_b": -0.06,
       "gross_margin_pct": 13.5,
       "net_margin_pct": -0.3,
-      "roe_pct": -0.45,
+      "roe_pct": null,
       "pe": null,
       "pb": 0.63,
       "ev_ebitda": 4.46,
@@ -132,20 +132,20 @@
       "ticker": "000725.SZ",
       "category": "Display",
       "peer_group": "Display",
-      "market_cap_usd_b": 31.1,
+      "market_cap_usd_b": 32.3,
       "revenue_ttm_usd_b": 28.5,
       "net_income_ttm_usd_b": 0.82,
       "gross_margin_pct": 15.6,
       "net_margin_pct": 2.9,
       "roe_pct": 2.3,
-      "pe": 35.5,
+      "pe": 32.4,
       "pb": 1.5,
       "ev_ebitda": 25.7,
       "valuation": {
         "verdict": "合理",
-        "score": 1.12,
+        "score": 1.09,
         "detail": [
-          "P/E 35.5 × vs 全样本中位(同业不足回退) 26.0 × (比值 1.37)",
+          "P/E 32.4 × vs 全样本中位(同业不足回退) 25.1 × (比值 1.29)",
           "P/B 1.5 × vs 全样本中位(同业不足回退) 5.6 × (比值 0.27)",
           "EV/EBITDA 25.7 × vs 全样本中位(同业不足回退) 14.9 × (比值 1.72)"
         ],
@@ -193,7 +193,7 @@
       "ticker": "6758.T",
       "category": "CIS/Optical",
       "peer_group": "CIS/Camera",
-      "market_cap_usd_b": 132.7,
+      "market_cap_usd_b": 137.8,
       "revenue_ttm_usd_b": 83.2,
       "net_income_ttm_usd_b": 6.87,
       "gross_margin_pct": 30.8,
@@ -204,9 +204,9 @@
       "ev_ebitda": 9.9,
       "valuation": {
         "verdict": "低估",
-        "score": 0.58,
+        "score": 0.59,
         "detail": [
-          "P/E 19.8 × vs 全样本中位(同业不足回退) 27.3 × (比值 0.73)",
+          "P/E 19.8 × vs 全样本中位(同业不足回退) 25.9 × (比值 0.76)",
           "P/B 2.4 × vs 全样本中位(同业不足回退) 5.6 × (比值 0.43)",
           "EV/EBITDA 9.9 × vs 全样本中位(同业不足回退) 16.9 × (比值 0.59)"
         ],
@@ -225,20 +225,20 @@
       "ticker": "3008.TW",
       "category": "Optics",
       "peer_group": "Optics",
-      "market_cap_usd_b": 17.9,
+      "market_cap_usd_b": 17.8,
       "revenue_ttm_usd_b": 1.91,
       "net_income_ttm_usd_b": 0.65,
       "gross_margin_pct": 49.2,
       "net_margin_pct": 33.7,
       "roe_pct": 11.4,
-      "pe": 27.6,
+      "pe": 25.9,
       "pb": 3.0,
       "ev_ebitda": 14.4,
       "valuation": {
         "verdict": "低估",
-        "score": 0.82,
+        "score": 0.81,
         "detail": [
-          "P/E 27.6 × vs 全样本中位(同业不足回退) 26.0 × (比值 1.06)",
+          "P/E 25.9 × vs 全样本中位(同业不足回退) 25.1 × (比值 1.03)",
           "P/B 3.0 × vs 全样本中位(同业不足回退) 5.6 × (比值 0.54)",
           "EV/EBITDA 14.4 × vs 全样本中位(同业不足回退) 16.9 × (比值 0.85)"
         ],
@@ -373,20 +373,20 @@
       "ticker": "005930.KS",
       "category": "Memory",
       "peer_group": "Memory",
-      "market_cap_usd_b": 1136.5,
+      "market_cap_usd_b": 1196.0,
       "revenue_ttm_usd_b": 351.6,
       "net_income_ttm_usd_b": 108.5,
       "gross_margin_pct": 57.5,
       "net_margin_pct": 30.9,
-      "roe_pct": 30.8,
-      "pe": 10.83,
+      "roe_pct": 18.9,
+      "pe": 22.4,
       "pb": 2.71,
       "ev_ebitda": 6.11,
       "valuation": {
         "verdict": "低估",
-        "score": 0.5,
+        "score": 0.66,
         "detail": [
-          "P/E 10.8 × vs 同业中位 16.6 × (比值 0.65)",
+          "P/E 22.4 × vs 同业中位 19.9 × (比值 1.13)",
           "P/B 2.7 × vs 同业中位 7.8 × (比值 0.35)",
           "EV/EBITDA 6.1 × vs 同业中位 12.1 × (比值 0.50)"
         ],
@@ -405,20 +405,20 @@
       "ticker": "000660.KS",
       "category": "Memory",
       "peer_group": "Memory",
-      "market_cap_usd_b": 740.0,
+      "market_cap_usd_b": 979.0,
       "revenue_ttm_usd_b": 95.7,
       "net_income_ttm_usd_b": 54.4,
       "gross_margin_pct": 62.0,
       "net_margin_pct": 56.9,
       "roe_pct": 61.2,
-      "pe": 13.3,
+      "pe": 19.9,
       "pb": 6.21,
       "ev_ebitda": 10.85,
       "valuation": {
         "verdict": "合理",
-        "score": 1.0,
+        "score": 1.03,
         "detail": [
-          "P/E 13.3 × vs 同业中位 15.3 × (比值 0.87)",
+          "P/E 19.9 × vs 同业中位 21.1 × (比值 0.94)",
           "P/B 6.2 × vs 同业中位 6.0 × (比值 1.03)",
           "EV/EBITDA 10.8 × vs 同业中位 9.8 × (比值 1.11)"
         ],
@@ -427,7 +427,7 @@
         "fallback": false
       },
       "trend": "HBM绝对龙头 HBM4量产并与英伟达/AMD深度绑定",
-      "recent": "近一年涨幅约+414% 市值约7400亿美元(汇率敏感) ROE 61%",
+      "recent": "近一年涨幅显著 市值约9790亿美元(USD) ROE 61% 与英伟达/AMD深度绑定HBM4",
       "source": "https://stockanalysis.com/quote/krx/000660/statistics"
     },
     {
@@ -448,9 +448,9 @@
       "ev_ebitda": 13.4,
       "valuation": {
         "verdict": "高估",
-        "score": 1.77,
+        "score": 1.53,
         "detail": [
-          "P/E 19.8 × vs 同业中位 12.1 × (比值 1.64)",
+          "P/E 19.8 × vs 同业中位 21.1 × (比值 0.94)",
           "P/B 9.3 × vs 同业中位 4.5 × (比值 2.09)",
           "EV/EBITDA 13.4 × vs 同业中位 8.5 × (比值 1.58)"
         ],
@@ -736,20 +736,20 @@
       "ticker": "6981.T",
       "category": "Passive",
       "peer_group": "Components",
-      "market_cap_usd_b": 90.0,
+      "market_cap_usd_b": 82.4,
       "revenue_ttm_usd_b": 12.8,
       "net_income_ttm_usd_b": 1.77,
       "gross_margin_pct": 40.0,
       "net_margin_pct": 13.8,
       "roe_pct": 10.1,
-      "pe": 50.95,
+      "pe": 57.3,
       "pb": 4.97,
       "ev_ebitda": 26.3,
       "valuation": {
         "verdict": "低估",
-        "score": 0.61,
+        "score": 0.64,
         "detail": [
-          "P/E 51.0 × vs 同业中位 76.4 × (比值 0.67)",
+          "P/E 57.3 × vs 同业中位 76.4 × (比值 0.75)",
           "P/B 5.0 × vs 同业中位 11.5 × (比值 0.43)",
           "EV/EBITDA 26.3 × vs 同业中位 35.9 × (比值 0.73)"
         ],
@@ -866,9 +866,9 @@
       "ev_ebitda": 35.9,
       "valuation": {
         "verdict": "高估",
-        "score": 1.73,
+        "score": 1.67,
         "detail": [
-          "P/E 76.4 × vs 同业中位 51.0 × (比值 1.50)",
+          "P/E 76.4 × vs 同业中位 57.3 × (比值 1.33)",
           "P/B 11.5 × vs 同业中位 5.0 × (比值 2.31)",
           "EV/EBITDA 35.9 × vs 同业中位 26.3 × (比值 1.37)"
         ],
@@ -945,7 +945,7 @@
       "ticker": "2317.TW",
       "category": "Assembly",
       "peer_group": "Assembly",
-      "market_cap_usd_b": 107.7,
+      "market_cap_usd_b": 108.0,
       "revenue_ttm_usd_b": 264.0,
       "net_income_ttm_usd_b": 6.06,
       "gross_margin_pct": 6.15,
@@ -956,9 +956,9 @@
       "ev_ebitda": 7.1,
       "valuation": {
         "verdict": "低估",
-        "score": 0.5,
+        "score": 0.51,
         "detail": [
-          "P/E 17.8 × vs 同业中位 26.0 × (比值 0.68)",
+          "P/E 17.8 × vs 同业中位 25.1 × (比值 0.71)",
           "P/B 2.0 × vs 同业中位 4.3 × (比值 0.46)",
           "EV/EBITDA 7.1 × vs 同业中位 19.4 × (比值 0.37)"
         ],
@@ -977,20 +977,20 @@
       "ticker": "002475.SZ",
       "category": "Assembly",
       "peer_group": "Assembly",
-      "market_cap_usd_b": 64.6,
+      "market_cap_usd_b": 65.9,
       "revenue_ttm_usd_b": 49.2,
       "net_income_ttm_usd_b": 2.39,
       "gross_margin_pct": 11.7,
       "net_margin_pct": 4.9,
-      "roe_pct": 19.0,
-      "pe": 26.0,
+      "roe_pct": null,
+      "pe": 25.1,
       "pb": 4.3,
       "ev_ebitda": 19.4,
       "valuation": {
         "verdict": "高估",
-        "score": 2.13,
+        "score": 2.11,
         "detail": [
-          "P/E 26.0 × vs 同业中位 17.8 × (比值 1.46)",
+          "P/E 25.1 × vs 同业中位 17.8 × (比值 1.41)",
           "P/B 4.3 × vs 同业中位 2.0 × (比值 2.18)",
           "EV/EBITDA 19.4 × vs 同业中位 7.1 × (比值 2.73)"
         ],
@@ -1502,20 +1502,20 @@
       "ticker": "3711.TW",
       "category": "OSAT",
       "peer_group": "OSAT",
-      "market_cap_usd_b": 79.1,
+      "market_cap_usd_b": 77.3,
       "revenue_ttm_usd_b": 21.9,
       "net_income_ttm_usd_b": 1.87,
       "gross_margin_pct": 18.5,
       "net_margin_pct": 7.0,
       "roe_pct": 13.6,
-      "pe": 42.5,
+      "pe": 53.6,
       "pb": 7.6,
       "ev_ebitda": 24.6,
       "valuation": {
         "verdict": "高估",
-        "score": 1.64,
+        "score": 1.81,
         "detail": [
-          "P/E 42.5 × vs 全样本中位(同业不足回退) 26.0 × (比值 1.63)",
+          "P/E 53.6 × vs 全样本中位(同业不足回退) 25.1 × (比值 2.14)",
           "P/B 7.6 × vs 全样本中位(同业不足回退) 4.6 × (比值 1.64)",
           "EV/EBITDA 24.6 × vs 全样本中位(同业不足回退) 14.9 × (比值 1.65)"
         ],

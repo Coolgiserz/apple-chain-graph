@@ -62,7 +62,11 @@ def render_markdown(records, meta=None):
         if isinstance(r["market_cap_usd_b"], (int, float)):
             lines.append(f"- **市值**：{r['market_cap_usd_b']:.1f} 十亿美元 ｜ **营收(TTM)**：{r['revenue_ttm_usd_b']:.1f} 十亿美元 ｜ **净利(TTM)**：{r['net_income_ttm_usd_b']:.1f} 十亿美元")
         if isinstance(r["gross_margin_pct"], (int, float)):
-            lines.append(f"- **毛利率**：{r['gross_margin_pct']:.1f}% ｜ **净利率**：{r['net_margin_pct']:.1f}% ｜ **ROE**：{r['roe_pct']:.1f}% ｜ **负债权益比**：{r['debt_to_equity']}")
+            gm = f"{r['gross_margin_pct']:.1f}%" if isinstance(r["gross_margin_pct"], (int, float)) else "-"
+            nm = f"{r['net_margin_pct']:.1f}%" if isinstance(r["net_margin_pct"], (int, float)) else "-"
+            roe = f"{r['roe_pct']:.1f}%" if isinstance(r["roe_pct"], (int, float)) else "-"
+            de = f"{r['debt_to_equity']:.2f}" if isinstance(r["debt_to_equity"], (int, float)) else "-"
+            lines.append(f"- **毛利率**：{gm} ｜ **净利率**：{nm} ｜ **ROE**：{roe} ｜ **负债权益比**：{de}")
         lines.append(f"- **估值倍数**：P/E {r['pe'] if isinstance(r['pe'],(int,float)) else '-'} ｜ P/B {r['pb'] if isinstance(r['pb'],(int,float)) else '-'} ｜ EV/EBITDA {r['ev_ebitda'] if isinstance(r['ev_ebitda'],(int,float)) else '-'}")
         lines.append(f"- **估值判定**：{VERDICT_EMOJI.get(v['verdict'],'')} **{v['verdict']}**（score={v['score']}）")
         for d in v.get("detail", []):
