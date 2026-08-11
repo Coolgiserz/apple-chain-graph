@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.6.1](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.6.0...v1.6.1) (2026-08-11)
+
+
+### Bug Fixes
+
+* panels.js 改用 offsetParent 判面板可见性，修复 CI lint no-undef ([5f77eaf](https://github.com/Coolgiserz/apple-chain-graph/commit/5f77eaff7f51f3250e6e30e5755c89b8e8435c8d))
+* 修复风险视图右侧面板内容被遮挡 ([d38f6d0](https://github.com/Coolgiserz/apple-chain-graph/commit/d38f6d0c4e19d502e28bf66cee407b40ea9f0490))
+* 修复风险视图右侧面板内容被遮挡 ([0694bec](https://github.com/Coolgiserz/apple-chain-graph/commit/0694bece1b81f67048fe4994965ab991afa7b269))
+
 ## [1.6.0](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.5.0...v1.6.0) (2026-08-11)
 
 
