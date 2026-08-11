@@ -1,0 +1,29 @@
+name: Release Please
+
+# 基于 Conventional Commits 自动推导语义版本 + 维护 CHANGELOG.md（流派 A）。
+# 逻辑：每次 push 到 main 时，扫描自上次 tag 起的 commit（feat: → minor、
+# fix: → patch、feat!:/BREAKING CHANGE: → major），开 / 更新一个「Release PR」；
+# 人工合并该 PR 后自动打 git tag (vX.Y.Z) 并创建 GitHub Release。
+# 合并产生的 push 会再触发 pages.yml 部署，届时 scripts/version.py 的 git describe
+# 即可拿到新 tag，使 feeds 信封 meta.build 与 build.json 反映最新语义版本。
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - uses: googleapis/release-please-action@v4
+        with:
+          config-file: release-please-config.json
+          manifest-file: .release-please-manifest.json
+          token: ${{ secrets.GITHUB_TOKEN }}

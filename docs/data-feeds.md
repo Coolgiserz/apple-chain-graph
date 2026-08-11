@@ -24,7 +24,8 @@
     "schema_ref": "data/schemas/risk.json",
     "generated": "2026-08-09",
     "valid_until": "2026-09-08",
-    "sources": ["apple_supplier_list", "..."]
+    "sources": ["apple_supplier_list", "..."],
+    "build": "v1.3.0-5-gabcdef0"
   },
   "data": { "...": "具体指标" }
 }
@@ -81,3 +82,24 @@ DataLayer.renderFreshness(el, "risk"); // 渲染新鲜度徽标
 ## 七、前端新鲜度显示
 
 首页（`index.html`）顶栏右侧"更新于 X · 下次 Y"徽标，由 `DataLayer` 拉取 `risk` feed 渲染，过时变红并提示；语言切换时自动重绘。报告页 / 估值看板可按需在同样方式接入（同 `DataLayer` 接口）。
+
+## 八、版本号（自动派生，零手动维护）
+
+版本号采用**两大流派组合**，全部自动、无需手改：
+
+### 流派 B — 构建戳（git 图元数据，每次部署唯一）
+- 来源：`scripts/version.py`，封装 `git describe --tags --dirty --always --match "v[0-9]*"`。
+- 格式：`v1.3.0`（恰在 tag 上）/ `v1.3.0-5-gabcdef0`（距 tag 5 个 commit）/ `-dirty`（工作区脏）。
+- 落点：
+  - feeds 信封 `meta.build`（由 `build_feeds.py --build` 注入，CI 通过 `GITHUB_ENV` 传 `BUILD_VERSION`）。
+  - `_site/build.json` 部署清单（含 `build_version` + `git_sha` + `build_at`），前端可 `fetch('/build.json')` 显示「本站构建于 X / 提交 abc」。
+  - 资产缓存戳已由 `build_viewer.asset_url()` 走**内容哈希**自动处理（内容变则 URL 变），与构建戳互补。
+- 回退链：`git describe` 失败 → `BUILD_VERSION` 环境变量 → `0.0.0-unknown`。
+
+### 流派 A — 语义版本（Conventional Commits，对外宣称为「数据集 vX.Y.Z」）
+- 来源：`.github/workflows/release-please.yml` + `release-please-config.json` + `.release-please-manifest.json`（初始 `1.3.0`）。
+- 机制：每次 push 到 `main`，扫描自上次 tag 起的 commit（`feat:`→minor、`fix:`→patch、`feat!`/`BREAKING`→major），开/更新一个 **Release PR**；合并后自动打 `git tag (vX.Y.Z)` 并生成 `CHANGELOG.md`。
+- 协同：合并 Release PR 产生的 push 会触发 Pages 部署，届时 `git describe` 即能拿到新 tag，使 `meta.build` 与 `build.json` 反映最新语义版本（偶尔因 workflow 并发落后一个版本，下次部署修正——非功能性）。
+
+> 惯例：本仓库 commit 采用 Conventional Commits（`feat:`/`fix:`/`docs:`/`chore:` 等），
+> 这是 release-please 正确推导版本的前提；新增功能类提交请沿用该前缀。
