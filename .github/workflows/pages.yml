@@ -35,6 +35,10 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v4
+        with:
+          # 完整历史 + 全部 tag：scripts/version.py 的 git describe 需要距最近 tag 的
+          # commit 距离与 sha 才能派生构建版本戳（否则退化为 unknown）。
+          fetch-depth: 0
 
       - name: Set up Python
         uses: actions/setup-python@v5
@@ -45,6 +49,12 @@ jobs:
         uses: actions/setup-node@v4
         with:
           node-version: '24'
+
+      - name: Compute build version
+        # 流派 B：根据 git describe 派生构建版本戳（最近 tag + commit 距离 + sha），
+        # 写入 GITHUB_ENV 供后续 build_all.py -> build_feeds.py（feeds 信封 meta.build）
+        # 与 Write build manifest 步骤（部署清单 _site/build.json）使用。
+        run: echo "BUILD_VERSION=$(python scripts/version.py)" >> "$GITHUB_ENV"
 
       - name: Frontend build, lint & test
         # 前端由 esbuild 打包（src/ -> dist/*.js）；先构建再做 lint + 引擎契约测试。
@@ -102,6 +112,27 @@ jobs:
           #     _site/tools/visualizations/supplier_geo.html \
           #     _site/tools/visualizations/supplier_combined.html
           # 否则地图页在 Pages 上不渲染，其余页面不受影响。
+
+      - name: Write build manifest
+        # 部署清单：构建版本（git describe）+ 短 sha + UTC 时间，前端可 fetch /build.json
+        # 显示「本站构建于 X / 提交 abc」。BUILD_VERSION 由上方 Compute 步骤写入环境。
+        run: |
+          python - <<'PY'
+          import json, subprocess
+          version = "${{ env.BUILD_VERSION }}"
+          try:
+              sha = subprocess.check_output(["git", "rev-parse", "--short", "HEAD"]).decode().strip()
+          except Exception:
+              sha = ""
+          try:
+              when = subprocess.check_output(["date", "-u", "+%Y-%m-%dT%H:%M:%SZ"]).decode().strip()
+          except Exception:
+              when = ""
+          manifest = {"build_version": version, "git_sha": sha, "build_at": when}
+          with open("_site/build.json", "w", encoding="utf-8") as f:
+              json.dump(manifest, f, ensure_ascii=False, indent=2)
+          print("wrote _site/build.json:", manifest)
+          PY
 
       - name: Python lint & tests
         run: |

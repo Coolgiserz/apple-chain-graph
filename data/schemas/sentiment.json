@@ -15,7 +15,11 @@
         "schema_ref": { "type": "string" },
         "generated": { "type": "string", "format": "date" },
         "valid_until": { "type": "string", "format": "date" },
-        "sources": { "type": "array", "items": { "type": "string" } }
+        "sources": { "type": "array", "items": { "type": "string" } },
+        "build": {
+          "type": "string",
+          "description": "构建版本戳（流派 B：git describe 派生，如 v1.3.0-5-gabcdef0）。可选，缺省为空。"
+        }
       }
     },
     "data": {
