@@ -14,6 +14,10 @@ WORKDIR /app
 COPY package.json package-lock.json ./
 RUN npm ci
 COPY src ./src
+# scripts/build_locales.mjs 是语言包生成 + i18n 审计的唯一实现（Node），由 npm run build 调用；
+# 它需读取 locales/*.json 与扫描 src/engine、src/lib，故一并 COPY 进本阶段。
+COPY locales ./locales
+COPY scripts ./scripts
 RUN npm run build
 
 # ---------- 页面构建阶段：python 生成全部静态页 ----------
@@ -22,9 +26,11 @@ WORKDIR /src
 # 前端产物已由 nodebuilder 阶段生成，跳过 Python 阶段内的 esbuild（避免重复装 Node 依赖）
 ENV SKIP_NODE_BUILD=1
 COPY . .
-# 复制 esbuild 已打包的前端产物（graph_engine.js / i18n.js）；其余 dist/* 由 COPY . . 带入
+# 复制 esbuild 已打包的前端产物（graph_engine.js / i18n.js / locales.js）；
+# 语言包 dist/locales.js 由 nodebuilder 阶段的 scripts/build_locales.mjs 生成（含 i18n 审计）。
 COPY --from=nodebuilder /app/dist/i18n.js dist/i18n.js
 COPY --from=nodebuilder /app/dist/graph_engine.js dist/graph_engine.js
+COPY --from=nodebuilder /app/dist/locales.js dist/locales.js
 # 项目零第三方依赖（仅 Python 标准库 + 内部模块）
 RUN python3 build_all.py
 

@@ -204,6 +204,14 @@ export function bindEvents() {
     var key = li.getAttribute("data-key");
     if (key) focus(key);
   });
+  // 瓶颈透视面板的排行/关系行同样可点击聚焦（与 #pbody 同构）
+  var bnBody = document.getElementById("bnBody");
+  if (bnBody) bnBody.addEventListener("click", function (e) {
+    var li = e.target.closest ? e.target.closest("li.rel") : null;
+    if (!li) return;
+    var key = li.getAttribute("data-key");
+    if (key) focus(key);
+  });
   var reset = document.getElementById("reset");
   if (reset) reset.onclick = function () {
     selectNode(null);

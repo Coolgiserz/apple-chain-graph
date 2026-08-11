@@ -33,7 +33,8 @@
       "omdia",
       "techinsights",
       "trendforce"
-    ]
+    ],
+    "build": "v1.4.0-dirty"
   },
   "data": {
     "product_lines": [
@@ -3539,9 +3540,9 @@
         "single_point": false,
         "missing_data": false,
         "suppliers": [
-          "viseira",
           "sony",
-          "samsung_elec"
+          "samsung_elec",
+          "viseira"
         ],
         "distinct_countries": 3,
         "countries": [
@@ -3693,9 +3694,9 @@
         "single_point": false,
         "missing_data": false,
         "suppliers": [
-          "murata",
           "st",
-          "apple"
+          "apple",
+          "murata"
         ],
         "distinct_countries": 3,
         "countries": [
@@ -3713,10 +3714,10 @@
         "single_point": false,
         "missing_data": false,
         "suppliers": [
-          "zhaowei",
           "largan",
           "genius",
-          "sunny"
+          "sunny",
+          "zhaowei"
         ],
         "distinct_countries": 2,
         "countries": [

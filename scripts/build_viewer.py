@@ -336,30 +336,15 @@ def main():
     for fname in ("graph_bootstrap.js", "graph_table_panel.js"):
         shutil.copyfile(os.path.join(TEMPLATES, fname), os.path.join(ROOT, "dist", fname))
 
-    # 把 locales/*.json 内联成一个 vendored JS 全局（dist/locales.js），
-    # 由 i18n.js 直接读取——不再依赖运行时 fetch/XHR。
-    # 这样无论部署到 GitHub Pages（dist/ 之外的根目录资源可能没发布）、
-    # 还是本地用 file:// 直接打开，翻译都能加载，彻底规避「语言包 404 / 切换无效」。
-    try:
-        bundles = {}
-        for lng in ("zh", "en", "fr", "ja"):
-            lp = os.path.join(ROOT, "locales", lng + ".json")
-            if os.path.exists(lp):
-                with open(lp, encoding="utf-8") as lf:
-                    bundles[lng] = json.load(lf)
-        with open(os.path.join(ROOT, "dist", "locales.js"), "w", encoding="utf-8") as bf:
-            bf.write("/* 自动生成：locales/*.json 内联为全局，供 i18n.js 使用。勿手改，改 locales/*.json 后重跑 build_all.py */\n")
-            bf.write("window.I18N_LOCALES = " + json.dumps(bundles, ensure_ascii=False) + ";\n")
-            # 数据枚举值的 raw->键 映射（locales/enum_map.json），graph_engine.js 运行时用来把
-            # 数据集里的枚举值转成 i18n 键（译文仍在 locales/*.json，不在 JS 里硬编码）。
-            enum_map_path = os.path.join(ROOT, "locales", "enum_map.json")
-            if os.path.exists(enum_map_path):
-                with open(enum_map_path, encoding="utf-8") as emf:
-                    enum_map = json.load(emf)
-                bf.write("window.I18N_ENUM_MAP = " + json.dumps(enum_map, ensure_ascii=False) + ";\n")
-        print("generated:", "dist/locales.js", "packs:", list(bundles.keys()))
-    except Exception as e:
-        print("WARN: 生成 dist/locales.js 失败：", e)
+    # dist/locales.js（i18n 语言包内联产物）由 build_all.py 的 run_node_build() 在跑本脚本
+    # 之前通过 `npm run build` → scripts/build_locales.mjs 生成（含构建期 i18n 审计，fail-fast）。
+    # 该脚本是语言包生成 + 审计的唯一实现（Node 版），build_viewer.py 不再各自实现一份，
+    # 避免「Python/JS 双份实现漂移」再次导致漏翻的 key 以后台标签上线。
+    # 此处只做存在性校验——缺失即大声失败，绝不静默用陈旧 bundle 发布。
+    if not os.path.exists(os.path.join(ROOT, "dist", "locales.js")):
+        print("✗ 缺少 dist/locales.js，请先运行 `npm run build`（或 `python build_all.py`）。"
+              "语言包由 scripts/build_locales.mjs 生成并做 i18n 审计。", file=sys.stderr)
+        sys.exit(1)
 
     # 脚本 URL 带内容哈希戳，避免浏览器加载缓存的旧引擎（缺 setRiskMode 时静默失败）
     risk = load_risk()
