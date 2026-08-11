@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.5.0](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.4.0...v1.5.0) (2026-08-11)
+
+
+### Features
+
+* 供应链瓶颈透视（图分析）— 类型中心性 / 断供波及 / PageRank ([6c59df0](https://github.com/Coolgiserz/apple-chain-graph/commit/6c59df00ed2d17b02235d578d1c1fa2321b82a0e))
+* 供应链瓶颈透视（图分析）— 类型中心性 / 断供波及 / PageRank ([93ba97b](https://github.com/Coolgiserz/apple-chain-graph/commit/93ba97b0f71e71c4ba9dcaa1551a0b62c88f6675))
+
 ## [1.4.0](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.3.0...v1.4.0) (2026-08-11)
 
 
