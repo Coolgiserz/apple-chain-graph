@@ -19,15 +19,14 @@ export function showBottleneckPanel(on) {
 
 // 三个右侧面板（详情/风险/瓶颈）任一可见时给 body 加 panel-open，
 // 用于隐藏右下角操作提示（避免浮层压住面板底部内容，修复「内容看不到」）。
+// 用 offsetParent 判可见性（display:none 时 offsetParent 为 null），无需依赖浏览器全局 getComputedStyle。
 function syncPanelOpen() {
   if (typeof document === "undefined" || !document.body) return;
   var open = false;
-  if (typeof getComputedStyle === "function") {
-    ["panel", "riskPanel", "bottleneckPanel"].forEach(function (id) {
-      var el = document.getElementById(id);
-      if (el && getComputedStyle(el).display !== "none") open = true;
-    });
-  }
+  ["panel", "riskPanel", "bottleneckPanel"].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el && el.offsetParent !== null) open = true;
+  });
   document.body.classList.toggle("panel-open", open);
 }
 
