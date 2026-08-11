@@ -45,6 +45,7 @@ zero-dependency interactive visualizations.
 - [供应商基本面与相对估值分析](#供应商基本面与相对估值分析)
 - [供应商舆情分析](#供应商舆情分析)
 - [供应商分析可视化看板](#供应商分析可视化看板)
+- [供应链瓶颈透视（图分析）](#供应链瓶颈透视图分析)
 - [供应链脆弱性分析（零部件 → 产品 → 产品线）](#供应链脆弱性分析零部件--产品--产品线)
 - [技术栈](#技术栈)
 - [目录结构](#目录结构)
@@ -369,6 +370,16 @@ python3 tools/run_sentiment.py --id qualcomm    # 只看某一家
 > 数据源：`tools/data/supplier_fundamentals.csv` + `supplier_sentiment.csv` +
 > `tools/output/supplier_analysis.json`。图表依赖 CDN 上的 Chart.js（首次打开需联网）。
 
+## 供应链瓶颈透视（图分析）
+
+在图谱上直接做经典图分析，**纯前端实时计算、无后端**：类型感知度中心性、断供波及（反向可达 BFS）、PageRank 网络核心度。
+
+- **产品化包装**：独家供应 / 断供影响模拟 / 网络核心度；红 / 琥珀 / 绿语义色；排行点击聚焦到图谱节点。
+- **第 2 跳下游高亮**：选中供应商 / 零部件时，图谱高亮其第 2 跳下游产品，直观看到「断供波及 N 款」（如歌尔股份断供波及 28 款产品）。
+- **文案防误读**：「波及」≠「停产」——无替代将真正停产的产品数用独立绿 / 红 callout 单独标出。
+
+算法、口径与局限见 **[docs/bottleneck-analytics.md](docs/bottleneck-analytics.md)**。
+
 ## 供应链脆弱性分析（零部件 → 产品 → 产品线）
 
 在估值 / 舆情之外，新增一层**图结构视角的供应链风险分析**：从「每个零部件有多少供应商」
@@ -522,6 +533,7 @@ apple_supply_chain/
 - [docs/data-model.md](docs/data-model.md) — 数据模型与字段字典
 - [docs/supplier-analysis.md](docs/supplier-analysis.md) — 供应商基本面与相对估值：方法 / 口径 / 局限
 - [docs/supply-chain-risk.md](docs/supply-chain-risk.md) — 供应链脆弱性（零部件→产品→产品线）：模型 / 权重 / 局限
+- [docs/bottleneck-analytics.md](docs/bottleneck-analytics.md) — 供应链瓶颈透视（图分析）：算法 / 口径 / 局限
 
 ## 数据来源与口径
 
