@@ -1,5 +1,19 @@
 # Changelog
 
+## [1.6.3](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.6.2...v1.6.3) (2026-08-11)
+
+
+### Bug Fixes
+
+* **topbar:** 展开/收起供应商与生产基地按钮状态与图谱同步 ([6c336fe](https://github.com/Coolgiserz/apple-chain-graph/commit/6c336fe37b0e923c0872a29acdb08ca01f0fa3ff))
+* **topbar:** 彻底移除「展开全部供应商」对生产基地的级联（上轮修复不完整） ([e508c11](https://github.com/Coolgiserz/apple-chain-graph/commit/e508c1141ded11e67d71d735ce85ad9a875201b6))
+* **topbar:** 彻底移除「展开全部供应商」对生产基地的级联（上轮修复不完整） ([1979cd4](https://github.com/Coolgiserz/apple-chain-graph/commit/1979cd4306473cf4f0c56393a675d97f0fe7e17f))
+* **topbar:** 移除「流动」开关按钮，流动粒子常驻开启 ([5cda180](https://github.com/Coolgiserz/apple-chain-graph/commit/5cda180de0f8d200ab51a6d03bac071af59efabb))
+* **topbar:** 移除「流动」开关按钮，流动粒子常驻开启 ([6a73ad1](https://github.com/Coolgiserz/apple-chain-graph/commit/6a73ad1e70004a1f727a7b4c5625485a752ff326))
+* **topbar:** 解耦「展开全部供应商」与「生产基地」两个独立开关 ([5673d12](https://github.com/Coolgiserz/apple-chain-graph/commit/5673d12d90b35f3e18bb24da5b397a27a45a76a9))
+* **topbar:** 解耦「展开全部供应商」与「生产基地」两个独立开关 ([cb15acd](https://github.com/Coolgiserz/apple-chain-graph/commit/cb15acd08119d4dfb6d01fc1e0f389679701acd7))
+* **topbar:** 重置视图退出风险/瓶颈模式；流动改为持续动画且更清晰 ([a82930d](https://github.com/Coolgiserz/apple-chain-graph/commit/a82930dc4c0fd46cc5384b69f8ea6872ed48ae6e))
+
 ## [1.6.2](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.6.1...v1.6.2) (2026-08-11)
 
 
