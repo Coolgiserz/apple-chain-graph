@@ -64,14 +64,14 @@ This project drives a three-layer directed graph from a **single source of truth
 - **Model-level precision**: not a vague "iPhone", but `iPhone 17` / `17 Air` / `17 Pro` / `17 Pro Max`, etc.
 - **Reproducible & extensible**: all CSV / JSON / web pages are regenerated from source data by scripts under `scripts/` and `tools/`.
 - **Graph-database ready**: directly produces Neo4j official bulk-import-format CSV, importable into your own instance with zero Cypher.
-- **Out of the box**: the graph, report, and dashboard are static HTML with embedded data — just open the file, no backend needed.
+- **Out of the box**: the report and dashboard are static HTML with embedded data — just open the file, no backend needed; the home graph `fetch`es graph data in the browser at runtime and must be served over HTTP (no `file://` double-click).
 
 ## Features
 
 - **Model-level precision**: covers six product lines — iPhone / Mac / iPad / Apple Watch / Vision Pro / AirPods·HomePod — down to specific models (e.g. `iPhone 17 Pro`, `MacBook Pro 14" (M4)`, `Apple Vision Pro (M5)`).
 - **Attribute enrichment**: supplier nodes split into `full name / English name / short name`; product nodes carry `English name, alias, release date, status, launch price, main chip, display spec`.
 - **Graph-database ready**: 6 Neo4j official bulk-import-format CSVs (`:ID` / `:LABEL` / `:START_ID` / `:END_ID` / `:TYPE` headers), with offline / online import options.
-- **Zero-dependency visualization**: root `index.html` (home graph) and other pages embed data — just open, no network or database needed (the dashboard charts rely on Chart.js from CDN, requiring network on first open).
+- **Zero-dependency visualization**: the report, dashboard and other pages embed data — just open, no network or database needed (the dashboard charts rely on Chart.js from CDN, requiring network on first open); the home graph (`index.html`) `fetch`es `data/apple_supply_chain.json` in the browser at runtime, so it must be served over HTTP (e.g. `python3 -m http.server`) — opening via `file://` double-click is blocked by CORS and fails to load data.
 - **Multi-page navigation, not silos**: home graph / supplier list / report / map / dashboard share one top navigation bar (`topnav.py`, maintained in one place, applied globally); cross-page deep links jump straight to a specific entity. This unified nav bar *is* the "fusion" — pinned to the top of every page so users can move freely between sections, without building a separate aggregator page per section.
 - **Supplier list (table view)**: `dist/supplier_table.html` presents all 60 suppliers as a table, with filtering by **region / country / category / tier**, keyword search, and click-to-sort columns **ascending / descending**; each row jumps back to the graph or map in one click.
 - **Supplier research layer**: relative valuation + sentiment analysis for 15 key suppliers, presented as a dashboard and a report.
@@ -186,7 +186,7 @@ cross-page navigation never 404s. Umami analytics reports normally under **https
 > - **All CI resources are repo-scoped**: the `concurrency.group` in the workflow, the Pages artifact name, the `github-pages` environment, and the `GITHUB_TOKEN` used for deployment all act only on **this repo's** Actions and **will not** interfere with your other repos' deployments or lock each other.
 > - **Future new repos**: each new repo only needs its own `.github/workflows/pages.yml`, getting its own `/<its-repo-name>/` with no cross-repo coordination needed (again, just obey the custom-domain-uniqueness rule above). If you create a **second** Pages workflow *within this repo*, give it a different `concurrency.group` (two workflows in the same repo both using `group: pages` would cancel each other); cross-repo there is no such issue.
 
-**Published content**: CI picks only static artifacts — `index.html`, `dist/`, `tools/visualizations/`, `docs/`, plus `README.md` / `README_en.md` / `LICENSE` / `CONTRIBUTING.md`; it does **not** publish Python source, `data/`, `tools/*.py`, `.env`, `certs/`.
+**Published content**: CI picks only static artifacts — `index.html`, `dist/`, `data/` (including `apple_supply_chain.json` and `supply_chain_risk.json`, read by the home graph at runtime), `tools/visualizations/`, `assets/`, `sitemap.xml`, `robots.txt`, `docs/`, plus `README.md` / `README_en.md` / `LICENSE` / `CONTRIBUTING.md`; it does **not** publish Python source, `data/feeds/`, `tools/*.py`, `.env`, `certs/`.
 
 **Map page (Key-free by default, works on static hosting directly)**: the supplier map page (`supplier_geo.html`) auto-selects a render backend at runtime —
 
@@ -197,7 +197,7 @@ cross-page navigation never 404s. Umami analytics reports normally under **https
 
 ### 1. Browse the graph (zero dependencies)
 
-Just double-click to open the root **`index.html`** (or drag it into the browser). Data is embedded — no network or database needed:
+Serve the home page over HTTP: run `python3 -m http.server` at the repo root, then open `http://localhost:8000/` (or deploy to any static host / GitHub Pages). The home page `fetch`es `data/apple_supply_chain.json` in the browser, so it **must go over HTTP**; opening via `file://` double-click is blocked by CORS and fails to load data:
 
 - Scroll to zoom, drag to pan, drag nodes.
 - Click a node to see details (release date, status, launch price, related suppliers, etc.).
@@ -227,13 +227,13 @@ python3 build_all.py
 # Or run individually (equivalent)
 python3 scripts/generate.py     # generate data/neo4j/*.csv + data/apple_supply_chain.json
 python3 scripts/report.py       # generate dist/apple_supply_chain_report.html (standalone report)
-python3 scripts/build_viewer.py # generate root index.html (home graph) + dist/graph_engine.js (shared canvas engine)
+python3 scripts/build_viewer.py # copy dist glue scripts + risk-data copy + generate SEO infra (index.html is a static page in the repo, not generated)
 python3 scripts/build_table.py  # generate dist/supplier_table.html (supplier list: filter + sort table view)
 python3 tools/geo_build.py      # generate tools/visualizations/supplier_geo.html (supplier map)
 # The valuation dashboard tools/visualizations/supplier_dashboard.html is a static page with the unified nav bar injected
 ```
 
-> The graph's canvas physics engine has been extracted into a standalone file **`templates/graph_engine.js`** (copied to `dist/graph_engine.js` at build time; data is injected via the page-inlined `window.SUPPLY_DATA = …`), enabling Node unit tests and IDE syntax checks. This engine is the single source of truth, reused by the home graph; publish it together with the home page and `dist/` at deploy time.
+> The graph's canvas physics engine lives in **`src/engine/`** (split into ES modules; `index.js` exposes the `GraphEngine.init(opts, data)` public API) and is built by esbuild into the IIFE bundle **`dist/graph_engine.js`**; the glue scripts `graph_bootstrap.js` / `graph_table_panel.js` used by the home page and table panel are maintained in `templates/` and copied to `dist/` at build time. All of `dist/` is build output (`.gitignore`d, not committed); the home graph injects data by `fetch`ing `data/apple_supply_chain.json` at runtime. The engine is the single source of truth, testable from Node, and syntax-checkable in any IDE.
 
 > All pages share `topnav.py`'s unified nav bar — change once, apply globally; report content is rendered by `report.py`'s reusable builder (with `jump=True, mode="web"`, entities automatically carry cross-page `<a>` deep links). Adding a new section is just one line in `topnav.py`'s `NAV_ITEMS`, and it appears in every page's nav.
 
@@ -340,7 +340,7 @@ python3 tools/run_risk.py --md out.md --json out.json
 | Layer | Tech | Notes |
 |-------|------|-------|
 | Data processing | Python 3.9+ (standard library) | generation scripts under `scripts/` and `tools/`, **zero third-party deps** |
-| Home graph viz | Native Canvas + custom force-directed layout | `index.html` (home), embedded data, double-click to open |
+| Home graph viz | Native Canvas + custom force-directed layout | `index.html` (home), fetch `data/apple_supply_chain.json` at runtime, must be served over HTTP |
 | Dashboard viz | Chart.js (CDN) | `supplier_dashboard.html`, network needed on first open |
 | Map | Tencent Location Service GL JS | `supplier_geo.html` (run under your own domain) |
 | Graph DB | Neo4j (official bulk-import-format CSV) | 6 CSVs, offline / online import |
@@ -361,7 +361,7 @@ apple_supply_chain/
 ├── Makefile                  # common shortcuts (up / down / logs / serve / build)
 ├── nginx.conf                # in-container nginx config (UTF-8 / gzip / long cache)
 ├── .dockerignore             # build-context exclusions
-├── index.html                # home: supply chain graph (site entry, force-directed interactive, double-click to open)
+├── index.html                # home: supply chain graph (site entry, force-directed interactive; fetch data/apple_supply_chain.json at runtime, must be served over HTTP)
 ├── .gitignore
 ├── data/                     # data artifacts
 │   ├── apple_supply_chain.json   # full graph data (nodes + edges + field dictionary)
@@ -377,14 +377,21 @@ apple_supply_chain/
 ├── scripts/                  # data-generation scripts (reproducible)
 │   ├── generate.py           # generate CSV + JSON
 │   ├── report.py             # generate HTML analysis report (reusable builder, supports jump deep links)
-│   ├── build_viewer.py       # generate home interactive graph (root index.html, reuses templates/graph_engine.js)
+│   ├── build_viewer.py       # copy dist glue scripts + risk-data copy + generate SEO infra (index.html is a static page in the repo)
 │   └── build_table.py        # generate supplier list: dist/supplier_table.html (table filter + sort)
-├── index.html                # home: supply chain graph (force-directed interactive, double-click to open)
-├── templates/                # web front-end templates (HTML/JS/CSS maintained separately, scripts fill data to generate pages)
-│   ├── graph_engine.js       # shared graph canvas physics engine (single source of truth for home graph)
-│   ├── graph_page.html       # home graph HTML template
-│   ├── graph_bootstrap.js    # home graph bootstrap script
-│   └── table_page.html       # supplier list (table view) HTML template (inline filter/sort JS)
+├── src/                      # front-end engine source (ES modules, built by esbuild into dist/ IIFE)
+│   └── engine/               # shared graph canvas physics engine (single source of truth for home graph)
+│       ├── index.js         # public API: GraphEngine.init(opts, data) / start / setRiskMode …
+│       ├── model.js         # graph build + node isolation (visibleSet)
+│       ├── render.js        # Canvas rendering
+│       ├── interaction.js   # zoom / drag / double-click isolate
+│       ├── panels.js        # detail / risk panels
+│       └── ...              # state / physics / util
+├── templates/                # web front-end glue scripts & templates (HTML/JS maintained separately)
+│   ├── graph_bootstrap.js    # home graph bootstrap script (fetch data + mergeRisk + init at runtime)
+│   ├── graph_table_panel.js  # home graph table panel (filter / sort / locate)
+│   ├── table_page.html       # supplier list (table view) HTML template (inline filter/sort JS)
+│   └── supplier_dashboard_template.html  # valuation dashboard template
 ├── topnav.py                 # unified top nav bar shared by all pages (single source, change once apply globally)
 ├── tools/                    # supplier fundamentals & relative valuation analysis (reproducible, pure standard library)
 │   ├── run_analysis.py        # CLI: merge three sources → run valuation → output md/json
@@ -411,11 +418,15 @@ apple_supply_chain/
 │   ├── data-model.md         # data model & field dictionary
 │   ├── supplier-analysis.md  # supplier fundamentals & relative valuation: method / conventions / limitations
 │   └── screenshots/          # README screenshots (see "Screenshots" section)
-└── dist/                     # generated web artifacts
+└── dist/                     # build artifacts (.gitignore'd, not committed; generated by npm run build + build_all.py)
     ├── apple_supply_chain_report.html  # analysis report (standalone page)
     ├── supplier_table.html       # supplier list: filter + sort table view of all 60 suppliers
-    ├── graph_engine.js           # shared graph canvas physics engine (reused by home index.html)
-    └── graph_bootstrap.js        # home graph bootstrap script
+    ├── graph_engine.js           # shared graph canvas physics engine (built from src/engine/ by esbuild, reused by home index.html)
+    ├── graph_bootstrap.js        # home graph bootstrap script (copied from templates/)
+    ├── graph_table_panel.js      # home graph table panel (copied from templates/)
+    ├── data_layer.js             # data layer (feed loading, etc.)
+    ├── i18n.js / locales.js      # i18n
+    └── vendor/                   # third-party deps (i18next / responsive-nav, vendored)
 ```
 
 ## Roadmap

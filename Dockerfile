@@ -47,6 +47,15 @@ COPY --from=builder /src/tools/visualizations /usr/share/nginx/html/tools/visual
 # 时效数据 feed：前端 DataLayer 运行时 fetch data/feeds/*.json（风险/估值/舆情），
 # 必须由 build_all.py 生成并随镜像发布，否则首页新鲜度徽标会 404（pages.yml 仅服务 GitHub Pages 路径）。
 COPY --from=builder /src/data/feeds /usr/share/nginx/html/data/feeds
+# Plan C：首页改为浏览器端 fetch 图数据，故 data/apple_supply_chain.json 必须随镜像发布
+# （旧方案是构建期内联进 index.html，无需单独发布）。data/supply_chain_risk.json 为构建期
+# 从 tools/output 复制的风险副本，供首页合并「风险视图」字段；缺失则降级（仅缺风险着色）。
+COPY --from=builder /src/data/apple_supply_chain.json /usr/share/nginx/html/data/apple_supply_chain.json
+COPY --from=builder /src/data/supply_chain_risk.json /usr/share/nginx/html/data/supply_chain_risk.json
+# SEO 基础设施（sitemap / robots / OG 封面），与 Pages 发布保持一致
+COPY --from=builder /src/sitemap.xml /usr/share/nginx/html/sitemap.xml
+COPY --from=builder /src/robots.txt /usr/share/nginx/html/robots.txt
+COPY --from=builder /src/assets /usr/share/nginx/html/assets
 
 EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s \

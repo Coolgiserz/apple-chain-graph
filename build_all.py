@@ -24,7 +24,7 @@ STEPS = [
     ("供应商估值  supplier_analysis.json",  "tools/run_analysis.py"),
     ("供应链风险  supply_chain_risk.json",  "tools/run_risk.py"),
     ("供应商舆情  supplier_sentiment.md",   "tools/run_sentiment.py"),
-    ("供应链图谱  index.html（首页）",      "scripts/build_viewer.py"),
+    ("供应链图谱  SEO 基础设施 + dist 胶水脚本 + 风险数据副本", "scripts/build_viewer.py"),
     ("企业列表    supplier_table.html",     "scripts/build_table.py"),
     ("上下游报告  apple_supply_chain_report.html", "scripts/report.py"),
     ("供应商地图  supplier_geo.html",       "tools/geo_build.py"),

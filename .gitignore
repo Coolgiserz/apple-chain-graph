@@ -11,8 +11,24 @@ Thumbs.db
 *.swp
 *~
 
-# Local overrides (keep generated data & dist tracked)
-# data/ and dist/ are intentional deliverables and should be committed.
+# —— 构建产物（由 `npm run build` / `python build_all.py` 在 CI 或本地生成，勿提交）——
+# 前端 esbuild 打包产物。dist/vendor 为 vendored 第三方库（i18next / responsive-nav），保持跟踪。
+dist/graph_engine.js
+dist/i18n.js
+dist/data_layer.js
+dist/locales.js
+dist/graph_bootstrap.js
+dist/graph_table_panel.js
+dist/apple_supply_chain_report.html
+dist/supplier_table.html
+# 时效性数据 feed 与衍生可视化页面
+data/feeds/
+data/supply_chain_risk.json
+tools/visualizations/
+# 生成的 SEO 基础设施（sitemap / robots / OG 封面）
+sitemap.xml
+robots.txt
+assets/og-cover.png
 
 # Local Docker build env (mirror registry etc.) — keep .env.example tracked
 .env
