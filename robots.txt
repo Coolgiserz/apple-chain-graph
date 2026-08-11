@@ -1,4 +1,0 @@
-User-agent: *
-Allow: /
-
-Sitemap: https://coolgiserz.github.io/apple-chain-graph/sitemap.xml

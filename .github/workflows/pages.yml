@@ -99,6 +99,14 @@ jobs:
           # 时效数据 feed：DataLayer 在运行时 fetch data/feeds/*.json（风险/估值/舆情），
           # 必须随站点发布；否则首页新鲜度徽标会 404（回退到空）。schemas/ 仅作文档与 CI 校验用。
           cp -r data/feeds _site/data/feeds 2>/dev/null || true
+          # Plan C：首页改为浏览器端 fetch 图数据，故 data/apple_supply_chain.json 必须随站点发布
+          # （旧方案是构建期内联进 index.html，无需单独发布）。data/supply_chain_risk.json 为
+          # 构建期从 tools/output 复制的风险副本，供首页合并「风险视图」字段；缺失则降级。
+          cp data/apple_supply_chain.json _site/data/ 2>/dev/null || true
+          cp data/supply_chain_risk.json _site/data/ 2>/dev/null || true
+          # SEO 基础设施：sitemap / robots / OG 封面（构建期生成；首页内联的 og:image 指向 assets/og-cover.png）。
+          cp sitemap.xml robots.txt _site/ 2>/dev/null || true
+          cp -r assets _site/assets 2>/dev/null || true
           cp README.md LICENSE CONTRIBUTING.md _site/ 2>/dev/null || true
           # 禁用 Jekyll：本项目无 _config.yml，但避免 _ 前缀目录被忽略、并加速构建
           touch _site/.nojekyll

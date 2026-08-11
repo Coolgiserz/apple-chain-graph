@@ -1,19 +1,23 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""生成首页供应链图谱（仓库根目录 index.html）。
+"""部署前的「前端装配 + SEO 基础设施」步骤（Plan C 之后不再生成 index.html）。
 
-前端脚本分两类来源：
-  - 由 esbuild 打包（单一事实来源，src/ 下 ES Module）：
-      src/engine/index.js -> dist/graph_engine.js   共享力导向引擎（首页与整合 SPA 共用）
-      src/i18n.js          -> dist/i18n.js           站点国际化引导层
-    这一步由 build_all.py 的 run_node_build() 在跑本脚本之前完成（npm ci + npm run build）。
-  - 仍由 templates/ 内联维护（非 ESM、随页面特有的胶水代码）：
-      templates/graph_page.html    首页 HTML 模版（CSS 内联，仅留数据/导航/资源占位符）
-      templates/graph_bootstrap.js 首页启动脚本（注入跨页链接、启动、?focus= 深链）
-      templates/graph_table_panel.js 企业表格侧栏面板
+背景（重要）：首页 index.html 自 Plan C 起成为「静态可部署页面」——即仓库根的
+templates/graph_page.html 解析占位符后的产物，提交进版本库、由 GitHub Pages 直接托管，
+不再在构建期重生成。这样消除了「index.html 双份事实来源 → 模板/数据漂移」「改一行 CSS
+就要整体重建」「PR 里混入整页差异」三类问题。
 
-本脚本只负责：读 JSON -> 填模版 -> 输出根 index.html；并把 templates/ 下的胶水脚本复制到 dist/。
-首页即图谱，导航由 topnav.py 统一生成在页面顶部；不再单独生成 dist/graph_viewer.html。
+本脚本现在只负责三件与「图数据/风险」无关、且不适合写进静态页面的事：
+  1) 把 templates/ 下仍以内联方式维护、随页面特有的胶水脚本复制到 dist/
+     （graph_bootstrap.js、graph_table_panel.js）—— 它们与整合 SPA 共用、一并发布；
+  2) 把 run_risk 产出的 tools/output/supply_chain_risk.json 复制为仓库根
+     data/supply_chain_risk.json，供首页在浏览器端 fetch 后合并进节点（风险视图）。
+     该文件由构建产生、非源码，已加入 .gitignore；缺失时首页降级（仅缺风险着色）；
+  3) 生成 SEO 基础设施：sitemap.xml / robots.txt / assets/og-cover.png（均落在仓库根，
+     GitHub Pages 发布根）。这些是静态资源，可安全重生成。
+
+前端脚本本体由 esbuild 打包（src/ -> dist/graph_engine.js 等），这一步在 build_all.py
+的 run_node_build() 中、在跑本脚本之前完成；本脚本仅做存在性校验，缺失即大声失败。
 """
 import hashlib, html, json, os, shutil, sys
 
@@ -21,46 +25,11 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 ROOT = os.path.dirname(HERE)               # repo root (this script lives in <repo>/scripts/)
 TEMPLATES = os.path.join(ROOT, "templates")
 sys.path.insert(0, ROOT)
-from topnav import topnav, TOPNAV_CSS
 
-DATA = json.load(open(os.path.join(ROOT, "data", "apple_supply_chain.json"), encoding="utf-8"))
+SEO_BASE = "https://coolgiserz.github.io/apple-chain-graph/"
 
-
-def merge_risk(data):
-    """把供应链脆弱性分析结果合并进图节点（组件 / 产品），供图谱「风险视图」使用。
-
-    风险数据来源 tools/output/supply_chain_risk.json（run_risk 产出，与图谱同源单一来源）。
-    组件节点加 vuln / n_suppliers / single_point；产品节点加 vuln / sp_count / weakest / weakest_component。
-    文件缺失或解析失败时原样返回（不报错、不白屏），图谱仅缺风险着色。
-    """
-    rp = os.path.join(ROOT, "tools", "output", "supply_chain_risk.json")
-    if not os.path.exists(rp):
-        return data
-    try:
-        risk = json.load(open(rp, encoding="utf-8"))
-    except Exception as e:
-        print("WARN: 读取供应链风险数据失败，跳过风险注入：", e)
-        return data
-    comp = {c["component_id"]: c for c in risk.get("components", [])}
-    prod = {p["product_id"]: p for p in risk.get("products", [])}
-    for c in data["nodes"]["components"]:
-        r = comp.get(c["id"])
-        if r:
-            c["vuln"] = r["vuln"]
-            c["n_suppliers"] = r["n_suppliers"]
-            c["single_point"] = r["single_point"]
-    for p in data["nodes"]["products"]:
-        r = prod.get(p["id"])
-        if r:
-            p["vuln"] = r["product_vuln"]
-            p["sp_count"] = r["sp_count"]
-            p["weakest"] = r["weakest"]
-            p["weakest_component"] = r["weakest_component"]
-            # 风险因子分解表所需的自变量：部件总数、平均脆弱性、单点率
-            p["n_components"] = r["n_components"]
-            p["mean_v"] = r["mean_v"]
-            p["sp_rate"] = r["sp_rate"]
-    return data
+LINE_ZH = {"iPhone": "iPhone", "Mac": "Mac", "iPad": "iPad", "Wearable": "Apple Watch",
+           "Spatial": "Vision Pro", "Audio": "AirPods"}
 
 
 def load(name):
@@ -78,29 +47,6 @@ def inline_json(obj):
     return json.dumps(obj, ensure_ascii=False).replace("<", "\\u003c")
 
 
-def asset_url(relpath):
-    """相对仓库根的路径，返回带内容哈希 ?v= 戳的 URL。
-
-    浏览器会按完整 URL 做缓存——脚本改动后只要内容哈希变化，URL 即变化，
-    强制拉取新文件。这正是「勾选风险视图无反应」的根因：旧 dist/graph_engine.js
-    不含 setRiskMode，被浏览器缓存后切换时抛异常并静默失败。先复制 dist 再算
-    哈希，保证 ?v= 反映最新内容。
-    """
-    abspath = os.path.join(ROOT, relpath)
-    if os.path.exists(abspath):
-        with open(abspath, "rb") as f:
-            h = hashlib.sha1(f.read()).hexdigest()[:10]
-        return relpath + "?v=" + h
-    return relpath
-
-
-# —— SEO（P0）：可索引文本 / 结构化数据 / sitemap / robots，全部由真实图谱数据动态生成 ——
-SEO_BASE = "https://coolgiserz.github.io/apple-chain-graph/"
-
-LINE_ZH = {"iPhone": "iPhone", "Mac": "Mac", "iPad": "iPad", "Wearable": "Apple Watch",
-           "Spatial": "Vision Pro", "Audio": "AirPods", "HomePod": "HomePod"}
-
-
 def load_risk():
     """读取风险分析结果（供 SEO 文本/结构化数据使用）；缺失时返回 None 并降级。"""
     rp = os.path.join(ROOT, "tools", "output", "supply_chain_risk.json")
@@ -115,20 +61,24 @@ def load_risk():
 
 def _index_maps():
     """供应商 id→显示名、组件 id→[供应商显示名]。"""
-    sup = {s["id"]: (s.get("english_name") or s.get("name") or s["id"]) for s in DATA["nodes"].get("suppliers", [])}
+    with open(os.path.join(ROOT, "data", "apple_supply_chain.json"), encoding="utf-8") as f:
+        data = json.load(f)
+    sup = {s["id"]: (s.get("english_name") or s.get("name") or s["id"]) for s in data["nodes"].get("suppliers", [])}
     c2s = {}
-    for e in DATA["edges"].get("supplied_by", []):
+    for e in data["edges"].get("supplied_by", []):
         c2s.setdefault(e["from"], []).append(sup.get(e["to"], e["to"]))
     return sup, c2s
 
 
 def seo_scope():
-    n_prod = len(DATA["nodes"].get("products", []))
-    n_comp = len(DATA["nodes"].get("components", []))
-    n_supp = len(DATA["nodes"].get("suppliers", []))
-    n_edge = sum(len(v) for v in DATA["edges"].values())
+    with open(os.path.join(ROOT, "data", "apple_supply_chain.json"), encoding="utf-8") as f:
+        data = json.load(f)
+    n_prod = len(data["nodes"].get("products", []))
+    n_comp = len(data["nodes"].get("components", []))
+    n_supp = len(data["nodes"].get("suppliers", []))
+    n_edge = sum(len(v) for v in data["edges"].values())
     lines = []
-    for p in DATA["nodes"].get("products", []):
+    for p in data["nodes"].get("products", []):
         pl = p.get("product_line", "")
         if pl and pl not in lines:
             lines.append(pl)
@@ -172,7 +122,11 @@ def seo_description(risk):
 
 
 def seo_text_html(risk):
-    """给爬虫的可索引文本块（clip 隐藏但在 DOM 中，忠实反映图谱内容，非欺骗性隐藏）。"""
+    """给爬虫的可索引文本块（clip 隐藏但在 DOM 中，忠实反映图谱内容，非欺骗性隐藏）。
+
+    注意：Plan C 后这段 HTML 已被内联进仓库根的静态 index.html，此处函数仅保留供
+    单测（XSS 转义不变量）与本地预览；线上内容以 index.html 内联版本为准。
+    """
     n_prod, n_comp, n_supp, n_edge, lines_zh = seo_scope()
     nlines = len(lines_zh.split("、"))
     sps = seo_single_points(risk)
@@ -242,7 +196,10 @@ def jsonld(risk):
 
 
 def seo_meta(risk):
-    """<head> 中的 description / canonical / OG / Twitter / hreflang（默认中文；多语言经 hreflang 指向 ?lang=）。"""
+    """<head> 中的 description / canonical / OG / Twitter / hreflang（默认中文；多语言经 hreflang 指向 ?lang=）。
+
+    注意：Plan C 后这段 meta 已被内联进仓库根的静态 index.html；此处仅保留供单测/本地预览。
+    """
     desc = seo_description(risk)
     b = SEO_BASE
     tags = [
@@ -319,54 +276,52 @@ def write_og_cover(path, w=1200, h=630):
         print("WARN: 生成 OG 封面失败：", e)
 
 
-def main():
-    DATA_merged = merge_risk(DATA)
+def copy_glue_scripts():
+    """把 templates/ 下仍以内联方式维护的胶水脚本复制到 dist/（与整合 SPA 共用、一并发布）。
 
-    # dist/graph_engine.js 与 dist/i18n.js 已由 build_all.py 的 run_node_build()
-    # （esbuild 打包 src/）在跑本脚本之前生成。此处校验它们存在，避免带着未更新的
-    # 旧引擎 / 缺 i18n 静默发布。这两个文件是「团队就绪」重构后的唯一事实来源。
-    for built in ("graph_engine.js", "i18n.js", "data_layer.js"):
+    必须在算哈希/发布前完成；graph_bootstrap.js 现在由浏览器端 fetch 数据，是首页的启动入口。
+    """
+    for fname in ("graph_bootstrap.js", "graph_table_panel.js"):
+        src = os.path.join(TEMPLATES, fname)
+        dst = os.path.join(ROOT, "dist", fname)
+        if not os.path.exists(src):
+            print("✗ 缺少 templates/%s" % fname, file=sys.stderr)
+            sys.exit(1)
+        shutil.copyfile(src, dst)
+        print("copied : dist/%s  (来自 templates/)" % fname)
+
+
+def copy_risk_data():
+    """把 run_risk 产出的风险 JSON 复制为 data/supply_chain_risk.json。
+
+    首页 bootstrap 在浏览器端 fetch 该文件并合并进节点（风险视图）。该文件由构建产生、
+    非源码（已加入 .gitignore）；缺失时首页降级（仅缺风险着色），不阻断发布。
+    """
+    rp = os.path.join(ROOT, "tools", "output", "supply_chain_risk.json")
+    dst = os.path.join(ROOT, "data", "supply_chain_risk.json")
+    if not os.path.exists(rp):
+        print("WARN: 缺少 tools/output/supply_chain_risk.json（run_risk 未运行），"
+              "首页将降级为无风险着色；可运行 `python build_all.py` 后再部署。")
+        return
+    shutil.copyfile(rp, dst)
+    print("copied : data/supply_chain_risk.json  (来自 tools/output/supply_chain_risk.json)")
+
+
+def require_built_assets():
+    """校验 esbuild 产物存在，避免带着未更新的旧引擎静默发布（缺失即大声失败）。"""
+    for built in ("graph_engine.js", "i18n.js", "data_layer.js", "locales.js"):
         if not os.path.exists(os.path.join(ROOT, "dist", built)):
             print("✗ 缺少前端构建产物 dist/%s，请先运行 `npm run build`（或 `python build_all.py`）。"
                   % built, file=sys.stderr)
             sys.exit(1)
 
-    # 复制 templates/ 下仍以内联方式维护的胶水脚本到 dist/（与整合 SPA 共用、一并发布）——
-    # 必须在算哈希之前，否则 ?v= 戳会是上一版内容、与即将写入的新文件不匹配。
-    for fname in ("graph_bootstrap.js", "graph_table_panel.js"):
-        shutil.copyfile(os.path.join(TEMPLATES, fname), os.path.join(ROOT, "dist", fname))
 
-    # dist/locales.js（i18n 语言包内联产物）由 build_all.py 的 run_node_build() 在跑本脚本
-    # 之前通过 `npm run build` → scripts/build_locales.mjs 生成（含构建期 i18n 审计，fail-fast）。
-    # 该脚本是语言包生成 + 审计的唯一实现（Node 版），build_viewer.py 不再各自实现一份，
-    # 避免「Python/JS 双份实现漂移」再次导致漏翻的 key 以后台标签上线。
-    # 此处只做存在性校验——缺失即大声失败，绝不静默用陈旧 bundle 发布。
-    if not os.path.exists(os.path.join(ROOT, "dist", "locales.js")):
-        print("✗ 缺少 dist/locales.js，请先运行 `npm run build`（或 `python build_all.py`）。"
-              "语言包由 scripts/build_locales.mjs 生成并做 i18n 审计。", file=sys.stderr)
-        sys.exit(1)
-
-    # 脚本 URL 带内容哈希戳，避免浏览器加载缓存的旧引擎（缺 setRiskMode 时静默失败）
-    risk = load_risk()
-    # 内联 JSON 防 </script> 逃逸：DATA 含 AI 抓取的供应商/零部件文本，可能含
-    # "</script>" 片段；json.dumps 不转义 <，故把 < 替换为 \u003c（合法 JSON 转义，
-    # JS 解析后还原为 <），避免脚本注入与页面结构破坏。
-    data_json = inline_json(DATA_merged)
-    page = (load("graph_page.html")
-            .replace("__DATA__", data_json)
-            .replace("__TOPNAV_CSS__", TOPNAV_CSS)
-            .replace("__TOPNAV__", topnav("", "graph"))        # 首页在根目录，root=""
-            .replace("__ENGINE_SRC__", asset_url("dist/graph_engine.js"))
-            .replace("__FEED_SRC__", asset_url("dist/data_layer.js"))
-            .replace("__BOOTSTRAP_SRC__", asset_url("dist/graph_bootstrap.js"))
-            .replace("__TABLE_PANEL_SRC__", asset_url("dist/graph_table_panel.js"))
-            .replace("__SEO_META__", seo_meta(risk))
-            .replace("__JSONLD__", '<script type="application/ld+json">\n' + jsonld(risk) + "\n</script>")
-            .replace("__SEO_TEXT__", '<div class="seo-text">\n' + seo_text_html(risk) + "\n</div>"))
-
-    dst = os.path.join(ROOT, "index.html")
-    with open(dst, "w", encoding="utf-8") as f:
-        f.write(page)
+def main():
+    # dist/graph_engine.js 等已由 build_all.py 的 run_node_build()（esbuild 打包 src/）
+    # 在跑本脚本之前生成。此处校验它们存在，避免带着未更新的旧引擎静默发布。
+    require_built_assets()
+    copy_glue_scripts()
+    copy_risk_data()
 
     # —— SEO 基础设施（P0）：sitemap / robots / OG 封面，均落在仓库根（GitHub Pages 发布根）——
     try:
@@ -381,8 +336,7 @@ def main():
     except Exception as e:
         print("WARN: 生成 SEO 基础设施失败：", e)
 
-    print("written:", dst, "bytes:", len(page))
-    print("copied :", "dist/graph_bootstrap.js, dist/graph_table_panel.js  (graph_engine.js / i18n.js 由 esbuild 生成)")
+    print("done   : 首页 index.html 为静态页面（Plan C），本步骤仅装配 dist 胶水脚本 + 风险数据副本 + SEO 基础设施。")
 
 
 if __name__ == "__main__":

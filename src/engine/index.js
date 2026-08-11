@@ -8,8 +8,13 @@ import { selectNode, renderPanel, renderRiskPanel, showRiskPanel, showBottleneck
 import { computeMetrics } from "../lib/analytics.js";
 import { draw, syncSize, resize } from "./render.js";
 
-function init(opts) {
+function init(opts, data) {
   opts = opts || {};
+  // 运行时数据注入（Plan C）：首页改为在浏览器端 fetch 数据，而非构建期内联。
+  // 传入 data 时写入全局 window.SUPPLY_DATA（model.build() 的唯一事实来源）；
+  // 未传则沿用已设置的全局（测试 / 其它调用方可能已直接赋值），保证向后兼容。
+  if (data) window.SUPPLY_DATA = data;
+  if (!window.SUPPLY_DATA) throw new Error("GraphEngine.init: 缺少图数据（window.SUPPLY_DATA 或 init 的 data 参数）");
   S.reportLink = opts.reportLink || null;
   S.mapLink = opts.mapLink || null;
   S.cv = document.getElementById("cv");

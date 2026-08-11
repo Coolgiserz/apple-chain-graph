@@ -71,14 +71,14 @@ zero-dependency interactive visualizations.
 - **精确到型号**：不是笼统的 "iPhone"，而是 `iPhone 17` / `17 Air` / `17 Pro` / `17 Pro Max` 等；
 - **可复现、可延展**：所有 CSV / JSON / 网页都由 `scripts/` 与 `tools/` 下的脚本从数据源重生成；
 - **图数据库就绪**：直接产出 Neo4j 官方批量导入格式的 CSV，零 Cypher 即可导入你自己的实例；
-- **开箱即用**：图谱、报告、看板均为数据内嵌的静态 HTML，双击即开，无需后端。
+- **开箱即用**：报告、看板为数据内嵌的静态 HTML，双击即开，无需后端；首页图谱在浏览器端按需 `fetch` 图数据，需经 HTTP 服务访问（不能直接 `file://` 双击）。
 
 ## 功能特性
 
 - **精确到型号**：覆盖 iPhone / Mac / iPad / Apple Watch / Vision Pro / AirPods·HomePod 六大产品线，精确到具体型号（如 `iPhone 17 Pro`、`MacBook Pro 14" (M4)`、`Apple Vision Pro (M5)`）。
 - **属性增强**：供应商节点拆分 `全称 / 英文名称 / 简称`；产品节点含 `英文名称、别名、发布时间、状态、起售价、主芯片、显示规格`。
 - **图数据库就绪**：6 个 Neo4j 官方批量导入格式 CSV（`:ID` / `:LABEL` / `:START_ID` / `:END_ID` / `:TYPE` 表头），离线 / 在线两种导入方式任选。
-- **零依赖可视化**：根目录 `index.html`（首页供应链图谱）等网页数据内嵌，双击即开，无需联网或数据库（看板图表依赖 CDN 上的 Chart.js，首次打开需联网）。
+- **零依赖可视化**：报告、看板等网页数据内嵌，双击即开（看板图表依赖 CDN 上的 Chart.js，首次打开需联网）；首页供应链图谱（`index.html`）在浏览器端 `fetch` `data/apple_supply_chain.json`，需经 HTTP 服务访问（如 `python3 -m http.server`），直接 `file://` 双击会被 CORS 拦截，无法加载数据。
 - **多页互跳、非孤岛**：首页图谱 / 企业列表 / 报告 / 地图 / 看板 共享同一套顶部导航（`topnav.py` 一处维护、全局生效）；跨页深链直达具体实体。这套统一导航条就是「融合」——固定在每页顶部、让用户在板块间自由跳转，无需再为各板块单独造聚合页。
 - **企业列表（表格视图）**：`dist/supplier_table.html` 把图谱中全部 60 家企业以表格呈现，支持按 **地区 / 国家 / 类别 / 层级** 筛选、关键字搜索、点击列标题 **升/降序排序**，每行可一键回到图谱定位或地图打点。
 - **供应商研究层**：对 15 家重点供应商做同业相对估值 + 舆情分析，结论以看板与报告形式呈现。
@@ -207,8 +207,8 @@ make up-prod        # = docker compose -f docker-compose.yml -f docker-compose.p
 >   （同样只需遵守上面的自定义域名唯一规则）。若你在本仓库内**再建第二个** Pages workflow，请给它一个不同的
 >   `concurrency.group`（如在同一个仓库里两个 workflow 都用 `group: pages` 会互相取消），跨仓库则无此问题。
 
-**发布内容**：CI 只挑选静态产物 —— `index.html`、`dist/`、`tools/visualizations/`、`docs/`、
-以及 `README.md` / `README_en.md` / `LICENSE` / `CONTRIBUTING.md`；**不发布** Python 源码、`data/`、`tools/*.py`、`.env`、`certs/`。
+**发布内容**：CI 只挑选静态产物 —— `index.html`、`dist/`、`data/`（含 `apple_supply_chain.json` 与 `supply_chain_risk.json`，首页图谱运行时需读取）、`tools/visualizations/`、`assets/`、`sitemap.xml`、`robots.txt`、`docs/`，
+以及 `README.md` / `README_en.md` / `LICENSE` / `CONTRIBUTING.md`；**不发布** Python 源码、`data/feeds/`、`tools/*.py`、`.env`、`certs/`。
 
 **地图页（默认免 Key，静态托管直接可用）**：供应商地图页（`supplier_geo.html`）运行时自动选择渲染后端——
 
@@ -225,7 +225,7 @@ make up-prod        # = docker compose -f docker-compose.yml -f docker-compose.p
 
 ### 1. 浏览图谱（零依赖）
 
-直接双击打开根目录 **`index.html`**（或拖进浏览器）。数据已内嵌，无需联网或数据库：
+经 HTTP 服务访问首页：在项目根目录运行 `python3 -m http.server` 后打开 `http://localhost:8000/`（或部署到任意静态托管 / GitHub Pages）。首页在浏览器端 `fetch` `data/apple_supply_chain.json`，**必须走 HTTP**；直接 `file://` 双击会被 CORS 拦截、无法加载数据：
 
 - 滚轮缩放、拖拽平移、拖动节点；
 - 单击节点看详情（发布时间、状态、起售价、关联供应商等）；
@@ -258,15 +258,13 @@ python3 build_all.py
 # 也可单独运行（等价）
 python3 scripts/generate.py     # 生成 data/neo4j/*.csv + data/apple_supply_chain.json
 python3 scripts/report.py       # 生成 dist/apple_supply_chain_report.html（独立报告）
-python3 scripts/build_viewer.py # 生成根目录 index.html（首页图谱）+ dist/graph_engine.js（共享画布引擎）
+python3 scripts/build_viewer.py # 复制 dist 胶水脚本 + 风险数据副本 + 生成 SEO 基础设施（index.html 为仓库内静态页面，无需生成）
 python3 scripts/build_table.py  # 生成 dist/supplier_table.html（企业列表：筛选 + 排序表格视图）
 python3 tools/geo_build.py      # 生成 tools/visualizations/supplier_geo.html（供应商地图）
 # 估值看板 tools/visualizations/supplier_dashboard.html 为静态页面，已注入统一导航条
 ```
 
-> 图谱的画布物理引擎已抽成独立文件 **`templates/graph_engine.js`**（构建时复制到
-> `dist/graph_engine.js`，数据由页面内联的 `window.SUPPLY_DATA = …` 注入），可被 Node 单测、
-> IDE 也能做语法校验。该引擎为单一事实来源，首页图谱复用它；部署时首页与 `dist/` 一并发布即可。
+> 图谱的画布物理引擎位于 **`src/engine/`**（按 ES 模块拆分，`index.js` 暴露 `GraphEngine.init(opts, data)` 公共 API），由 esbuild 构建为 IIFE 产物 **`dist/graph_engine.js`**；首页与表格面板所需的胶水脚本 `graph_bootstrap.js` / `graph_table_panel.js` 维护在 `templates/`，构建时复制到 `dist/`。`dist/` 全部为构建产物（已 `.gitignore`，不入库），首页图谱在运行时 `fetch` `data/apple_supply_chain.json` 注入数据。引擎为单一事实来源，可被 Node 单测，IDE 也能做语法校验。
 
 > 各页面共享 `topnav.py` 的统一导航条，改一处即可全局生效；报告内容由 `report.py` 的
 > 可复用 builder 渲染（传 `jump=True, mode="web"` 时实体自动带上跨页 `<a>` 深链）。
@@ -405,7 +403,7 @@ python3 tools/run_risk.py --md out.md --json out.json
 | 层 | 技术 | 说明 |
 |----|------|------|
 | 数据处理 | Python 3.9+（标准库） | `scripts/` 与 `tools/` 下生成脚本，**零第三方依赖** |
-| 首页图谱可视化 | 原生 Canvas + 自写力导向布局 | `index.html`（首页），数据内嵌，双击即开 |
+| 首页图谱可视化 | 原生 Canvas + 自写力导向布局 | `index.html`（首页），运行时 fetch data/apple_supply_chain.json，需经 HTTP 访问 |
 | 看板可视化 | Chart.js（CDN） | `supplier_dashboard.html`，首次打开需联网 |
 | 地图 | 腾讯位置服务 GL JS | `supplier_geo.html`（需在你自己的域名下运行） |
 | 图数据库 | Neo4j（官方批量导入格式 CSV） | 6 个 CSV，离线 / 在线导入任选 |
@@ -426,7 +424,7 @@ apple_supply_chain/
 ├── Makefile                  # 常用快捷键（up / down / logs / serve / build）
 ├── nginx.conf                # 容器内 nginx 配置（UTF-8 / gzip / 长缓存）
 ├── .dockerignore             # 构建上下文排除项
-├── index.html                # 首页：供应链图谱（站点入口，力导向交互，双击即开）
+├── index.html                # 首页：供应链图谱（站点入口，力导向交互；运行时 fetch data/apple_supply_chain.json，需经 HTTP 访问）
 ├── .gitignore
 ├── data/                     # 数据产物
 │   ├── apple_supply_chain.json   # 完整图数据（nodes + edges + 数据字段字典）
@@ -442,14 +440,21 @@ apple_supply_chain/
 ├── scripts/                  # 数据生成脚本（可复现）
 │   ├── generate.py           # 生成 CSV + JSON
 │   ├── report.py             # 生成 HTML 分析报告（可复用 builder，支持 jump 深链）
-│   ├── build_viewer.py       # 生成首页交互式图谱（根 index.html，引擎复用 templates/graph_engine.js）
+│   ├── build_viewer.py       # 复制 dist 胶水脚本 + 风险数据副本 + 生成 SEO 基础设施（index.html 为仓库内静态页面）
 │   └── build_table.py        # 生成企业列表：dist/supplier_table.html（表格筛选+排序）
-├── index.html                # 首页：供应链图谱（力导向交互，双击即开）
-├── templates/                # 网页前端模版（HTML/JS/CSS 单独维护，脚本填数据生成页面）
-│   ├── graph_engine.js       # 共享图谱画布物理引擎（首页图谱单一事实来源）
-│   ├── graph_page.html       # 首页图谱 HTML 模版
-│   ├── graph_bootstrap.js    # 首页图谱启动脚本
-│   └── table_page.html       # 企业列表（表格视图）HTML 模版（内联筛选/排序 JS）
+├── src/                      # 前端引擎源码（ES 模块，esbuild 构建为 dist/ 的 IIFE）
+│   └── engine/               # 共享图谱画布物理引擎（首页图谱单一事实来源）
+│       ├── index.js         # 公共 API：GraphEngine.init(opts, data) / start / setRiskMode …
+│       ├── model.js         # 建图 + 节点隔离（visibleSet）
+│       ├── render.js        # Canvas 渲染
+│       ├── interaction.js   # 缩放/拖拽/双击隔离
+│       ├── panels.js        # 详情 / 风险面板
+│       └── ...              # state / physics / util
+├── templates/                # 网页前端胶水脚本与模版（HTML/JS 单独维护）
+│   ├── graph_bootstrap.js    # 首页图谱启动脚本（运行时 fetch 数据 + mergeRisk + 初始化）
+│   ├── graph_table_panel.js  # 首页表格面板（筛选 / 排序 / 定位）
+│   ├── table_page.html       # 企业列表（表格视图）HTML 模版（内联筛选/排序 JS）
+│   └── supplier_dashboard_template.html  # 估值看板模版
 ├── topnav.py                 # 各页面共享的统一顶部导航条（单一来源，改一处全局生效）
 ├── tools/                    # 供应商基本面与相对估值分析（可复现，纯标准库）
 │   ├── run_analysis.py        # CLI：合并三源 → 跑估值 → 输出 md/json
@@ -476,11 +481,15 @@ apple_supply_chain/
 │   ├── data-model.md         # 数据模型与字段字典
 │   ├── supplier-analysis.md  # 供应商基本面与相对估值：方法/口径/局限
 │   └── screenshots/          # README 截图（见「截图预览」一节）
-└── dist/                     # 生成的网页产物
+└── dist/                     # 构建产物（.gitignore，不入库；由 npm run build + build_all.py 生成）
     ├── apple_supply_chain_report.html  # 分析报告（独立页）
     ├── supplier_table.html       # 企业列表：全部 60 家供应商的筛选 + 排序表格视图
-    ├── graph_engine.js           # 共享图谱画布物理引擎（首页 index.html 复用）
-    └── graph_bootstrap.js        # 首页图谱启动脚本
+    ├── graph_engine.js           # 共享图谱画布物理引擎（由 src/engine/ 经 esbuild 构建，首页 index.html 复用）
+    ├── graph_bootstrap.js        # 首页图谱启动脚本（由 templates/ 复制）
+    ├── graph_table_panel.js      # 首页表格面板（由 templates/ 复制）
+    ├── data_layer.js             # 数据层（feed 加载等）
+    ├── i18n.js / locales.js      # 多语言
+    └── vendor/                   # 第三方依赖（i18next / responsive-nav，vendored）
 ```
 
 ## 路线图

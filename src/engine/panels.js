@@ -22,12 +22,12 @@ export function showBottleneckPanel(on) {
 function syncPanelOpen() {
   if (typeof document === "undefined" || !document.body) return;
   var open = false;
-  if (typeof getComputedStyle === "function") {
-    ["panel", "riskPanel", "bottleneckPanel"].forEach(function (id) {
-      var el = document.getElementById(id);
-      if (el && getComputedStyle(el).display !== "none") open = true;
-    });
-  }
+  // 用 offsetParent 判可见性：display:none 时 offsetParent 为 null，无需 getComputedStyle
+  // （getComputedStyle 在 eslint browser:false 视角下会触发 no-undef，且 Node 桩环境无此全局）。
+  ["panel", "riskPanel", "bottleneckPanel"].forEach(function (id) {
+    var el = document.getElementById(id);
+    if (el && el.offsetParent !== null) open = true;
+  });
   document.body.classList.toggle("panel-open", open);
 }
 
