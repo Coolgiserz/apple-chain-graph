@@ -94,12 +94,13 @@ export function visibleSet() {
       continue;
     }
     // ProductionBase：默认隐藏（与供应商一致）。出现条件：
-    //   1) 「展开全部」(S.showAll) 或新增「生产基地」开关(S.showBases) 开启；
+    //   1) 「生产基地」开关(S.showBases) 单独开启（与「展开全部供应商」相互独立，互不串扰）；
     //   2) 与已展开节点相邻（点击产品/零部件展开后可露出其运营基地）；
     //   3) 其运营商(Supplier)当前可见（点击供应商展开时可露出其运营基地）。
     // 搜索分支已覆盖「直接搜基地名」的场景。
+    // 注意：S.showAll（展开全部供应商）不应连带展开基地——两者是独立开关。
     if (n.type === "Base") {
-      if (S.showAll || S.showBases) { set.add(n._key); continue; }
+      if (S.showBases) { set.add(n._key); continue; }
       var adjB = S.adj[n._key], showB = false;
       for (var sb = 0; sb < adjB.length; sb++) {
         var ob = adjB[sb].other;
