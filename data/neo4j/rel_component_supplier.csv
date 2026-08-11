@@ -12,9 +12,11 @@ cover_glass,lens_tech,SUPPLIED_BY,,3D 玻璃盖板/金属中框,techinsights;ifi
 cover_glass,berne,SUPPLIED_BY,,玻璃盖板,techinsights;ifixit
 cis,sony,SUPPLIED_BY,,CMOS 图像传感器(独占高端),techinsights;counterpoint
 cis,samsung_elec,SUPPLIED_BY,,未来替代供应商,techinsights;counterpoint
+cis,viseira,SUPPLIED_BY,,CIS 后段彩色滤光膜(CF)与晶圆级制程（台积电子公司，承接 Sony iPhone CIS 后段）,techinsights;counterpoint
 lens,largan,SUPPLIED_BY,,手机镜头,techinsights;counterpoint
 lens,genius,SUPPLIED_BY,,镜头/Pancake 光学(Vision Pro),techinsights;counterpoint
 lens,sunny,SUPPLIED_BY,,镜头,techinsights;counterpoint
+lens,zhaowei,SUPPLIED_BY,,Vision Pro 瞳距(IPD)调节模组独家供应商（微型驱动/齿轮箱，移动光学组件）,techinsights;counterpoint
 ois,alps,SUPPLIED_BY,,OIS/VCM 执行器,counterpoint;techinsights
 ois,mitsumi,SUPPLIED_BY,,OIS/VCM 执行器,counterpoint;techinsights
 dram,samsung_elec,SUPPLIED_BY,,DRAM 第一大供应商(~60-70%),trendforce;counterpoint
@@ -70,6 +72,7 @@ optical_filter,crystal,SUPPLIED_BY,,光学滤光片/棱镜,techinsights;counterp
 optical_filter,lante,SUPPLIED_BY,,光学元件,techinsights;counterpoint
 uwb,st,SUPPLIED_BY,,U2 超宽带芯片,techinsights;counterpoint
 uwb,apple,SUPPLIED_BY,,UWB 设计,techinsights;counterpoint
+uwb,murata,SUPPLIED_BY,,UWB 超宽带模块（基于 NXP 方案），用于 iPhone / AirTag 等空间感知,techinsights;counterpoint
 wireless_charging,st,SUPPLIED_BY,,无线充电控制器,techinsights;counterpoint
 wireless_charging,broadcom,SUPPLIED_BY,,无线充电,techinsights;counterpoint
 touch,gis,SUPPLIED_BY,,触控模组,techinsights;ifixit

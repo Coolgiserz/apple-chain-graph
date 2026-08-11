@@ -412,7 +412,8 @@
         "price_usd": 799,
         "assembly": [
           "foxconn",
-          "luxshare"
+          "luxshare",
+          "pegatron"
         ],
         "components": [
           "soc",
@@ -454,7 +455,8 @@
         "price_usd": 999,
         "assembly": [
           "foxconn",
-          "luxshare"
+          "luxshare",
+          "pegatron"
         ],
         "components": [
           "soc",
@@ -496,7 +498,8 @@
         "price_usd": 1099,
         "assembly": [
           "foxconn",
-          "luxshare"
+          "luxshare",
+          "pegatron"
         ],
         "components": [
           "soc",
@@ -537,7 +540,8 @@
         "display": "6.9\" LTPO OLED (SDC/LGD)",
         "price_usd": 1199,
         "assembly": [
-          "foxconn"
+          "foxconn",
+          "pegatron"
         ],
         "components": [
           "soc",
@@ -578,7 +582,8 @@
         "display": "13.6\" LCD (BOE)",
         "price_usd": 999,
         "assembly": [
-          "foxconn"
+          "foxconn",
+          "wistron"
         ],
         "components": [
           "soc",
@@ -612,7 +617,8 @@
         "display": "15.3\" LCD (BOE)",
         "price_usd": 1199,
         "assembly": [
-          "foxconn"
+          "foxconn",
+          "wistron"
         ],
         "components": [
           "soc",
@@ -646,7 +652,8 @@
         "display": "14.2\" Mini-LED (Sharp/LGD)",
         "price_usd": 1599,
         "assembly": [
-          "foxconn"
+          "foxconn",
+          "wistron"
         ],
         "components": [
           "soc",
@@ -680,7 +687,8 @@
         "display": "16.2\" Mini-LED (Sharp/LGD)",
         "price_usd": 2499,
         "assembly": [
-          "foxconn"
+          "foxconn",
+          "wistron"
         ],
         "components": [
           "soc",
@@ -5734,6 +5742,16 @@
         ]
       },
       {
+        "from": "cis",
+        "to": "viseira",
+        "share": "",
+        "note": "CIS 后段彩色滤光膜(CF)与晶圆级制程（台积电子公司，承接 Sony iPhone CIS 后段）",
+        "source": [
+          "techinsights",
+          "counterpoint"
+        ]
+      },
+      {
         "from": "lens",
         "to": "largan",
         "share": "",
@@ -5758,6 +5776,16 @@
         "to": "sunny",
         "share": "",
         "note": "镜头",
+        "source": [
+          "techinsights",
+          "counterpoint"
+        ]
+      },
+      {
+        "from": "lens",
+        "to": "zhaowei",
+        "share": "",
+        "note": "Vision Pro 瞳距(IPD)调节模组独家供应商（微型驱动/齿轮箱，移动光学组件）",
         "source": [
           "techinsights",
           "counterpoint"
@@ -6314,6 +6342,16 @@
         ]
       },
       {
+        "from": "uwb",
+        "to": "murata",
+        "share": "",
+        "note": "UWB 超宽带模块（基于 NXP 方案），用于 iPhone / AirTag 等空间感知",
+        "source": [
+          "techinsights",
+          "counterpoint"
+        ]
+      },
+      {
         "from": "wireless_charging",
         "to": "st",
         "share": "",
@@ -6392,6 +6430,14 @@
         ]
       },
       {
+        "from": "iphone_17",
+        "to": "pegatron",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
         "from": "iphone_17_air",
         "to": "foxconn",
         "source": [
@@ -6408,6 +6454,14 @@
         ]
       },
       {
+        "from": "iphone_17_air",
+        "to": "pegatron",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
         "from": "iphone_17_pro",
         "to": "foxconn",
         "source": [
@@ -6418,6 +6472,14 @@
       {
         "from": "iphone_17_pro",
         "to": "luxshare",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "iphone_17_pro",
+        "to": "pegatron",
         "source": [
           "apple_supplier_list",
           "nikkei"
@@ -6432,8 +6494,24 @@
         ]
       },
       {
+        "from": "iphone_17_pmax",
+        "to": "pegatron",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
         "from": "mba_13_m4",
         "to": "foxconn",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "mba_13_m4",
+        "to": "wistron",
         "source": [
           "apple_supplier_list",
           "nikkei"
@@ -6448,6 +6526,14 @@
         ]
       },
       {
+        "from": "mba_15_m4",
+        "to": "wistron",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
         "from": "mbp_14_m4",
         "to": "foxconn",
         "source": [
@@ -6456,8 +6542,24 @@
         ]
       },
       {
+        "from": "mbp_14_m4",
+        "to": "wistron",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
         "from": "mbp_16_m4",
         "to": "foxconn",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "mbp_16_m4",
+        "to": "wistron",
         "source": [
           "apple_supplier_list",
           "nikkei"
