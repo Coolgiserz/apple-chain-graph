@@ -11,6 +11,11 @@ export const S = {
   pointerDown: false, touchActive: false, pinching: false, pinchDist: 0, pinchScale: 1,
   DRAG_THRESH: 5,
   riskMode: false,
+  // 瓶颈透视（feat/graph-analytics）：开启后节点按瓶颈指标着色 + 右侧瓶颈面板
+  bottleneckMode: false,
+  bottleneckMetric: "reach",   // "reach"（按波及范围）| "pagerank"（按网络核心度）
+  metrics: null,               // 由 analytics.computeMetrics() 惰性填充并缓存
+  bottleneckFocus: null,       // 瓶颈模式下选中节点时，其下游受影响节点 key 集合（图谱红环高亮用）
   reportLink: null, mapLink: null,
   pendingFocus: null,
   fitDone: false,

@@ -46,6 +46,30 @@ export function vulnColor(v) {
   return "#10b981";                        // 低 → 绿
 }
 
+// 瓶颈指标热力色：t∈[0,1]（越大越关键/越集中），绿(低)→琥珀→红(高)。
+// 用于「权重→填充」的旧映射；现改为「权重→红环」(heatRing)，此处保留以兼容潜在调用。
+export function metricColor(t) {
+  if (t == null || isNaN(t)) t = 0;
+  if (t < 0) t = 0; if (t > 1) t = 1;
+  var lo = [16, 185, 129], mid = [245, 158, 11], hi = [239, 68, 68];
+  var c, a = t * 2;
+  if (a <= 1) { c = [lo[0] + (mid[0] - lo[0]) * a, lo[1] + (mid[1] - lo[1]) * a, lo[2] + (mid[2] - lo[2]) * a]; }
+  else { a -= 1; c = [mid[0] + (hi[0] - mid[0]) * a, mid[1] + (hi[1] - mid[1]) * a, mid[2] + (hi[2] - mid[2]) * a]; }
+  return "rgb(" + Math.round(c[0]) + "," + Math.round(c[1]) + "," + Math.round(c[2]) + ")";
+}
+
+// 关键度 / 风险「热力环」：t∈[0,1] 越大，环越粗、越红。
+// 设计要点：类型用「填充色」、权重用「红环」两个互相独立的视觉通道，
+// 避免过去「填充=权重渐变」与类型色（绿/琥珀）撞色、且红同时表示高权重与选中的混乱。
+export function heatRing(t) {
+  if (t == null || isNaN(t)) t = 0;
+  if (t < 0) t = 0; if (t > 1) t = 1;
+  return {
+    color: "rgba(239,68,68," + (0.22 + 0.7 * t).toFixed(3) + ")",
+    width: (1.5 + 2.6 * t).toFixed(2)
+  };
+}
+
 // 国际化：缺失 key 时回退到中文源（zh 为 fallbackLng），避免显示原始 key
 export function i18nText(k) { return (window.i18n && window.i18n.ready) ? window.i18n.t(k) : k; }
 

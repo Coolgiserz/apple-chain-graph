@@ -1,7 +1,7 @@
 # 常用快捷键（macOS / Linux）
 # 需先装好 Docker（含 Compose v2）；本地不想用 Docker 时可用 make serve。
 # 前端脚本（src/ 下的 ES Module）由 esbuild 打包，需本机装好 Node ≥ 18 与 npm：
-#   make build-frontend   仅用 esbuild 打包 dist/i18n.js 与 dist/graph_engine.js
+#   make build-frontend   用 esbuild 打包前端，并由 scripts/build_locales.mjs 重新生成+审计 dist/locales.js
 #   make build-site       前端打包 + python build_all.py 重生成全部静态页
 #   make serve            只用 Python 起静态服务器（需先 make build-site 才有最新前端）
 #   make dev              build-site + 起本地静态服务器
@@ -21,7 +21,7 @@ PORT  := 16161
 
 help:
 	@echo "可用快捷键："
-	@echo "  make build-frontend  仅 esbuild 打包前端（dist/i18n.js, dist/graph_engine.js）"
+	@echo "  make build-frontend  前端打包（esbuild + 重新生成/审计 dist/locales.js）"
 	@echo "  make build-site      前端打包 + python build_all.py 重生成全部静态页"
 	@echo "  make up              构建并后台启动（HTTP，http://localhost:$(PORT)）"
 	@echo "  make down            停止并移除容器"

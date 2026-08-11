@@ -53,6 +53,8 @@ const registry = {
   flow: makeEl({ classList: { add: () => {}, remove: () => {}, toggle: () => {} } }),
   panel: makeEl(),
   pbody: makeEl(),
+  bottleneckPanel: makeEl({ style: { display: "none" } }),
+  bnBody: makeEl(),
   reset: makeEl(),
   langSwitch: makeEl({ value: "" }),
   insightCard: makeEl({ style: { display: "none" } }),
@@ -111,7 +113,7 @@ check("window.GraphEngine 已暴露且为对象", () => {
 
 const api = window.GraphEngine;
 const expected = ["init", "start", "stop", "focus", "reheat", "resize", "esc",
-  "visibleNodes", "setRiskMode", "getViewport", "fitView"];
+  "visibleNodes", "setRiskMode", "setBottleneckMode", "setBottleneckMetric", "getMetrics", "getViewport", "fitView"];
 expected.forEach((m) => {
   check("api." + m + " 是可调用函数", () => {
     assert.equal(typeof api[m], "function", "期望 " + m + " 为函数");
@@ -149,6 +151,53 @@ check("点击「展开全部供应商」(cbS) 后供应商出现", () => {
 check("setRiskMode(true/false) 不抛错（真实命中 draw/render）", () => {
   assert.doesNotThrow(() => api.setRiskMode(true));
   assert.doesNotThrow(() => api.setRiskMode(false));
+});
+
+check("setBottleneckMode(true/false) + getMetrics 不抛错且产出结构指标", () => {
+  assert.doesNotThrow(() => api.setBottleneckMode(true));
+  const m = api.getMetrics();
+  assert.ok(m && !m.empty, "getMetrics 应返回非空指标对象");
+  assert.ok(Array.isArray(m.topByReach), "应含 topByReach 排行数组");
+  // fixture：tsmc 供应 soc，soc 被 iphone 使用 → tsmc 的波及产品数应为 1
+  assert.equal(m.info["S:tsmc"].reach, 1, "tsmc 断供应波及 1 款产品（iphone）");
+  assert.equal(m.info["C:soc"].reach, 1, "soc 被 1 款产品使用（iphone）");
+  assert.ok(typeof m.geoCN === "number", "应含地理集中度 geoCN");
+  // 切回指标不应抛错，且面板隐藏
+  assert.doesNotThrow(() => api.setBottleneckMetric("pagerank"));
+  assert.doesNotThrow(() => api.setBottleneckMode(false));
+});
+
+check("瓶颈面板渲染：开启后 bnBody 含排行节点可点击聚焦（li.rel[data-key]）", () => {
+  api.setBottleneckMode(true);
+  const html = registry.bnBody.innerHTML || "";
+  assert.ok(html.includes("li class='rel'") || html.includes('class="rel"'), "概览应渲染可点击排行行");
+  api.setBottleneckMode(false);
+});
+
+check("切换指标（波及范围↔网络核心度）后面板内容应变化（修复右侧无感知）", () => {
+  api.setBottleneckMode(true);
+  api.setBottleneckMetric("reach");
+  const htmlReach = registry.bnBody.innerHTML || "";
+  api.setBottleneckMetric("pagerank");
+  const htmlPR = registry.bnBody.innerHTML || "";
+  assert.notEqual(htmlReach, htmlPR, "切换指标后右侧面板（说明+排行）应发生变化");
+  // pagerank 排行应出现 reach 排行中没有的节点（iPhone 产品节点）。
+  const prHasProduct = htmlPR.includes("iPhone") && !htmlReach.includes("iPhone");
+  assert.ok(prHasProduct, "网络核心度排行应包含产品节点（reach 排行不含）");
+  api.setBottleneckMode(false);
+});
+
+check("瓶颈模式选中节点：详情显示统计卡且受影响列表带数量（修复数字对应）", () => {
+  api.setBottleneckMode(true);
+  api.setBottleneckMetric("reach");
+  const m = api.getMetrics();
+  const sup = m.topByReach.find((r) => r.key.startsWith("S:"));
+  assert.ok(sup, "应有供应商进入 reach 排行");
+  api.focus(sup.key);
+  const html = registry.bnBody.innerHTML || "";
+  assert.ok(html.includes("bn-stat-row"), "详情应含统计卡行（醒目呼应排行数字）");
+  assert.ok(/sharedProducts（\d+）/.test(html) || html.includes("sharedProducts"), "共用组件的产品列表应带数量标题");
+  api.setBottleneckMode(false);
 });
 
 check("focus() 不抛错", () => {

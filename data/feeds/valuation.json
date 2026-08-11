@@ -8,7 +8,8 @@
     "sources": [
       "stockanalysis",
       "apple_10k"
-    ]
+    ],
+    "build": "v1.4.0-dirty"
   },
   "data": {
     "suppliers": [

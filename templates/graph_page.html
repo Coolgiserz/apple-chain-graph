@@ -39,6 +39,15 @@
   #nodeLegend .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
   #nodeLegend .box.line { width: 16px; height: 11px; border-radius: 4px; display: inline-block; background: rgba(139,92,246,.18); border: 1.5px dashed #8b5cf6; }
   #nodeLegend .box.base { width: 11px; height: 11px; border-radius: 2px; display: inline-block; background: #ec4899; }
+  /* —— 模式感知「权重图例」：仅瓶颈/风险视图显示。与 nodeLegend（类型）分离，
+        避免过去「同一套颜色既表类型又表权重」的撞色混乱。红环 = 关键度/风险，越粗越红越高 —— */
+  #weightLegend { position: absolute; top: 212px; left: 12px; display: none; flex-direction: column; gap: 6px;
+                  background: rgba(15,23,42,.86); border: 1px solid rgba(120,135,170,.28); border-radius: 10px;
+                  padding: 9px 12px; z-index: 8; font-size: 11.5px; color: #cfe0ff; max-width: 240px; backdrop-filter: blur(4px); }
+  #weightLegend .wl-title { font-weight: 700; color: #fff; margin-bottom: 1px; }
+  #weightLegend .wl-row { display: flex; align-items: center; gap: 8px; }
+  #weightLegend .wl-ring { width: 16px; height: 16px; border-radius: 50%; box-sizing: border-box; flex: 0 0 auto; }
+  #weightLegend .wl-hint { color: #9fb0d0; line-height: 1.4; margin-top: 2px; }
   /* —— 首屏一次性引导卡（P1 首屏引导） —— */
   #guide { position: absolute; left: 50%; top: 120px; transform: translateX(-50%); width: 380px; max-width: calc(100% - 24px);
            background: rgba(20,26,42,.96); border: 1px solid #2a3450; border-left: 3px solid #5b8cff; border-radius: 12px; padding: 14px 16px; z-index: 12; display: none; }
@@ -96,6 +105,42 @@
   #riskPanel table.rf tr.dep td { background: rgba(239,68,68,.12); }
   #riskPanel table.rf tr.dep td.role { color: #ffb4b4; }
   #riskPanel table.rf td.val { color: #e8ecf4; font-family: ui-monospace, "SFMono-Regular", Menlo, monospace; white-space: nowrap; }
+  /* —— 瓶颈透视面板（feat/graph-analytics）：复用风险面板同款 chrome 与配色 —— */
+  #bottleneckPanel { position: absolute; top: 122px; right: 12px; width: 336px; max-height: calc(100% - 134px); overflow: auto;
+                     flex-direction: column; align-items: stretch;
+                     background: rgba(20,26,42,.97); border: 1px solid #2a3450; border-radius: 12px; padding: 16px; z-index: 9; display: none; }
+  #bottleneckPanel h3 { margin: 0 0 4px; font-size: 16px; }
+  #bottleneckPanel .sub { font-size: 12px; color: #9fb0d0; margin-bottom: 10px; line-height: 1.5; }
+  #bottleneckPanel .close { position: absolute; top: 10px; right: 12px; cursor: pointer; color: #9fb0d0; font-size: 18px; }
+  #bottleneckPanel .close:hover { color: #fff; }
+  /* 摘要卡：三张并排，一眼看全局健康度，不抛原始指标 */
+  #bottleneckPanel .bn-cards { display: flex; gap: 8px; margin: 4px 0 4px; }
+  #bottleneckPanel .bn-card { flex: 1; background: rgba(12,16,32,.55); border: 1px solid #1c2336; border-radius: 10px; padding: 10px 8px; text-align: center; }
+  #bottleneckPanel .bn-card-v { font-size: 20px; font-weight: 700; color: #e8ecf4; line-height: 1.1; }
+  #bottleneckPanel .bn-card-k { font-size: 11px; color: #9fb0d0; margin-top: 4px; }
+  #bottleneckPanel .bn-caption { font-size: 12px; line-height: 1.6; color: #cdd8ee; background: rgba(12,16,32,.5); border: 1px solid #1c2336; border-left: 3px solid #4f8cff; border-radius: 8px; padding: 8px 10px; margin: 10px 0 2px; }
+  #bottleneckPanel .bn-rank-note { font-size: 12px; color: #cfe0ff; background: rgba(245,158,11,.12); border: 1px solid rgba(245,158,11,.35); border-radius: 8px; padding: 7px 10px; margin: 10px 0 2px; }
+  #bottleneckPanel .bn-stat-row { display: flex; gap: 8px; margin: 8px 0 6px; }
+  #bottleneckPanel .bn-stat { flex: 1; background: rgba(239,68,68,.10); border: 1px solid rgba(239,68,68,.32); border-radius: 10px; padding: 8px 6px; text-align: center; }
+  #bottleneckPanel .bn-stat-v { font-size: 19px; font-weight: 700; color: #ffb4b4; line-height: 1.1; }
+  #bottleneckPanel .bn-stat-k { font-size: 11px; color: #c9b6b6; margin-top: 3px; }
+  /* 排行 / 关系列表：可点击聚焦 */
+  #bottleneckPanel .bn-rank { margin: 4px 0 0; padding-left: 0; list-style: none; }
+  #bottleneckPanel .bn-rank li { margin: 2px 0; padding: 4px 8px; border-radius: 6px; cursor: pointer; transition: background .12s, color .12s; font-size: 12.5px; line-height: 1.5; }
+  #bottleneckPanel .bn-rank li:hover { background: #1b2742; color: #cfe0ff; }
+  #bottleneckPanel .bn-rank li.bn-empty { cursor: default; color: #9fb0d0; }
+  #bottleneckPanel .bn-sub { color: #9fb0d0; font-size: 11.5px; }
+  #bottleneckPanel .bn-impact { background: rgba(12,16,32,.5); border-radius: 8px; padding: 10px 12px; margin-top: 8px; }
+  #bottleneckPanel .bn-impact-h { font-size: 13px; color: #fbbf24; font-weight: 600; margin-bottom: 4px; }
+  #bottleneckPanel .bn-impact-b { font-size: 12.5px; color: #cdd8ee; line-height: 1.6; }
+  #bottleneckPanel .bn-warn { font-size: 12.5px; color: #ffb4b4; background: rgba(239,68,68,.14); border: 1px solid rgba(239,68,68,.4); border-radius: 8px; padding: 8px 10px; margin-top: 8px; }
+  #bottleneckPanel .bn-noalt { font-size: 12.5px; border-radius: 8px; padding: 8px 10px; margin-top: 8px; }
+  #bottleneckPanel .bn-noalt-ok { color: #bbf7d0; background: rgba(16,185,129,.12); border: 1px solid rgba(16,185,129,.4); }
+  #bottleneckPanel .bn-noalt-bad { color: #ffb4b4; background: rgba(239,68,68,.14); border: 1px solid rgba(239,68,68,.4); }
+  #bottleneckPanel .bn-noalt b { font-size: 15px; }
+  #bottleneckPanel .bn-noalt-n { font-size: 15px; font-weight: 700; }
+  #bottleneckPanel .risk-legend { display: flex; gap: 12px; align-items: center; font-size: 11.5px; color: #9fb0d0; margin-top: 8px; flex-wrap: wrap; }
+  #bottleneckPanel .risk-legend .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
   /* 关联邻居可点击：指向 + 悬停高亮，提示可聚焦 */
   #panel li.rel { cursor: pointer; padding: 2px 6px; border-radius: 6px; transition: background .12s, color .12s; }
   #panel li.rel:hover { background: #1b2742; color: #cfe0ff; }
@@ -145,13 +190,14 @@
     #top input[type=search] { font-size: 16px; padding: 10px 12px; }
     #top select { font-size: 14px; padding: 10px 8px; }
     /* 详情面板在窄屏改为底部抽屉，不遮挡整图、关闭易达（P1） */
-    #panel, #riskPanel { top: auto; left: 0; right: 0; bottom: 0; width: auto; max-width: none;
+    #panel, #riskPanel, #bottleneckPanel { top: auto; left: 0; right: 0; bottom: 0; width: auto; max-width: none;
       max-height: 62vh; border-radius: 16px 16px 0 0; border-left: none; border-bottom: none; }
     /* 企业表格在窄屏作为全宽抽屉覆盖画布（不再挤压成不可见），符合移动端习惯 */
     #side { width: 100%; top: calc(52px + env(safe-area-inset-top)); bottom: env(safe-area-inset-bottom); }
     body.table-open #cv { left: 0; width: 100%; }   /* 画布不动，侧栏在其上覆盖 */
     #insightCard { left: 12px; right: 12px; width: auto; max-width: none; bottom: calc(12px + env(safe-area-inset-bottom)); }
     #nodeLegend { display: none; }   /* 移动端隐藏常驻图例，避免与面板/控制栏重叠（P1） */
+    #weightLegend { display: none !important; }   /* 移动端同样隐藏权重图例 */
     #hint { display: none; }
   }
   @media (max-width: 480px) {
@@ -192,6 +238,13 @@ __TOPNAV__
     <button id="cbB" class="ghost" data-i18n="home.basesAll">展开全部生产基地</button>
     <button id="toggleTable" class="ghost" data-i18n="home.tableBtn">📋 企业表格</button>
     <label class="chk"><input type="checkbox" id="riskToggle"><span data-i18n="home.riskMode">风险视图</span></label>
+    <label class="chk"><input type="checkbox" id="bnToggle"><span data-i18n="home.bottleneckMode">瓶颈透视</span></label>
+    <div class="grp" id="bnLegend" style="display:none; gap:8px; align-items:center;">
+      <select id="bnMetric">
+        <option value="reach" data-i18n="home.bnMetricReach">按波及范围</option>
+        <option value="pagerank" data-i18n="home.bnMetricPagerank">按网络核心度</option>
+      </select>
+    </div>
     <div class="grp" id="legend" style="display:none; gap:10px; align-items:center;">
       <span class="dot" style="background:#ef4444"></span><span data-i18n="home.riskHigh">高</span>
       <span class="dot" style="background:#f59e0b"></span><span data-i18n="home.riskMid">中</span>
@@ -214,15 +267,18 @@ __TOPNAV__
     <p class="risk-formula" data-i18n="risk.formulaComp">公式：V = 1 / n（n = 供应商数；n = 1 即单点依赖，V = 1.0）</p>
     <h4 data-i18n="risk.prodHeading">产品脆弱性</h4>
     <p class="risk-formula" data-i18n="risk.formulaProd">公式：V = 0.5 × 均值 + 0.3 × 最弱环节 + 0.2 × 单点率</p>
-    <div class="risk-legend">
-      <span><span class="dot" style="background:#ef4444"></span> <span data-i18n="home.riskHigh">高</span></span>
-      <span><span class="dot" style="background:#f59e0b"></span> <span data-i18n="home.riskMid">中</span></span>
-      <span><span class="dot" style="background:#10b981"></span> <span data-i18n="home.riskLow">低</span></span>
-      <span style="color:#ef4444;font-weight:700">⚠</span> <span data-i18n="home.riskSingle">单点依赖</span>
-    </div>
+    <div class="sub" style="margin-top:6px" data-i18n="risk.ringHint"></div>
   </div>
   <hr>
   <div id="riskBody"></div>
+</div>
+<!-- 瓶颈透视面板（feat/graph-analytics）：与 #riskPanel 同槽同款 chrome，开启「瓶颈透视」后弹出 -->
+<div id="bottleneckPanel"><span class="close" id="bnClose">×</span>
+  <h3 data-i18n="bottleneck.title">供应链瓶颈透视</h3>
+  <div class="sub" data-i18n="bottleneck.sub">基于图结构自动识别关键瓶颈：独家供应、断供波及范围、网络核心度。</div>
+  <div class="sub" style="margin-top:6px" data-i18n="bottleneck.ringHint"></div>
+  <hr>
+  <div id="bnBody"></div>
 </div>
 <div id="hint" data-i18n="home.hint">滚轮缩放 · 拖拽平移 · 点击节点展开其上游供应商</div>
 <!-- 常驻图例：四类节点配色 + 单点依赖标记（P1-8），默认显示，与风险图例区分 -->
@@ -233,6 +289,16 @@ __TOPNAV__
   <span class="lg"><span class="dot" style="background:#10b981"></span><span data-i18n="home.supp">供应商</span></span>
   <span class="lg"><span class="box base"></span><span data-i18n="home.base">生产基地</span></span>
   <span class="lg"><span style="color:#ef4444;font-weight:700">⚠</span><span data-i18n="home.riskSingle">单点依赖</span></span>
+</div>
+<!-- 模式感知权重图例：仅瓶颈/风险视图显示。红环=关键度/风险（越粗越红越高），与上方类型图例分离，
+     彻底解决「同一套颜色既表类型又表权重、且红色含义不明」的撞色混乱 -->
+<div id="weightLegend">
+  <div class="wl-title" id="wlTitle" data-i18n="bottleneck.ringTitle">关键度</div>
+  <div class="wl-row"><span class="wl-ring" style="border:1.5px solid rgba(239,68,68,.30)"></span><span data-i18n="bottleneck.legLow">低</span></div>
+  <div class="wl-row"><span class="wl-ring" style="border:3px solid rgba(239,68,68,.60)"></span><span data-i18n="bottleneck.legMid">中</span></div>
+  <div class="wl-row"><span class="wl-ring" style="border:5px solid rgba(239,68,68,.95)"></span><span data-i18n="bottleneck.legHigh">高</span></div>
+  <div class="wl-row" id="wlFocusRow"><span class="wl-ring" style="border:2px solid #22d3ee"></span><span data-i18n="bottleneck.focusRing">当前查看</span></div>
+  <div class="wl-hint" id="wlHint" data-i18n="bottleneck.ringHint">红环越粗越红 = 关键度越高</div>
 </div>
 <!-- 首屏一次性引导卡（P1 首屏引导）：未关闭过才显示，localStorage 记忆 -->
 <div id="guide" style="display:none">

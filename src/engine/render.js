@@ -1,7 +1,7 @@
 // render.js — Canvas 绘制（依赖 S 状态与工具函数；draw 在 pendingFocus 时回调 interaction.applyFocus）。
 // 与 interaction.js 存在循环依赖（interaction 也用 draw/resize），但仅在函数运行时互相调用，esbuild 处理无误。
 import { S } from "./state.js";
-import { W, H, label, vulnColor, COLORS, nodeRadius } from "./util.js";
+import { W, H, label, COLORS, nodeRadius, heatRing } from "./util.js";
 import { applyFocus, kick } from "./interaction.js";
 import { visibleSet } from "./model.js";
 
@@ -34,6 +34,24 @@ function hasHiddenSuppliers(n, vis) {
     if (o.type === "Supplier" && !vis.has(o._key)) return true;
   }
   return false;
+}
+
+// 节点「权重」归一化取值（0..1），用于红环强度；非权重模式返回 null。
+// 瓶颈透视：按当前指标（pagerank / reach）归一化；风险视图：取脆弱性 vuln（本就 0..1）。
+// 与「类型填充色」严格分离——权重只驱动红环，绝不占用填充通道，杜绝颜色撞车。
+function weightOf(n) {
+  if (S.bottleneckMode && S.metrics) {
+    if (S.bottleneckMetric === "pagerank") {
+      var prv = S.metrics.pagerank[n._key];
+      var rgp = S.metrics.range.pagerank;
+      return (prv != null && rgp.max > rgp.min) ? (prv - rgp.min) / (rgp.max - rgp.min) : 0;
+    }
+    var rv = S.metrics.info[n._key] ? S.metrics.info[n._key].reach : 0;
+    var rgr = S.metrics.range.reach;
+    return rgr.max > 0 ? rv / rgr.max : 0;
+  }
+  if (S.riskMode && n.vuln != null) return n.vuln;
+  return null;
 }
 
 // 沿可见边绘制流动粒子：方向统一为 link.b → link.a（供应商 → 零部件 → 产品 → 产品线，
@@ -71,21 +89,45 @@ export function draw(vis) {
   if (S.pendingFocus && W() && H()) { var nf = S.pendingFocus; S.pendingFocus = null; applyFocus(nf); }
   S.ctx.clearRect(0, 0, W(), H());
   var sel = S.selected ? S.selected._key : null;
-  var nb = sel ? new Set([sel].concat(S.adj[sel].map(function (e) { return e.other._key; }))) : null;
+  // 选中集：默认 1 跳邻居；选中「供应商/零部件」时额外纳入第 2 跳下游产品，
+  // 让「断供波及 N 款」在图谱上直接可见（消除「连的节点很少」的错觉）。
+  var nb = null;
+  if (sel) {
+    var sn = S.idMap[sel];
+    nb = new Set([sel]);
+    if (sn && (sn.type === "Supplier" || sn.type === "Component")) {
+      var compKeys = [];
+      S.adj[sel].forEach(function (e) {
+        nb.add(e.other._key);
+        if (sn.type === "Supplier" && e.dir === "out" && e.link.type === "SUPPLIES") compKeys.push(e.other._key);
+        if (sn.type === "Component" && e.dir === "in" && e.link.type === "USES") nb.add(e.other._key);
+      });
+      // 供应商 → 其供应零部件 → 使用这些零部件的产品（第 2 跳下游）
+      compKeys.forEach(function (ck) {
+        var es = S.adj[ck]; if (!es) return;
+        es.forEach(function (e) { if (e.dir === "in" && e.link.type === "USES") nb.add(e.other._key); });
+      });
+    } else {
+      S.adj[sel].forEach(function (e) { nb.add(e.other._key); });
+    }
+  }
+  // 瓶颈模式下选中节点时，其下游受影响节点集合（feat 修复：让排行里的「波及N款」在图谱上可见）
+  var focusSet = (S.bottleneckMode && S.bottleneckFocus) ? S.bottleneckFocus : null;
   var now = ((typeof window !== "undefined" && window.performance) ? window.performance.now() : Date.now()) / 1000;
   S.ctx.save(); S.ctx.translate(S.view.ox, S.view.oy); S.ctx.scale(S.view.scale, S.view.scale);
   S.links.forEach(function (l) {
     if (!vis.has(l.a._key) || !vis.has(l.b._key)) return;
-    var hot = nb && nb.has(l.a._key) && nb.has(l.b._key);
-    S.ctx.strokeStyle = hot ? "rgba(150,180,255,.9)" : (nb ? "rgba(120,135,170,.08)" : "rgba(120,135,170,.22)");
-    S.ctx.lineWidth = hot ? 1.6 : 1;
+    var inFocus = focusSet && focusSet.has(l.a._key) && focusSet.has(l.b._key);
+    var hot = inFocus || (nb && nb.has(l.a._key) && nb.has(l.b._key));
+    S.ctx.strokeStyle = inFocus ? "rgba(239,68,68,.75)" : (hot ? "rgba(150,180,255,.9)" : ((focusSet || nb) ? "rgba(120,135,170,.06)" : "rgba(120,135,170,.22)"));
+    S.ctx.lineWidth = inFocus ? 1.8 : (hot ? 1.6 : 1);
     S.ctx.beginPath(); S.ctx.moveTo(l.a.x, l.a.y); S.ctx.lineTo(l.b.x, l.b.y); S.ctx.stroke();
   });
   drawParticles(vis, nb, now);                     // 流动粒子在边之上、节点之下
   S.nodes.forEach(function (n) {
     if (!vis.has(n._key)) return;
     var r = nodeRadius(n);
-    var dim = nb && !nb.has(n._key);
+    var dim = (focusSet && !focusSet.has(n._key)) || (nb && !nb.has(n._key));
     // 产品线「聚合/分类」节点：用圆角矩形 + 虚线环区分「实体」实心圆（P1-6），避免被误认为真实供应链一环。
     if (n.type === "Line") {
       var rw = r * 2.6, rh = r * 1.5, x0 = n.x - rw / 2, y0 = n.y - rh / 2, rr = rh / 2;
@@ -104,6 +146,13 @@ export function draw(vis) {
       S.ctx.strokeStyle = (S.selected === n) ? "#fff" : "#8b5cf6";
       S.ctx.stroke();
       S.ctx.setLineDash([]);
+      // 关键度红环（与类型紫填充分离）
+      var wtL = weightOf(n);
+      if (wtL != null) {
+        var hrL = heatRing(wtL);
+        S.ctx.beginPath(); S.ctx.arc(n.x, n.y, Math.max(rw, rh) / 2 + 4, 0, Math.PI * 2);
+        S.ctx.strokeStyle = hrL.color; S.ctx.lineWidth = hrL.width; S.ctx.stroke();
+      }
       S.ctx.globalAlpha = dim ? 0.3 : 1;
       S.ctx.fillStyle = "#e9d5ff"; S.ctx.font = "bold 12px sans-serif";
       S.ctx.textAlign = "center"; S.ctx.textBaseline = "middle";
@@ -111,20 +160,33 @@ export function draw(vis) {
       S.ctx.textBaseline = "alphabetic";
       return;   // forEach 回调内用 return 跳过当前节点（Line 已绘制完毕）
     }
-    // 生产基地（ProductionBase）：用方块区分于圆形的实体/供应商节点，颜色取 COLORS.Base。
+    // 生产基地（ProductionBase）：用方块区分于圆形的实体/供应商节点，颜色取 COLORS.Base（始终类型色）。
     if (n.type === "Base") {
       var rB = nodeRadius(n), hs = rB * 1.6;   // 方块半边长
       S.ctx.globalAlpha = dim ? 0.2 : 1;
       S.ctx.beginPath();
       S.ctx.rect(n.x - hs, n.y - hs, hs * 2, hs * 2);
-      S.ctx.fillStyle = (S.riskMode && n.vuln != null) ? vulnColor(n.vuln) : COLORS.Base;
+      S.ctx.fillStyle = COLORS.Base;
       S.ctx.fill();
+      // 关键度红环
+      var wtB = weightOf(n);
+      if (wtB != null) {
+        var hrB = heatRing(wtB);
+        S.ctx.beginPath(); S.ctx.rect(n.x - hs - 3, n.y - hs - 3, (hs + 3) * 2, (hs + 3) * 2);
+        S.ctx.strokeStyle = hrB.color; S.ctx.lineWidth = hrB.width; S.ctx.stroke();
+      }
       S.ctx.lineWidth = (S.selected === n) ? 3 : 1.2;
       S.ctx.strokeStyle = (S.selected === n) ? "#fff" : "rgba(255,255,255,.35)";
       S.ctx.stroke();
+      // 单点依赖：琥珀环（任意模式都标，保证 nodeLegend 的 ⚠ 有对应）
+      if (n.single_point) {
+        S.ctx.beginPath(); S.ctx.rect(n.x - hs - 2, n.y - hs - 2, (hs + 2) * 2, (hs + 2) * 2);
+        S.ctx.strokeStyle = "#fbbf24"; S.ctx.lineWidth = 2; S.ctx.stroke();
+      }
+      // 首屏关键洞察自动高亮：白色虚线环（区别于单点琥珀、关键度红）
       if (n._key === S.criticalId) {
-        S.ctx.beginPath(); S.ctx.rect(n.x - hs - 4, n.y - hs - 4, (hs + 4) * 2, (hs + 4) * 2);
-        S.ctx.strokeStyle = "#fbbf24"; S.ctx.lineWidth = 2.5; S.ctx.stroke();
+        S.ctx.beginPath(); S.ctx.rect(n.x - hs - 5, n.y - hs - 5, (hs + 5) * 2, (hs + 5) * 2);
+        S.ctx.setLineDash([4, 3]); S.ctx.strokeStyle = "rgba(255,255,255,.85)"; S.ctx.lineWidth = 1.5; S.ctx.stroke(); S.ctx.setLineDash([]);
       }
       if (S.view.scale > 0.7 || n.type === "Product" || n.type === "Line" || S.selected === n || S.hover === n || n._key === S.criticalId) {
         S.ctx.globalAlpha = dim ? 0.25 : 1;
@@ -135,22 +197,36 @@ export function draw(vis) {
       return;   // Base 已绘制完毕
     }
     S.ctx.globalAlpha = dim ? 0.18 : 1;
-    S.ctx.beginPath(); S.ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
-    // 风险视图：组件/产品节点按脆弱性着色（供应商节点保持原类型色）
-    S.ctx.fillStyle = (S.riskMode && n.type !== "Supplier" && n.vuln != null) ? vulnColor(n.vuln) : COLORS[n.type];
-    S.ctx.fill();
-    S.ctx.lineWidth = (S.selected === n) ? 3 : 1.2;
-    S.ctx.strokeStyle = (S.selected === n) ? "#fff" : "rgba(255,255,255,.35)";
-    S.ctx.stroke();
-    // 风险视图：单点依赖组件加红色警示外圈
-    if (S.riskMode && n.type === "Component" && n.single_point) {
-      S.ctx.beginPath(); S.ctx.arc(n.x, n.y, r + 3, 0, Math.PI * 2);
-      S.ctx.strokeStyle = "#ef4444"; S.ctx.lineWidth = 2; S.ctx.stroke();
+    // 瓶颈详情点击：下游受影响节点用「洋红环」高亮（区别于关键度红环 + 选中白环）
+    if (focusSet && focusSet.has(n._key) && n._key !== sel) {
+      S.ctx.beginPath(); S.ctx.arc(n.x, n.y, r + 4, 0, Math.PI * 2);
+      S.ctx.strokeStyle = "#22d3ee"; S.ctx.lineWidth = 2.5; S.ctx.stroke();
     }
-    // 首屏「关键洞察」浮层自动高亮的最关键节点（琥珀环，静止态也可见，非动画）
-    if (n._key === S.criticalId) {
+    S.ctx.beginPath(); S.ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
+    // 填充：始终为「节点类型色」——类型与权重用两个独立视觉通道，图例不再撞色。
+    S.ctx.fillStyle = COLORS[n.type];
+    S.ctx.fill();
+    // 关键度 / 风险「热力红环」：权重唯一通道（t 越大越粗越红），不再占用填充色。
+    var wt = weightOf(n);
+    if (wt != null) {
+      var hr = heatRing(wt);
+      S.ctx.beginPath(); S.ctx.arc(n.x, n.y, r + hr.width / 2 + 1, 0, Math.PI * 2);
+      S.ctx.strokeStyle = hr.color; S.ctx.lineWidth = hr.width; S.ctx.stroke();
+    }
+    // 选中：白色粗环（最外层，最醒目）
+    if (S.selected === n) {
       S.ctx.beginPath(); S.ctx.arc(n.x, n.y, r + 6, 0, Math.PI * 2);
-      S.ctx.strokeStyle = "#fbbf24"; S.ctx.lineWidth = 2.5; S.ctx.stroke();
+      S.ctx.strokeStyle = "#fff"; S.ctx.lineWidth = 3; S.ctx.stroke();
+    }
+    // 单点依赖：琥珀环（任意模式都标，保证 nodeLegend 的 ⚠ 有对应）
+    if (n.single_point) {
+      S.ctx.beginPath(); S.ctx.arc(n.x, n.y, r + 3, 0, Math.PI * 2);
+      S.ctx.strokeStyle = "#fbbf24"; S.ctx.lineWidth = 2; S.ctx.stroke();
+    }
+    // 首屏「关键洞察」浮层自动高亮的最关键节点：白色虚线环（区别于单点琥珀、关键度红）
+    if (n._key === S.criticalId) {
+      S.ctx.beginPath(); S.ctx.arc(n.x, n.y, r + 8, 0, Math.PI * 2);
+      S.ctx.setLineDash([4, 3]); S.ctx.strokeStyle = "rgba(255,255,255,.85)"; S.ctx.lineWidth = 1.5; S.ctx.stroke(); S.ctx.setLineDash([]);
     }
     // 可展开提示：产品/零部件存在隐藏供应商时，右上角画绿色「+」
     if ((n.type === "Product" || n.type === "Component") && hasHiddenSuppliers(n, vis)) {
