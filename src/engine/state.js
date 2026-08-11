@@ -25,12 +25,9 @@ export const S = {
   isolated: null,          // 「双击聚焦」：仅渲染该节点及其 1 跳邻居（拓扑隔离视图），null 表示未聚焦
   showAll: false,          // 「展开全部供应商」全局开关（与逐项展开解耦，见 P0-2）
   showBases: false,        // 「生产基地」全局开关：显示 ProductionBase 节点（默认隐藏，与供应商同层按需展开）
-  flow: true,              // 沿边流动粒子动画开关（开启时图谱持续「活着」，不会冻结成静态）
-  // 无障碍/性能：尊重系统「减少动动效」偏好（reduced-motion 用户默认关流动，见下方 initMotionPref）。
-  // 流动开启时循环持续运行（图谱持续流动），关闭后静止即停机省电；
-  // lastInteract/flowIdle 仅作兼容保留，不再用于停机判定。
-  lastInteract: (typeof Date !== "undefined" ? Date.now() : 0),
-  flowIdle: 15000,
+  flow: true,              // 沿边流动粒子动画：默认常驻开启（图谱持续「活着」）；reduced-motion 用户在 initMotionPref 中置 false
+  // 无障碍/性能：尊重系统「减少动效」偏好（reduced-motion 用户默认关流动，见下方 initMotionPref）。
+  // 流动开启时动画循环持续运行，关闭（reduced-motion）后静止即停机省电。
 };
 
 // 启动即读取系统偏好：reduced-motion 用户默认关闭流动粒子，避免前庭刺激与无谓耗电。

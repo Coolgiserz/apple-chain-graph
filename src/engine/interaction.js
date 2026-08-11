@@ -32,7 +32,9 @@ function onNodeClick(n) {
 }
 
 // 记录最近一次用户交互时间，用于流动粒子「静止降级」（P0-4）：无交互一段时间后停止 rAF。
-function bump() { try { S.lastInteract = Date.now(); } catch (e) {} }
+// 标记一次用户交互（曾用于流动粒子静止降级计时，现已随「流动」开关移除而仅作占位，
+// 调用点保持不变以便后续扩展——例如基于交互节流重绘）。
+function bump() {}
 
 // 「展开全部/收起全部」按钮文案与高亮态随 S.showAll 同步（P0-2）。
 function setSuppBtn() {
@@ -244,13 +246,6 @@ export function bindEvents() {
     updateIsoBanner();                          // 隐藏聚焦提示条
     emitView();                                 // 通知表格随筛选复位刷新
     reheat(1); S.fitDone = false; fitView();   // 复位筛选并重新适配视口
-  };
-  var flowBtn = document.getElementById("flow");
-  if (flowBtn) flowBtn.onclick = function () {
-    S.flow = !S.flow;
-    bump();
-    if (flowBtn.classList) flowBtn.classList.toggle("on", S.flow);
-    if (S.running) kick(); else if (S.cv) draw(visibleSet());
   };
   // 「展开全部 / 收起全部」独立按钮：与逐项展开解耦（P0-2）。
   // 开启=显示全部供应商；关闭=同时清除逐项展开（真正「收起全部」），但再次点击单个节点仍可单独展开。
