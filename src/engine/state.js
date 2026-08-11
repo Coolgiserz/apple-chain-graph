@@ -26,9 +26,11 @@ export const S = {
   showAll: false,          // 「展开全部供应商」全局开关（与逐项展开解耦，见 P0-2）
   showBases: false,        // 「生产基地」全局开关：显示 ProductionBase 节点（默认隐藏，与供应商同层按需展开）
   flow: true,              // 沿边流动粒子动画开关（开启时图谱持续「活着」，不会冻结成静态）
-  // 无障碍/性能：尊重系统「减少动效」偏好；静止且无交互一段时间后可停止 rAF 省电（见 P0-4）
+  // 无障碍/性能：尊重系统「减少动动效」偏好（reduced-motion 用户默认关流动，见下方 initMotionPref）。
+  // 流动开启时循环持续运行（图谱持续流动），关闭后静止即停机省电；
+  // lastInteract/flowIdle 仅作兼容保留，不再用于停机判定。
   lastInteract: (typeof Date !== "undefined" ? Date.now() : 0),
-  flowIdle: 15000,         // 流动开启后，静止且空闲超过该毫秒数则停止循环（交互时自动重启）
+  flowIdle: 15000,
 };
 
 // 启动即读取系统偏好：reduced-motion 用户默认关闭流动粒子，避免前庭刺激与无谓耗电。

@@ -225,6 +225,12 @@ export function bindEvents() {
   var reset = document.getElementById("reset");
   if (reset) reset.onclick = function () {
     selectNode(null);
+    // 退出风险/瓶颈视图：与筛选一起复位，避免「重置」后图谱仍按脆弱性着色、图例残留
+    // （复用 graph_bootstrap 的 change 处理器，统一走 setRiskMode/setBottleneckMode + 隐藏图例）。
+    ["riskToggle", "bnToggle"].forEach(function (id) {
+      var t = document.getElementById(id);
+      if (t && t.checked) { t.checked = false; try { t.dispatchEvent(new CustomEvent("change")); } catch (e) {} }
+    });
     S.isolated = null; S.expanded.clear();      // 退出双击聚焦 + 收起所有已展开供应商
     S.showAll = false; setSuppBtn();            // 回到默认态：供应商隐藏（与首屏一致，P0-1/P0-2）
     S.showBases = false;                        // 回到默认态：生产基地隐藏
@@ -232,8 +238,8 @@ export function bindEvents() {
     var q = document.getElementById("q"); if (q) q.value = "";
     var qc = document.getElementById("qCount"); if (qc) qc.textContent = "";
     // 回到默认态：产品/零部件可见，供应商默认隐藏（与首屏默认一致，而非「全展开」）(P0-1)
-    document.getElementById("cbP").checked = true;
-    document.getElementById("cbC").checked = true;
+    var cbP = document.getElementById("cbP"); if (cbP) cbP.checked = true;
+    var cbC = document.getElementById("cbC"); if (cbC) cbC.checked = true;
     var line = document.getElementById("line"); if (line) line.value = "";
     updateIsoBanner();                          // 隐藏聚焦提示条
     emitView();                                 // 通知表格随筛选复位刷新
@@ -259,8 +265,7 @@ export function bindEvents() {
   var cbB = document.getElementById("cbB");
   if (cbB) cbB.onclick = function () {
     S.showBases = !S.showBases;
-    if (cbB.classList) cbB.classList.toggle("on", S.showBases);
-    if (window.i18n && window.i18n.ready) cbB.textContent = i18nText(S.showBases ? "home.basesAllOn" : "home.basesAll");
+    setBaseBtn();   // 同步高亮/文案（与 cbS 走 setSuppBtn 同构，避免重复 DOM 操作）
     if (S.running) kick(); else if (S.cv) draw(visibleSet());
   };
   (typeof document !== "undefined" ? document : globalThis).addEventListener("visibilitychange", function () {
@@ -327,12 +332,9 @@ export function loop() {
     if (!S.fitDone) { S.fitDone = true; fitView(); }                     // 首屏布局稳定后自动适配视口一次
     if (!S.insightsShown) { S.insightsShown = true; showInsights(); }    // 静止后弹一次「关键洞察」浮层
   }
-  // 流动开启 或 仍在物理运动中（或正在交互）→ 持续循环（粒子动画需不断重绘）；
-  // 否则（已静止且关闭流动、无交互）→ 停止循环省电，行为与原版一致。
-  // 静止降级（P0-4）：流动开启但已静止且长时间无交互 → 停止 rAF 省电，任何交互（bump）会重启。
-  var idle = S.flow && settled && !S.dragNode && !S.panning &&
-             (Date.now() - S.lastInteract > S.flowIdle);
-  if (S.flow && !idle || !settled || S.dragNode || S.panning) {
+  // 流动开启时持续重绘（粒子始终沿边流动，图谱「活着」而非冻结成静态圆点），
+  // 关闭时才在静止后停机省电。拖拽/平移/物理未静止时也持续循环。
+  if (!settled || S.dragNode || S.panning || S.flow) {
     S.rafId = (typeof requestAnimationFrame !== "undefined" ? requestAnimationFrame(loop) : 0);
   } else {
     S.animating = false;
@@ -364,7 +366,7 @@ function ensureVisible(n) {
   // 5) 生产基地：开启「生产基地」开关即可见（无需展开上游）
   if (n.type === "Base") {
     S.showBases = true;
-    var cbB = document.getElementById("cbB"); if (cbB) cbB.checked = true;
+    setBaseBtn();   // 同步按钮高亮/文案（cbB 是 button，不能用 .checked）
   }
   emitView();   // 可见集可能已变（清除搜索/筛选/展开）→ 通知表格刷新
 }
@@ -372,8 +374,12 @@ function ensureVisible(n) {
 export function applyFocus(n) {
   ensureVisible(n);   // 先保证可见，再居中（P2）
   selectNode(n);   // 复用 selectNode：设置 S.selected + 右侧面板，并广播 sc:select（反向联动表格）
-  var cbId = n.type === "Product" ? "cbP" : n.type === "Component" ? "cbC" : n.type === "Base" ? "cbB" : "cbS";
-  var cb = document.getElementById(cbId);
+  // 同步顶部开关视觉态：复选框(cbP/cbC)用 .checked；按钮(cbS/cbB)用 setXxxBtn
+  // （对 <button> 赋 .checked 无效，必须用 classList/textContent 同步，否则按钮与图谱状态脱节）
+  if (n.type === "Base") setBaseBtn();
+  else if (n.type === "Supplier" && S.showAll) setSuppBtn();
+  var cbId = n.type === "Product" ? "cbP" : n.type === "Component" ? "cbC" : null;
+  var cb = cbId ? document.getElementById(cbId) : null;
   if (cb && !cb.checked) cb.checked = true;
   reheat(1);
   S.view.ox = W() / 2 - n.x * S.view.scale; S.view.oy = H() / 2 - n.y * S.view.scale;
