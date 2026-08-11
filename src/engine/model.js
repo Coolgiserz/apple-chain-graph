@@ -67,6 +67,14 @@ export function build() {
 // 默认：仅显示 产品线(Line) → 产品(Product) → 零部件(Component)；供应商(Supplier)默认隐藏，
 // 除非勾选「展开全部供应商」(cbS) 或所在 产品/零部件 已被展开(S.expanded)。
 export function visibleSet() {
+  // 「双击聚焦」拓扑隔离：仅显示该节点及其 1 跳邻居，覆盖其余筛选（含隐藏供应商/基地也一并露出）。
+  // 让用户在密图上也能一眼看清「一个节点连着谁、连了多少个」。
+  if (S.isolated) {
+    var iso = new Set([S.isolated]);
+    var adjIso = S.adj[S.isolated];
+    if (adjIso) adjIso.forEach(function (e) { iso.add(e.other._key); });
+    return iso;
+  }
   var qel = document.getElementById("q"), q = qel ? qel.value.trim().toLowerCase() : "";
   var cbP = document.getElementById("cbP").checked,
       cbC = document.getElementById("cbC").checked;
