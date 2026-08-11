@@ -265,8 +265,7 @@ export function bindEvents() {
   var cbB = document.getElementById("cbB");
   if (cbB) cbB.onclick = function () {
     S.showBases = !S.showBases;
-    if (cbB.classList) cbB.classList.toggle("on", S.showBases);
-    if (window.i18n && window.i18n.ready) cbB.textContent = i18nText(S.showBases ? "home.basesAllOn" : "home.basesAll");
+    setBaseBtn();   // 同步高亮/文案（与 cbS 走 setSuppBtn 同构，避免重复 DOM 操作）
     if (S.running) kick(); else if (S.cv) draw(visibleSet());
   };
   (typeof document !== "undefined" ? document : globalThis).addEventListener("visibilitychange", function () {
@@ -367,7 +366,7 @@ function ensureVisible(n) {
   // 5) 生产基地：开启「生产基地」开关即可见（无需展开上游）
   if (n.type === "Base") {
     S.showBases = true;
-    var cbB = document.getElementById("cbB"); if (cbB) cbB.checked = true;
+    setBaseBtn();   // 同步按钮高亮/文案（cbB 是 button，不能用 .checked）
   }
   emitView();   // 可见集可能已变（清除搜索/筛选/展开）→ 通知表格刷新
 }
@@ -375,8 +374,12 @@ function ensureVisible(n) {
 export function applyFocus(n) {
   ensureVisible(n);   // 先保证可见，再居中（P2）
   selectNode(n);   // 复用 selectNode：设置 S.selected + 右侧面板，并广播 sc:select（反向联动表格）
-  var cbId = n.type === "Product" ? "cbP" : n.type === "Component" ? "cbC" : n.type === "Base" ? "cbB" : "cbS";
-  var cb = document.getElementById(cbId);
+  // 同步顶部开关视觉态：复选框(cbP/cbC)用 .checked；按钮(cbS/cbB)用 setXxxBtn
+  // （对 <button> 赋 .checked 无效，必须用 classList/textContent 同步，否则按钮与图谱状态脱节）
+  if (n.type === "Base") setBaseBtn();
+  else if (n.type === "Supplier" && S.showAll) setSuppBtn();
+  var cbId = n.type === "Product" ? "cbP" : n.type === "Component" ? "cbC" : null;
+  var cb = cbId ? document.getElementById(cbId) : null;
   if (cb && !cb.checked) cb.checked = true;
   reheat(1);
   S.view.ox = W() / 2 - n.x * S.view.scale; S.view.oy = H() / 2 - n.y * S.view.scale;
