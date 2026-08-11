@@ -23,11 +23,13 @@ ROOT = os.path.dirname(os.path.abspath(__file__))
 STEPS = [
     ("供应商估值  supplier_analysis.json",  "tools/run_analysis.py"),
     ("供应链风险  supply_chain_risk.json",  "tools/run_risk.py"),
+    ("供应商舆情  supplier_sentiment.md",   "tools/run_sentiment.py"),
     ("供应链图谱  index.html（首页）",      "scripts/build_viewer.py"),
     ("企业列表    supplier_table.html",     "scripts/build_table.py"),
     ("上下游报告  apple_supply_chain_report.html", "scripts/report.py"),
     ("供应商地图  supplier_geo.html",       "tools/geo_build.py"),
     ("估值看板    supplier_dashboard.html", "tools/build_dashboard.py"),
+    ("时效数据    data/feeds/*.json",       "scripts/build_feeds.py"),
 ]
 
 
