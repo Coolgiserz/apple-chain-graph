@@ -56,7 +56,7 @@ function weightOf(n) {
 
 // 沿可见边绘制流动粒子：方向统一为 link.b → link.a（供应商 → 零部件 → 产品 → 产品线，
 // 表现供应链的「流动」），让图谱始终「活着」而非冻结成静态圆点。
-// 克制（P1-5）：默认（无选中）仅极轻全局脉动——粒子更小/更慢/更淡；仅选中/悬停的子图流动更亮。
+// 默认（无选中）即清晰可辨的全局流动；选中/悬停的子图流动更亮，突出该供应链路径。
 // 低端/小屏按设备降采样粒子数（P2 性能）。
 function drawParticles(vis, nb, now) {
   if (!S.flow) return;
@@ -67,11 +67,11 @@ function drawParticles(vis, nb, now) {
     var inSel = !nb || (nb.has(l.a._key) && nb.has(l.b._key));
     if (hasSel && !inSel) return;                  // 选中时仅高亮子图粒子，其余保持静态线
     var fx = l.b.x, fy = l.b.y, dx = l.a.x - fx, dy = l.a.y - fy;
-    // 默认态：极轻脉动；选中子图：更亮更快
-    var speed = hasSel ? 0.30 : 0.10;
+    // 默认态：清晰可见的温和流动；选中子图：更亮更快更大
+    var speed = hasSel ? 0.32 : 0.14;
     var np = (small ? 1 : (hasSel ? 2 : 1));
-    var rad = hasSel ? 2.6 : 1.2;
-    var alpha = hasSel ? 0.95 : 0.16;
+    var rad = hasSel ? 2.8 : 1.7;
+    var alpha = hasSel ? 0.95 : 0.34;
     var col = hasSel ? "140,210,255" : "120,180,235";
     for (var p = 0; p < np; p++) {
       var phase = (now * speed + (l.phase || 0) + p / np) % 1;
