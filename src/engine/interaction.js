@@ -41,6 +41,13 @@ function setSuppBtn() {
   if (b.classList) b.classList.toggle("on", S.showAll);
   if (window.i18n && window.i18n.ready) b.textContent = i18nText(S.showAll ? "home.suppAllOn" : "home.suppAll");
 }
+// 「生产基地」开关文案随状态刷新（与 setSuppBtn 同构）
+function setBaseBtn() {
+  var b = document.getElementById("cbB");
+  if (!b) return;
+  if (b.classList) b.classList.toggle("on", S.showBases);
+  if (window.i18n && window.i18n.ready) b.textContent = i18nText(S.showBases ? "home.basesAllOn" : "home.basesAll");
+}
 
 // 视图/筛选变化广播（供「企业表格」订阅刷新）。按钮（如 cbS 是 button）与程序化改值（reset/展开）
 // 不会触发 input/change 事件，表格无法自动感知 —— 统一在此广播 sc:view 弥合联动断点。
@@ -202,6 +209,8 @@ export function bindEvents() {
     selectNode(null);
     S.expanded.clear();                         // 收起所有已展开供应商
     S.showAll = false; setSuppBtn();            // 回到默认态：供应商隐藏（与首屏一致，P0-1/P0-2）
+    S.showBases = false;                        // 回到默认态：生产基地隐藏
+    var cbB = document.getElementById("cbB"); if (cbB) { cbB.checked = false; if (cbB.classList) cbB.classList.remove("on"); if (window.i18n && window.i18n.ready) cbB.textContent = i18nText("home.basesAll"); }
     var q = document.getElementById("q"); if (q) q.value = "";
     var qc = document.getElementById("qCount"); if (qc) qc.textContent = "";
     // 回到默认态：产品/零部件可见，供应商默认隐藏（与首屏默认一致，而非「全展开」）(P0-1)
@@ -226,6 +235,14 @@ export function bindEvents() {
     if (!S.showAll) S.expanded.clear();   // 收起全部 = 清除所有逐项展开
     setSuppBtn();
     maybeDropSelection(); emitView(); reheat(0.7);   // 仅当当前选中供应商变隐藏才清面板；并通知表格刷新
+  };
+  // 「生产基地」开关：显示/隐藏 ProductionBase 节点（与供应商同层，默认隐藏，按需展开）
+  var cbB = document.getElementById("cbB");
+  if (cbB) cbB.onclick = function () {
+    S.showBases = !S.showBases;
+    if (cbB.classList) cbB.classList.toggle("on", S.showBases);
+    if (window.i18n && window.i18n.ready) cbB.textContent = i18nText(S.showBases ? "home.basesAllOn" : "home.basesAll");
+    if (S.running) kick(); else if (S.cv) draw(visibleSet());
   };
   (typeof document !== "undefined" ? document : globalThis).addEventListener("visibilitychange", function () {
     if (typeof document !== "undefined" && document.hidden) { S.running = false; }   // 后台标签页停止循环省电
@@ -259,8 +276,8 @@ export function bindEvents() {
     var key = b.getAttribute("data-key");
     if (b.getAttribute("data-act") === "collapse") collapseNode(key); else expandNode(key);
   });
-  document.addEventListener("i18n:ready", function () { if (S.selected) renderPanel(S.selected); if (insightVisible()) showInsights(); setSuppBtn(); });
-  document.addEventListener("i18n:changed", function () { if (S.selected) renderPanel(S.selected); if (insightVisible()) showInsights(); setSuppBtn(); });
+  document.addEventListener("i18n:ready", function () { if (S.selected) renderPanel(S.selected); if (insightVisible()) showInsights(); setSuppBtn(); setBaseBtn(); });
+  document.addEventListener("i18n:changed", function () { if (S.selected) renderPanel(S.selected); if (insightVisible()) showInsights(); setSuppBtn(); setBaseBtn(); });
   // 首屏一次性引导卡：关闭后记忆，下次不再弹（P1 首屏引导）
   var guide = document.getElementById("guide");
   if (guide) {
@@ -323,13 +340,18 @@ function ensureVisible(n) {
     for (var i = 0; i < adj.length; i++) { var o = adj[i].other; if (o.type === "Product" || o.type === "Component") S.expanded.add(o._key); }
     if (!visibleSet().has(n._key)) { S.showAll = true; setSuppBtn(); }   // 兜底：无上游则全展开
   }
+  // 5) 生产基地：开启「生产基地」开关即可见（无需展开上游）
+  if (n.type === "Base") {
+    S.showBases = true;
+    var cbB = document.getElementById("cbB"); if (cbB) cbB.checked = true;
+  }
   emitView();   // 可见集可能已变（清除搜索/筛选/展开）→ 通知表格刷新
 }
 
 export function applyFocus(n) {
   ensureVisible(n);   // 先保证可见，再居中（P2）
   selectNode(n);   // 复用 selectNode：设置 S.selected + 右侧面板，并广播 sc:select（反向联动表格）
-  var cbId = n.type === "Product" ? "cbP" : n.type === "Component" ? "cbC" : "cbS";
+  var cbId = n.type === "Product" ? "cbP" : n.type === "Component" ? "cbC" : n.type === "Base" ? "cbB" : "cbS";
   var cb = document.getElementById(cbId);
   if (cb && !cb.checked) cb.checked = true;
   reheat(1);

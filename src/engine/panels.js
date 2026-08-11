@@ -55,6 +55,10 @@ export function renderPanel(n) {
   var h = "<h3>" + esc(n.name || n.id) + "</h3><div class='sub'>" + esc(n.english_name || "") + "</div>";
   h += "<span class='tag' style='background:" + col + "22;color:" + col + ";border:1px solid " + col + "'>" + typeLabel(n.type) + "</span>";
   if (n.type === "Product" && n.product_line) h += "<span class='tag' style='background:#2a3450;color:#cfe0ff'>" + esc(i18nVal("product_line", n.product_line)) + "</span>";
+  if (n.type === "Base" && n.confidence) {
+    var ccol = n.confidence === "high" ? "#10b981" : n.confidence === "medium" ? "#f59e0b" : "#ef4444";
+    h += "<span class='tag' style='background:" + ccol + "22;color:" + ccol + ";border:1px solid " + ccol + "'>" + esc(i18nText("field.confidence")) + ": " + esc(n.confidence) + "</span>";
+  }
   h += "<dl>";
   function fieldRow(k, v) {
     var val = v;
@@ -80,7 +84,12 @@ export function renderPanel(n) {
          fieldRow("vuln", n.vuln != null ? n.vuln.toFixed(3) : ""),
          fieldRow("n_suppliers", n.n_suppliers != null ? n.n_suppliers : ""),
          fieldRow("single_point", spTxt)]
-      : [fieldRow("short_name", n.short_name), fieldRow("country", n.country), fieldRow("region", n.region), fieldRow("category", n.category), fieldRow("tier", n.tier)];
+      : n.type === "Base"
+        ? [fieldRow("city", n.city), fieldRow("province", n.province || ""), fieldRow("country", n.country),
+           fieldRow("operator", n.operator ? nm("S", n.operator) : ""),
+           fieldRow("products", (n.products || []).map(function (pl) { return i18nVal("product_line", pl); }).join("、")),
+           fieldRow("role", n.role), fieldRow("confidence", n.confidence)]
+        : [fieldRow("short_name", n.short_name), fieldRow("country", n.country), fieldRow("region", n.region), fieldRow("category", n.category), fieldRow("tier", n.tier)];
   fields.forEach(function (kv) { if (kv[1]) h += "<dt>" + kv[0] + "</dt><dd>" + esc(String(kv[1])) + "</dd>"; });
   h += "</dl>";
   // 关系列表：列出该节点全部相邻边（含上下游两个方向），用友好关系名替代原始边类型码
@@ -90,12 +99,23 @@ export function renderPanel(n) {
     h += "<dt style='margin-top:12px;color:#9fb0d0;font-size:11px'>" + i18nText("panel.rel") + "（" + rels.length + " · " + i18nText("panel.relHint") + "）</dt><dd><ul>";
     rels.forEach(function (e) {
       var isOut = e.dir === "out";                       // out：供应链从本节点「流出」（使用/供应/组装）；in：反向
-      var verb = i18nText("edge." + e.link.type);        // 友好关系名（使用/供应/组装/归属）
+      var verb = i18nText("edge." + e.link.type);        // 友好关系名（使用/供应/组装/归属/生产于/运营）
       var nm = esc(label(e.other));
       var phrase = isOut ? (verb + " → " + nm) : (nm + " → " + verb);   // 出方向「动词→对象」，入方向「对象→动词」
       var extra = e.link.share ? " · 份额 " + e.link.share + "%" : "";
+      // 来源溯源：每条边附 source（来源注册表 id 列表），渲染为可点击外链，确保关系可追溯到公开资料
+      var srcHtml = "";
+      if (e.link.source && e.link.source.length) {
+        var reg = (window.SUPPLY_DATA && window.SUPPLY_DATA.meta && window.SUPPLY_DATA.meta.source_registry) || {};
+        srcHtml = " <span class='src'>";
+        e.link.source.forEach(function (sid) {
+          var m = reg[sid];
+          if (m && m.url) srcHtml += "<a href='" + esc(m.url) + "' target='_blank' rel='noopener' onclick='event.stopPropagation()'>" + esc(m.publisher || sid) + "</a>";
+        });
+        srcHtml += "</span>";
+      }
       h += "<li class='rel' data-key='" + esc(e.other._key) + "' title='点击聚焦：" + esc(label(e.other)) + "'>"
-        + phrase + extra + "</li>";
+        + phrase + extra + srcHtml + "</li>";
     });
     h += "</ul></dd>";
   }
