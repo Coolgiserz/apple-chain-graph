@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.0](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.5.0...v1.6.0) (2026-08-11)
+
+
+### Features
+
+* 双击节点聚焦其邻居（拓扑隔离视图） ([3dee753](https://github.com/Coolgiserz/apple-chain-graph/commit/3dee753c8b829775fcdc1975431faef62620a115))
+* 双击节点聚焦其邻居（拓扑隔离视图） ([1743ba8](https://github.com/Coolgiserz/apple-chain-graph/commit/1743ba8ec4f27fca2ab3f5a06981526c723e321d))
+
 ## [1.5.0](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.4.0...v1.5.0) (2026-08-11)
 
 
