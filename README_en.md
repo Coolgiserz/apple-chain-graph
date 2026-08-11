@@ -40,6 +40,7 @@
 - [Supplier fundamentals & relative valuation analysis](#supplier-fundamentals--relative-valuation-analysis)
 - [Supplier sentiment analysis](#supplier-sentiment-analysis)
 - [Supplier analysis dashboard](#supplier-analysis-dashboard)
+- [Supply chain bottleneck analysis (graph analytics)](#supply-chain-bottleneck-analysis-graph-analytics)
 - [Supply chain vulnerability analysis (Component → Product → Product line)](#supply-chain-vulnerability-analysis-component--product--product-line)
 - [Tech stack](#tech-stack)
 - [Directory structure](#directory-structure)
@@ -305,6 +306,16 @@ python3 tools/run_sentiment.py --id qualcomm    # view a single supplier only
 
 > Data sources: `tools/data/supplier_fundamentals.csv` + `supplier_sentiment.csv` + `tools/output/supplier_analysis.json`. Charts rely on Chart.js from CDN (network needed on first open).
 
+## Supply chain bottleneck analysis (graph analytics)
+
+Classic graph analytics run **directly on the graph, computed in-browser with no backend**: type-aware degree centrality, disruption reach (reverse-reachability BFS), and PageRank network coreness.
+
+- **Productized presentation**: sole-source supply / disruption-impact simulation / network coreness; red·amber·green semantic colors; click a ranking entry to focus the graph node.
+- **2nd-hop downstream highlight**: selecting a supplier / component highlights its 2nd-hop downstream products, making "disruption hits N products" visible on the graph (e.g. Goertek's disruption reaches 28 products).
+- **Anti-misreading copy**: "reach" ≠ "halt" — the count of products that would actually stop (no alternative) is shown in a separate green/red callout.
+
+Algorithms, conventions, and limitations: **[docs/bottleneck-analytics.md](docs/bottleneck-analytics.md)**.
+
 ## Supply chain vulnerability analysis (Component → Product → Product line)
 
 Beyond valuation / sentiment, a new **graph-structure view of supply chain risk**: starting from "how many suppliers each component has", aggregate bottom-up to products, then roll up to product lines, to answer "which product line faces the greatest supply chain risk".
@@ -457,6 +468,7 @@ To address the above limitations, future work can improve along three dimensions
 - [docs/data-model.md](docs/data-model.md) — data model & field dictionary
 - [docs/supplier-analysis.md](docs/supplier-analysis.md) — supplier fundamentals & relative valuation: method / conventions / limitations
 - [docs/supply-chain-risk.md](docs/supply-chain-risk.md) — supply chain vulnerability (component→product→line): model / weights / limitations
+- [docs/bottleneck-analytics.md](docs/bottleneck-analytics.md) — supply chain bottleneck analysis (graph analytics): algorithms / conventions / limitations
 - 中文文档：[README.md](README.md)
 
 ## Data sources & conventions
