@@ -88,7 +88,10 @@ jobs:
         run: |
           # 必须先把目标父目录建好：cp -r src _site/tools/visualizations 在 _site/tools
           # 不存在时会报 "cannot create directory"（cp 不会自动创建多级目标父目录）。
-          mkdir -p _site _site/tools _site/docs
+          # 注意：data/ 也必须先建好，否则下方 cp data/*.json / cp -r data/feeds 会因
+          # 目标父目录缺失而静默失败（曾被 2>/dev/null || true 吞掉，导致线上 404、
+          # 首页 fetch 图数据失败）。
+          mkdir -p _site _site/tools _site/docs _site/data
           cp index.html _site/
           cp -r dist _site/
           cp -r tools/visualizations _site/tools/visualizations
@@ -100,9 +103,10 @@ jobs:
           # 必须随站点发布；否则首页新鲜度徽标会 404（回退到空）。schemas/ 仅作文档与 CI 校验用。
           cp -r data/feeds _site/data/feeds 2>/dev/null || true
           # Plan C：首页改为浏览器端 fetch 图数据，故 data/apple_supply_chain.json 必须随站点发布
-          # （旧方案是构建期内联进 index.html，无需单独发布）。data/supply_chain_risk.json 为
-          # 构建期从 tools/output 复制的风险副本，供首页合并「风险视图」字段；缺失则降级。
-          cp data/apple_supply_chain.json _site/data/ 2>/dev/null || true
+          # （旧方案是构建期内联进 index.html，无需单独发布）。缺失则首页直接白屏，故不让其静默失败。
+          cp data/apple_supply_chain.json _site/data/
+          # data/supply_chain_risk.json 为构建期从 tools/output 复制的风险副本，供首页合并「风险视图」
+          # 字段；缺失仅降级（风险视图字段为空），故允许静默跳过。
           cp data/supply_chain_risk.json _site/data/ 2>/dev/null || true
           # SEO 基础设施：sitemap / robots / OG 封面（构建期生成；首页内联的 og:image 指向 assets/og-cover.png）。
           cp sitemap.xml robots.txt _site/ 2>/dev/null || true
