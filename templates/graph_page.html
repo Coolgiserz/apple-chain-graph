@@ -80,7 +80,7 @@
   #insightCard .row.focus { margin-top: 8px; padding-top: 8px; border-top: 1px solid #1c2336; }
   #insightCard .row.focus .lk { font-weight: 600; color: #fbbf24; }
   #panel { position: absolute; top: 122px; right: 12px; width: 320px; max-height: calc(100% - 134px); overflow: auto;
-           background: rgba(20,26,42,.95); border: 1px solid #2a3450; border-radius: 12px; padding: 16px; z-index: 9; display: none; }
+           background: rgba(20,26,42,.95); border: 1px solid #2a3450; border-radius: 12px; padding: 16px; z-index: 11; display: none; }
   #panel h3 { margin: 0 0 4px; font-size: 16px; }
   #panel .sub { font-size: 12px; color: #9fb0d0; margin-bottom: 10px; }
   #panel .tag { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 999px; margin: 0 6px 8px 0; }
@@ -93,7 +93,7 @@
   /* —— 风险因子说明面板（风险视图开启时弹出，右栏与 #panel 同槽，互不重叠）—————— */
   #riskPanel { position: absolute; top: 122px; right: 12px; width: 336px; max-height: calc(100% - 134px); overflow: auto;
                flex-direction: column; align-items: stretch;
-               background: rgba(20,26,42,.97); border: 1px solid #2a3450; border-radius: 12px; padding: 16px; z-index: 9; display: none; }
+               background: rgba(20,26,42,.97); border: 1px solid #2a3450; border-radius: 12px; padding: 16px; z-index: 11; display: none; }
   #riskPanel h3 { margin: 0 0 4px; font-size: 16px; }
   #riskPanel .sub { font-size: 12px; color: #9fb0d0; margin-bottom: 10px; line-height: 1.5; }
   #riskPanel .close { position: absolute; top: 10px; right: 12px; cursor: pointer; color: #9fb0d0; font-size: 18px; }
@@ -117,7 +117,7 @@
   /* —— 瓶颈透视面板（feat/graph-analytics）：复用风险面板同款 chrome 与配色 —— */
   #bottleneckPanel { position: absolute; top: 122px; right: 12px; width: 336px; max-height: calc(100% - 134px); overflow: auto;
                      flex-direction: column; align-items: stretch;
-                     background: rgba(20,26,42,.97); border: 1px solid #2a3450; border-radius: 12px; padding: 16px; z-index: 9; display: none; }
+                     background: rgba(20,26,42,.97); border: 1px solid #2a3450; border-radius: 12px; padding: 16px; z-index: 11; display: none; }
   #bottleneckPanel h3 { margin: 0 0 4px; font-size: 16px; }
   #bottleneckPanel .sub { font-size: 12px; color: #9fb0d0; margin-bottom: 10px; line-height: 1.5; }
   #bottleneckPanel .close { position: absolute; top: 10px; right: 12px; cursor: pointer; color: #9fb0d0; font-size: 18px; }
@@ -183,6 +183,8 @@
   /* 面板打开时，画布让出左侧空间（图谱不被遮挡，仅压缩显示区域） */
   body.table-open #cv { left: 384px; width: calc(100% - 384px); }
   body.table-open #hint { display: none; }
+  /* 右侧详情/风险/瓶颈面板打开时，隐藏右下角操作提示，避免浮层压住面板底部内容（修复「内容看不到」） */
+  body.panel-open #hint { display: none; }
   /* —— 移动端响应式：PC 上的固定宽度面板在窄屏会溢出/挤压画布，这里改为自适应 —————— */
   @media (max-width: 820px) {
     /* 控制栏折叠：窄屏默认只显示汉堡，点开才展开全部控件，避免约 11 个控件换行遮挡图谱（P0） */

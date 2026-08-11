@@ -7,12 +7,28 @@ import { computeMetrics } from "../lib/analytics.js";
 export function showRiskPanel(on) {
   var rp = document.getElementById("riskPanel");
   if (rp) rp.style.display = on ? "flex" : "none";
+  syncPanelOpen();
 }
 
 // 瓶颈透视面板显隐（与 #riskPanel 同槽同款 chrome）。
 export function showBottleneckPanel(on) {
   var bp = document.getElementById("bottleneckPanel");
   if (bp) bp.style.display = on ? "flex" : "none";
+  syncPanelOpen();
+}
+
+// 三个右侧面板（详情/风险/瓶颈）任一可见时给 body 加 panel-open，
+// 用于隐藏右下角操作提示（避免浮层压住面板底部内容，修复「内容看不到」）。
+function syncPanelOpen() {
+  if (typeof document === "undefined" || !document.body) return;
+  var open = false;
+  if (typeof getComputedStyle === "function") {
+    ["panel", "riskPanel", "bottleneckPanel"].forEach(function (id) {
+      var el = document.getElementById(id);
+      if (el && getComputedStyle(el).display !== "none") open = true;
+    });
+  }
+  document.body.classList.toggle("panel-open", open);
 }
 
 // 选中变化广播（P0 反向联动）：让「企业表格」等外部面板能订阅图谱选中事件，
@@ -36,6 +52,7 @@ export function selectNode(n) {
     // 风险/瓶颈视图下保留说明面板，仅清空「当前节点」区
     if (S.bottleneckMode) renderBottleneckPanel(null);
     else if (S.riskMode) renderRiskPanel(null);
+    syncPanelOpen();
     return;
   }
   if (S.bottleneckMode) { renderBottleneckPanel(n); showBottleneckPanel(true); }
@@ -43,6 +60,7 @@ export function selectNode(n) {
   else {
     renderPanel(n);
     if (panel) panel.style.display = "block";
+    syncPanelOpen();
   }
 }
 
