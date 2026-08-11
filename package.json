@@ -7,7 +7,8 @@
   "scripts": {
     "build:i18n": "esbuild src/i18n.js --bundle --minify --format=iife --outfile=dist/i18n.js",
     "build:engine": "esbuild src/engine/index.js --bundle --minify --format=iife --outfile=dist/graph_engine.js",
-    "build": "npm run build:i18n && npm run build:engine",
+    "build:feeds": "esbuild src/lib/data_layer.js --bundle --minify --format=iife --outfile=dist/data_layer.js",
+    "build": "npm run build:i18n && npm run build:engine && npm run build:feeds",
     "watch": "npm run build:i18n -- --watch & npm run build:engine -- --watch",
     "lint": "eslint src"
   },

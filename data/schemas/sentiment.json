@@ -1,0 +1,31 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "data/schemas/sentiment.json",
+  "title": "Supplier sentiment feed",
+  "description": "关键供应商舆情/情绪（时效数据）契约。由 tools/output/supplier_sentiment.md 归一化而来（保留原文 + 元数据）。",
+  "type": "object",
+  "required": ["meta", "data"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["dataset", "version", "generated"],
+      "properties": {
+        "dataset": { "const": "sentiment" },
+        "version": { "type": "integer" },
+        "schema_ref": { "type": "string" },
+        "generated": { "type": "string", "format": "date" },
+        "valid_until": { "type": "string", "format": "date" },
+        "sources": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "data": {
+      "type": "object",
+      "required": ["snapshot_date", "markdown"],
+      "properties": {
+        "snapshot_date": { "type": "string" },
+        "coverage": { "type": ["integer", "null"] },
+        "markdown": { "type": "string" }
+      }
+    }
+  }
+}

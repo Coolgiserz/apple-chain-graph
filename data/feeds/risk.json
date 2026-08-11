@@ -1,0 +1,3837 @@
+{
+  "meta": {
+    "dataset": "risk",
+    "version": 2,
+    "schema_ref": "data/schemas/risk.json",
+    "generated": "2026-08-09",
+    "valid_until": "2026-09-08",
+    "sources": [
+      "apple_10k",
+      "apple_supplier_list",
+      "base_aiqicha",
+      "base_aiqicha_rank",
+      "base_appleinsider",
+      "base_china",
+      "base_cool3c",
+      "base_deluair",
+      "base_hindustantimes",
+      "base_ifeng",
+      "base_itpc",
+      "base_itpc_goertek",
+      "base_jingjiribao",
+      "base_nfnews",
+      "base_outlookbiz",
+      "base_sav",
+      "base_sogou",
+      "base_stheadline",
+      "base_techbloat",
+      "base_tomshardware",
+      "counterpoint",
+      "dscc",
+      "ifixit",
+      "nikkei",
+      "omdia",
+      "techinsights",
+      "trendforce"
+    ]
+  },
+  "data": {
+    "product_lines": [
+      {
+        "product_line": "iPhone",
+        "n_products": 4,
+        "mean_product_vuln": 0.4931159420289855,
+        "tier": "中",
+        "mean_weakest": 1.0,
+        "single_point_total": 4,
+        "single_point_rate": 0.043478260869565216,
+        "worst_product": {
+          "product_id": "iphone_17",
+          "name": "iPhone 17",
+          "product_vuln": 0.4931159420289855
+        }
+      },
+      {
+        "product_line": "Wearable",
+        "n_products": 3,
+        "mean_product_vuln": 0.31907407407407407,
+        "tier": "中",
+        "mean_weakest": 0.5,
+        "single_point_total": 0,
+        "single_point_rate": 0.0,
+        "worst_product": {
+          "product_id": "watch_s10",
+          "name": "Apple Watch Series 10",
+          "product_vuln": 0.32152777777777775
+        }
+      },
+      {
+        "product_line": "Audio",
+        "n_products": 5,
+        "mean_product_vuln": 0.3169675925925926,
+        "tier": "中",
+        "mean_weakest": 0.5,
+        "single_point_total": 0,
+        "single_point_rate": 0.0,
+        "worst_product": {
+          "product_id": "airpods_4",
+          "name": "AirPods 4",
+          "product_vuln": 0.321875
+        }
+      },
+      {
+        "product_line": "Mac",
+        "n_products": 8,
+        "mean_product_vuln": 0.30833333333333335,
+        "tier": "中",
+        "mean_weakest": 0.5,
+        "single_point_total": 0,
+        "single_point_rate": 0.0,
+        "worst_product": {
+          "product_id": "mba_13_m4",
+          "name": "MacBook Air 13\" (M4)",
+          "product_vuln": 0.30833333333333335
+        }
+      },
+      {
+        "product_line": "iPad",
+        "n_products": 6,
+        "mean_product_vuln": 0.30320512820512824,
+        "tier": "中",
+        "mean_weakest": 0.5,
+        "single_point_total": 0,
+        "single_point_rate": 0.0,
+        "worst_product": {
+          "product_id": "ipadpro_11_m4",
+          "name": "iPad Pro 11\" (M4)",
+          "product_vuln": 0.30320512820512824
+        }
+      },
+      {
+        "product_line": "Spatial",
+        "n_products": 2,
+        "mean_product_vuln": 0.30052083333333335,
+        "tier": "中",
+        "mean_weakest": 0.5,
+        "single_point_total": 0,
+        "single_point_rate": 0.0,
+        "worst_product": {
+          "product_id": "visionpro_m2",
+          "name": "Apple Vision Pro (M2+R1)",
+          "product_vuln": 0.30052083333333335
+        }
+      }
+    ],
+    "products": [
+      {
+        "product_id": "iphone_17",
+        "name": "iPhone 17",
+        "product_line": "iPhone",
+        "n_components": 23,
+        "mean_v": 0.3688405797101449,
+        "weakest": 1.0,
+        "weakest_component": "audio_codec",
+        "sp_count": 1,
+        "sp_rate": 0.043478260869565216,
+        "product_vuln": 0.4931159420289855,
+        "tier": "中",
+        "components": [
+          {
+            "component_id": "soc",
+            "name": "Apple 自研 SoC 芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "display_panel",
+            "name": "显示面板",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "cover_glass",
+            "name": "盖板玻璃",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "cis",
+            "name": "摄像头图像传感器",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "lens",
+            "name": "镜头",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "ois",
+            "name": "光学防抖执行器",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "dram",
+            "name": "DRAM 运行内存",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "nand",
+            "name": "NAND 闪存",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "modem",
+            "name": "5G 调制解调器",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "connectivity",
+            "name": "无线连接芯片",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "audio_codec",
+            "name": "音频编解码与触觉芯片",
+            "vuln": 1.0,
+            "n_suppliers": 1,
+            "single_point": true
+          },
+          {
+            "component_id": "pmic",
+            "name": "电源管理芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "battery",
+            "name": "电池与电源系统",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "enclosure",
+            "name": "中框与结构件",
+            "vuln": 0.16666666666666666,
+            "n_suppliers": 6,
+            "single_point": false
+          },
+          {
+            "component_id": "fpc",
+            "name": "柔性印刷电路板",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "pcb",
+            "name": "刚性 PCB / 载板",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "substrate",
+            "name": "ABF 封装载板",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "osat",
+            "name": "先进封装与测试",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "speaker",
+            "name": "扬声器模组",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "mic",
+            "name": "MEMS 麦克风",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "sensor_motion",
+            "name": "运动与环境传感器",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "optical_filter",
+            "name": "光学滤光片与棱镜",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "uwb",
+            "name": "超宽带芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          }
+        ]
+      },
+      {
+        "product_id": "iphone_17_air",
+        "name": "iPhone 17 Air",
+        "product_line": "iPhone",
+        "n_components": 23,
+        "mean_v": 0.3688405797101449,
+        "weakest": 1.0,
+        "weakest_component": "audio_codec",
+        "sp_count": 1,
+        "sp_rate": 0.043478260869565216,
+        "product_vuln": 0.4931159420289855,
+        "tier": "中",
+        "components": [
+          {
+            "component_id": "soc",
+            "name": "Apple 自研 SoC 芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "display_panel",
+            "name": "显示面板",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "cover_glass",
+            "name": "盖板玻璃",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "cis",
+            "name": "摄像头图像传感器",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "lens",
+            "name": "镜头",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "ois",
+            "name": "光学防抖执行器",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "dram",
+            "name": "DRAM 运行内存",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "nand",
+            "name": "NAND 闪存",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "modem",
+            "name": "5G 调制解调器",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "connectivity",
+            "name": "无线连接芯片",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "audio_codec",
+            "name": "音频编解码与触觉芯片",
+            "vuln": 1.0,
+            "n_suppliers": 1,
+            "single_point": true
+          },
+          {
+            "component_id": "pmic",
+            "name": "电源管理芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "battery",
+            "name": "电池与电源系统",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "enclosure",
+            "name": "中框与结构件",
+            "vuln": 0.16666666666666666,
+            "n_suppliers": 6,
+            "single_point": false
+          },
+          {
+            "component_id": "fpc",
+            "name": "柔性印刷电路板",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "pcb",
+            "name": "刚性 PCB / 载板",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "substrate",
+            "name": "ABF 封装载板",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "osat",
+            "name": "先进封装与测试",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "speaker",
+            "name": "扬声器模组",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "mic",
+            "name": "MEMS 麦克风",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "sensor_motion",
+            "name": "运动与环境传感器",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "optical_filter",
+            "name": "光学滤光片与棱镜",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "uwb",
+            "name": "超宽带芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          }
+        ]
+      },
+      {
+        "product_id": "iphone_17_pro",
+        "name": "iPhone 17 Pro",
+        "product_line": "iPhone",
+        "n_components": 23,
+        "mean_v": 0.3688405797101449,
+        "weakest": 1.0,
+        "weakest_component": "audio_codec",
+        "sp_count": 1,
+        "sp_rate": 0.043478260869565216,
+        "product_vuln": 0.4931159420289855,
+        "tier": "中",
+        "components": [
+          {
+            "component_id": "soc",
+            "name": "Apple 自研 SoC 芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "display_panel",
+            "name": "显示面板",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "cover_glass",
+            "name": "盖板玻璃",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "cis",
+            "name": "摄像头图像传感器",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "lens",
+            "name": "镜头",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "ois",
+            "name": "光学防抖执行器",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "dram",
+            "name": "DRAM 运行内存",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "nand",
+            "name": "NAND 闪存",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "modem",
+            "name": "5G 调制解调器",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "connectivity",
+            "name": "无线连接芯片",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "audio_codec",
+            "name": "音频编解码与触觉芯片",
+            "vuln": 1.0,
+            "n_suppliers": 1,
+            "single_point": true
+          },
+          {
+            "component_id": "pmic",
+            "name": "电源管理芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "battery",
+            "name": "电池与电源系统",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "enclosure",
+            "name": "中框与结构件",
+            "vuln": 0.16666666666666666,
+            "n_suppliers": 6,
+            "single_point": false
+          },
+          {
+            "component_id": "fpc",
+            "name": "柔性印刷电路板",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "pcb",
+            "name": "刚性 PCB / 载板",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "substrate",
+            "name": "ABF 封装载板",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "osat",
+            "name": "先进封装与测试",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "speaker",
+            "name": "扬声器模组",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "mic",
+            "name": "MEMS 麦克风",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "sensor_motion",
+            "name": "运动与环境传感器",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "optical_filter",
+            "name": "光学滤光片与棱镜",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "uwb",
+            "name": "超宽带芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          }
+        ]
+      },
+      {
+        "product_id": "iphone_17_pmax",
+        "name": "iPhone 17 Pro Max",
+        "product_line": "iPhone",
+        "n_components": 23,
+        "mean_v": 0.3688405797101449,
+        "weakest": 1.0,
+        "weakest_component": "audio_codec",
+        "sp_count": 1,
+        "sp_rate": 0.043478260869565216,
+        "product_vuln": 0.4931159420289855,
+        "tier": "中",
+        "components": [
+          {
+            "component_id": "soc",
+            "name": "Apple 自研 SoC 芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "display_panel",
+            "name": "显示面板",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "cover_glass",
+            "name": "盖板玻璃",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "cis",
+            "name": "摄像头图像传感器",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "lens",
+            "name": "镜头",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "ois",
+            "name": "光学防抖执行器",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "dram",
+            "name": "DRAM 运行内存",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "nand",
+            "name": "NAND 闪存",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "modem",
+            "name": "5G 调制解调器",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "connectivity",
+            "name": "无线连接芯片",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "audio_codec",
+            "name": "音频编解码与触觉芯片",
+            "vuln": 1.0,
+            "n_suppliers": 1,
+            "single_point": true
+          },
+          {
+            "component_id": "pmic",
+            "name": "电源管理芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "battery",
+            "name": "电池与电源系统",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "enclosure",
+            "name": "中框与结构件",
+            "vuln": 0.16666666666666666,
+            "n_suppliers": 6,
+            "single_point": false
+          },
+          {
+            "component_id": "fpc",
+            "name": "柔性印刷电路板",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "pcb",
+            "name": "刚性 PCB / 载板",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "substrate",
+            "name": "ABF 封装载板",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "osat",
+            "name": "先进封装与测试",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "speaker",
+            "name": "扬声器模组",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "mic",
+            "name": "MEMS 麦克风",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "sensor_motion",
+            "name": "运动与环境传感器",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "optical_filter",
+            "name": "光学滤光片与棱镜",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "uwb",
+            "name": "超宽带芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          }
+        ]
+      },
+      {
+        "product_id": "airpods_4",
+        "name": "AirPods 4",
+        "product_line": "Audio",
+        "n_components": 8,
+        "mean_v": 0.34375,
+        "weakest": 0.5,
+        "weakest_component": "connectivity",
+        "sp_count": 0,
+        "sp_rate": 0.0,
+        "product_vuln": 0.321875,
+        "tier": "中",
+        "components": [
+          {
+            "component_id": "soc",
+            "name": "Apple 自研 SoC 芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "speaker",
+            "name": "扬声器模组",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "mic",
+            "name": "MEMS 麦克风",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "battery",
+            "name": "电池与电源系统",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "pmic",
+            "name": "电源管理芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "connectivity",
+            "name": "无线连接芯片",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "enclosure",
+            "name": "中框与结构件",
+            "vuln": 0.16666666666666666,
+            "n_suppliers": 6,
+            "single_point": false
+          },
+          {
+            "component_id": "wireless_charging",
+            "name": "无线充电模组",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          }
+        ]
+      },
+      {
+        "product_id": "watch_s10",
+        "name": "Apple Watch Series 10",
+        "product_line": "Wearable",
+        "n_components": 12,
+        "mean_v": 0.3430555555555555,
+        "weakest": 0.5,
+        "weakest_component": "sensor_bio",
+        "sp_count": 0,
+        "sp_rate": 0.0,
+        "product_vuln": 0.32152777777777775,
+        "tier": "中",
+        "components": [
+          {
+            "component_id": "soc",
+            "name": "Apple 自研 SoC 芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "display_panel",
+            "name": "显示面板",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "cover_glass",
+            "name": "盖板玻璃",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "battery",
+            "name": "电池与电源系统",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "enclosure",
+            "name": "中框与结构件",
+            "vuln": 0.16666666666666666,
+            "n_suppliers": 6,
+            "single_point": false
+          },
+          {
+            "component_id": "speaker",
+            "name": "扬声器模组",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "mic",
+            "name": "MEMS 麦克风",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "sensor_bio",
+            "name": "生物与健康传感器",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "sensor_motion",
+            "name": "运动与环境传感器",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "pmic",
+            "name": "电源管理芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "wireless_charging",
+            "name": "无线充电模组",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "connectivity",
+            "name": "无线连接芯片",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          }
+        ]
+      },
+      {
+        "product_id": "watch_ultra3",
+        "name": "Apple Watch Ultra 3",
+        "product_line": "Wearable",
+        "n_components": 12,
+        "mean_v": 0.3430555555555555,
+        "weakest": 0.5,
+        "weakest_component": "sensor_bio",
+        "sp_count": 0,
+        "sp_rate": 0.0,
+        "product_vuln": 0.32152777777777775,
+        "tier": "中",
+        "components": [
+          {
+            "component_id": "soc",
+            "name": "Apple 自研 SoC 芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "display_panel",
+            "name": "显示面板",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "cover_glass",
+            "name": "盖板玻璃",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "battery",
+            "name": "电池与电源系统",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "enclosure",
+            "name": "中框与结构件",
+            "vuln": 0.16666666666666666,
+            "n_suppliers": 6,
+            "single_point": false
+          },
+          {
+            "component_id": "speaker",
+            "name": "扬声器模组",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "mic",
+            "name": "MEMS 麦克风",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "sensor_bio",
+            "name": "生物与健康传感器",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "sensor_motion",
+            "name": "运动与环境传感器",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "pmic",
+            "name": "电源管理芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "wireless_charging",
+            "name": "无线充电模组",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "connectivity",
+            "name": "无线连接芯片",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          }
+        ]
+      },
+      {
+        "product_id": "airpods_pro3",
+        "name": "AirPods Pro 3",
+        "product_line": "Audio",
+        "n_components": 9,
+        "mean_v": 0.34259259259259256,
+        "weakest": 0.5,
+        "weakest_component": "connectivity",
+        "sp_count": 0,
+        "sp_rate": 0.0,
+        "product_vuln": 0.3212962962962963,
+        "tier": "中",
+        "components": [
+          {
+            "component_id": "soc",
+            "name": "Apple 自研 SoC 芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "speaker",
+            "name": "扬声器模组",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "mic",
+            "name": "MEMS 麦克风",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "battery",
+            "name": "电池与电源系统",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "pmic",
+            "name": "电源管理芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "connectivity",
+            "name": "无线连接芯片",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "enclosure",
+            "name": "中框与结构件",
+            "vuln": 0.16666666666666666,
+            "n_suppliers": 6,
+            "single_point": false
+          },
+          {
+            "component_id": "wireless_charging",
+            "name": "无线充电模组",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "uwb",
+            "name": "超宽带芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          }
+        ]
+      },
+      {
+        "product_id": "homepod_2",
+        "name": "HomePod (2nd gen)",
+        "product_line": "Audio",
+        "n_components": 5,
+        "mean_v": 0.3333333333333333,
+        "weakest": 0.5,
+        "weakest_component": "connectivity",
+        "sp_count": 0,
+        "sp_rate": 0.0,
+        "product_vuln": 0.31666666666666665,
+        "tier": "中",
+        "components": [
+          {
+            "component_id": "speaker",
+            "name": "扬声器模组",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "enclosure",
+            "name": "中框与结构件",
+            "vuln": 0.16666666666666666,
+            "n_suppliers": 6,
+            "single_point": false
+          },
+          {
+            "component_id": "pmic",
+            "name": "电源管理芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "connectivity",
+            "name": "无线连接芯片",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "mic",
+            "name": "MEMS 麦克风",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          }
+        ]
+      },
+      {
+        "product_id": "homepod_mini",
+        "name": "HomePod mini",
+        "product_line": "Audio",
+        "n_components": 5,
+        "mean_v": 0.3333333333333333,
+        "weakest": 0.5,
+        "weakest_component": "connectivity",
+        "sp_count": 0,
+        "sp_rate": 0.0,
+        "product_vuln": 0.31666666666666665,
+        "tier": "中",
+        "components": [
+          {
+            "component_id": "speaker",
+            "name": "扬声器模组",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "enclosure",
+            "name": "中框与结构件",
+            "vuln": 0.16666666666666666,
+            "n_suppliers": 6,
+            "single_point": false
+          },
+          {
+            "component_id": "pmic",
+            "name": "电源管理芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "connectivity",
+            "name": "无线连接芯片",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "mic",
+            "name": "MEMS 麦克风",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          }
+        ]
+      },
+      {
+        "product_id": "watch_se3",
+        "name": "Apple Watch SE (3rd)",
+        "product_line": "Wearable",
+        "n_components": 10,
+        "mean_v": 0.3283333333333333,
+        "weakest": 0.5,
+        "weakest_component": "wireless_charging",
+        "sp_count": 0,
+        "sp_rate": 0.0,
+        "product_vuln": 0.31416666666666665,
+        "tier": "中",
+        "components": [
+          {
+            "component_id": "soc",
+            "name": "Apple 自研 SoC 芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "display_panel",
+            "name": "显示面板",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "battery",
+            "name": "电池与电源系统",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "enclosure",
+            "name": "中框与结构件",
+            "vuln": 0.16666666666666666,
+            "n_suppliers": 6,
+            "single_point": false
+          },
+          {
+            "component_id": "speaker",
+            "name": "扬声器模组",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "mic",
+            "name": "MEMS 麦克风",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "sensor_motion",
+            "name": "运动与环境传感器",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "pmic",
+            "name": "电源管理芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "wireless_charging",
+            "name": "无线充电模组",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "connectivity",
+            "name": "无线连接芯片",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          }
+        ]
+      },
+      {
+        "product_id": "mba_13_m4",
+        "name": "MacBook Air 13\" (M4)",
+        "product_line": "Mac",
+        "n_components": 16,
+        "mean_v": 0.31666666666666665,
+        "weakest": 0.5,
+        "weakest_component": "connectivity",
+        "sp_count": 0,
+        "sp_rate": 0.0,
+        "product_vuln": 0.30833333333333335,
+        "tier": "中",
+        "components": [
+          {
+            "component_id": "soc",
+            "name": "Apple 自研 SoC 芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "display_panel",
+            "name": "显示面板",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "cover_glass",
+            "name": "盖板玻璃",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "dram",
+            "name": "DRAM 运行内存",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "nand",
+            "name": "NAND 闪存",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "connectivity",
+            "name": "无线连接芯片",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "pmic",
+            "name": "电源管理芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "battery",
+            "name": "电池与电源系统",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "enclosure",
+            "name": "中框与结构件",
+            "vuln": 0.16666666666666666,
+            "n_suppliers": 6,
+            "single_point": false
+          },
+          {
+            "component_id": "fpc",
+            "name": "柔性印刷电路板",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "pcb",
+            "name": "刚性 PCB / 载板",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "substrate",
+            "name": "ABF 封装载板",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "osat",
+            "name": "先进封装与测试",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "speaker",
+            "name": "扬声器模组",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "mic",
+            "name": "MEMS 麦克风",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "sensor_motion",
+            "name": "运动与环境传感器",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          }
+        ]
+      },
+      {
+        "product_id": "mba_15_m4",
+        "name": "MacBook Air 15\" (M4)",
+        "product_line": "Mac",
+        "n_components": 16,
+        "mean_v": 0.31666666666666665,
+        "weakest": 0.5,
+        "weakest_component": "connectivity",
+        "sp_count": 0,
+        "sp_rate": 0.0,
+        "product_vuln": 0.30833333333333335,
+        "tier": "中",
+        "components": [
+          {
+            "component_id": "soc",
+            "name": "Apple 自研 SoC 芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "display_panel",
+            "name": "显示面板",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "cover_glass",
+            "name": "盖板玻璃",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "dram",
+            "name": "DRAM 运行内存",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "nand",
+            "name": "NAND 闪存",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "connectivity",
+            "name": "无线连接芯片",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "pmic",
+            "name": "电源管理芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "battery",
+            "name": "电池与电源系统",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "enclosure",
+            "name": "中框与结构件",
+            "vuln": 0.16666666666666666,
+            "n_suppliers": 6,
+            "single_point": false
+          },
+          {
+            "component_id": "fpc",
+            "name": "柔性印刷电路板",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "pcb",
+            "name": "刚性 PCB / 载板",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "substrate",
+            "name": "ABF 封装载板",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "osat",
+            "name": "先进封装与测试",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "speaker",
+            "name": "扬声器模组",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "mic",
+            "name": "MEMS 麦克风",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "sensor_motion",
+            "name": "运动与环境传感器",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          }
+        ]
+      },
+      {
+        "product_id": "mbp_14_m4",
+        "name": "MacBook Pro 14\" (M4)",
+        "product_line": "Mac",
+        "n_components": 16,
+        "mean_v": 0.31666666666666665,
+        "weakest": 0.5,
+        "weakest_component": "connectivity",
+        "sp_count": 0,
+        "sp_rate": 0.0,
+        "product_vuln": 0.30833333333333335,
+        "tier": "中",
+        "components": [
+          {
+            "component_id": "soc",
+            "name": "Apple 自研 SoC 芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "display_panel",
+            "name": "显示面板",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "cover_glass",
+            "name": "盖板玻璃",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "dram",
+            "name": "DRAM 运行内存",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "nand",
+            "name": "NAND 闪存",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "connectivity",
+            "name": "无线连接芯片",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "pmic",
+            "name": "电源管理芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "battery",
+            "name": "电池与电源系统",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "enclosure",
+            "name": "中框与结构件",
+            "vuln": 0.16666666666666666,
+            "n_suppliers": 6,
+            "single_point": false
+          },
+          {
+            "component_id": "fpc",
+            "name": "柔性印刷电路板",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "pcb",
+            "name": "刚性 PCB / 载板",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "substrate",
+            "name": "ABF 封装载板",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "osat",
+            "name": "先进封装与测试",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "speaker",
+            "name": "扬声器模组",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "mic",
+            "name": "MEMS 麦克风",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "sensor_motion",
+            "name": "运动与环境传感器",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          }
+        ]
+      },
+      {
+        "product_id": "mbp_16_m4",
+        "name": "MacBook Pro 16\" (M4)",
+        "product_line": "Mac",
+        "n_components": 16,
+        "mean_v": 0.31666666666666665,
+        "weakest": 0.5,
+        "weakest_component": "connectivity",
+        "sp_count": 0,
+        "sp_rate": 0.0,
+        "product_vuln": 0.30833333333333335,
+        "tier": "中",
+        "components": [
+          {
+            "component_id": "soc",
+            "name": "Apple 自研 SoC 芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "display_panel",
+            "name": "显示面板",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "cover_glass",
+            "name": "盖板玻璃",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "dram",
+            "name": "DRAM 运行内存",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "nand",
+            "name": "NAND 闪存",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "connectivity",
+            "name": "无线连接芯片",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "pmic",
+            "name": "电源管理芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "battery",
+            "name": "电池与电源系统",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "enclosure",
+            "name": "中框与结构件",
+            "vuln": 0.16666666666666666,
+            "n_suppliers": 6,
+            "single_point": false
+          },
+          {
+            "component_id": "fpc",
+            "name": "柔性印刷电路板",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "pcb",
+            "name": "刚性 PCB / 载板",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "substrate",
+            "name": "ABF 封装载板",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "osat",
+            "name": "先进封装与测试",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "speaker",
+            "name": "扬声器模组",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "mic",
+            "name": "MEMS 麦克风",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "sensor_motion",
+            "name": "运动与环境传感器",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          }
+        ]
+      },
+      {
+        "product_id": "imac_24_m4",
+        "name": "iMac 24\" (M4)",
+        "product_line": "Mac",
+        "n_components": 16,
+        "mean_v": 0.31666666666666665,
+        "weakest": 0.5,
+        "weakest_component": "connectivity",
+        "sp_count": 0,
+        "sp_rate": 0.0,
+        "product_vuln": 0.30833333333333335,
+        "tier": "中",
+        "components": [
+          {
+            "component_id": "soc",
+            "name": "Apple 自研 SoC 芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "display_panel",
+            "name": "显示面板",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "cover_glass",
+            "name": "盖板玻璃",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "dram",
+            "name": "DRAM 运行内存",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "nand",
+            "name": "NAND 闪存",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "connectivity",
+            "name": "无线连接芯片",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "pmic",
+            "name": "电源管理芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "battery",
+            "name": "电池与电源系统",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "enclosure",
+            "name": "中框与结构件",
+            "vuln": 0.16666666666666666,
+            "n_suppliers": 6,
+            "single_point": false
+          },
+          {
+            "component_id": "fpc",
+            "name": "柔性印刷电路板",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "pcb",
+            "name": "刚性 PCB / 载板",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "substrate",
+            "name": "ABF 封装载板",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "osat",
+            "name": "先进封装与测试",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "speaker",
+            "name": "扬声器模组",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "mic",
+            "name": "MEMS 麦克风",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "sensor_motion",
+            "name": "运动与环境传感器",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          }
+        ]
+      },
+      {
+        "product_id": "macmini_m4",
+        "name": "Mac mini (M4)",
+        "product_line": "Mac",
+        "n_components": 16,
+        "mean_v": 0.31666666666666665,
+        "weakest": 0.5,
+        "weakest_component": "connectivity",
+        "sp_count": 0,
+        "sp_rate": 0.0,
+        "product_vuln": 0.30833333333333335,
+        "tier": "中",
+        "components": [
+          {
+            "component_id": "soc",
+            "name": "Apple 自研 SoC 芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "display_panel",
+            "name": "显示面板",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "cover_glass",
+            "name": "盖板玻璃",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "dram",
+            "name": "DRAM 运行内存",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "nand",
+            "name": "NAND 闪存",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "connectivity",
+            "name": "无线连接芯片",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "pmic",
+            "name": "电源管理芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "battery",
+            "name": "电池与电源系统",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "enclosure",
+            "name": "中框与结构件",
+            "vuln": 0.16666666666666666,
+            "n_suppliers": 6,
+            "single_point": false
+          },
+          {
+            "component_id": "fpc",
+            "name": "柔性印刷电路板",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "pcb",
+            "name": "刚性 PCB / 载板",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "substrate",
+            "name": "ABF 封装载板",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "osat",
+            "name": "先进封装与测试",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "speaker",
+            "name": "扬声器模组",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "mic",
+            "name": "MEMS 麦克风",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "sensor_motion",
+            "name": "运动与环境传感器",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          }
+        ]
+      },
+      {
+        "product_id": "macstudio_m4",
+        "name": "Mac Studio (M4 Max)",
+        "product_line": "Mac",
+        "n_components": 16,
+        "mean_v": 0.31666666666666665,
+        "weakest": 0.5,
+        "weakest_component": "connectivity",
+        "sp_count": 0,
+        "sp_rate": 0.0,
+        "product_vuln": 0.30833333333333335,
+        "tier": "中",
+        "components": [
+          {
+            "component_id": "soc",
+            "name": "Apple 自研 SoC 芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "display_panel",
+            "name": "显示面板",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "cover_glass",
+            "name": "盖板玻璃",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "dram",
+            "name": "DRAM 运行内存",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "nand",
+            "name": "NAND 闪存",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "connectivity",
+            "name": "无线连接芯片",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "pmic",
+            "name": "电源管理芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "battery",
+            "name": "电池与电源系统",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "enclosure",
+            "name": "中框与结构件",
+            "vuln": 0.16666666666666666,
+            "n_suppliers": 6,
+            "single_point": false
+          },
+          {
+            "component_id": "fpc",
+            "name": "柔性印刷电路板",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "pcb",
+            "name": "刚性 PCB / 载板",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "substrate",
+            "name": "ABF 封装载板",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "osat",
+            "name": "先进封装与测试",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "speaker",
+            "name": "扬声器模组",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "mic",
+            "name": "MEMS 麦克风",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "sensor_motion",
+            "name": "运动与环境传感器",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          }
+        ]
+      },
+      {
+        "product_id": "macpro_m2u",
+        "name": "Mac Pro (M2 Ultra)",
+        "product_line": "Mac",
+        "n_components": 16,
+        "mean_v": 0.31666666666666665,
+        "weakest": 0.5,
+        "weakest_component": "connectivity",
+        "sp_count": 0,
+        "sp_rate": 0.0,
+        "product_vuln": 0.30833333333333335,
+        "tier": "中",
+        "components": [
+          {
+            "component_id": "soc",
+            "name": "Apple 自研 SoC 芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "display_panel",
+            "name": "显示面板",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "cover_glass",
+            "name": "盖板玻璃",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "dram",
+            "name": "DRAM 运行内存",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "nand",
+            "name": "NAND 闪存",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "connectivity",
+            "name": "无线连接芯片",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "pmic",
+            "name": "电源管理芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "battery",
+            "name": "电池与电源系统",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "enclosure",
+            "name": "中框与结构件",
+            "vuln": 0.16666666666666666,
+            "n_suppliers": 6,
+            "single_point": false
+          },
+          {
+            "component_id": "fpc",
+            "name": "柔性印刷电路板",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "pcb",
+            "name": "刚性 PCB / 载板",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "substrate",
+            "name": "ABF 封装载板",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "osat",
+            "name": "先进封装与测试",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "speaker",
+            "name": "扬声器模组",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "mic",
+            "name": "MEMS 麦克风",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "sensor_motion",
+            "name": "运动与环境传感器",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          }
+        ]
+      },
+      {
+        "product_id": "airpodsmax_usbc",
+        "name": "AirPods Max (USB-C)",
+        "product_line": "Audio",
+        "n_components": 5,
+        "mean_v": 0.31666666666666665,
+        "weakest": 0.5,
+        "weakest_component": "connectivity",
+        "sp_count": 0,
+        "sp_rate": 0.0,
+        "product_vuln": 0.30833333333333335,
+        "tier": "中",
+        "components": [
+          {
+            "component_id": "speaker",
+            "name": "扬声器模组",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "enclosure",
+            "name": "中框与结构件",
+            "vuln": 0.16666666666666666,
+            "n_suppliers": 6,
+            "single_point": false
+          },
+          {
+            "component_id": "battery",
+            "name": "电池与电源系统",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "pmic",
+            "name": "电源管理芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "connectivity",
+            "name": "无线连接芯片",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          }
+        ]
+      },
+      {
+        "product_id": "ipadpro_11_m4",
+        "name": "iPad Pro 11\" (M4)",
+        "product_line": "iPad",
+        "n_components": 13,
+        "mean_v": 0.30641025641025643,
+        "weakest": 0.5,
+        "weakest_component": "touch",
+        "sp_count": 0,
+        "sp_rate": 0.0,
+        "product_vuln": 0.30320512820512824,
+        "tier": "中",
+        "components": [
+          {
+            "component_id": "soc",
+            "name": "Apple 自研 SoC 芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "display_panel",
+            "name": "显示面板",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "cover_glass",
+            "name": "盖板玻璃",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "dram",
+            "name": "DRAM 运行内存",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "nand",
+            "name": "NAND 闪存",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "pmic",
+            "name": "电源管理芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "battery",
+            "name": "电池与电源系统",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "enclosure",
+            "name": "中框与结构件",
+            "vuln": 0.16666666666666666,
+            "n_suppliers": 6,
+            "single_point": false
+          },
+          {
+            "component_id": "fpc",
+            "name": "柔性印刷电路板",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "touch",
+            "name": "触控模组",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "speaker",
+            "name": "扬声器模组",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "mic",
+            "name": "MEMS 麦克风",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "sensor_motion",
+            "name": "运动与环境传感器",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          }
+        ]
+      },
+      {
+        "product_id": "ipadpro_13_m4",
+        "name": "iPad Pro 13\" (M4)",
+        "product_line": "iPad",
+        "n_components": 13,
+        "mean_v": 0.30641025641025643,
+        "weakest": 0.5,
+        "weakest_component": "touch",
+        "sp_count": 0,
+        "sp_rate": 0.0,
+        "product_vuln": 0.30320512820512824,
+        "tier": "中",
+        "components": [
+          {
+            "component_id": "soc",
+            "name": "Apple 自研 SoC 芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "display_panel",
+            "name": "显示面板",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "cover_glass",
+            "name": "盖板玻璃",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "dram",
+            "name": "DRAM 运行内存",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "nand",
+            "name": "NAND 闪存",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "pmic",
+            "name": "电源管理芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "battery",
+            "name": "电池与电源系统",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "enclosure",
+            "name": "中框与结构件",
+            "vuln": 0.16666666666666666,
+            "n_suppliers": 6,
+            "single_point": false
+          },
+          {
+            "component_id": "fpc",
+            "name": "柔性印刷电路板",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "touch",
+            "name": "触控模组",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "speaker",
+            "name": "扬声器模组",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "mic",
+            "name": "MEMS 麦克风",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "sensor_motion",
+            "name": "运动与环境传感器",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          }
+        ]
+      },
+      {
+        "product_id": "ipadair_11_m3",
+        "name": "iPad Air 11\" (M3)",
+        "product_line": "iPad",
+        "n_components": 13,
+        "mean_v": 0.30641025641025643,
+        "weakest": 0.5,
+        "weakest_component": "touch",
+        "sp_count": 0,
+        "sp_rate": 0.0,
+        "product_vuln": 0.30320512820512824,
+        "tier": "中",
+        "components": [
+          {
+            "component_id": "soc",
+            "name": "Apple 自研 SoC 芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "display_panel",
+            "name": "显示面板",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "cover_glass",
+            "name": "盖板玻璃",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "dram",
+            "name": "DRAM 运行内存",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "nand",
+            "name": "NAND 闪存",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "pmic",
+            "name": "电源管理芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "battery",
+            "name": "电池与电源系统",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "enclosure",
+            "name": "中框与结构件",
+            "vuln": 0.16666666666666666,
+            "n_suppliers": 6,
+            "single_point": false
+          },
+          {
+            "component_id": "fpc",
+            "name": "柔性印刷电路板",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "touch",
+            "name": "触控模组",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "speaker",
+            "name": "扬声器模组",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "mic",
+            "name": "MEMS 麦克风",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "sensor_motion",
+            "name": "运动与环境传感器",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          }
+        ]
+      },
+      {
+        "product_id": "ipadair_13_m3",
+        "name": "iPad Air 13\" (M3)",
+        "product_line": "iPad",
+        "n_components": 13,
+        "mean_v": 0.30641025641025643,
+        "weakest": 0.5,
+        "weakest_component": "touch",
+        "sp_count": 0,
+        "sp_rate": 0.0,
+        "product_vuln": 0.30320512820512824,
+        "tier": "中",
+        "components": [
+          {
+            "component_id": "soc",
+            "name": "Apple 自研 SoC 芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "display_panel",
+            "name": "显示面板",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "cover_glass",
+            "name": "盖板玻璃",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "dram",
+            "name": "DRAM 运行内存",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "nand",
+            "name": "NAND 闪存",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "pmic",
+            "name": "电源管理芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "battery",
+            "name": "电池与电源系统",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "enclosure",
+            "name": "中框与结构件",
+            "vuln": 0.16666666666666666,
+            "n_suppliers": 6,
+            "single_point": false
+          },
+          {
+            "component_id": "fpc",
+            "name": "柔性印刷电路板",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "touch",
+            "name": "触控模组",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "speaker",
+            "name": "扬声器模组",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "mic",
+            "name": "MEMS 麦克风",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "sensor_motion",
+            "name": "运动与环境传感器",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          }
+        ]
+      },
+      {
+        "product_id": "ipadmini_a17",
+        "name": "iPad mini (A17 Pro)",
+        "product_line": "iPad",
+        "n_components": 13,
+        "mean_v": 0.30641025641025643,
+        "weakest": 0.5,
+        "weakest_component": "touch",
+        "sp_count": 0,
+        "sp_rate": 0.0,
+        "product_vuln": 0.30320512820512824,
+        "tier": "中",
+        "components": [
+          {
+            "component_id": "soc",
+            "name": "Apple 自研 SoC 芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "display_panel",
+            "name": "显示面板",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "cover_glass",
+            "name": "盖板玻璃",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "dram",
+            "name": "DRAM 运行内存",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "nand",
+            "name": "NAND 闪存",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "pmic",
+            "name": "电源管理芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "battery",
+            "name": "电池与电源系统",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "enclosure",
+            "name": "中框与结构件",
+            "vuln": 0.16666666666666666,
+            "n_suppliers": 6,
+            "single_point": false
+          },
+          {
+            "component_id": "fpc",
+            "name": "柔性印刷电路板",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "touch",
+            "name": "触控模组",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "speaker",
+            "name": "扬声器模组",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "mic",
+            "name": "MEMS 麦克风",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "sensor_motion",
+            "name": "运动与环境传感器",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          }
+        ]
+      },
+      {
+        "product_id": "ipad_11_a16",
+        "name": "iPad (A16)",
+        "product_line": "iPad",
+        "n_components": 13,
+        "mean_v": 0.30641025641025643,
+        "weakest": 0.5,
+        "weakest_component": "touch",
+        "sp_count": 0,
+        "sp_rate": 0.0,
+        "product_vuln": 0.30320512820512824,
+        "tier": "中",
+        "components": [
+          {
+            "component_id": "soc",
+            "name": "Apple 自研 SoC 芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "display_panel",
+            "name": "显示面板",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "cover_glass",
+            "name": "盖板玻璃",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "dram",
+            "name": "DRAM 运行内存",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "nand",
+            "name": "NAND 闪存",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "pmic",
+            "name": "电源管理芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "battery",
+            "name": "电池与电源系统",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "enclosure",
+            "name": "中框与结构件",
+            "vuln": 0.16666666666666666,
+            "n_suppliers": 6,
+            "single_point": false
+          },
+          {
+            "component_id": "fpc",
+            "name": "柔性印刷电路板",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "touch",
+            "name": "触控模组",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          },
+          {
+            "component_id": "speaker",
+            "name": "扬声器模组",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "mic",
+            "name": "MEMS 麦克风",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "sensor_motion",
+            "name": "运动与环境传感器",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          }
+        ]
+      },
+      {
+        "product_id": "visionpro_m2",
+        "name": "Apple Vision Pro (M2+R1)",
+        "product_line": "Spatial",
+        "n_components": 16,
+        "mean_v": 0.30104166666666665,
+        "weakest": 0.5,
+        "weakest_component": "optical_filter",
+        "sp_count": 0,
+        "sp_rate": 0.0,
+        "product_vuln": 0.30052083333333335,
+        "tier": "中",
+        "components": [
+          {
+            "component_id": "soc",
+            "name": "Apple 自研 SoC 芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "display_panel",
+            "name": "显示面板",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "cover_glass",
+            "name": "盖板玻璃",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "cis",
+            "name": "摄像头图像传感器",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "lens",
+            "name": "镜头",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "dram",
+            "name": "DRAM 运行内存",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "nand",
+            "name": "NAND 闪存",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "pmic",
+            "name": "电源管理芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "battery",
+            "name": "电池与电源系统",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "enclosure",
+            "name": "中框与结构件",
+            "vuln": 0.16666666666666666,
+            "n_suppliers": 6,
+            "single_point": false
+          },
+          {
+            "component_id": "speaker",
+            "name": "扬声器模组",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "mic",
+            "name": "MEMS 麦克风",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "sensor_motion",
+            "name": "运动与环境传感器",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "fpc",
+            "name": "柔性印刷电路板",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "pcb",
+            "name": "刚性 PCB / 载板",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "optical_filter",
+            "name": "光学滤光片与棱镜",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          }
+        ]
+      },
+      {
+        "product_id": "visionpro_m5",
+        "name": "Apple Vision Pro (M5)",
+        "product_line": "Spatial",
+        "n_components": 16,
+        "mean_v": 0.30104166666666665,
+        "weakest": 0.5,
+        "weakest_component": "optical_filter",
+        "sp_count": 0,
+        "sp_rate": 0.0,
+        "product_vuln": 0.30052083333333335,
+        "tier": "中",
+        "components": [
+          {
+            "component_id": "soc",
+            "name": "Apple 自研 SoC 芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "display_panel",
+            "name": "显示面板",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "cover_glass",
+            "name": "盖板玻璃",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "cis",
+            "name": "摄像头图像传感器",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "lens",
+            "name": "镜头",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "dram",
+            "name": "DRAM 运行内存",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "nand",
+            "name": "NAND 闪存",
+            "vuln": 0.2,
+            "n_suppliers": 5,
+            "single_point": false
+          },
+          {
+            "component_id": "pmic",
+            "name": "电源管理芯片",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "battery",
+            "name": "电池与电源系统",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "enclosure",
+            "name": "中框与结构件",
+            "vuln": 0.16666666666666666,
+            "n_suppliers": 6,
+            "single_point": false
+          },
+          {
+            "component_id": "speaker",
+            "name": "扬声器模组",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "mic",
+            "name": "MEMS 麦克风",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "sensor_motion",
+            "name": "运动与环境传感器",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "fpc",
+            "name": "柔性印刷电路板",
+            "vuln": 0.3333333333333333,
+            "n_suppliers": 3,
+            "single_point": false
+          },
+          {
+            "component_id": "pcb",
+            "name": "刚性 PCB / 载板",
+            "vuln": 0.25,
+            "n_suppliers": 4,
+            "single_point": false
+          },
+          {
+            "component_id": "optical_filter",
+            "name": "光学滤光片与棱镜",
+            "vuln": 0.5,
+            "n_suppliers": 2,
+            "single_point": false
+          }
+        ]
+      }
+    ],
+    "components": [
+      {
+        "component_id": "audio_codec",
+        "name": "音频编解码与触觉芯片",
+        "category": "Semiconductor",
+        "n_suppliers": 1,
+        "vuln": 1.0,
+        "single_point": true,
+        "missing_data": false,
+        "suppliers": [
+          "cirrus"
+        ],
+        "distinct_countries": 1,
+        "countries": [
+          "USA"
+        ]
+      },
+      {
+        "component_id": "ois",
+        "name": "光学防抖执行器",
+        "category": "Optics/Camera",
+        "n_suppliers": 2,
+        "vuln": 0.5,
+        "single_point": false,
+        "missing_data": false,
+        "suppliers": [
+          "alps",
+          "mitsumi"
+        ],
+        "distinct_countries": 1,
+        "countries": [
+          "Japan"
+        ]
+      },
+      {
+        "component_id": "modem",
+        "name": "5G 调制解调器",
+        "category": "Connectivity",
+        "n_suppliers": 2,
+        "vuln": 0.5,
+        "single_point": false,
+        "missing_data": false,
+        "suppliers": [
+          "qualcomm",
+          "apple"
+        ],
+        "distinct_countries": 1,
+        "countries": [
+          "USA"
+        ]
+      },
+      {
+        "component_id": "connectivity",
+        "name": "无线连接芯片",
+        "category": "Connectivity",
+        "n_suppliers": 2,
+        "vuln": 0.5,
+        "single_point": false,
+        "missing_data": false,
+        "suppliers": [
+          "broadcom",
+          "qualcomm"
+        ],
+        "distinct_countries": 1,
+        "countries": [
+          "USA"
+        ]
+      },
+      {
+        "component_id": "osat",
+        "name": "先进封装与测试",
+        "category": "Semiconductor",
+        "n_suppliers": 2,
+        "vuln": 0.5,
+        "single_point": false,
+        "missing_data": false,
+        "suppliers": [
+          "ase",
+          "amkor"
+        ],
+        "distinct_countries": 2,
+        "countries": [
+          "Taiwan",
+          "USA/Korea"
+        ]
+      },
+      {
+        "component_id": "sensor_bio",
+        "name": "生物与健康传感器",
+        "category": "Sensor",
+        "n_suppliers": 2,
+        "vuln": 0.5,
+        "single_point": false,
+        "missing_data": false,
+        "suppliers": [
+          "st",
+          "ams"
+        ],
+        "distinct_countries": 2,
+        "countries": [
+          "Austria",
+          "Switzerland/France"
+        ]
+      },
+      {
+        "component_id": "optical_filter",
+        "name": "光学滤光片与棱镜",
+        "category": "Optics/Camera",
+        "n_suppliers": 2,
+        "vuln": 0.5,
+        "single_point": false,
+        "missing_data": false,
+        "suppliers": [
+          "crystal",
+          "lante"
+        ],
+        "distinct_countries": 1,
+        "countries": [
+          "China"
+        ]
+      },
+      {
+        "component_id": "wireless_charging",
+        "name": "无线充电模组",
+        "category": "Power",
+        "n_suppliers": 2,
+        "vuln": 0.5,
+        "single_point": false,
+        "missing_data": false,
+        "suppliers": [
+          "st",
+          "broadcom"
+        ],
+        "distinct_countries": 2,
+        "countries": [
+          "Switzerland/France",
+          "USA"
+        ]
+      },
+      {
+        "component_id": "touch",
+        "name": "触控模组",
+        "category": "Display",
+        "n_suppliers": 2,
+        "vuln": 0.5,
+        "single_point": false,
+        "missing_data": false,
+        "suppliers": [
+          "gis",
+          "lgd"
+        ],
+        "distinct_countries": 2,
+        "countries": [
+          "South Korea",
+          "Taiwan"
+        ]
+      },
+      {
+        "component_id": "camera_module",
+        "name": "摄像头模组",
+        "category": "Optics/Camera",
+        "n_suppliers": 2,
+        "vuln": 0.5,
+        "single_point": false,
+        "missing_data": false,
+        "suppliers": [
+          "cowell",
+          "lgd"
+        ],
+        "distinct_countries": 2,
+        "countries": [
+          "China",
+          "South Korea"
+        ]
+      },
+      {
+        "component_id": "soc",
+        "name": "Apple 自研 SoC 芯片",
+        "category": "Processor",
+        "n_suppliers": 3,
+        "vuln": 0.3333333333333333,
+        "single_point": false,
+        "missing_data": false,
+        "suppliers": [
+          "tsmc",
+          "arm",
+          "apple"
+        ],
+        "distinct_countries": 3,
+        "countries": [
+          "Taiwan",
+          "UK",
+          "USA"
+        ]
+      },
+      {
+        "component_id": "cover_glass",
+        "name": "盖板玻璃",
+        "category": "Display",
+        "n_suppliers": 3,
+        "vuln": 0.3333333333333333,
+        "single_point": false,
+        "missing_data": false,
+        "suppliers": [
+          "corning",
+          "lens_tech",
+          "berne"
+        ],
+        "distinct_countries": 2,
+        "countries": [
+          "China",
+          "USA"
+        ]
+      },
+      {
+        "component_id": "cis",
+        "name": "摄像头图像传感器",
+        "category": "Optics/Camera",
+        "n_suppliers": 3,
+        "vuln": 0.3333333333333333,
+        "single_point": false,
+        "missing_data": false,
+        "suppliers": [
+          "viseira",
+          "sony",
+          "samsung_elec"
+        ],
+        "distinct_countries": 3,
+        "countries": [
+          "Japan",
+          "South Korea",
+          "Taiwan"
+        ]
+      },
+      {
+        "component_id": "dram",
+        "name": "DRAM 运行内存",
+        "category": "Memory",
+        "n_suppliers": 3,
+        "vuln": 0.3333333333333333,
+        "single_point": false,
+        "missing_data": false,
+        "suppliers": [
+          "samsung_elec",
+          "skhynix",
+          "micron"
+        ],
+        "distinct_countries": 2,
+        "countries": [
+          "South Korea",
+          "USA"
+        ]
+      },
+      {
+        "component_id": "pmic",
+        "name": "电源管理芯片",
+        "category": "Semiconductor",
+        "n_suppliers": 3,
+        "vuln": 0.3333333333333333,
+        "single_point": false,
+        "missing_data": false,
+        "suppliers": [
+          "ti",
+          "st",
+          "apple"
+        ],
+        "distinct_countries": 2,
+        "countries": [
+          "Switzerland/France",
+          "USA"
+        ]
+      },
+      {
+        "component_id": "fpc",
+        "name": "柔性印刷电路板",
+        "category": "PCB",
+        "n_suppliers": 3,
+        "vuln": 0.3333333333333333,
+        "single_point": false,
+        "missing_data": false,
+        "suppliers": [
+          "zhending",
+          "flexium",
+          "dongshan"
+        ],
+        "distinct_countries": 3,
+        "countries": [
+          "China",
+          "Taiwan",
+          "Taiwan/China"
+        ]
+      },
+      {
+        "component_id": "substrate",
+        "name": "ABF 封装载板",
+        "category": "PCB",
+        "n_suppliers": 3,
+        "vuln": 0.3333333333333333,
+        "single_point": false,
+        "missing_data": false,
+        "suppliers": [
+          "ibiden",
+          "unimicron",
+          "nanya_pcb"
+        ],
+        "distinct_countries": 2,
+        "countries": [
+          "Japan",
+          "Taiwan"
+        ]
+      },
+      {
+        "component_id": "speaker",
+        "name": "扬声器模组",
+        "category": "Acoustics",
+        "n_suppliers": 3,
+        "vuln": 0.3333333333333333,
+        "single_point": false,
+        "missing_data": false,
+        "suppliers": [
+          "goertek",
+          "aac",
+          "luxshare"
+        ],
+        "distinct_countries": 1,
+        "countries": [
+          "China"
+        ]
+      },
+      {
+        "component_id": "mic",
+        "name": "MEMS 麦克风",
+        "category": "Acoustics",
+        "n_suppliers": 3,
+        "vuln": 0.3333333333333333,
+        "single_point": false,
+        "missing_data": false,
+        "suppliers": [
+          "knowles",
+          "goertek",
+          "aac"
+        ],
+        "distinct_countries": 2,
+        "countries": [
+          "China",
+          "USA"
+        ]
+      },
+      {
+        "component_id": "sensor_motion",
+        "name": "运动与环境传感器",
+        "category": "Sensor",
+        "n_suppliers": 3,
+        "vuln": 0.3333333333333333,
+        "single_point": false,
+        "missing_data": false,
+        "suppliers": [
+          "bosch",
+          "st",
+          "tdk"
+        ],
+        "distinct_countries": 3,
+        "countries": [
+          "Germany",
+          "Japan",
+          "Switzerland/France"
+        ]
+      },
+      {
+        "component_id": "uwb",
+        "name": "超宽带芯片",
+        "category": "Connectivity",
+        "n_suppliers": 3,
+        "vuln": 0.3333333333333333,
+        "single_point": false,
+        "missing_data": false,
+        "suppliers": [
+          "murata",
+          "st",
+          "apple"
+        ],
+        "distinct_countries": 3,
+        "countries": [
+          "Japan",
+          "Switzerland/France",
+          "USA"
+        ]
+      },
+      {
+        "component_id": "lens",
+        "name": "镜头",
+        "category": "Optics/Camera",
+        "n_suppliers": 4,
+        "vuln": 0.25,
+        "single_point": false,
+        "missing_data": false,
+        "suppliers": [
+          "zhaowei",
+          "largan",
+          "genius",
+          "sunny"
+        ],
+        "distinct_countries": 2,
+        "countries": [
+          "China",
+          "Taiwan"
+        ]
+      },
+      {
+        "component_id": "battery",
+        "name": "电池与电源系统",
+        "category": "Power",
+        "n_suppliers": 4,
+        "vuln": 0.25,
+        "single_point": false,
+        "missing_data": false,
+        "suppliers": [
+          "desay",
+          "sunwoda",
+          "atl",
+          "tdk"
+        ],
+        "distinct_countries": 2,
+        "countries": [
+          "China",
+          "Japan"
+        ]
+      },
+      {
+        "component_id": "pcb",
+        "name": "刚性 PCB / 载板",
+        "category": "PCB",
+        "n_suppliers": 4,
+        "vuln": 0.25,
+        "single_point": false,
+        "missing_data": false,
+        "suppliers": [
+          "unimicron",
+          "nanya_pcb",
+          "shennan",
+          "ibiden"
+        ],
+        "distinct_countries": 3,
+        "countries": [
+          "China",
+          "Japan",
+          "Taiwan"
+        ]
+      },
+      {
+        "component_id": "display_panel",
+        "name": "显示面板",
+        "category": "Display",
+        "n_suppliers": 5,
+        "vuln": 0.2,
+        "single_point": false,
+        "missing_data": false,
+        "suppliers": [
+          "sdc",
+          "lgd",
+          "boe",
+          "sharp",
+          "sony"
+        ],
+        "distinct_countries": 3,
+        "countries": [
+          "China",
+          "Japan",
+          "South Korea"
+        ]
+      },
+      {
+        "component_id": "nand",
+        "name": "NAND 闪存",
+        "category": "Memory",
+        "n_suppliers": 5,
+        "vuln": 0.2,
+        "single_point": false,
+        "missing_data": false,
+        "suppliers": [
+          "samsung_elec",
+          "skhynix",
+          "kioxia",
+          "wdc",
+          "micron"
+        ],
+        "distinct_countries": 3,
+        "countries": [
+          "Japan",
+          "South Korea",
+          "USA"
+        ]
+      },
+      {
+        "component_id": "enclosure",
+        "name": "中框与结构件",
+        "category": "Mechanical",
+        "n_suppliers": 6,
+        "vuln": 0.16666666666666666,
+        "single_point": false,
+        "missing_data": false,
+        "suppliers": [
+          "catcher",
+          "lens_tech",
+          "changying",
+          "lingyi",
+          "byd_e",
+          "foxconn"
+        ],
+        "distinct_countries": 3,
+        "countries": [
+          "China",
+          "Taiwan",
+          "Taiwan/China"
+        ]
+      }
+    ]
+  }
+}
