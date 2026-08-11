@@ -111,6 +111,29 @@ export function draw(vis) {
       S.ctx.textBaseline = "alphabetic";
       return;   // forEach 回调内用 return 跳过当前节点（Line 已绘制完毕）
     }
+    // 生产基地（ProductionBase）：用方块区分于圆形的实体/供应商节点，颜色取 COLORS.Base。
+    if (n.type === "Base") {
+      var rB = nodeRadius(n), hs = rB * 1.6;   // 方块半边长
+      S.ctx.globalAlpha = dim ? 0.2 : 1;
+      S.ctx.beginPath();
+      S.ctx.rect(n.x - hs, n.y - hs, hs * 2, hs * 2);
+      S.ctx.fillStyle = (S.riskMode && n.vuln != null) ? vulnColor(n.vuln) : COLORS.Base;
+      S.ctx.fill();
+      S.ctx.lineWidth = (S.selected === n) ? 3 : 1.2;
+      S.ctx.strokeStyle = (S.selected === n) ? "#fff" : "rgba(255,255,255,.35)";
+      S.ctx.stroke();
+      if (n._key === S.criticalId) {
+        S.ctx.beginPath(); S.ctx.rect(n.x - hs - 4, n.y - hs - 4, (hs + 4) * 2, (hs + 4) * 2);
+        S.ctx.strokeStyle = "#fbbf24"; S.ctx.lineWidth = 2.5; S.ctx.stroke();
+      }
+      if (S.view.scale > 0.7 || n.type === "Product" || n.type === "Line" || S.selected === n || S.hover === n || n._key === S.criticalId) {
+        S.ctx.globalAlpha = dim ? 0.25 : 1;
+        S.ctx.fillStyle = "#dfe7f7"; S.ctx.font = "11px sans-serif"; S.ctx.textAlign = "center";
+        S.ctx.fillText(label(n), n.x, n.y + hs + 12);
+      }
+      S.ctx.globalAlpha = 1;
+      return;   // Base 已绘制完毕
+    }
     S.ctx.globalAlpha = dim ? 0.18 : 1;
     S.ctx.beginPath(); S.ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
     // 风险视图：组件/产品节点按脆弱性着色（供应商节点保持原类型色）

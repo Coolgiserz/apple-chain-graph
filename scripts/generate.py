@@ -72,6 +72,106 @@ SOURCES = {
    "url": "https://asia.nikkei.com/",
    "kind": "analyst"},
 }
+# ---------------------------------------------------------------------------
+# 生产基地来源注册表（BASE_SOURCES） —— 产品线×生产基地关系溯源
+# id -> {title, publisher, url, kind}
+#   kind: media(媒体报道) / analyst(行业分析) / state(官方/半官方媒体) /
+#         govt(政府投促机构) / commercial(商业登记/咨询) / encyclopedia(百科)
+# 全部为公开可访问的稳定页面；与 SOURCES 合并进 meta.source_registry，
+# 使每条 MANUFACTURED_AT / OPERATED_BY 边均可追溯到公开来源。
+# ---------------------------------------------------------------------------
+BASE_SOURCES = {
+ "base_appleinsider": {
+   "title": "AppleInsider — Where Apple products are assembled (and where parts come from)",
+   "publisher": "AppleInsider",
+   "url": "https://appleinsider.com/articles/26/04/22/where-apple-products-are-assembled-and-where-their-parts-come-from",
+   "kind": "analyst"},
+ "base_techbloat": {
+   "title": "TechBloat — Where are iPhones manufactured (complete guide)",
+   "publisher": "TechBloat",
+   "url": "https://www.techbloat.com/where-are-iphones-manufactured-complete-guide.html",
+   "kind": "analyst"},
+ "base_deluair": {
+   "title": "Delu Air consultancy — Apple China supply chain 2026",
+   "publisher": "Delu Air (consultancy)",
+   "url": "https://deluair.com/consultancy/insights/apple-china-supply-chain-2026",
+   "kind": "analyst"},
+ "base_china": {
+   "title": "中国网 — 成都高新区制造产能报道（图文）",
+   "publisher": "中国网 (China.org.cn)",
+   "url": "https://big5.china.com.cn/gate/big5/photo.china.com.cn/2024-10/29/content_117513984.shtml",
+   "kind": "state"},
+ "base_jingjiribao": {
+   "title": "经济日报 — 苹果供应链（中国组装/研发）报道",
+   "publisher": "经济日报",
+   "url": "https://www.jingjiribao.cn/static/detail.jsp?id=644291",
+   "kind": "state"},
+ "base_sogou": {
+   "title": "搜狗百科 — 鸿富成（成都富士康）词条",
+   "publisher": "搜狗百科",
+   "url": "https://baike.sogou.com/v10004421896.htm",
+   "kind": "encyclopedia"},
+ "base_ifeng": {
+   "title": "凤凰网科技 — 苹果供应链制造/组装报道",
+   "publisher": "凤凰网科技",
+   "url": "https://tech.ifeng.com/c/8sYhZT05ZlM",
+   "kind": "media"},
+ "base_hindustantimes": {
+   "title": "Hindustan Times — Apple India plants ramp iPhone 17 output",
+   "publisher": "Hindustan Times",
+   "url": "https://hindustantimes.com/business/apple-india-plants-operating-at-full-steam-to-roll-out-iphone-17-to-the-world-101757477862528.html",
+   "kind": "media"},
+ "base_outlookbiz": {
+   "title": "Outlook Business — India iPhone exports jump 50%+ in H1 2025",
+   "publisher": "Outlook Business",
+   "url": "https://outlookbusiness.com/explainers/indias-iphone-exports-jump-over-50-in-h1-2025-amid-trumps-tariff-tantrum-chinas-pressure",
+   "kind": "analyst"},
+ "base_nfnews": {
+   "title": "南方+ — 印度iPhone产能/供应链报道",
+   "publisher": "南方新闻网 (Southern+)",
+   "url": "https://static.nfnews.com/content/202509/07/c11698706.html",
+   "kind": "media"},
+ "base_sav": {
+   "title": "Sourcing Agent Vietnam — OEM manufacturers in Vietnam",
+   "publisher": "Sourcing Agent Vietnam (commercial)",
+   "url": "https://sourcing-agent-vietnam.com/oem-manufacturers-vietnam",
+   "kind": "commercial"},
+ "base_itpc": {
+   "title": "ITPC Ho Chi Minh City — Apple suppliers reinforce Vietnam footprint",
+   "publisher": "ITPC (investment promotion, Ho Chi Minh City)",
+   "url": "https://itpc.hochiminhcity.gov.vn/web/en/-/apple-suppliers-reinforce-footprint-with-vietnam-plans",
+   "kind": "govt"},
+ "base_itpc_goertek": {
+   "title": "ITPC Ho Chi Minh City — GoerTek invests $280M in Vietnam",
+   "publisher": "ITPC (investment promotion, Ho Chi Minh City)",
+   "url": "https://itpc.hochiminhcity.gov.vn/web/en/-/goertek-to-invest-another-280-million-in-vietnamese-consumer-electronics-subsidiary",
+   "kind": "govt"},
+ "base_aiqicha": {
+   "title": "爱企查 — 富士康/立讯越南厂区工商信息",
+   "publisher": "爱企查 (commercial registry)",
+   "url": "https://aiqicha.baidu.com/details/ugknowledge?id=a58b5d89c28bfa30b1142f9f8efed80d",
+   "kind": "commercial"},
+ "base_stheadline": {
+   "title": "星岛日报 — 苹果 Mac mini 产线移回美国（Foxconn 德州）",
+   "publisher": "星岛日报 (Sing Tao)",
+   "url": "https://www.stheadline.com/realtime-world/3547062/%E8%98%8B%E6%9E%9CMac-Mini-%E9%83%A8%E5%88%86%E7%94%9F%E7%94%A2%E7%B7%9A%E5%B0%87%E7%A7%BB%E5%9B%9E%E7%BE%8E%E5%9C%8B-%E7%94%B1%E9%B4%BB%E6%B5%B7%E4%BC%81%E6%96%AF%E6%95%A6%E5%BB%A0%E8%A3%BD%E9%80%A0",
+   "kind": "media"},
+ "base_tomshardware": {
+   "title": "Tom's Hardware FR — Apple Mac mini production to USA",
+   "publisher": "Tom's Hardware (FR)",
+   "url": "https://www.tomshardware.fr?p=904410/",
+   "kind": "media"},
+ "base_cool3c": {
+   "title": "Cool3C — 苹果 Mac mini 美国产线报道",
+   "publisher": "Cool3C",
+   "url": "https://www.cool3c.com/article/246601",
+   "kind": "media"},
+ "base_aiqicha_rank": {
+   "title": "爱企查 — 富士康巴西厂区工商信息（排行榜条目）",
+   "publisher": "爱企查 (commercial registry)",
+   "url": "https://aiqicha.baidu.com/details/rankList?query=d5c361cfcc0aae78b0cfa191c811ecd4&type=20",
+   "kind": "commercial"},
+}
 # 组件 -> 该组件供应商关系的默认来源集合（每条 SUPPLIED_BY 边继承所属组件的来源）
 COMP_SOURCE = {
  "soc":              ["apple_supplier_list", "techinsights"],
@@ -242,6 +342,76 @@ COMP_SUP = {
 }
 
 # ---------------------------------------------------------------------------
+# PRODUCTION_BASES  (苹果产品生产基地 / 总装厂 — 研究中台新增的「第 3.5 层」)
+# 字段：
+#   id, name, city, province, country, operator(既有 Supplier id),
+#   products(归一化到产品线枚举 iPhone/Mac/iPad/Wearable/Spatial/Audio),
+#   role, confidence(high/medium/low), sources(BASE_SOURCES 的 id 列表), notes?
+# 重要：Apple 不逐厂披露产量与型号分配，下方 base→product 归属为「EMS + 所在地」推断，
+# 非官方逐厂清单；置信度见 confidence_legend。每条边均带 sources 以便追溯。
+# 运营商(operator)严格映射到 SUPPLIERS 中既有 id（foxconn/pegatron/luxshare/quanta/apple），
+# 不引入未经核实的新供应商；Tata/和硕印度合资等仅于 notes 中说明，不新建孤立节点。
+# ---------------------------------------------------------------------------
+CONF = {"high": "high", "medium": "medium", "low": "low"}
+PRODUCTION_BASES = [
+ {"id": "base_zhengzhou_cn", "name": "郑州富士康科技园（iPhone City）", "city": "郑州", "province": "河南",
+  "country": "中国", "operator": "foxconn", "products": ["iPhone", "iPad"], "role": "iPhone Pro/Pro Max 主力总装；亦参与 iPad 总装", "confidence": "high",
+  "sources": ["base_appleinsider", "base_techbloat", "base_deluair"]},
+ {"id": "base_shenzhen_cn", "name": "深圳富士康（观澜等）", "city": "深圳", "province": "广东",
+  "country": "中国", "operator": "foxconn", "products": ["iPhone", "iPad"], "role": "iPhone 总装；深圳另设苹果应用研究实验室（测 iPhone/iPad，非 Vision Pro 总装）", "confidence": "high",
+  "sources": ["base_appleinsider", "base_jingjiribao"],
+  "notes": "深圳为苹果在华研发+组装重镇，邻近近 200 家供应商；Vision Pro 成品总装不在深圳（已于图中剔除 Spatial 归属）。"},
+ {"id": "base_chengdu_cn", "name": "成都富士康科技园（鸿富成）", "city": "成都", "province": "四川",
+  "country": "中国", "operator": "foxconn", "products": ["iPad", "Mac", "Wearable"], "role": "iPad 全球约 60%、MacBook 全球约 50% 产自成都高新区；亦总装 Apple Watch", "confidence": "high",
+  "sources": ["base_china", "base_jingjiribao", "base_sogou"],
+  "notes": "官方/半官方媒体（中国网、经济日报、成都高新区）交叉确认 iPad/MacBook 占比；升级为高置信。"},
+ {"id": "base_shanghai_cn", "name": "上海和硕（Pegatron）", "city": "上海", "province": "上海",
+  "country": "中国", "operator": "pegatron", "products": ["iPhone", "iPad"], "role": "iPhone 总装（部分机型）；亦参与 iPad 总装", "confidence": "high",
+  "sources": ["base_appleinsider", "base_techbloat"]},
+ {"id": "base_kunshan_cn", "name": "昆山/无锡立讯精密（Luxshare）", "city": "昆山/无锡", "province": "江苏",
+  "country": "中国", "operator": "luxshare", "products": ["iPhone"], "role": "高毛利 tier 总装（曾总装 iPhone Plus 系列）", "confidence": "medium",
+  "sources": ["base_deluair", "base_appleinsider"]},
+ {"id": "base_taiwan_quanta", "name": "台湾广达（Quanta）", "city": "台湾", "province": "",
+  "country": "中国台湾", "operator": "quanta", "products": ["Mac", "Wearable"], "role": "MacBook / Mac Studio 总装；亦参与 Apple Watch 总装", "confidence": "high",
+  "sources": ["base_appleinsider", "base_ifeng"]},
+ {"id": "base_tamilnadu_in", "name": "泰米尔纳德邦（Foxconn Sriperumbudur；Tata Pegatron 金奈）", "city": "Sriperumbudur/Chennai", "province": "Tamil Nadu",
+  "country": "印度", "operator": "foxconn", "products": ["iPhone", "iPad"], "role": "印度 iPhone 主力基地之一（Foxconn 占印度出口约 52%）；Tata Pegatron 金奈厂总装标准版 iPhone + iPad", "confidence": "high",
+  "sources": ["base_hindustantimes", "base_outlookbiz", "base_nfnews"]},
+ {"id": "base_karnataka_in", "name": "卡纳塔克邦（Foxconn Devanahalli；Tata Narasapura/Hosur）", "city": "Bengaluru/Narasapura/Hosur", "province": "Karnataka",
+  "country": "印度", "operator": "foxconn", "products": ["iPhone", "iPad"], "role": "Foxconn Devanahalli 为富士康全球第二大厂，保印度约 20% iPhone 产能；Tata 整合原纬创厂 + Hosur 外壳", "confidence": "medium",
+  "sources": ["base_outlookbiz", "base_nfnews", "base_deluair"],
+  "notes": "Tata 经收购纬创(2024)与参股和硕印度(2025.1)整合三家印度 iPhone 组装厂，图中 operator 仍记为 foxconn（代工主体），Tata 仅于 notes 说明。"},
+ {"id": "base_telangana_in", "name": "特伦甘纳邦海得拉巴（Foxconn Hyderabad）", "city": "Hyderabad", "province": "Telangana",
+  "country": "印度", "operator": "foxconn", "products": ["Audio"], "role": "自 2025-03 起总装 AirPods 4 与 AirPods Pro 3；亦规划 iPhone/组件", "confidence": "high",
+  "sources": ["base_appleinsider", "base_deluair"]},
+ {"id": "base_bacninh_vn", "name": "北宁省（Foxconn/Luxshare/Goertek）", "city": "Bac Ninh", "province": "Bac Ninh",
+  "country": "越南", "operator": "foxconn", "products": ["Audio", "Wearable", "Spatial", "Mac", "iPad"], "role": "越南北部消费电子聚集带核心；AirPods/Watch/VR 头显与 MacBook/iPad 模块", "confidence": "medium",
+  "sources": ["base_sav", "base_itpc", "base_itpc_goertek"]},
+ {"id": "base_bacgiang_vn", "name": "北江省（立讯 Quang Chau；Foxconn Dinh Tram）", "city": "Bac Giang", "province": "Bac Giang",
+  "country": "越南", "operator": "luxshare", "products": ["Audio", "Wearable", "iPad"], "role": "Luxshare 北江厂为 AirPods Pro / AirPods 4 主力；亦扩产 Apple Watch；Foxconn 同省有 iPad/MacBook 线", "confidence": "medium",
+  "sources": ["base_deluair", "base_itpc", "base_aiqicha"]},
+ {"id": "base_nghean_vn", "name": "义安省（立讯 Luxshare）", "city": "Nghe An", "province": "Nghe An",
+  "country": "越南", "operator": "luxshare", "products": ["Wearable"], "role": "Luxshare 规划 1.5 亿美元建 Apple Watch 产线（2026 中投产）", "confidence": "low",
+  "sources": ["base_itpc"], "notes": "多为扩产规划，实际量产时间以前瞻为主。"},
+ {"id": "base_quangninh_vn", "name": "广宁省（Foxconn）", "city": "Quang Ninh", "province": "Quang Ninh",
+  "country": "越南", "operator": "foxconn", "products": ["Mac", "iPad"], "role": "Foxconn 2.5 亿美元项目，MacBook/iPad 组装", "confidence": "medium",
+  "sources": ["base_aiqicha", "base_itpc"]},
+ {"id": "base_haiphong_vn", "name": "海防市（和硕 Pegatron Nam Dinh Vu）", "city": "Hai Phong", "province": "Hai Phong",
+  "country": "越南", "operator": "pegatron", "products": ["Mac", "iPad"], "role": "Pegatron 越南计算/电信产线", "confidence": "low",
+  "sources": ["base_sav"]},
+ {"id": "base_houston_us", "name": "休斯顿（Foxconn Texas）", "city": "Houston", "province": "Texas",
+  "country": "美国", "operator": "foxconn", "products": ["Mac"], "role": "自 2026 年底起总装 Mac mini（供美国内需）；同期组装 AI 服务器", "confidence": "high",
+  "sources": ["base_stheadline", "base_tomshardware", "base_cool3c"],
+  "notes": "前瞻：2026 年底启动；亚洲（中国/越南）产线继续供应其他地区。"},
+ {"id": "base_cork_ie", "name": "科克（Apple 自有工厂）", "city": "Cork", "province": "",
+  "country": "爱尔兰", "operator": "apple", "products": ["Mac"], "role": "为欧洲/中东/非洲市场总装定制配置 iMac（标准配置仍由中国伙伴总装）", "confidence": "high",
+  "sources": ["base_appleinsider", "base_ifeng"]},
+ {"id": "base_brazil_br", "name": "巴西（Foxconn 圣保罗州）", "city": "Jundiaí/São Paulo", "province": "São Paulo",
+  "country": "巴西", "operator": "foxconn", "products": ["iPhone"], "role": "为巴西本地市场总装低端 iPhone，规避高额进口税（非出口导向）", "confidence": "medium",
+  "sources": ["base_appleinsider", "base_aiqicha_rank"]},
+]
+
+# ---------------------------------------------------------------------------
 # PRODUCTS  (attribute-rich)
 # id, name(全称/型号), product_line, english_name, alias(别名/代号),
 # release_date(发布时间), release_year, status, soc, display, price_usd,
@@ -361,8 +531,42 @@ for p in PRODUCTS:
 write_csv(os.path.join(NEO, "rel_product_assembly.csv"),
           [":START_ID(Product)", ":END_ID(Supplier)", ":TYPE", "source"], rel_pa)
 
-print("CSV files written:", len(PRODUCTS), "products,", len(COMPONENTS), "components,", len(SUPPLIERS), "suppliers")
-print("Edges -> product_component:", len(rel_pc), "component_supplier:", len(rel_cs), "product_assembly:", len(rel_pa))
+# ---- 生产基地（ProductionBase）CSV + 关系 ----
+# 产品线虚拟节点（与图引擎的 Line 节点对应），供 Neo4j 导入 manufactured_at 边
+BASE_LINES = ["iPhone", "Mac", "iPad", "Wearable", "Spatial", "Audio"]
+write_csv(os.path.join(NEO, "product_lines.csv"),
+          ["line_id:ID(ProductLine)", "name", ":LABEL"],
+          [[ln, ln, "ProductLine"] for ln in BASE_LINES])
+
+write_csv(os.path.join(NEO, "bases.csv"),
+          ["base_id:ID(ProductionBase)", "name", "city", "province", "country",
+           "operator", "products", "role", "confidence", ":LABEL"],
+          [[b["id"], b["name"], b["city"], b["province"], b["country"],
+            b["operator"], ";".join(b["products"]), b["role"], b["confidence"], "ProductionBase"]
+           for b in PRODUCTION_BASES])
+
+# ProductionBase -[MANUFACTURED_AT]-> ProductLine（去重：每个 (base, line) 一条）
+rel_bl, seen_bl = [], set()
+for b in PRODUCTION_BASES:
+    src = ";".join(b["sources"])
+    for ln in b["products"]:
+        if (b["id"], ln) in seen_bl:
+            continue
+        seen_bl.add((b["id"], ln))
+        rel_bl.append([b["id"], ln, "MANUFACTURED_AT", src])
+write_csv(os.path.join(NEO, "rel_base_line.csv"),
+          [":START_ID(ProductionBase)", ":END_ID(ProductLine)", ":TYPE", "source"], rel_bl)
+
+# ProductionBase -[OPERATED_BY]-> Supplier（代工主体）
+rel_bs = []
+for b in PRODUCTION_BASES:
+    rel_bs.append([b["id"], b["operator"], "OPERATED_BY", ";".join(b["sources"])])
+write_csv(os.path.join(NEO, "rel_base_supplier.csv"),
+          [":START_ID(ProductionBase)", ":END_ID(Supplier)", ":TYPE", "source"], rel_bs)
+
+print("CSV files written:", len(PRODUCTS), "products,", len(COMPONENTS), "components,", len(SUPPLIERS), "suppliers,", len(PRODUCTION_BASES), "bases")
+print("Edges -> product_component:", len(rel_pc), "component_supplier:", len(rel_cs), "product_assembly:", len(rel_pa),
+      "| base_line:", len(rel_bl), "base_supplier:", len(rel_bs))
 
 # ===========================================================================
 # 2) JSON GRAPH
@@ -398,14 +602,28 @@ DATA_DICT = {
    {"field": "category", "desc": "供应类别（代工/显示/存储/半导体…）", "obtainable": "按业务分类，可定义"},
    {"field": "tier", "desc": "层级（1=核心/高壁垒，2=次级/可替代）", "obtainable": "依据技术壁垒与可替代性评估"},
  ],
+ "ProductionBase": [
+   {"field": "base_id", "desc": "节点唯一 ID", "obtainable": "内部生成"},
+   {"field": "name", "desc": "基地名称（节点名称，如 郑州富士康科技园）", "obtainable": "公开报道/工商信息，公开可得"},
+   {"field": "city", "desc": "所在城市", "obtainable": "公开可得"},
+   {"field": "province", "desc": "所在省/邦/州", "obtainable": "公开可得"},
+   {"field": "country", "desc": "所在国家/地区", "obtainable": "公开可得"},
+   {"field": "operator", "desc": "运营方（代工主体，引用既有 Supplier id）", "obtainable": "苹果供应链名单 + 工厂报道，公开可得"},
+   {"field": "products", "desc": "负责的产品线枚举（iPhone/Mac/iPad/Wearable/Spatial/Audio）", "obtainable": "EMS+所在地推断，非官方逐厂清单，见 confidence"},
+   {"field": "role", "desc": "该基地在对应产品线中的角色/产能定位", "obtainable": "公开报道整合"},
+   {"field": "confidence", "desc": "归属置信度（high/medium/low）", "obtainable": "高=多源强证据；中=单一可靠源或 EMS+地区推断；低=单一弱源或前瞻"},
+ ],
  "Relationship": [
    {"field": "USES_COMPONENT", "desc": "Product → Component", "obtainable": "BOM 拆解，公开可得", "source": "每条边附 source 字段，引用 source_registry 中的来源 id 列表"},
    {"field": "SUPPLIED_BY", "desc": "Component → Supplier（含 share/note/source）", "obtainable": "供应链报道，份额仅个别环节量化", "source": "source 继承所属组件，引用 Apple Supplier List / TechInsights / Counterpoint 等"},
    {"field": "ASSEMBLED_BY", "desc": "Product → Supplier（代工，含 source）", "obtainable": "苹果供应链名单，公开可得", "source": "source 引用 Apple Supplier List / Nikkei 等"},
+   {"field": "MANUFACTURED_AT", "desc": "ProductLine → ProductionBase（基地生产哪些产品线，含 source/confidence）", "obtainable": "工厂/组装报道整合，Apple 不逐厂披露，属推断", "source": "每条边附 source，引用 BASE_SOURCES 中的来源 id 列表"},
+   {"field": "OPERATED_BY", "desc": "ProductionBase → Supplier（代工主体运营基地，含 source）", "obtainable": "苹果供应链名单 + 工厂报道", "source": "source 引用 BASE_SOURCES 中的来源 id 列表"},
    {"field": "source", "desc": "来源溯源：来源注册表(source_registry)中的 id 列表", "obtainable": "公开可引用资料，详见 meta.source_registry"},
  ],
 }
 
+SOURCES.update(BASE_SOURCES)   # 合并生产基地来源注册表，使 MANUFACTURED_AT / OPERATED_BY 边可溯源
 graph = {
  "meta": {
    "title": "Apple Product Supply Chain Graph (v2)",
@@ -413,11 +631,13 @@ graph = {
    "source": "Public supply-chain reports 2024-2026 + Apple 2024 Supplier List (187 core suppliers, ~98% of direct spend)",
    "sources_accessed": "2026-08-05",
    "schema": {
-     "nodes": ["Product", "Component", "Supplier"],
+     "nodes": ["Product", "Component", "Supplier", "ProductionBase"],
      "relationships": [
        "Product -[USES_COMPONENT]-> Component",
        "Component -[SUPPLIED_BY]-> Supplier",
-       "Product -[ASSEMBLED_BY]-> Supplier"
+       "Product -[ASSEMBLED_BY]-> Supplier",
+       "ProductLine -[MANUFACTURED_AT]-> ProductionBase",
+       "ProductionBase -[OPERATED_BY]-> Supplier"
      ]
    },
    "source_registry": SOURCES,
@@ -427,11 +647,17 @@ graph = {
    "products": PRODUCTS,
    "components": [{"id": cid, **c} for cid, c in COMPONENTS.items()],
    "suppliers": [{"id": sid, **s} for sid, s in SUPPLIERS.items()],
+   "bases": [{"id": b["id"], "name": b["name"], "city": b["city"], "province": b["province"],
+              "country": b["country"], "operator": b["operator"], "products": b["products"],
+              "role": b["role"], "confidence": b["confidence"], "sources": b["sources"],
+              "notes": b.get("notes", "")} for b in PRODUCTION_BASES],
  },
  "edges": {
    "uses_component": [{"from": a, "to": b, "source": s.split(";")} for a, b, _, s in rel_pc],
    "supplied_by": [{"from": a, "to": b, "share": sh, "note": n, "source": src.split(";")} for a, b, _, sh, n, src in [tuple(x) for x in rel_cs]],
    "assembled_by": [{"from": a, "to": b, "source": s.split(";")} for a, b, _, s in rel_pa],
+   "manufactured_at": [{"from": ln, "to": bid, "source": s.split(";")} for bid, ln, _, s in rel_bl],
+   "operated_by": [{"from": bid, "to": op, "source": s.split(";")} for bid, op, _, s in rel_bs],
  }
 }
 with open(os.path.join(ROOT, "data", "apple_supply_chain.json"), "w", encoding="utf-8") as f:

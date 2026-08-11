@@ -39,7 +39,7 @@ jobs:
       - name: Set up Python
         uses: actions/setup-python@v5
         with:
-          python-version: '3.11'
+          python-version: '3.14'
 
       - name: Set up Node
         uses: actions/setup-node@v4
@@ -86,6 +86,9 @@ jobs:
           # locales/ 一并发布：翻译包虽已内联进 dist/locales.js，但保留根目录副本
           # 作为兜底，避免任何直接引用 /locales/*.json 的路径在未来产生 404。
           cp -r locales _site/locales 2>/dev/null || true
+          # 时效数据 feed：DataLayer 在运行时 fetch data/feeds/*.json（风险/估值/舆情），
+          # 必须随站点发布；否则首页新鲜度徽标会 404（回退到空）。schemas/ 仅作文档与 CI 校验用。
+          cp -r data/feeds _site/data/feeds 2>/dev/null || true
           cp README.md LICENSE CONTRIBUTING.md _site/ 2>/dev/null || true
           # 禁用 Jekyll：本项目无 _config.yml，但避免 _ 前缀目录被忽略、并加速构建
           touch _site/.nojekyll

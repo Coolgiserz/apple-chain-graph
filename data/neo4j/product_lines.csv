@@ -1,0 +1,7 @@
+line_id:ID(ProductLine),name,:LABEL
+iPhone,iPhone,ProductLine
+Mac,Mac,ProductLine
+iPad,iPad,ProductLine
+Wearable,Wearable,ProductLine
+Spatial,Spatial,ProductLine
+Audio,Audio,ProductLine

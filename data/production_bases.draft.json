@@ -1,0 +1,252 @@
+{
+  "generated": "2026-08-11",
+  "status": "DRAFT — 研究草案，尚未接入 build_all / 图谱",
+  "method": "联网公开资料二手整合（AppleInsider、WSJ 经多家媒体转述、越南投资评论 VIR、中国官方媒体、行业研究）。Apple 不逐厂披露产量与型号分配，下方 base→product 归属多为「EMS + 所在地」推断，非官方逐厂清单。产能占比多为聚合口径（国别），逐厂-逐型号数字不可得。",
+  "confidence_legend": {
+    "high": "多源强证据（权威媒体/官方表态/苹果确认），且描述具体",
+    "medium": "有可靠来源但较单一，或属 EMS+地区推断",
+    "low": "单一弱源（行业博客/SEO 站/二手转述），或属前瞻/过渡状态"
+  },
+  "production_bases": [
+    {
+      "id": "base_zhengzhou_cn",
+      "name": "郑州富士康科技园（iPhone City）",
+      "city": "郑州", "province": "河南", "country": "中国",
+      "operator": "foxconn",
+      "products": ["iPhone", "iPad"],
+      "role": "iPhone Pro/Pro Max 主力总装（发布期产能高度集中）；亦参与 iPad 总装",
+      "confidence": "high",
+      "sources": [
+        "https://appleinsider.com/articles/26/04/22/where-apple-products-are-assembled-and-where-their-parts-come-from",
+        "https://www.techbloat.com/where-are-iphones-manufactured-complete-guide.html",
+        "https://deluair.com/consultancy/insights/apple-china-supply-chain-2026"
+      ],
+      "notes": "全球最大 iPhone 生产基地，历史上承担旗舰机型大部分产量。"
+    },
+    {
+      "id": "base_shenzhen_cn",
+      "name": "深圳富士康（观澜等）",
+      "city": "深圳", "province": "广东", "country": "中国",
+      "operator": "foxconn",
+      "products": ["iPhone", "iPad", "Apple Vision Pro"],
+      "role": "iPhone 总装；深圳亦设苹果应用研究实验室（测 iPhone/iPad/Vision Pro）",
+      "confidence": "high",
+      "sources": [
+        "https://appleinsider.com/articles/26/04/22/where-apple-products-are-assembled-and-where-their-parts-come-from",
+        "https://www.jingjiribao.cn/static/detail.jsp?id=644291"
+      ],
+      "notes": "深圳为苹果在华研发+组装重镇，邻近近 200 家供应商。"
+    },
+    {
+      "id": "base_chengdu_cn",
+      "name": "成都富士康科技园（鸿富成）",
+      "city": "成都", "province": "四川", "country": "中国",
+      "operator": "foxconn",
+      "products": ["iPad", "Mac", "Apple Watch", "iPhone"],
+      "role": "iPad 全球 ~60%、MacBook 全球 ~50% 产自成都高新区；亦总装 MacBook Neo、Apple Watch",
+      "confidence": "medium",
+      "sources": [
+        "https://big5.china.com.cn/gate/big5/photo.china.com.cn/2024-10/29/content_117513984.shtml",
+        "https://www.jingjiribao.cn/static/detail.jsp?id=644291",
+        "https://baike.sogou.com/v10004421896.htm"
+      ],
+      "notes": "单一来源为官方/半官方媒体引述「全球超 60% iPad、50% MacBook 产自成都」，比例数字未见独立交叉验证。"
+    },
+    {
+      "id": "base_shanghai_cn",
+      "name": "上海和硕（Pegatron）",
+      "city": "上海", "province": "上海", "country": "中国",
+      "operator": "pegatron",
+      "products": ["iPhone", "iPad"],
+      "role": "iPhone 总装（部分机型）；亦参与印度以外 iPad 总装",
+      "confidence": "high",
+      "sources": [
+        "https://appleinsider.com/articles/26/04/22/where-apple-products-are-assembled-and-where-their-parts-come-from",
+        "https://www.techbloat.com/where-are-iphones-manufactured-complete-guide.html"
+      ]
+    },
+    {
+      "id": "base_kunshan_cn",
+      "name": "昆山/无锡立讯精密（Luxshare）",
+      "city": "昆山/无锡", "province": "江苏", "country": "中国",
+      "operator": "luxshare",
+      "products": ["iPhone"],
+      "role": "曾总装 iPhone Plus 系列（现被 iPhone Air 取代）；属高毛利 tier 总装",
+      "confidence": "medium",
+      "sources": [
+        "https://deluair.com/consultancy/insights/apple-china-supply-chain-2026",
+        "https://appleinsider.com/articles/26/04/22/where-apple-products-are-assembled-and-where-their-parts-come-from"
+      ]
+    },
+    {
+      "id": "base_taiwan_quanta",
+      "name": "台湾广达（Quanta）",
+      "city": "台湾", "province": "", "country": "中国台湾",
+      "operator": "quanta",
+      "products": ["Mac", "Apple Watch"],
+      "role": "MacBook / Mac Studio 总装；亦参与 Apple Watch 总装",
+      "confidence": "high",
+      "sources": [
+        "https://appleinsider.com/articles/26/04/22/where-apple-products-are-assembled-and-where-their-parts-come-from",
+        "https://tech.ifeng.com/c/8sYhZT05ZlM"
+      ]
+    },
+    {
+      "id": "base_tamilnadu_in",
+      "name": "泰米尔纳德邦（富士康 Sriperumbudur/Oragadam；Tata Pegatron 金奈）",
+      "city": "Sriperumbudur/Chennai", "province": "Tamil Nadu", "country": "印度",
+      "operator": "foxconn",
+      "products": ["iPhone", "iPad"],
+      "role": "印度 iPhone 主力基地之一（Foxconn 占印度出口 ~52%）；Tata Pegatron 金奈厂总装标准版 iPhone + iPad",
+      "confidence": "high",
+      "sources": [
+        "https://hindustantimes.com/business/apple-india-plants-operating-at-full-steam-to-roll-out-iphone-17-to-the-world-101757477862528.html",
+        "https://outlookbusiness.com/explainers/indias-iphone-exports-jump-over-50-in-h1-2025-amid-trumps-tariff-tantrum-chinas-pressure",
+        "https://static.nfnews.com/content/202509/07/c11698706.html"
+      ]
+    },
+    {
+      "id": "base_karnataka_in",
+      "name": "卡纳塔克邦（富士康 Devanahalli/Bengaluru；Tata Narasapura 原纬创；Tata Hosur 外壳）",
+      "city": "Bengaluru/Narasapura/Hosur", "province": "Karnataka", "country": "印度",
+      "operator": "foxconn",
+      "products": ["iPhone", "iPad"],
+      "role": "Foxconn Devanahalli（Project Elephant）为富士康全球第二大厂，保印度 ~20% iPhone 产能关键；Tata 整合原纬创厂 + Hosur 钛/不锈钢外壳",
+      "confidence": "medium",
+      "sources": [
+        "https://outlookbusiness.com/explainers/indias-iphone-exports-jump-over-50-in-h1-2025-amid-trumps-tariff-tantrum-chinas-pressure",
+        "https://static.nfnews.com/content/202509/07/c11698706.html",
+        "https://deluair.com/consultancy/insights/apple-china-supply-chain-2026"
+      ],
+      "notes": "Tata 经收购纬创(2024)与参股和硕印度(2025.1)整合三家印度 iPhone 组装厂。"
+    },
+    {
+      "id": "base_telangana_in",
+      "name": "特伦甘纳邦海得拉巴（富士康 Hyderabad）",
+      "city": "Hyderabad", "province": "Telangana", "country": "印度",
+      "operator": "foxconn",
+      "products": ["AirPods"],
+      "role": "自 2025-03 起总装 AirPods 4 与 AirPods Pro 3；亦规划 iPhone/组件（gigafactory 综合体）",
+      "confidence": "high",
+      "sources": [
+        "https://appleinsider.com/articles/26/04/22/where-apple-products-are-assembled-and-where-their-parts-come-from",
+        "https://deluair.com/consultancy/insights/apple-china-supply-chain-2026"
+      ]
+    },
+    {
+      "id": "base_bacninh_vn",
+      "name": "北宁省（富士康/Foxconn、立讯/Luxshare、歌尔/Goertek）",
+      "city": "Bac Ninh", "province": "Bac Ninh", "country": "越南",
+      "operator": "foxconn",
+      "products": ["AirPods", "Apple Watch", "Vision Pro", "Mac", "iPad"],
+      "role": "越南北部消费电子聚集带核心；AirPods/Watch/VR 头显与 MacBook/iPad 模块",
+      "confidence": "medium",
+      "sources": [
+        "https://sourcing-agent-vietnam.com/oem-manufacturers-vietnam",
+        "https://itpc.hochiminhcity.gov.vn/web/en/-/apple-suppliers-reinforce-footprint-with-vietnam-plans",
+        "https://itpc.hochiminhcity.gov.vn/web/en/-/goertek-to-invest-another-280-million-in-vietnamese-consumer-electronics-subsidiary"
+      ]
+    },
+    {
+      "id": "base_bacgiang_vn",
+      "name": "北江省（立讯/Luxshare Quang Chau；富士康/Foxconn Dinh Tram）",
+      "city": "Bac Giang", "province": "Bac Giang", "country": "越南",
+      "operator": "luxshare",
+      "products": ["AirPods", "Apple Watch", "iPad"],
+      "role": "Luxshare 北江厂为 AirPods Pro / AirPods 4 主力；亦扩产 Apple Watch；Foxconn 同省有 iPad/MacBook 线",
+      "confidence": "medium",
+      "sources": [
+        "https://deluair.com/consultancy/insights/apple-china-supply-chain-2026",
+        "https://itpc.hochiminhcity.gov.vn/web/en/-/apple-suppliers-reinforce-footprint-with-vietnam-plans",
+        "https://aiqicha.baidu.com/details/ugknowledge?id=a58b5d89c28bfa30b1142f9f8efed80d"
+      ]
+    },
+    {
+      "id": "base_nghean_vn",
+      "name": "义安省（立讯/Luxshare）",
+      "city": "Nghe An", "province": "Nghe An", "country": "越南",
+      "operator": "luxshare",
+      "products": ["Apple Watch"],
+      "role": "Luxshare 规划 1.5 亿美元建 Apple Watch 产线（2026 中投产）",
+      "confidence": "low",
+      "sources": [
+        "https://itpc.hochiminhcity.gov.vn/web/en/-/apple-suppliers-reinforce-footprint-with-vietnam-plans"
+      ],
+      "notes": "多为扩产规划，实际量产时间以前瞻为主。"
+    },
+    {
+      "id": "base_quangninh_vn",
+      "name": "广宁省（富士康/Foxconn）",
+      "city": "Quang Ninh", "province": "Quang Ninh", "country": "越南",
+      "operator": "foxconn",
+      "products": ["Mac", "iPad"],
+      "role": "Foxconn 2.5 亿美元项目，MacBook/iPad 组装",
+      "confidence": "medium",
+      "sources": [
+        "https://aiqicha.baidu.com/details/ugknowledge?id=a58b5d89c28bfa30b1142f9f8efed80d",
+        "https://itpc.hochiminhcity.gov.vn/web/en/-/apple-suppliers-reinforce-footprint-with-vietnam-plans"
+      ]
+    },
+    {
+      "id": "base_haiphong_vn",
+      "name": "海防市（和硕/Pegatron Nam Dinh Vu）",
+      "city": "Hai Phong", "province": "Hai Phong", "country": "越南",
+      "operator": "pegatron",
+      "products": ["Mac", "iPad"],
+      "role": "Pegatron 越南计算/电信产线",
+      "confidence": "low",
+      "sources": [
+        "https://sourcing-agent-vietnam.com/oem-manufacturers-vietnam"
+      ]
+    },
+    {
+      "id": "base_houston_us",
+      "name": "休斯顿（富士康/Foxconn Texas）",
+      "city": "Houston", "province": "Texas", "country": "美国",
+      "operator": "foxconn",
+      "products": ["Mac"],
+      "role": "自 2026 年底起总装 Mac mini（供美国内需）；同期组装 AI 服务器",
+      "confidence": "high",
+      "sources": [
+        "https://www.stheadline.com/realtime-world/3547062/%E8%98%8B%E6%9E%9CMac-Mini-%E9%83%A8%E5%88%86%E7%94%9F%E7%94%A2%E7%B7%9A%E5%B0%87%E7%A7%BB%E5%9B%9E%E7%BE%8E%E5%9C%8B-%E7%94%B1%E9%B4%BB%E6%B5%B7%E4%BC%91%E6%96%AF%E6%95%A6%E5%BB%A0%E8%A3%BD%E9%80%A0",
+        "https://www.tomshardware.fr?p=904410/",
+        "https://www.cool3c.com/article/246601"
+      ],
+      "notes": "前瞻：2026 年底启动；亚洲（中国/越南）产线继续供应其他地区。"
+    },
+    {
+      "id": "base_cork_ie",
+      "name": "科克（Apple 自有工厂）",
+      "city": "Cork", "province": "", "country": "爱尔兰",
+      "operator": "apple",
+      "products": ["Mac"],
+      "role": "为欧洲/中东/非洲市场总装定制配置 iMac（标准配置仍由中国伙伴总装）",
+      "confidence": "high",
+      "sources": [
+        "https://appleinsider.com/articles/26/04/22/where-apple-products-are-assembled-and-where-their-parts-come-from",
+        "https://tech.ifeng.com/c/8sYhZT05ZlM"
+      ]
+    },
+    {
+      "id": "base_brazil_br",
+      "name": "巴西（富士康/Foxconn 圣保罗州）",
+      "city": "Jundiaí/São Paulo", "province": "São Paulo", "country": "巴西",
+      "operator": "foxconn",
+      "products": ["iPhone"],
+      "role": "为巴西本地市场总装低端 iPhone，规避高额进口税（非出口导向）",
+      "confidence": "medium",
+      "sources": [
+        "https://appleinsider.com/articles/26/04/22/where-apple-products-are-assembled-and-where-their-parts-come-from",
+        "https://aiqicha.baidu.com/details/rankList?query=d5c361cfcc0aae78b0cfa191c811ecd4&type=20"
+      ]
+    }
+  ],
+  "data_gaps": [
+    "Apple 不公开逐厂、逐型号产量分配；全部 base→product 归属为 EMS+地区 推断，非官方清单。",
+    "单一基地的产能/占比不公开，仅有国别聚合口径（印度 iPhone ~20–25%、中国整体 ~70%+、越南为 AirPods/Watch/iPad 强项）。",
+    "坐标（lat/long）未采集——地图集成需另做地理编码，本报告未编造坐标。",
+    "前瞻/过渡状态：Mac mini 休斯顿（2026 年底）、Vision Pro M5 转越南、印度产能爬坡，状态可能变动。",
+    "低质量源（SEO/八卦站）仅作交叉印证，未用于主要断言。",
+    "零部件来源（TSMC 台湾、Samsung/LG 韩国显示、Sony 日本传感等）属「零件产地」而非「总装基地」，已在报告中单列区分，未混入总装关系。"
+  ]
+}

@@ -1,0 +1,56 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "$id": "data/schemas/risk.json",
+  "title": "Supply-chain risk feed",
+  "description": "苹果供应链脆弱性/单点依赖的时效数据契约。由 tools/output/supply_chain_risk.json 归一化而来。",
+  "type": "object",
+  "required": ["meta", "data"],
+  "properties": {
+    "meta": {
+      "type": "object",
+      "required": ["dataset", "version", "generated"],
+      "properties": {
+        "dataset": { "const": "risk" },
+        "version": { "type": "integer" },
+        "schema_ref": { "type": "string" },
+        "generated": { "type": "string", "format": "date" },
+        "valid_until": { "type": "string", "format": "date" },
+        "sources": { "type": "array", "items": { "type": "string" } }
+      }
+    },
+    "data": {
+      "type": "object",
+      "required": ["products", "components"],
+      "properties": {
+        "product_lines": { "type": "array" },
+        "products": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "vuln"],
+            "properties": {
+              "id": { "type": "string" },
+              "vuln": { "type": "number" },
+              "sp_rate": { "type": "number" },
+              "weakest": { "type": "number" },
+              "weakest_component": { "type": "string" }
+            }
+          }
+        },
+        "components": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["id", "vuln"],
+            "properties": {
+              "id": { "type": "string" },
+              "vuln": { "type": "number" },
+              "n_suppliers": { "type": "integer" },
+              "single_point": { "type": "boolean" }
+            }
+          }
+        }
+      }
+    }
+  }
+}

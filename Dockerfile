@@ -38,6 +38,9 @@ COPY nginx.conf /etc/nginx/conf.d/app.conf
 COPY --from=builder /src/index.html /usr/share/nginx/html/index.html
 COPY --from=builder /src/dist /usr/share/nginx/html/dist
 COPY --from=builder /src/tools/visualizations /usr/share/nginx/html/tools/visualizations
+# 时效数据 feed：前端 DataLayer 运行时 fetch data/feeds/*.json（风险/估值/舆情），
+# 必须由 build_all.py 生成并随镜像发布，否则首页新鲜度徽标会 404（pages.yml 仅服务 GitHub Pages 路径）。
+COPY --from=builder /src/data/feeds /usr/share/nginx/html/data/feeds
 
 EXPOSE 80
 HEALTHCHECK --interval=30s --timeout=3s --start-period=5s \

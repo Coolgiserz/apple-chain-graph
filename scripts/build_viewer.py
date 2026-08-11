@@ -325,7 +325,7 @@ def main():
     # dist/graph_engine.js 与 dist/i18n.js 已由 build_all.py 的 run_node_build()
     # （esbuild 打包 src/）在跑本脚本之前生成。此处校验它们存在，避免带着未更新的
     # 旧引擎 / 缺 i18n 静默发布。这两个文件是「团队就绪」重构后的唯一事实来源。
-    for built in ("graph_engine.js", "i18n.js"):
+    for built in ("graph_engine.js", "i18n.js", "data_layer.js"):
         if not os.path.exists(os.path.join(ROOT, "dist", built)):
             print("✗ 缺少前端构建产物 dist/%s，请先运行 `npm run build`（或 `python build_all.py`）。"
                   % built, file=sys.stderr)
@@ -372,6 +372,7 @@ def main():
             .replace("__TOPNAV_CSS__", TOPNAV_CSS)
             .replace("__TOPNAV__", topnav("", "graph"))        # 首页在根目录，root=""
             .replace("__ENGINE_SRC__", asset_url("dist/graph_engine.js"))
+            .replace("__FEED_SRC__", asset_url("dist/data_layer.js"))
             .replace("__BOOTSTRAP_SRC__", asset_url("dist/graph_bootstrap.js"))
             .replace("__TABLE_PANEL_SRC__", asset_url("dist/graph_table_panel.js"))
             .replace("__SEO_META__", seo_meta(risk))

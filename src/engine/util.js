@@ -1,8 +1,8 @@
 // util.js — 纯函数工具与常量（无状态依赖，供 render / panels / interaction 复用）。
 import { S, RISK_HIGH, RISK_MED } from "./state.js";
 
-export const COLORS = { Product: "#2f6fed", Component: "#f59e0b", Supplier: "#10b981", Line: "#8b5cf6" };
-export const BASE_R = { Product: 11, Component: 7, Supplier: 6, Line: 14 };
+export const COLORS = { Product: "#2f6fed", Component: "#f59e0b", Supplier: "#10b981", Line: "#8b5cf6", Base: "#ec4899" };
+export const BASE_R = { Product: 11, Component: 7, Supplier: 6, Line: 14, Base: 8 };
 
 // 视口相关的节点半径缩放系数：小屏（手机/窄平板）放大世界半径，使节点更大、更易点中；
 // 大屏略放大但不夸张。以 min(宽,高) 为基准（参考尺寸 880px），区间 [0.6, 1.15]。
@@ -36,6 +36,7 @@ export function typeLabel(t) {
   if (t === "Product") return i18nText("home.prod");
   if (t === "Component") return i18nText("home.part");
   if (t === "Supplier") return i18nText("home.supp");
+  if (t === "Base") return i18nText("home.base");
   return t;
 }
 

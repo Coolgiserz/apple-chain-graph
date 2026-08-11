@@ -8,8 +8,8 @@ function addNode(n, type) {
   S.idMap[o._key] = o; S.nodes.push(o);
 }
 function addLink(t, from, to, extra) {
-  var a = S.idMap["P:" + from] || S.idMap["C:" + from] || S.idMap["S:" + from];
-  var b = S.idMap["P:" + to] || S.idMap["C:" + to] || S.idMap["S:" + to];
+  var a = S.idMap["P:" + from] || S.idMap["C:" + from] || S.idMap["S:" + from] || S.idMap["L:" + from] || S.idMap["B:" + from];
+  var b = S.idMap["P:" + to] || S.idMap["C:" + to] || S.idMap["S:" + to] || S.idMap["L:" + to] || S.idMap["B:" + to];
   if (a && b) { var l = { type: t, a: a, b: b }; if (extra) Object.assign(l, extra); S.links.push(l); a.degree++; b.degree++; }
 }
 
@@ -29,6 +29,13 @@ export function build() {
   DATA.edges.uses_component.forEach(function (e) { addLink("USES", e.from, e.to); });
   DATA.edges.supplied_by.forEach(function (e) { addLink("SUPPLIES", e.from, e.to, { share: e.share, note: e.note }); });
   DATA.edges.assembled_by.forEach(function (e) { addLink("ASSEMBLES", e.from, e.to); });
+  // 生产基地层（研究中台新增）：ProductLine -[MANUFACTURED_AT]-> ProductionBase，
+  // ProductionBase -[OPERATED_BY]-> Supplier。缺失时（如测试 fixture）安全跳过。
+  if (DATA.nodes.bases && DATA.edges.manufactured_at && DATA.edges.operated_by) {
+    DATA.nodes.bases.forEach(function (b) { addNode(b, "Base"); });
+    DATA.edges.manufactured_at.forEach(function (e) { addLink("MANUFACTURED", e.from, e.to, { source: e.source, confidence: e.confidence }); });
+    DATA.edges.operated_by.forEach(function (e) { addLink("OPERATED", e.from, e.to, { source: e.source }); });
+  }
   // 产品线 → 产品 边（展示层聚合边，dir 同其它边一致：下游=产品）
   DATA.nodes.products.forEach(function (p) {
     var ln = S.idMap["L:" + p.product_line];
@@ -71,10 +78,29 @@ export function visibleSet() {
     if (n.type === "Product") { if (!cbP) continue; if (line && n.product_line !== line) continue; set.add(n._key); continue; }
     if (n.type === "Component") { if (!cbC) continue; set.add(n._key); continue; }
     // Supplier：默认隐藏；「展开全部」(S.showAll) 则全显，否则仅显示与已展开节点相邻的供应商
-    if (S.showAll) { set.add(n._key); continue; }
-    var adj = S.adj[n._key], shown = false;
-    for (var s = 0; s < adj.length; s++) { if (S.expanded.has(adj[s].other._key)) { shown = true; break; } }
-    if (shown) set.add(n._key);
+    if (n.type === "Supplier") {
+      if (S.showAll) { set.add(n._key); continue; }
+      var adj = S.adj[n._key], shown = false;
+      for (var s = 0; s < adj.length; s++) { if (S.expanded.has(adj[s].other._key)) { shown = true; break; } }
+      if (shown) set.add(n._key);
+      continue;
+    }
+    // ProductionBase：默认隐藏（与供应商一致）。出现条件：
+    //   1) 「展开全部」(S.showAll) 或新增「生产基地」开关(S.showBases) 开启；
+    //   2) 与已展开节点相邻（点击产品/零部件展开后可露出其运营基地）；
+    //   3) 其运营商(Supplier)当前可见（点击供应商展开时可露出其运营基地）。
+    // 搜索分支已覆盖「直接搜基地名」的场景。
+    if (n.type === "Base") {
+      if (S.showAll || S.showBases) { set.add(n._key); continue; }
+      var adjB = S.adj[n._key], showB = false;
+      for (var sb = 0; sb < adjB.length; sb++) {
+        var ob = adjB[sb].other;
+        if (S.expanded.has(ob._key)) { showB = true; break; }
+        if (ob.type === "Supplier" && set.has(ob._key)) { showB = true; break; }
+      }
+      if (showB) set.add(n._key);
+      continue;
+    }
   }
   // 产品线聚焦：仅保留与已保留「产品」相邻的非产品节点（零部件/供应商随对应产品线收敛）
   if (line) {
@@ -82,7 +108,7 @@ export function visibleSet() {
     for (var j = 0; j < S.nodes.length; j++) {
       var m = S.nodes[j]; if (m.type === "Product" || m.type === "Line") continue;
       var es = S.adj[m._key], touch = false;
-      for (var k = 0; k < es.length; k++) { if (es[k].other.type === "Product" && keep.has(es[k].other._key)) { touch = true; break; } }
+      for (var k = 0; k < es.length; k++) { if ((es[k].other.type === "Product" || es[k].other.type === "Line") && keep.has(es[k].other._key)) { touch = true; break; } }
       if (!touch) set.delete(m._key);
     }
   }

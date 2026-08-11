@@ -4,6 +4,8 @@
 const browserGlobals = {
   window: "readonly",
   document: "readonly",
+  fetch: "readonly",
+  Intl: "readonly",
   location: "readonly",
   history: "readonly",
   localStorage: "readonly",
