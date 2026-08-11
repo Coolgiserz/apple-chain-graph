@@ -133,6 +133,16 @@ export function bindEvents() {
     kick();
   }, { passive: false });
 
+  // 双击节点：拓扑隔离聚焦 —— 只渲染该节点及其 1 跳邻居（覆盖其余筛选），
+  // 并适配到该子图，让用户在密图上也能看清「连着谁、连了多少」。再次双击同一节点退出。
+  S.cv.addEventListener("dblclick", function (e) {
+    bump();
+    var n = pick(e.clientX, e.clientY);
+    if (!n) return;            // 双击空白处不处理（避免误清除聚焦）
+    isolateToggle(n);
+    kick();
+  });
+
   // 触摸支持（移动端）：单指拖拽/点击节点，双指 pinch 缩放
   function touchDist(e) { var a = e.touches[0], b = e.touches[1]; return Math.hypot(a.clientX - b.clientX, a.clientY - b.clientY); }
   function touchMid(e) { var a = e.touches[0], b = e.touches[1]; return { x: (a.clientX + b.clientX) / 2, y: (a.clientY + b.clientY) / 2 }; }
@@ -215,7 +225,7 @@ export function bindEvents() {
   var reset = document.getElementById("reset");
   if (reset) reset.onclick = function () {
     selectNode(null);
-    S.expanded.clear();                         // 收起所有已展开供应商
+    S.isolated = null; S.expanded.clear();      // 退出双击聚焦 + 收起所有已展开供应商
     S.showAll = false; setSuppBtn();            // 回到默认态：供应商隐藏（与首屏一致，P0-1/P0-2）
     S.showBases = false;                        // 回到默认态：生产基地隐藏
     var cbB = document.getElementById("cbB"); if (cbB) { cbB.checked = false; if (cbB.classList) cbB.classList.remove("on"); if (window.i18n && window.i18n.ready) cbB.textContent = i18nText("home.basesAll"); }
@@ -225,6 +235,7 @@ export function bindEvents() {
     document.getElementById("cbP").checked = true;
     document.getElementById("cbC").checked = true;
     var line = document.getElementById("line"); if (line) line.value = "";
+    updateIsoBanner();                          // 隐藏聚焦提示条
     emitView();                                 // 通知表格随筛选复位刷新
     reheat(1); S.fitDone = false; fitView();   // 复位筛选并重新适配视口
   };
@@ -258,6 +269,8 @@ export function bindEvents() {
   });
   var fitBtn = document.getElementById("fit");
   if (fitBtn) fitBtn.onclick = function () { fitView(); };
+  var isoExit = document.getElementById("isoExit");
+  if (isoExit) isoExit.onclick = function () { exitIso(); };
   var insClose = document.getElementById("insightClose");
   if (insClose) insClose.onclick = function () {
     var c = document.getElementById("insightCard"); if (c) c.style.display = "none";
@@ -393,6 +406,68 @@ export function fitView() {
   S.view.oy = H() / 2 - (minY + maxY) / 2 * s;
   S.fitDone = true;
   kick();
+}
+
+// 将视口适配到给定节点 key 集合（用于双击聚焦子图，而非全图）。
+export function fitToKeys(keys) {
+  if (!keys || !keys.size || !W() || !H()) return;
+  var minX = Infinity, minY = Infinity, maxX = -Infinity, maxY = -Infinity, any = false;
+  keys.forEach(function (k) {
+    var n = S.idMap[k]; if (!n) return;
+    any = true;
+    if (n.x < minX) minX = n.x; if (n.x > maxX) maxX = n.x;
+    if (n.y < minY) minY = n.y; if (n.y > maxY) maxY = n.y;
+  });
+  if (!any) return;
+  var bw = Math.max(maxX - minX, 1), bh = Math.max(maxY - minY, 1);
+  var small = Math.min(W(), H()) < 560;
+  var margin = Math.max(24, Math.min(W(), H()) * (small ? 0.08 : 0.14));   // 子图留更多边距，节点更舒展
+  var s = Math.min((W() - 2 * margin) / bw, (H() - 2 * margin) / bh);
+  s = Math.max(0.1, Math.min(s, 6));
+  S.view.scale = s;
+  S.view.ox = W() / 2 - (minX + maxX) / 2 * s;
+  S.view.oy = H() / 2 - (minY + maxY) / 2 * s;
+  S.fitDone = true;
+  kick();
+}
+
+// 双击聚焦切换：同一节点双击切换进入/退出；选中该节点让右侧面板列出邻居数量与名单。
+export function isolateToggle(n) {
+  if (S.isolated === n._key) {
+    S.isolated = null;                          // 再次双击 → 退出聚焦，恢复常规视图
+  } else {
+    S.isolated = n._key;
+    // 展开其上游（产品/零部件），使其供应商邻居在「常规视图」下也保持可见态一致（聚焦态本身已强显）
+    if (n.type === "Product" || n.type === "Component") S.expanded.add(n._key);
+  }
+  selectNode(n);                                // 选中 → 面板列出该节点邻居（数量 + 名单）
+  emitView();                                   // 通知侧边表格（visibleNodes 自动跟随聚焦态收敛）
+  reheat(0.8);
+  var iso = new Set([n._key]);
+  (S.adj[n._key] || []).forEach(function (e) { iso.add(e.other._key); });
+  updateIsoBanner();
+  fitToKeys(iso);
+}
+
+// 聚焦提示条显隐 + 文案（节点名 + 邻居数 + 退出按钮）。
+function updateIsoBanner() {
+  var b = document.getElementById("isoBanner");
+  if (!b) return;
+  if (!S.isolated) { b.style.display = "none"; return; }
+  var n = S.idMap[S.isolated];
+  if (!n) { b.style.display = "none"; return; }
+  var count = (S.adj[S.isolated] || []).length;
+  var txt = i18nText("home.isoTitle").replace("{name}", label(n)).replace("{n}", count);
+  var nameEl = document.getElementById("isoName");
+  if (nameEl) nameEl.textContent = txt;
+  b.style.display = "flex";
+}
+export function exitIso() {
+  if (!S.isolated) return;
+  S.isolated = null;
+  selectNode(S.selected);                       // 仅清聚焦，保留选中
+  updateIsoBanner();
+  emitView(); reheat(0.6); if (S.cv) draw(visibleSet());
 }
 
 // 产品线的展示名（与 build_viewer.LINE_ZH 对齐）
