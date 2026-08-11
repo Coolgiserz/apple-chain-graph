@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.2](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.6.1...v1.6.2) (2026-08-11)
+
+
+### Bug Fixes
+
+* **pages:** 创建 _site/data 目录，修复首页图数据未发布导致的 404 ([73b2a74](https://github.com/Coolgiserz/apple-chain-graph/commit/73b2a74169cd5fa256cd07aaa080db14c769750d))
+* **pages:** 创建 _site/data 目录，修复首页图数据未发布导致的 404 ([1139826](https://github.com/Coolgiserz/apple-chain-graph/commit/11398263e2a004107419679db29649b40b091e12))
+
 ## [1.6.1](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.6.0...v1.6.1) (2026-08-11)
 
 
