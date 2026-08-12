@@ -5614,6 +5614,54 @@
           "techinsights",
           "ifixit"
         ]
+      },
+      {
+        "from": "iphone_17",
+        "to": "camera_module",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_17_air",
+        "to": "camera_module",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_17_pro",
+        "to": "camera_module",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_17_pmax",
+        "to": "camera_module",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "visionpro_m2",
+        "to": "camera_module",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "visionpro_m5",
+        "to": "camera_module",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
       }
     ],
     "supplied_by": [
