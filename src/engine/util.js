@@ -23,8 +23,19 @@ export function nodeRadius(n) {
 export function W() { return (S.cv ? S.cv.clientWidth : 0) || (typeof window !== "undefined" && window.innerWidth) || 0; }
 export function H() { return (S.cv ? S.cv.clientHeight : 0) || (typeof window !== "undefined" && window.innerHeight) || 0; }
 
-// HTML 转义：仅转义 & < >（属性值由调用方保证不含引号，或改用引号转义）
-export function esc(s) { return String(s).replace(/[&<>]/g, function (c) { return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;" }[c]); }); }
+// HTML 转义：转义 & < > " ' 五类字符（OWASP 推荐全集）。
+// 同时覆盖单/双引号属性与文本节点上下文，避免外链等数据含引号时破裂或注入。
+export function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]); }); }
+
+// 外链白名单：仅放行 http(s) 协议，阻断 javascript:/data:/vbscript: 等危险协议。
+// 防御纵深——外链 URL 来自数据（source_registry），不可信，绝不原样进 href。
+export function safeUrl(u) {
+  try {
+    var s = String(u == null ? "" : u);
+    if (/^https?:\/\//i.test(s)) return s;
+  } catch (e) {}
+  return "";
+}
 
 export function label(n) { return n.name || n.english_name || n.id; }
 export function nm(t, id) { var o = S.idMap[t + ":" + id]; return o ? label(o) : id; }
@@ -44,18 +55,6 @@ export function vulnColor(v) {
   if (v >= RISK_HIGH) return "#ef4444";   // 高 → 红
   if (v >= RISK_MED) return "#f59e0b";     // 中 → 琥珀
   return "#10b981";                        // 低 → 绿
-}
-
-// 瓶颈指标热力色：t∈[0,1]（越大越关键/越集中），绿(低)→琥珀→红(高)。
-// 用于「权重→填充」的旧映射；现改为「权重→红环」(heatRing)，此处保留以兼容潜在调用。
-export function metricColor(t) {
-  if (t == null || isNaN(t)) t = 0;
-  if (t < 0) t = 0; if (t > 1) t = 1;
-  var lo = [16, 185, 129], mid = [245, 158, 11], hi = [239, 68, 68];
-  var c, a = t * 2;
-  if (a <= 1) { c = [lo[0] + (mid[0] - lo[0]) * a, lo[1] + (mid[1] - lo[1]) * a, lo[2] + (mid[2] - lo[2]) * a]; }
-  else { a -= 1; c = [mid[0] + (hi[0] - mid[0]) * a, mid[1] + (hi[1] - mid[1]) * a, mid[2] + (hi[2] - mid[2]) * a]; }
-  return "rgb(" + Math.round(c[0]) + "," + Math.round(c[1]) + "," + Math.round(c[2]) + ")";
 }
 
 // 关键度 / 风险「热力环」：t∈[0,1] 越大，环越粗、越红。
