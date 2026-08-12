@@ -9,7 +9,7 @@
 //   - 供应商：supplied_by 边（from=零部件 → to=供应商），直接可得。
 //   - 生产基地：零部件 → 使用它的产品（uses_component 反向）→ 产品所属产品线
 //     → 该线路的制造基地（manufactured_at：from=线路名 → to=基地），为传递关联（已在 UI 标注）。
-import { esc, label, i18nText, i18nVal, nm, COLORS } from "./util.js";
+import { esc, safeUrl, label, i18nText, i18nVal, nm, COLORS } from "./util.js";
 
 var built = false;
 var refs = {};                 // 缓存的 DOM 引用
@@ -113,7 +113,10 @@ function srcLinks(ids) {
   var html = "";
   ids.forEach(function (sid) {
     var m = reg[sid];
-    if (m && m.url) html += "<a class='td-src' href='" + esc(m.url) + "' target='_blank' rel='noopener' onclick='event.stopPropagation()'>" + esc(m.publisher || sid) + "</a>";
+    if (!m || m.generic || !m.url) return;   // 跳过无实质内容的通用出版商主页
+    var u = safeUrl(m.url);
+    if (!u) return;
+    html += "<a class='td-src' href='" + esc(u) + "' target='_blank' rel='noopener' onclick='event.stopPropagation()'>" + esc(m.publisher || sid) + "</a>";
   });
   return html ? "<div class='td-srcs'>" + html + "</div>" : "";
 }

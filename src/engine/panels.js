@@ -130,14 +130,15 @@ export function renderPanel(n) {
       var nm = esc(label(e.other));
       var phrase = isOut ? (verb + " → " + nm) : (nm + " → " + verb);   // 出方向「动词→对象」，入方向「对象→动词」
       var extra = e.link.share ? " · 份额 " + e.link.share + "%" : "";
-      // 来源溯源：每条边附 source（来源注册表 id 列表），渲染为可点击外链，确保关系可追溯到公开资料
+      // 来源溯源：每条边附 source（来源注册表 id 列表）；跳过无实质内容的通用出版商主页
       var srcHtml = "";
       if (e.link.source && e.link.source.length) {
         var reg = (window.SUPPLY_DATA && window.SUPPLY_DATA.meta && window.SUPPLY_DATA.meta.source_registry) || {};
         srcHtml = " <span class='src'>";
         e.link.source.forEach(function (sid) {
           var m = reg[sid];
-          var u = m && m.url ? safeUrl(m.url) : "";
+          if (!m || m.generic || !m.url) return;   // 跳过无实质内容的通用出版商主页
+          var u = safeUrl(m.url);
           if (u) srcHtml += "<a href='" + esc(u) + "' target='_blank' rel='noopener' onclick='event.stopPropagation()'>" + esc(m.publisher || sid) + "</a>";
         });
         srcHtml += "</span>";

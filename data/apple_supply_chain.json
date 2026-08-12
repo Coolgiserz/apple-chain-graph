@@ -36,7 +36,8 @@
         "title": "TechInsights 硬件拆解与物料清单(BOM)分析",
         "publisher": "TechInsights",
         "url": "https://www.techinsights.com/teardown",
-        "kind": "teardown"
+        "kind": "teardown",
+        "generic": true
       },
       "ifixit": {
         "title": "iFixit 产品拆解数据库",
@@ -48,31 +49,36 @@
         "title": "Counterpoint Research — 零部件供应与份额研究",
         "publisher": "Counterpoint Research",
         "url": "https://www.counterpointresearch.com/",
-        "kind": "analyst"
+        "kind": "analyst",
+        "generic": true
       },
       "trendforce": {
         "title": "TrendForce — 存储/半导体供需与份额报告",
         "publisher": "TrendForce",
         "url": "https://www.trendforce.com/press-center/",
-        "kind": "analyst"
+        "kind": "analyst",
+        "generic": true
       },
       "dscc": {
         "title": "DSCC (Display Supply Chain Consultants) — 显示面板供给分析",
         "publisher": "DSCC / Omdia",
         "url": "https://www.displaysupplychain.com/",
-        "kind": "analyst"
+        "kind": "analyst",
+        "generic": true
       },
       "omdia": {
         "title": "Omdia — 显示与半导体市场追踪",
         "publisher": "Omdia (Informa)",
         "url": "https://omdia.tech.informa.com/",
-        "kind": "analyst"
+        "kind": "analyst",
+        "generic": true
       },
       "nikkei": {
         "title": "Nikkei Asia — 苹果供应链报道",
         "publisher": "Nikkei Asia",
         "url": "https://asia.nikkei.com/",
-        "kind": "analyst"
+        "kind": "analyst",
+        "generic": true
       },
       "base_appleinsider": {
         "title": "AppleInsider — Where Apple products are assembled (and where parts come from)",
