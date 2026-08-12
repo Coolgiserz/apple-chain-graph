@@ -369,5 +369,21 @@
   "bottleneck.ringHint": "赤い環が太く・濃いほど重要度が高い。ランキング項目をクリックするとシアン環で強調。",
   "bottleneck.focusRing": "現在表示中のノード",
   "risk.ringTitle": "供給リスク",
-  "risk.ringHint": "赤い環が太く・濃いほど供給リスクが高い。"
+  "risk.ringHint": "赤い環が太く・濃いほど供給リスクが高い。",
+  "home.treeBtn": "ツリー表示",
+  "home.treeReturn": "グラフに戻る",
+  "home.treeTitle": "サプライチェーンツリー",
+  "home.treeRoot": "Apple",
+  "home.treeExpandAll": "すべて展開",
+  "home.treeCollapseAll": "すべて折りたたむ",
+  "home.treeHint": "製品ラインをクリックで製品を展開、製品をクリックで部品を展開、部品をクリックで供給元と生産拠点を表示",
+  "home.detailTitle": "部品詳細",
+  "home.detailClose": "閉じる",
+  "home.detailPlaceholder": "左側の「部品」をクリックすると、関連する供給元と生産拠点を表示します",
+  "home.detailUsedBy": "{n} 製品で使用",
+  "home.detailFilterCountry": "国・地域で絞り込み",
+  "home.detailEmptySup": "この部品に関連する供給元はありません",
+  "home.detailEmptyBase": "この部品に関連する生産拠点はありません",
+  "home.detailNoResult": "一致する結果がありません",
+  "field.share": "シェア"
 }

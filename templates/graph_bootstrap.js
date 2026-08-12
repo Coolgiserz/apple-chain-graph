@@ -74,6 +74,10 @@
       }
     }, data);
     g.start();
+    // 第三种视图：供应链树状视图（feat/tree-view）。缓存 DOM 引用并接线工具栏按钮。
+    try { g.initTreeView(); } catch (e) { console.error("[treeView] initTreeView 失败：", e); }
+    var treeBtn = document.getElementById("treeBtn");
+    if (treeBtn) treeBtn.addEventListener("click", function () { try { g.toggleTreeView(true); } catch (e) { console.error("[treeView] toggleTreeView 失败：", e); } });
     // 瓶颈透视元素（feat/graph-analytics）：与风险视图互斥
     var bt = document.getElementById("bnToggle");
     var bnLegend = document.getElementById("bnLegend");

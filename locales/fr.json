@@ -369,5 +369,21 @@
   "bottleneck.ringHint": "Anneau plus épais / plus rouge = plus critique. Les éléments cliqués sont surlignés en cyan.",
   "bottleneck.focusRing": "Nœud en cours de consultation",
   "risk.ringTitle": "Risque d'approvisionnement",
-  "risk.ringHint": "Anneau plus épais / plus rouge = risque plus élevé."
+  "risk.ringHint": "Anneau plus épais / plus rouge = risque plus élevé.",
+  "home.treeBtn": "Vue arborescente",
+  "home.treeReturn": "Retour au graphe",
+  "home.treeTitle": "Arborescence de la chaîne d'approvisionnement",
+  "home.treeRoot": "Apple",
+  "home.treeExpandAll": "Tout déplier",
+  "home.treeCollapseAll": "Tout replier",
+  "home.treeHint": "Cliquez sur une gamme pour déplier les produits ; sur un produit pour déplier les composants ; sur un composant pour voir ses fournisseurs et bases de production",
+  "home.detailTitle": "Détail du composant",
+  "home.detailClose": "Fermer",
+  "home.detailPlaceholder": "Cliquez sur un « composant » à gauche pour voir ses fournisseurs et bases de production associés",
+  "home.detailUsedBy": "Utilisé par {n} produits",
+  "home.detailFilterCountry": "Par pays/région",
+  "home.detailEmptySup": "Aucun fournisseur associé à ce composant",
+  "home.detailEmptyBase": "Aucune base de production associée",
+  "home.detailNoResult": "Aucun résultat",
+  "field.share": "Part"
 }

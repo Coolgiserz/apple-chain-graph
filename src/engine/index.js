@@ -5,6 +5,7 @@ import { W, H, esc, safeUrl, i18nText } from "./util.js";
 import { build, visibleSet, visibleNodes } from "./model.js";
 import { bindEvents, focus, reheat, start, stop, kick, fitView } from "./interaction.js";
 import { selectNode, renderPanel, renderRiskPanel, showRiskPanel, showBottleneckPanel, renderBottleneckPanel } from "./panels.js";
+import { initTreeView, toggleTreeView } from "./treeview.js";
 import { computeMetrics } from "../lib/analytics.js";
 import { draw, syncSize, resize } from "./render.js";
 
@@ -36,6 +37,9 @@ var api = {
   esc: esc,
   safeUrl: safeUrl,
   visibleNodes: visibleNodes,
+  // 树状视图（第三种视图）：Apple → 产品线 → 产品 → 零部件；点击零部件打开独立详情栏
+  initTreeView: initTreeView,
+  toggleTreeView: toggleTreeView,
   // 风险视图开关：开启后节点按脆弱性着色 + 单点标记；弹出右侧「风险因子说明」面板
   setRiskMode: function (on) {
     S.riskMode = !!on;

@@ -369,5 +369,21 @@
   "bottleneck.ringHint": "Thicker / redder ring = more critical. Clicked ranking items are highlighted with a cyan ring.",
   "bottleneck.focusRing": "Node being viewed",
   "risk.ringTitle": "Supply risk",
-  "risk.ringHint": "Thicker / redder ring = higher supply risk."
+  "risk.ringHint": "Thicker / redder ring = higher supply risk.",
+  "home.treeBtn": "Tree view",
+  "home.treeReturn": "Back to graph",
+  "home.treeTitle": "Supply-chain tree",
+  "home.treeRoot": "Apple",
+  "home.treeExpandAll": "Expand all",
+  "home.treeCollapseAll": "Collapse all",
+  "home.treeHint": "Click a product line to expand products; click a product to expand components; click a component to see its suppliers and production bases",
+  "home.detailTitle": "Component detail",
+  "home.detailClose": "Close",
+  "home.detailPlaceholder": "Click any \"component\" on the left to view its associated suppliers and production bases",
+  "home.detailUsedBy": "Used by {n} products",
+  "home.detailFilterCountry": "By country/region",
+  "home.detailEmptySup": "No associated suppliers for this component",
+  "home.detailEmptyBase": "No associated production bases for this component",
+  "home.detailNoResult": "No matching results",
+  "field.share": "Share"
 }
