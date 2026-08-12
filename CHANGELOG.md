@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.7.1](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.7.0...v1.7.1) (2026-08-12)
+
+
+### Bug Fixes
+
+* 连接孤立的摄像头模组节点到对应产品 ([7d01576](https://github.com/Coolgiserz/apple-chain-graph/commit/7d01576c1b452af3d8229bbc61809fc72d9c51ee))
+* 连接孤立的摄像头模组节点到对应产品 ([fd65bb2](https://github.com/Coolgiserz/apple-chain-graph/commit/fd65bb29ea88093d40bdc27836e424a4006e7710))
+
 ## [1.7.0](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.6.4...v1.7.0) (2026-08-12)
 
 
