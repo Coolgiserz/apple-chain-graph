@@ -31,11 +31,6 @@ function onNodeClick(n) {
   selectNode(n);
 }
 
-// 记录最近一次用户交互时间，用于流动粒子「静止降级」（P0-4）：无交互一段时间后停止 rAF。
-// 标记一次用户交互（曾用于流动粒子静止降级计时，现已随「流动」开关移除而仅作占位，
-// 调用点保持不变以便后续扩展——例如基于交互节流重绘）。
-function bump() {}
-
 // 「展开全部/收起全部」按钮文案与高亮态随 S.showAll 同步（P0-2）。
 function setSuppBtn() {
   var b = document.getElementById("cbS");
@@ -88,7 +83,6 @@ function collapseNode(key) { if (S.expanded.has(key)) { S.expanded.delete(key); 
 
 export function bindEvents() {
   S.cv.addEventListener("mousedown", function (e) {
-    bump();                                       // 记录交互，重置流动粒子静止降级计时（P0-4）
     S.downX = e.clientX; S.downY = e.clientY;
     S.downNode = pick(e.clientX, e.clientY);   // 仅记录候选，不立即进入拖拽/平移
     S.pointerDown = true;
@@ -125,7 +119,6 @@ export function bindEvents() {
   });
   S.cv.addEventListener("wheel", function (e) {
     e.preventDefault();
-    bump();
     var l = localXY(e.clientX, e.clientY);
     var factor = e.deltaY < 0 ? 1.1 : 0.9;
     var wx = (l.x - S.view.ox) / S.view.scale, wy = (l.y - S.view.oy) / S.view.scale;
@@ -138,7 +131,6 @@ export function bindEvents() {
   // 双击节点：拓扑隔离聚焦 —— 只渲染该节点及其 1 跳邻居（覆盖其余筛选），
   // 并适配到该子图，让用户在密图上也能看清「连着谁、连了多少」。再次双击同一节点退出。
   S.cv.addEventListener("dblclick", function (e) {
-    bump();
     var n = pick(e.clientX, e.clientY);
     if (!n) return;            // 双击空白处不处理（避免误清除聚焦）
     isolateToggle(n);
@@ -150,7 +142,6 @@ export function bindEvents() {
   function touchMid(e) { var a = e.touches[0], b = e.touches[1]; return { x: (a.clientX + b.clientX) / 2, y: (a.clientY + b.clientY) / 2 }; }
   S.cv.addEventListener("touchstart", function (e) {
     e.preventDefault();
-    bump();
     if (e.touches.length === 1) {
       var t = e.touches[0];
       S.downX = t.clientX; S.downY = t.clientY;

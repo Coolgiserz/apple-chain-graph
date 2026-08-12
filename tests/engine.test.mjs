@@ -50,7 +50,6 @@ const registry = {
   cbP: makeEl({ checked: true }),
   cbC: makeEl({ checked: true }),
   cbS: makeEl({ classList: { add: () => {}, remove: () => {}, toggle: () => {} } }),   // 现为「展开全部」按钮（onclick 切换 S.showAll）
-  flow: makeEl({ classList: { add: () => {}, remove: () => {}, toggle: () => {} } }),
   panel: makeEl(),
   pbody: makeEl(),
   bottleneckPanel: makeEl({ style: { display: "none" } }),
@@ -204,8 +203,11 @@ check("focus() 不抛错", () => {
   assert.doesNotThrow(() => api.focus("S:tsmc"));
 });
 
-check("esc() 转义 HTML 特殊字符", () => {
-  assert.equal(api.esc("<b>&'</b>"), "&lt;b&gt;&amp;'&lt;/b&gt;");
+check("esc() 转义 HTML 特殊字符（含引号）", () => {
+  assert.equal(api.esc("<b>&'</b>\"x"), "&lt;b&gt;&amp;&#39;&lt;/b&gt;&quot;x");
+  // 外链白名单：仅 http(s) 放行，危险协议返回空
+  assert.equal(api.safeUrl("javascript:alert(1)"), "");
+  assert.equal(api.safeUrl("https://example.com/a"), "https://example.com/a");
 });
 
 check("fitView() 不抛错且将视口缩放到有效正值", () => {

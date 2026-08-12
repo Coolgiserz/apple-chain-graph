@@ -1,7 +1,7 @@
 // index.js — 引擎入口：组装对外 API 并挂到 window.GraphEngine（IIFE 打包后行为与原 graph_engine.js 一致）。
 // 把「物理 / 渲染 / 交互 / 面板」各自独立为模块后，此处只做编排，便于分模块协作。
 import { S } from "./state.js";
-import { W, H, esc, i18nText } from "./util.js";
+import { W, H, esc, safeUrl, i18nText } from "./util.js";
 import { build, visibleSet, visibleNodes } from "./model.js";
 import { bindEvents, focus, reheat, start, stop, kick, fitView } from "./interaction.js";
 import { selectNode, renderPanel, renderRiskPanel, showRiskPanel, showBottleneckPanel, renderBottleneckPanel } from "./panels.js";
@@ -34,6 +34,7 @@ var api = {
   resize: resize,
   fitView: fitView,
   esc: esc,
+  safeUrl: safeUrl,
   visibleNodes: visibleNodes,
   // 风险视图开关：开启后节点按脆弱性着色 + 单点标记；弹出右侧「风险因子说明」面板
   setRiskMode: function (on) {

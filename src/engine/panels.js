@@ -1,7 +1,7 @@
 // panels.js — 右侧信息面板渲染（普通面板 + 风险因子面板）。归属「面板」模块，可由专人维护，
 // 与物理/渲染/交互解耦。依赖 S 状态与 util 翻译/转义工具。
 import { S } from "./state.js";
-import { esc, label, i18nText, i18nVal, nm, COLORS, BASE_R, typeLabel } from "./util.js";
+import { esc, safeUrl, label, i18nText, i18nVal, nm, COLORS, BASE_R, typeLabel } from "./util.js";
 import { computeMetrics } from "../lib/analytics.js";
 
 export function showRiskPanel(on) {
@@ -137,7 +137,8 @@ export function renderPanel(n) {
         srcHtml = " <span class='src'>";
         e.link.source.forEach(function (sid) {
           var m = reg[sid];
-          if (m && m.url) srcHtml += "<a href='" + esc(m.url) + "' target='_blank' rel='noopener' onclick='event.stopPropagation()'>" + esc(m.publisher || sid) + "</a>";
+          var u = m && m.url ? safeUrl(m.url) : "";
+          if (u) srcHtml += "<a href='" + esc(u) + "' target='_blank' rel='noopener' onclick='event.stopPropagation()'>" + esc(m.publisher || sid) + "</a>";
         });
         srcHtml += "</span>";
       }
@@ -284,10 +285,6 @@ export function renderBottleneckPanel(n) {
         info.suppliedComps.map(function (k) { return bnRow(k, label(S.idMap[k]), ""); }).join("") + "</ul>";
     }
     h += "</div>";
-    if (info.suppliedComps.length) {
-      h += "<h4 style='margin:12px 0 4px;font-size:13px;color:#cfe0ff'>" + i18nText("bottleneck.suppliedComps") + "</h4><ul class='bn-rank'>" +
-        info.suppliedComps.map(function (k) { return bnRow(k, label(S.idMap[k]), ""); }).join("") + "</ul>";
-    }
   } else if (n.type === "Component") {
     var reuse = info.reuseProducts.length;
     var sp = n.single_point || n.n_suppliers === 1;
