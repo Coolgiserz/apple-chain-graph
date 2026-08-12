@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.6.4](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.6.3...v1.6.4) (2026-08-12)
+
+
+### Bug Fixes
+
+* 高优先级可维护性修复（esc 转义/外链白名单/清理死代码） ([a66124b](https://github.com/Coolgiserz/apple-chain-graph/commit/a66124bdb54b960fabac1366d8a22a4ec1236c8c))
+* 高优先级可维护性修复（esc 转义/外链白名单/清理死代码） ([fdb1da1](https://github.com/Coolgiserz/apple-chain-graph/commit/fdb1da1b4a8b0d9e4c35911d105892c0687bf774))
+
 ## [1.6.3](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.6.2...v1.6.3) (2026-08-11)
 
 
