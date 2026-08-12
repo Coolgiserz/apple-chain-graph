@@ -3,6 +3,12 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+  <!-- 最小内容安全策略（静态站，GitHub Pages 不支持自定义响应头，故用 meta 形式）。
+       注：meta CSP 不支持 frame-ancestors / report-uri，故点击劫持防御另用 X-Frame-Options。
+       因本站含内联 <script> 与内联 onclick/style，script-src/style-src 仍需 'unsafe-inline'；
+       该策略主要兜住「外部脚本 / 插件 / iframe / 跨域 fetch」等注入来源。 -->
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' https://coolgiserz.github.io data:; connect-src 'self'; font-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'">
+  <meta http-equiv="X-Frame-Options" content="DENY">
   <title>苹果供应链上下游图谱</title>
   <!--SEO-->
   <meta name="description" content="苹果产品供应链上下游知识图谱：以「产品→零部件→供应商」三层模型覆盖6大产品线（iPhone、Mac、iPad、Apple Watch、Vision Pro、AirPods）、28款产品、27个核心零部件、60家供应商，量化单点依赖与供应脆弱性并给出最脆弱产品线排名；数据源自公开供应链报告与苹果供应商名单，以 MIT 许可开源，可作为供应链图分析、脆弱性建模与图神经网络（GNN）教学的参考性实验数据（尚非成熟基准，使用前请留意数据口径与局限性）。">

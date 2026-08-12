@@ -150,7 +150,7 @@ srcHtml += "<a href='" + esc(m.url) + "' target='_blank' rel='noopener' ...>" + 
 
 这套前端在工程化骨架（模块化、零依赖构建、CI 门禁、优雅降级）上已经相当成熟，明显优于「单文件 jQuery 粘贴」式的常见静态站。要在「可维护」与「最佳实践」上再上一个台阶，重点不是重写架构，而是**收紧质量门禁**（ESLint/转义/死代码）和**驯服渲染热路径**（避免每帧重复计算与 DOM 读取）。这些都是增量、低风险改动，适合在当前分支或后续小 PR 逐步落地。
 
-评估过程中已修复一处明确缺陷（瓶颈面板「供应组件」区块重复渲染），见提交记录。
+评估过程中已修复一处明确缺陷（瓶颈面板「供应组件」区块重复渲染），并落地了高优先级与最小 CSP 安全加固，见提交记录。
 
 ### 高优先级修复记录（本分支已完成）
 
@@ -161,7 +161,10 @@ srcHtml += "<a href='" + esc(m.url) + "' target='_blank' rel='noopener' ...>" + 
 | 死代码 `bump()` | 删除 `interaction.js` 中空函数 `bump()` 及其 4 处调用点（mousedown/wheel/dblclick/touchstart）与占位注释 | ✅ |
 | 死代码 `metricColor()` | 删除 `util.js` 中已无人调用的 `metricColor()` | ✅ |
 | 测试 `flow` 桩 | 移除 `tests/engine.test.mjs` 中已无意义（按钮早已移除）的 `flow` 注册项；更新 `esc()` 断言并新增 `safeUrl()` 用例 | ✅ |
+| 最小 CSP | `index.html` `<head>` 增加 `<meta http-equiv="Content-Security-Policy">`（default-src 'self'；script/style 'unsafe-inline'；connect-src 'self'；frame-src/object-src 'none'；base-uri/form-action 'self'）+ `<meta http-equiv="X-Frame-Options" content="DENY">` | ✅ |
 
-> 验证：`npm run build` / `npm run lint` / `node tests/engine.test.mjs`（23 项）全部通过，`src/` 与 `tests/` 中已无 `bump` 残留引用。
+> 验证：`npm run build` / `npm run lint` / `node tests/engine.test.mjs`（23 项）全部通过；`src/` 中无跨域 `fetch`（数据走同源相对路径，`connect-src 'self'` 不阻断），仅 canonical/og 等指向 `coolgiserz.github.io` 的元数据（浏览器不据 CSP 加载）。
+>
+> 已知局限（取舍，非缺陷）：meta CSP 不支持 `frame-ancestors`/`report-uri`，故 frame 防御靠 `X-Frame-Options`、放弃上报；因站内含内联 `<script>` 与内联 `onclick`/`style`，`script-src`/`style-src` 仍需 `'unsafe-inline'`，故**第一方内联脚本被 XSS 改写时 CSP 拦不住**，但能挡住全部外部/注入来源。`file://` 本地回退路径下 `connect-src 'self'` 因源为 `null` 可能阻断数据 fetch，需实测（应用已有 file:// 兜底逻辑）。
 
-后续中优先级项（`visibleSet()` memoize、reset 统一 `setBaseBtn()`、sourcemap/CSP）尚未处理，仍列于上方路线图。
+后续中优先级项（`visibleSet()` memoize、reset 统一 `setBaseBtn()`、esbuild sourcemap）尚未处理，仍列于上方路线图。
