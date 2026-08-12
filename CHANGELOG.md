@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.7.0](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.6.4...v1.7.0) (2026-08-12)
+
+
+### Features
+
+* 供应链树状视图（第三种视图：Apple→产品线→产品→零部件） ([1c9d2aa](https://github.com/Coolgiserz/apple-chain-graph/commit/1c9d2aa211fb5190e81c120cbdeae837eb107308))
+
+
+### Bug Fixes
+
+* 仅移除无实质内容的通用出版商主页链接，保留具体文章类来源 ([d707f86](https://github.com/Coolgiserz/apple-chain-graph/commit/d707f86a2dfacd8618099a234803e4d6c92559ab))
+
 ## [1.6.4](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.6.3...v1.6.4) (2026-08-12)
 
 
