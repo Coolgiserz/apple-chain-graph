@@ -289,6 +289,79 @@
   @media (max-width: 820px) {
     .feed-fresh { margin-left: 0; width: 100%; order: 99; }
   }
+  /* —— 第三种视图：供应链树状视图 —————————————————————— */
+  /* 进入树状视图时隐藏网络图谱相关浮层，避免二者相互遮挡 */
+  body.tree-open #cv,
+  body.tree-open #top,
+  body.tree-open #nodeLegend,
+  body.tree-open #weightLegend,
+  body.tree-open #hint,
+  body.tree-open #guide,
+  body.tree-open #insightCard,
+  body.tree-open #isoBanner,
+  body.tree-open #panel,
+  body.tree-open #riskPanel,
+  body.tree-open #bottleneckPanel,
+  body.tree-open #side { display: none !important; }
+  #treeView { display: none; position: absolute; top: calc(52px + env(safe-area-inset-top)); left: 0; right: 0; bottom: 0;
+    flex-direction: column; background: #0f1320; z-index: 7; }
+  body.tree-open #treeView { display: flex; }
+  .tv-header { display: flex; align-items: flex-start; justify-content: space-between; gap: 12px; flex-wrap: wrap;
+    padding: 12px 16px; border-bottom: 1px solid #2a3450; background: rgba(20,26,42,.6); }
+  .tv-titles h2 { margin: 0; font-size: 15px; color: #e8ecf4; font-weight: 600; }
+  .tv-hint { margin: 4px 0 0; font-size: 12px; color: #9fb0d0; line-height: 1.5; max-width: 720px; }
+  .tv-actions { display: flex; gap: 8px; flex: 0 0 auto; }
+  .tv-actions button { background: #2a3450; color: #dbeafe; border: none; border-radius: 8px; padding: 6px 12px; cursor: pointer; font-size: 13px; }
+  .tv-actions button:hover { background: #3a4a6e; }
+  .tv-body { flex: 1; display: flex; min-height: 0; }
+  .tv-pane { overflow: auto; }
+  .tv-pane.tree { flex: 1 1 auto; padding: 8px 0 24px; min-width: 0; }
+  .tv-pane.detail { flex: 0 0 400px; max-width: 46vw; border-left: 1px solid #2a3450; background: rgba(18,24,40,.6); padding: 12px 14px; }
+  /* 树行 */
+  .tnode .trow { display: flex; align-items: center; gap: 8px; min-height: 30px; cursor: pointer;
+    border-radius: 6px; padding-right: 10px; transition: background .12s; }
+  .tnode .trow:hover { background: #1b2742; }
+  .tnode.leaf .trow.leaf-selected { background: #2f6fed; }
+  .tnode.leaf .trow.leaf-selected .tname { color: #fff; }
+  .tcaret { width: 14px; text-align: center; color: #9fb0d0; font-size: 11px; transition: transform .12s; flex: 0 0 auto; }
+  .tcaret.spacer { visibility: hidden; }
+  .tnode.branch.closed > .trow .tcaret { transform: rotate(-90deg); }
+  .tnode.branch.closed > .tchildren { display: none; }
+  .tdot { width: 10px; height: 10px; border-radius: 50%; flex: 0 0 auto; }
+  .tdot.line { width: 12px; height: 9px; border-radius: 3px; background: rgba(139,92,246,.25); border: 1.5px dashed #8b5cf6; }
+  .tdot.prod { background: #2f6fed; }
+  .tdot.part { background: #f59e0b; }
+  .tname { font-size: 13px; color: #e8ecf4; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  /* 详情栏 */
+  .td-placeholder { color: #7c8aa8; font-size: 13px; line-height: 1.7; padding: 16px 4px; }
+  .td-header { position: relative; padding-right: 28px; margin-bottom: 8px; }
+  .td-htitle { font-size: 13px; color: #9fb0d0; font-weight: 600; }
+  .td-comp { font-size: 16px; color: #e8ecf4; margin-top: 2px; }
+  .td-en { font-size: 12px; color: #9fb0d0; margin-left: 6px; }
+  .td-sub { font-size: 12px; color: #9fb0d0; margin-top: 2px; }
+  .td-close { position: absolute; top: -2px; right: 0; background: transparent; border: none; color: #9fb0d0; font-size: 20px; line-height: 1; cursor: pointer; }
+  .td-close:hover { color: #fff; }
+  .td-meta { font-size: 12.5px; color: #cfe0ff; background: rgba(47,111,237,.12); border: 1px solid rgba(47,111,237,.3); border-radius: 8px; padding: 6px 10px; margin-bottom: 8px; }
+  .td-search input { width: 100%; box-sizing: border-box; background: #0c1020; border: 1px solid #2a3450; color: #e8ecf4; border-radius: 8px; padding: 7px 10px; outline: none; font-size: 13px; }
+  .td-sec { margin-top: 12px; }
+  .td-sec-h { display: flex; align-items: center; justify-content: space-between; gap: 8px; font-size: 13px; color: #cfe0ff; font-weight: 600; margin-bottom: 6px; }
+  .td-filter { background: #0c1020; border: 1px solid #2a3450; color: #e8ecf4; border-radius: 8px; padding: 4px 8px; font-size: 12px; max-width: 150px; }
+  .td-list { list-style: none; margin: 0; padding: 0; }
+  .td-item { padding: 8px 10px; border: 1px solid #1c2336; border-radius: 8px; margin-bottom: 6px; background: rgba(12,16,32,.4); }
+  .td-item-main { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .td-item-name { font-size: 13px; color: #e8ecf4; font-weight: 600; }
+  .td-chip { font-size: 11px; color: #cfe0ff; border: 1px solid #3f4f7a; border-radius: 999px; padding: 1px 8px; }
+  .td-item-meta { font-size: 12px; color: #9fb0d0; margin-top: 3px; line-height: 1.5; }
+  .td-srcs { margin-top: 5px; display: flex; flex-wrap: wrap; gap: 6px; }
+  .td-src { font-size: 11px; color: #6ea0ff; text-decoration: none; border-bottom: 1px dashed #6ea0ff; }
+  .td-src:hover { background: rgba(110,160,255,.15); }
+  .td-empty { color: #7c8aa8; font-size: 12.5px; padding: 8px 2px; }
+  /* 移动端：详情栏改为下方抽屉，避免挤压树 */
+  @media (max-width: 820px) {
+    .tv-body { flex-direction: column; }
+    .tv-pane.detail { flex: 1 1 auto; max-width: none; border-left: none; border-top: 1px solid #2a3450; }
+    .tv-pane.tree { flex: 1 1 50%; }
+  }
 </style>
 </head>
 <body>
@@ -308,6 +381,7 @@
     <button id="cbS" class="ghost" data-i18n="home.suppAll">展开全部供应商</button>
     <button id="cbB" class="ghost" data-i18n="home.basesAll">展开全部生产基地</button>
     <button id="toggleTable" class="ghost" data-i18n="home.tableBtn">📋 企业表格</button>
+    <button id="treeBtn" class="ghost" data-i18n="home.treeBtn">🌳 树状视图</button>
     <label class="chk"><input type="checkbox" id="riskToggle"><span data-i18n="home.riskMode">风险视图</span></label>
     <label class="chk"><input type="checkbox" id="bnToggle"><span data-i18n="home.bottleneckMode">瓶颈透视</span></label>
     <div class="grp" id="bnLegend" style="display:none; gap:8px; align-items:center;">
@@ -397,6 +471,26 @@
       <thead><tr><th data-i18n="table.name">名称</th><th data-i18n="table.country">国家/地区</th><th data-i18n="table.category">类别</th><th data-i18n="table.tier">层级</th></tr></thead>
       <tbody id="sideBody"></tbody>
     </table>
+  </div>
+</div>
+
+<!-- 第三种视图：供应链树状视图（Apple → 产品线 → 产品 → 零部件）。点击零部件在右侧独立详情栏
+     列出其关联的供应商与生产基地（支持搜索/筛选），不覆盖左侧树。 -->
+<div id="treeView">
+  <header class="tv-header">
+    <div class="tv-titles">
+      <h2 data-i18n="home.treeTitle">供应链树状视图</h2>
+      <p class="tv-hint" data-i18n="home.treeHint">点击产品线展开产品，点击产品展开零部件；点击零部件查看其供应商与生产基地</p>
+    </div>
+    <div class="tv-actions">
+      <button id="treeExpandAll" class="ghost" data-i18n="home.treeExpandAll">全部展开</button>
+      <button id="treeCollapseAll" class="ghost" data-i18n="home.treeCollapseAll">全部收起</button>
+      <button id="treeReturn" class="ghost" data-i18n="home.treeReturn">← 返回图谱</button>
+    </div>
+  </header>
+  <div class="tv-body">
+    <div id="treePane" class="tv-pane tree"></div>
+    <div id="treeDetail" class="tv-pane detail"><div class="td-placeholder" data-i18n="home.detailPlaceholder">点击左侧任意「零部件」查看其关联的供应商与生产基地</div></div>
   </div>
 </div>
 

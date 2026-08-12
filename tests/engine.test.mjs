@@ -25,7 +25,7 @@ const ctxStub = new Proxy({}, {
 
 const makeEl = (extra = {}) => Object.assign({
   style: {},
-  classList: { add: () => {}, remove: () => {} },
+  classList: { add: () => {}, remove: () => {}, toggle: () => {} },
   addEventListener: () => {},
   appendChild: () => {},
   getContext: () => ctxStub,
@@ -37,6 +37,9 @@ const makeEl = (extra = {}) => Object.assign({
   value: "",
   checked: true,
   textContent: "",
+  innerHTML: "",
+  querySelectorAll: () => [],
+  querySelector: () => null,
 }, extra);
 
 // 画布初始后备尺寸故意与 CSS 尺寸(800x600)不一致，模拟浏览器默认 300x150，
@@ -63,6 +66,13 @@ const registry = {
   insFocus: makeEl(),
   insightClose: makeEl(),
   insightToggle: makeEl(),
+  // 树状视图（feat/tree-view）所需 DOM 桩
+  treeView: makeEl(),
+  treePane: makeEl(),
+  treeDetail: makeEl(),
+  treeReturn: makeEl(),
+  treeExpandAll: makeEl(),
+  treeCollapseAll: makeEl(),
 };
 
 globalThis.window = globalThis;
@@ -75,6 +85,7 @@ globalThis.document = {
   querySelectorAll: () => [],
   readyState: "complete",
   dispatchEvent: (evt) => { dispatched.push(evt.type); return true; },
+  body: { classList: { add: () => {}, remove: () => {}, toggle: () => {}, contains: () => false } },
 };
 globalThis.location = { search: "", href: "http://localhost/" };
 globalThis.history = { replaceState: () => {} };
@@ -255,6 +266,29 @@ check("重置视图派发 sc:view", () => {
   dispatched.length = 0;
   registry.reset.onclick();
   assert.ok(dispatched.includes("sc:view"), "reset 应广播 sc:view");
+});
+
+// ---- 树状视图（feat/tree-view）：第三种视图 ----
+check("树状视图 API 已暴露（initTreeView / toggleTreeView）", () => {
+  assert.equal(typeof api.initTreeView, "function", "期望 initTreeView 为函数");
+  assert.equal(typeof api.toggleTreeView, "function", "期望 toggleTreeView 为函数");
+});
+
+check("toggleTreeView(true) 构建树且含 根/产品线/产品/零部件 叶子（不抛错）", () => {
+  assert.doesNotThrow(() => api.initTreeView());
+  assert.doesNotThrow(() => api.toggleTreeView(true));
+  const html = registry.treePane.innerHTML || "";
+  assert.ok(html.includes("iPhone"), "树应包含产品线（iPhone），实际片段：" + html.slice(0, 120));
+  assert.ok(html.includes("SoC"), "树应包含零部件（SoC），实际片段：" + html.slice(0, 120));
+  assert.ok(html.includes("data-kind='component'") && html.includes("data-id='soc'"),
+    "应包含零部件叶子节点 data-id=soc");
+  assert.ok(html.includes("data-kind='line'"), "应包含产品线分支节点");
+  assert.ok(html.includes("data-kind='product'"), "应包含产品分支节点");
+});
+
+check("toggleTreeView(false) 关闭且不抛错；再次打开幂等", () => {
+  assert.doesNotThrow(() => api.toggleTreeView(false));
+  assert.doesNotThrow(() => api.toggleTreeView(true));   // 已构建，应仅切换显示态
 });
 
 if (failures > 0) {

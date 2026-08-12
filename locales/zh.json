@@ -369,5 +369,21 @@
   "bottleneck.ringHint": "红环越粗、越红 = 关键度越高；点击排行项会以洋红环高亮。",
   "bottleneck.focusRing": "当前查看的节点",
   "risk.ringTitle": "供应风险",
-  "risk.ringHint": "红环越粗、越红 = 供应风险越高。"
+  "risk.ringHint": "红环越粗、越红 = 供应风险越高。",
+  "home.treeBtn": "树状视图",
+  "home.treeReturn": "返回图谱",
+  "home.treeTitle": "供应链树状视图",
+  "home.treeRoot": "Apple",
+  "home.treeExpandAll": "全部展开",
+  "home.treeCollapseAll": "全部收起",
+  "home.treeHint": "点击产品线展开产品，点击产品展开零部件；点击零部件查看其供应商与生产基地",
+  "home.detailTitle": "零部件详情",
+  "home.detailClose": "关闭",
+  "home.detailPlaceholder": "点击左侧任意「零部件」查看其关联的供应商与生产基地",
+  "home.detailUsedBy": "用于 {n} 款产品",
+  "home.detailFilterCountry": "按国家/地区",
+  "home.detailEmptySup": "该零部件暂无关联供应商",
+  "home.detailEmptyBase": "该零部件暂无关联生产基地",
+  "home.detailNoResult": "无匹配结果",
+  "field.share": "份额"
 }
