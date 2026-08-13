@@ -276,12 +276,12 @@
   "report.limits.l4": "Alias records only publicly credible pre-announcement codenames or nicknames, left blank if none; release dates follow announcement / launch dates, with the year noted for unconfirmed models.",
   "report.limits.l5": "Data is for industry-structure research and education, and constitutes no investment or procurement advice.",
   "report.model.h3": "Tier Definitions",
-  "report.model.intro": "The graph uses three node tiers and three relationship types, reflecting the upstream–downstream propagation path:",
+  "report.model.intro": "The graph uses four node tiers and five relationship types, fully reflecting the upstream–downstream path plus assembly / mass-production links:",
   "report.model.l0": "Tier 0 — End Products (Product): down to the specific model, e.g., iPhone 17 Pro, MacBook Pro 14″ (M4), Apple Vision Pro (M5); with attributes such as release date, status, and starting price.",
   "report.model.l1": "Tier 1 — Core Components (Component): SoC, display panels, CIS, lenses, memory, modems, PMIC, batteries, mechanical parts, FPC/substrate, advanced packaging, etc.; with Chinese and English names.",
   "report.model.l2": "Tier 2 — Suppliers / Contract Manufacturers (Supplier): categorized into foundry, display, memory, semiconductor, acoustics, mechanical, FPC/substrate, OSAT, assembly, etc.; full/English/short names listed separately; tier=1 marks core / high-moat suppliers, tier=2 marks secondary / more substitutable ones.",
-  "report.model.rel1": "Product ──USES_COMPONENT──▶ Component ──SUPPLIED_BY──▶ Supplier",
-  "report.model.rel2": "Product ──ASSEMBLED_BY──▶ Supplier (EMS)",
+  "report.model.rel1": "Product ──USES_COMPONENT──▶ Component ──SUPPLIED_BY──▶ Supplier ──OPERATED_BY──▶ Base",
+  "report.model.rel2": "Product ──ASSEMBLED_BY──▶ Supplier (EMS assembly)",
   "report.risk.note": "The shares and dates above (BOE panel 51%, Samsung DRAM ~60–70%, Sony CIS monopoly, Japanese components >60% in camera, TSMC Arizona only legacy A16, Amkor US plant ~2028, etc.) are drawn from public teardowns and market research (Counterpoint / Nikkei / TrendForce / stockanalysis) and vendor disclosures, reflecting mainstream configurations of 2025–2026; they may change over time and are provided for supply-chain structure research only.",
   "report.risk.r1": "Single-point foundry dependency (TSMC / Taiwan): the most advanced chips such as A19 / A19 Pro / M-series are 100% fabricated by TSMC's Taiwan fabs (3nm N3E/N3P), and advanced nodes are legally barred from moving offshore. Geopolitical risk is highly concentrated; the Arizona plant currently handles only older A16 and packaging.",
   "report.risk.r2": "Single-point image-sensor dependency (Sony / Japan): iPhone main-camera CIS is exclusively Sony's; Japanese parts exceed 60% of a single iPhone camera module, making short-term substitution difficult (Samsung is only a potential future second source).",
@@ -395,5 +395,10 @@
   "home.detailEmptySup": "No associated suppliers for this component",
   "home.detailEmptyBase": "No associated production bases for this component",
   "home.detailNoResult": "No matching results",
-  "field.share": "Share"
+  "field.share": "Share",
+  "report.model.flow": "Four node tiers are linked by five edge types (solid = adjacent-tier flow; dashed = cross-tier direct link):",
+  "report.model.rel3": "Supplier ──OPERATED_BY──▶ Base (operated site)",
+  "report.model.rel4": "Product ──MANUFACTURED_AT──▶ Base (mass-production site)",
+  "report.model.caption": "Solid arrows are adjacent-tier flows; dashed arcs are cross-tier direct links (EMS assembly, mass-production).",
+  "report.model.l3": "Tier 3 — Manufacturing Bases (Base): final-assembly and key-component sites such as Zhengzhou / Chengdu / Shenzhen; with city, province, operator (Foxconn / Luxshare, etc.), covered product lines, and confidence."
 }
