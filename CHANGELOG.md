@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.1](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.9.0...v1.9.1) (2026-08-13)
+
+
+### Bug Fixes
+
+* **report:** 重写供应链分层模型为数据驱动的完整四层图 ([0e9df17](https://github.com/Coolgiserz/apple-chain-graph/commit/0e9df17387cd1fb086e94678a1dc9df3736b8f09))
+
 ## [1.9.0](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.8.0...v1.9.0) (2026-08-13)
 
 
