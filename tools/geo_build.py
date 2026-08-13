@@ -237,11 +237,12 @@ def make_arrow_metas(line_geoms, tier, start=0):
         brg = bearing(g["plat"], g["plng"], g["alat"], g["alng"])
         color = COLORS.get(g["styleId"], "#94a3b8") if tier == "up" else "#7c3aed"
         mid = [(g["plat"] + g["alat"]) / 2.0, (g["plng"] + g["alng"]) / 2.0]
-        metas.append({
-            "id": f"A{idx}", "styleId": f"A{idx}", "tier": tier,
-            "start": [g["plat"], g["plng"]], "end": [g["alat"], g["alng"]],
-            "mid": mid, "src": arrow_svg(color, brg),
-        })
+    metas.append({
+        "id": f"A{idx}", "styleId": f"A{idx}", "tier": tier,
+        "start": [g["plat"], g["plng"]], "end": [g["alat"], g["alng"]],
+        "mid": mid, "src": arrow_svg(color, brg),
+        "supplier": g.get("supplier"),
+    })
     return metas
 
 # 品类粗分组（用于地图过滤 UI）
@@ -435,6 +436,12 @@ def market_svg():
            "fill='#f59e0b' stroke='white' stroke-width='1.5'/></svg>")
     return "data:image/svg+xml," + urllib.parse.quote(svg, safe="")
 
+def dim_marker_svg():
+    """聚焦时用于淡化非目标供应商的灰色圆点。"""
+    svg = ("<svg xmlns='http://www.w3.org/2000/svg' width='22' height='22'>"
+           "<circle cx='11' cy='11' r='8' fill='#cbd5e1' stroke='white' stroke-width='2'/></svg>")
+    return "data:image/svg+xml," + urllib.parse.quote(svg, safe="")
+
 def build_geo_data(recs, insights):
     """构建地图所需的全部数据（标记 / 连线 / 箭头 / 侧栏面板），供 build_html 复用。"""
     styles = {}
@@ -455,7 +462,6 @@ def build_geo_data(recs, insights):
                 f"市值：{mcap_s} 十亿美元</div>"
                 f"<div style='margin-top:6px'>"
                 f"<a href='../../index.html?focus=S:{r['supplier_id']}' target='_blank' style='color:#2563eb'>在图谱中查看 →</a>"
-                f" &nbsp; <a href='../../dist/apple_supply_chain_report.html#sec-suppliers' target='_blank' style='color:#2563eb'>在报告中查看 →</a>"
                 f"</div>")
         geometries.append({
             "id": str(i), "styleId": st, "sid": r["supplier_id"],
@@ -536,7 +542,8 @@ def build_geo_data(recs, insights):
         for m in arrow_metas
     )
     arrow_meta_list = [{'id': m['id'], 'styleId': m['styleId'], 'tier': m['tier'],
-                        'start': m['start'], 'end': m['end'], 'mid': m['mid']} for m in arrow_metas]
+                        'start': m['start'], 'end': m['end'], 'mid': m['mid'],
+                        'supplier': m['supplier']} for m in arrow_metas]
 
     panel = f"""
     <div id="panel">
@@ -568,12 +575,15 @@ def build_geo_data(recs, insights):
       <p class="muted">点击地图标记查看生产基地 / 市场详情。</p>
 
       <h2>⑤ 供应链物流连线</h2>
-      <p class="muted">蓝/红/橙线 = 供应商基地 → 苹果组装厂（按估值着色）；紫色线 = 组装厂 → 终端市场（美/中/欧）。连线依据图谱 edge 链推导，箭头指示流动方向。</p>
+      <p class="muted">蓝/红/橙线 = 供应商基地 → 苹果组装厂（按估值着色）；紫色线 = 组装厂 → 终端市场（美/中/欧）。连线依据图谱 edge 链推导，箭头指示流动方向。点击地图供应商标记可高亮其连线、淡化其余。</p>
+      <input id="supSearch" class="sup-search" type="search" placeholder="搜索供应商（名称或 ID）…" />
       <div class="chips">
         <button id="upToggle" class="fbtn on" onclick="toggleUp(this)">隐藏供应连线</button>
         <button id="downToggle" class="fbtn on" onclick="toggleDown(this)">隐藏下游连线</button>
         <button id="flowToggle" class="fbtn" onclick="toggleFlow(this)">▶ 流动动画</button>
         <button id="labelToggle" class="fbtn" onclick="toggleLabels(this)">显示供应商名称</button>
+        <button id="resetView" class="fbtn" onclick="resetView()">重置视图</button>
+        <button id="clearFocus" class="fbtn" onclick="clearFocus()">清除高亮</button>
       </div>
 
       <h2>⑥ 按品类过滤</h2>
@@ -642,6 +652,8 @@ __TOPNAV_CSS__
   .fbtn.on {{ background: #2563eb; color: #fff; border-color: #2563eb; }}
   .chip.gold {{ background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }}
   .poi-label {{ background: rgba(255,255,255,0.92); border: 1px solid #cbd5e1; border-radius: 4px; padding: 0 4px; font-size: 10px; line-height: 15px; color: #1f2937; white-space: nowrap; box-shadow: 0 1px 2px rgba(0,0,0,0.12); }}
+  .sup-search {{ width: 100%; box-sizing: border-box; margin: 6px 0; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; }}
+  .sup-search:focus {{ border-color: #2563eb; }}
 </style>
 <script type="text/javascript">
   window._TMapSecurityConfig = {{
@@ -670,11 +682,34 @@ __TOPNAV__
   let activeCats = new Set(ALL_CATS);
   let upVisible = true, downVisible = true, flowOn = false, flowRAF = null, flowT = 0.5;
   let labelsOn = false;
+  let searchTerm = "";
+  let focusSid = null;
+
+  // ---- 搜索 / 聚焦 辅助 ----
+  function matchesSearch(g) {{
+    if (!searchTerm) return true;
+    const t = searchTerm.toLowerCase();
+    return (g.name && g.name.toLowerCase().indexOf(t) >= 0) || (g.sid && g.sid.toLowerCase().indexOf(t) >= 0);
+  }}
+  function setFocus(sid) {{
+    focusSid = sid;
+    if (window.__B) {{ window.__B.filter(); window.__B.applyUp(); window.__B.applyDown(); window.__B.refreshArrows(); }}
+  }}
+  function doSearch(v) {{
+    searchTerm = (v || "").trim();
+    if (window.__B) window.__B.filter();
+    if (searchTerm) {{
+      const ms = GEOMS.filter(g => activeCats.has(g.cat) && matchesSearch(g));
+      if (ms.length && window.__B) window.__B.fitTo(ms);
+    }}
+  }}
+  function resetView() {{ if (window.__B) window.__B.resetView(); }}
+  function clearFocus() {{ setFocus(null); }}
 
   const MARKET_RAW = {json.dumps(market_geoms, ensure_ascii=False)};
   const MARKET_GEOMS = MARKET_RAW.map(r => ({{ id: r.id, lat: r.lat, lng: r.lng, html: r.html, name: r.name }}));
   const UP_RAW = {json.dumps(line_geoms, ensure_ascii=False)};
-  const UP_LINES = UP_RAW.map(r => ({{ id: r.id, styleId: r.styleId, plat: r.plat, plng: r.plng, alat: r.alat, alng: r.alng }}));
+  const UP_LINES = UP_RAW.map(r => ({{ id: r.id, styleId: r.styleId, supplier: r.supplier, plat: r.plat, plng: r.plng, alat: r.alat, alng: r.alng }}));
   const DOWN_RAW = {json.dumps(down_geoms, ensure_ascii=False)};
   const DOWN_LINES = DOWN_RAW.map(r => ({{ id: r.id, styleId: r.styleId, plat: r.plat, plng: r.plng, alat: r.alat, alng: r.alng }}));
   const ARROW_META = {json.dumps(arrow_meta_list, ensure_ascii=False)};
@@ -694,6 +729,10 @@ __TOPNAV__
     }});
   }});
 
+  // 搜索框：输入即过滤 + 自动定位
+  const searchEl = document.getElementById('supSearch');
+  if (searchEl) searchEl.addEventListener('input', function () {{ doSearch(searchEl.value); }});
+
   // ---------- Leaflet 后端（默认，静态托管可用） ----------
   function initLeaflet() {{
     const map = L.map('map', {{ zoomControl: true }}).setView([28, 112], 3);
@@ -706,10 +745,18 @@ __TOPNAV__
     const colorOf = (s) => __HEX[s] || '#94a3b8';
     function renderSuppliers() {{
       supLayer.clearLayers();
-      GEOMS.filter(g => activeCats.has(g.cat)).forEach(g => {{
-        const m = L.circleMarker([g.lat, g.lng], {{ radius: 7, color: '#fff', weight: 2, fillColor: colorOf(g.styleId), fillOpacity: 1 }});
+      GEOMS.forEach(g => {{
+        if (!activeCats.has(g.cat)) return;
+        if (searchTerm && !matchesSearch(g)) return;
+        const isFocus = focusSid && g.sid === focusSid;
+        const dim = focusSid && !isFocus;
+        const m = L.circleMarker([g.lat, g.lng], {{
+          radius: isFocus ? 10 : 7, color: isFocus ? '#111827' : '#fff', weight: isFocus ? 3 : 2,
+          fillColor: colorOf(g.styleId), fillOpacity: dim ? 0.16 : 1
+        }});
         m.bindPopup(g.html);
         if (g.label) m.bindTooltip(g.label, {{ permanent: labelsOn, direction: 'right', className: 'poi-label', opacity: 0.92 }});
+        if (!dim) m.on('click', function (e) {{ L.DomEvent.stopPropagation(e); setFocus(g.sid); }});
         supLayer.addLayer(m);
       }});
     }}
@@ -722,12 +769,19 @@ __TOPNAV__
     }}
     function renderLines() {{
       upLayer.clearLayers(); downLayer.clearLayers();
-      if (upVisible) UP_LINES.forEach(l => upLayer.addLayer(L.polyline([[l.plat, l.plng], [l.alat, l.alng]], {{ color: colorOf(l.styleId), weight: 1.5, opacity: 0.7 }})));
-      if (downVisible) DOWN_LINES.forEach(l => downLayer.addLayer(L.polyline([[l.plat, l.plng], [l.alat, l.alng]], {{ color: colorOf(l.styleId), weight: 1.5, opacity: 0.7 }})));
+      if (upVisible) UP_LINES.forEach(l => {{
+        const isFocus = focusSid && l.supplier === focusSid;
+        const dim = focusSid && !isFocus;
+        upLayer.addLayer(L.polyline([[l.plat, l.plng], [l.alat, l.alng]], {{ color: colorOf(l.styleId), weight: isFocus ? 3 : 1.5, opacity: dim ? 0.12 : 0.7 }}));
+      }});
+      if (downVisible) DOWN_LINES.forEach(l => {{
+        const dim = !!focusSid;
+        downLayer.addLayer(L.polyline([[l.plat, l.plng], [l.alat, l.alng]], {{ color: colorOf(l.styleId), weight: 1.5, opacity: dim ? 0.12 : 0.7 }}));
+      }});
     }}
     function renderArrows() {{
       arrowLayer.clearLayers();
-      ARROW_META.filter(a => (a.tier==='up'&&upVisible) || (a.tier==='down'&&downVisible)).forEach(a => {{
+      ARROW_META.filter(a => ((a.tier==='up'&&upVisible) || (a.tier==='down'&&downVisible)) && (!focusSid || a.tier!=='up' || a.supplier===focusSid)).forEach(a => {{
         const lat = a.start[0] + (a.end[0]-a.start[0])*flowT;
         const lng = a.start[1] + (a.end[1]-a.start[1])*flowT;
         const ang = Math.atan2(a.end[0]-a.start[0], a.end[1]-a.start[1]) * 180 / Math.PI;
@@ -736,6 +790,7 @@ __TOPNAV__
       }});
     }}
     renderSuppliers(); renderMarkets(); renderLines(); renderArrows();
+    map.on('click', function () {{ setFocus(null); }});
     window.__B = {{
       filter: renderSuppliers,
       applyUp: function() {{ renderLines(); renderArrows(); }},
@@ -748,33 +803,41 @@ __TOPNAV__
         if (!g) return;
         map.setView([g.lat, g.lng], 6);
         L.popup().setLatLng([g.lat, g.lng]).setContent(g.html).openOn(map);
-      }}
+      }},
+      fitTo: function (ms) {{ map.fitBounds(L.latLngBounds(ms.map(m => [m.lat, m.lng])), {{ padding: [40, 40], maxZoom: 7 }}); }},
+      resetView: function () {{ map.setView([28, 112], 3); }}
     }};
   }}
 
   // ---------- 腾讯地图后端（配置了真实代理 + Key 时） ----------
   function initTMap() {{
     const map = new TMap.Map('map', {{ zoom: 3, center: new TMap.LatLng(28, 112) }});
-    const markers = new TMap.MultiMarker({{ map: map, styles: {{{styles_js}\n      }}, geometries: GEOMS.map(g => ({{ id: g.id, styleId: g.styleId, position: new TMap.LatLng(g.lat, g.lng), properties: {{ html: g.html, name: g.name, cat: g.cat }} }})) }});
+    const markers = new TMap.MultiMarker({{ map: map, styles: {{{styles_js}\n        , dim: new TMap.MarkerStyle({{ width: 22, height: 22, src: '{dim_marker_svg()}' }}) }}, geometries: GEOMS.map(g => ({{ id: g.id, styleId: (focusSid && g.sid !== focusSid) ? 'dim' : g.styleId, position: new TMap.LatLng(g.lat, g.lng), properties: {{ html: g.html, name: g.name, cat: g.cat }} }})) }});
     const info = new TMap.InfoWindow({{ map: map, position: new TMap.LatLng(28, 112), content: '', visible: false }});
-    markers.on('click', (e) => {{ const g = GEOMS.find(x => x.id === e.geometry.id); if (!g) return; info.setPosition(e.geometry.position); info.setContent(g.properties.html); info.open(); }});
-    const labelLayer = new TMap.MultiLabel({{ map: map, styles: {{ label: new TMap.LabelStyle({{ color: '#1f2937', size: 12, offset: {{ x: 8, y: 0 }}, background: {{ color: '#ffffff', borderColor: '#cbd5e1', borderWidth: 1, borderRadius: 4 }}, alignment: 'left' }}) }}, geometries: GEOMS.filter(g => g.label).map(g => ({{ id: g.id, styleId: 'label', position: new TMap.LatLng(g.lat, g.lng), content: g.label }})) }});
+    markers.on('click', (e) => {{ const g = GEOMS.find(x => x.id === e.geometry.id); if (!g) return; info.setPosition(e.geometry.position); info.setContent(g.properties.html); info.open(); setFocus(g.sid); }});
+    const labelLayer = new TMap.MultiLabel({{ map: map, styles: {{ label: new TMap.LabelStyle({{ color: '#1f2937', size: 12, offset: {{ x: 8, y: 0 }}, background: {{ color: '#ffffff', borderColor: '#cbd5e1', borderWidth: 1, borderRadius: 4 }}, alignment: 'left' }}) }}, geometries: (labelsOn ? GEOMS.filter(g => g.label && activeCats.has(g.cat)) : []).map(g => ({{ id: g.id, styleId: 'label', position: new TMap.LatLng(g.lat, g.lng), content: g.label }})) }});
     const marketLayer = new TMap.MultiMarker({{ map: map, styles: {{ market: new TMap.MarkerStyle({{ width: 24, height: 24, src: '{market_svg()}' }}) }}, geometries: MARKET_GEOMS.map(g => ({{ id: g.id, styleId: 'market', position: new TMap.LatLng(g.lat, g.lng), properties: {{ html: g.html, name: g.name }} }})) }});
     marketLayer.on('click', (e) => {{ const g = MARKET_GEOMS.find(x => x.id === e.geometry.id); if (!g) return; info.setPosition(e.geometry.position); info.setContent(g.properties.html); info.open(); }});
     const upLayer = new TMap.MultiPolyline({{ map: map, styles: {{{line_styles_js}\n      }}, geometries: UP_LINES.map(l => ({{ id: l.id, styleId: l.styleId, paths: [new TMap.LatLng(l.plat, l.plng), new TMap.LatLng(l.alat, l.alng)] }})) }});
     const downLayer = new TMap.MultiPolyline({{ map: map, styles: {{{line_styles_js}\n      }}, geometries: DOWN_LINES.map(l => ({{ id: l.id, styleId: l.styleId, paths: [new TMap.LatLng(l.plat, l.plng), new TMap.LatLng(l.alat, l.alng)] }})) }});
     const arrowLayer = new TMap.MultiMarker({{ map: map, styles: {{{arrow_styles_js}\n      }}, geometries: [] }});
     function arrowPosAt(a, t) {{ return {{ id: a.id, styleId: a.styleId, position: new TMap.LatLng(a.start[0]+(a.end[0]-a.start[0])*t, a.start[1]+(a.end[1]-a.start[1])*t) }}; }}
-    function refreshArrows() {{ const arr = ARROW_META.filter(a => (a.tier==='up'&&upVisible)||(a.tier==='down'&&downVisible)).map(a => arrowPosAt(a, flowT)); arrowLayer.setGeometries(arr); }}
+    function refreshArrows() {{ const arr = ARROW_META.filter(a => ((a.tier==='up'&&upVisible)||(a.tier==='down'&&downVisible)) && (!focusSid || a.tier!=='up' || a.supplier===focusSid)).map(a => arrowPosAt(a, flowT)); arrowLayer.setGeometries(arr); }}
     refreshArrows();
+    map.on('click', () => setFocus(null));
     window.__B = {{
-      filter: function() {{ markers.setGeometries(GEOMS.filter(g => activeCats.has(g.cat)).map(g => ({{ id: g.id, styleId: g.styleId, position: new TMap.LatLng(g.lat, g.lng), properties: {{ html: g.html, name: g.name, cat: g.cat }} }}))); if (labelLayer) labelLayer.setGeometries(labelsOn ? GEOMS.filter(g => g.label).map(g => ({{ id: g.id, styleId: 'label', position: new TMap.LatLng(g.lat, g.lng), content: g.label }})) : []); }},
-      applyUp: function() {{ upLayer.setGeometries(upVisible ? UP_LINES.map(l => ({{ id: l.id, styleId: l.styleId, paths: [new TMap.LatLng(l.plat, l.plng), new TMap.LatLng(l.alat, l.alng)] }})) : []); refreshArrows(); }},
-      applyDown: function() {{ downLayer.setGeometries(downVisible ? DOWN_LINES.map(l => ({{ id: l.id, styleId: l.styleId, paths: [new TMap.LatLng(l.plat, l.plng), new TMap.LatLng(l.alat, l.alng)] }})) : []); refreshArrows(); }},
+      filter: function() {{
+        markers.setGeometries(GEOMS.filter(g => activeCats.has(g.cat) && (!searchTerm || matchesSearch(g))).map(g => ({{ id: g.id, styleId: (focusSid && g.sid !== focusSid) ? 'dim' : g.styleId, position: new TMap.LatLng(g.lat, g.lng), properties: {{ html: g.html, name: g.name, cat: g.cat }} }})));
+        if (labelLayer) labelLayer.setGeometries((labelsOn ? GEOMS.filter(g => g.label && activeCats.has(g.cat)) : []).map(g => ({{ id: g.id, styleId: 'label', position: new TMap.LatLng(g.lat, g.lng), content: g.label }})));
+      }},
+      applyUp: function() {{ upLayer.setGeometries((upVisible ? UP_LINES.filter(l => !focusSid || l.supplier === focusSid) : []).map(l => ({{ id: l.id, styleId: l.styleId, paths: [new TMap.LatLng(l.plat, l.plng), new TMap.LatLng(l.alat, l.alng)] }}))); refreshArrows(); }},
+      applyDown: function() {{ downLayer.setGeometries((downVisible && !focusSid ? DOWN_LINES : []).map(l => ({{ id: l.id, styleId: l.styleId, paths: [new TMap.LatLng(l.plat, l.plng), new TMap.LatLng(l.alat, l.alng)] }}))); refreshArrows(); }},
       refreshArrows: refreshArrows,
-      toggleLabels: function() {{ if (labelLayer) labelLayer.setGeometries(labelsOn ? GEOMS.filter(g => g.label).map(g => ({{ id: g.id, styleId: 'label', position: new TMap.LatLng(g.lat, g.lng), content: g.label }})) : []); }},
+      toggleLabels: function() {{ if (labelLayer) labelLayer.setGeometries((labelsOn ? GEOMS.filter(g => g.label && activeCats.has(g.cat)) : []).map(g => ({{ id: g.id, styleId: 'label', position: new TMap.LatLng(g.lat, g.lng), content: g.label }}))); }},
       invalidate: function() {{}},
-      openSupplier: function(sid) {{ const g = GEOMS.find(x => x.sid === sid) || GEOMS.find(x => String(x.id) === sid); if (!g) return; map.setCenter(new TMap.LatLng(g.lat, g.lng)); map.setZoom(6); info.setPosition(new TMap.LatLng(g.lat, g.lng)); info.setContent(g.html); info.open(); }}
+      openSupplier: function(sid) {{ const g = GEOMS.find(x => x.sid === sid) || GEOMS.find(x => String(x.id) === sid); if (!g) return; map.setCenter(new TMap.LatLng(g.lat, g.lng)); map.setZoom(6); info.setPosition(new TMap.LatLng(g.lat, g.lng)); info.setContent(g.html); info.open(); }},
+      fitTo: function (ms) {{ try {{ const b = new TMap.LatLngBounds(); ms.forEach(m => b.extend(new TMap.LatLng(m.lat, m.lng))); map.fitBounds(b, {{ padding: 40 }}); }} catch (e) {{}} }},
+      resetView: function () {{ map.setZoom(3); map.setCenter(new TMap.LatLng(28, 112)); }}
     }};
   }}
 
@@ -788,7 +851,7 @@ __TOPNAV__
   }})();
 
   function flowStep() {{ flowT = (performance.now()/2500) % 1; if (window.__B) window.__B.refreshArrows(); flowRAF = requestAnimationFrame(flowStep); }}
-  function toggleFlow(btn) {{ flowOn = !flowOn; btn.classList.toggle('on', flowOn); btn.textContent = flowOn ? '⏸ 停止动画' : '▶ 流动动画'; if (flowOn) flowStep(); else {{ cancelAnimationFrame(flowRAF); flowT = 0.5; if (window.__B) window.__B.refreshArrows(); }} }}
+  function toggleFlow(btn) {{ flowOn = !flowOn; btn.classList.toggle('on', flowOn); btn.textContent = flowOn ? '⏸ 停止动画' : '▶ 流动动画'; if (flowOn) flowStep(); else {{ cancelAnimationFrame(flowRAF); if (window.__B) window.__B.refreshArrows(); }} }}
   function toggleUp(btn) {{ upVisible = !upVisible; if (window.__B) window.__B.applyUp(); btn.classList.toggle('on', upVisible); btn.textContent = upVisible ? '隐藏供应连线' : '显示供应连线'; }}
   function toggleDown(btn) {{ downVisible = !downVisible; if (window.__B) window.__B.applyDown(); btn.classList.toggle('on', downVisible); btn.textContent = downVisible ? '隐藏下游连线' : '显示下游连线'; }}
   function toggleLabels(btn) {{ labelsOn = !labelsOn; if (window.__B) window.__B.toggleLabels(); btn.classList.toggle('on', labelsOn); btn.textContent = labelsOn ? '隐藏供应商名称' : '显示供应商名称'; }}
