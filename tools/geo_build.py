@@ -199,6 +199,17 @@ def load_category():
         out[s["id"]] = s.get("category", "")
     return out
 
+def load_names():
+    """供应商可读名映射（nodes.suppliers 的 short_name / name / english_name）。
+    地图上 POI 默认显示的是内部 supplier_id（如 tsmc），可读性差；
+    优先取简短别名 short_name（如「TSMC / 台积电」），回退到全称/英文名/id。"""
+    g = json.load(open(os.path.join(DATA, "apple_supply_chain.json"), encoding="utf-8"))
+    out = {}
+    for s in g["nodes"]["suppliers"]:
+        out[s["id"]] = (s.get("short_name") or s.get("name", "") or s.get("english_name", "") or s["id"],
+                        s.get("english_name", "") or "")
+    return out
+
 
 # ---------------------------------------------------------------------------
 # 苹果组装厂代表据点（用于绘制「供应商基地 → 组装厂」物流连线）
@@ -283,6 +294,7 @@ def compute_flow():
 def build_records():
     val = load_valuation()
     cat = load_category()
+    names = load_names()
     KEY_IDS = sorted({b[0] for b in BASES})
     recs = []
     # 重点供应商多基地
@@ -296,6 +308,7 @@ def build_records():
             "produces": prod, "verdict": verdict,
             "mcap": v.get("mcap"), "category": cat.get(sid, ""),
             "coarse": coarse_cat(cat.get(sid, "")),
+            "name": names.get(sid, (sid, ""))[0],
             "key": True,
         })
     # 其余供应商总部点
@@ -309,6 +322,7 @@ def build_records():
             "produces": "总部/代表据点", "verdict": verdict,
             "mcap": v.get("mcap"), "category": cat.get(sid, ""),
             "coarse": coarse_cat(cat.get(sid, "")),
+            "name": names.get(sid, (sid, ""))[0],
             "key": (sid == "apple"),
         })
     return recs, KEY_IDS
@@ -316,13 +330,13 @@ def build_records():
 
 def write_csv(recs):
     os.makedirs(os.path.dirname(OUT_DATA), exist_ok=True)
-    cols = ["supplier_id", "city", "region", "region_label", "lng_gcj02", "lat_gcj02",
+    cols = ["supplier_id", "name", "city", "region", "region_label", "lng_gcj02", "lat_gcj02",
             "produces", "verdict", "market_cap_usd_b", "category", "is_key_supplier"]
     with open(OUT_DATA, "w", encoding="utf-8-sig", newline="") as f:
         w = csv.writer(f)
         w.writerow(cols)
         for r in recs:
-            w.writerow([r["supplier_id"], r["city"], r["region"], REGION_LABEL.get(r["region"], r["region"]),
+            w.writerow([r["supplier_id"], r["name"], r["city"], r["region"], REGION_LABEL.get(r["region"], r["region"]),
                         r["lng"], r["lat"], r["produces"], r["verdict"], r["mcap"], r["category"], r["key"]])
     print("写出", OUT_DATA, "共", len(recs), "个点")
 
@@ -343,12 +357,14 @@ def compute_insights(recs, key_ids):
     gc_share = gc / total * 100
 
     # 重点供应商：覆盖区域 / 集中度
+    names = load_names()
     key_recs = [r for r in recs if r["supplier_id"] in key_ids]
     by_sup = {}
     for r in key_recs:
         by_sup.setdefault(r["supplier_id"], set()).add(r["region"])
     single_region = [s for s, regs in by_sup.items() if len(regs) == 1]
     multi_region = [s for s, regs in by_sup.items() if len(regs) >= 2]
+    single_region_names = [names.get(s, (s, ""))[0] for s in single_region]
 
     # 估值 × 地理
     val = load_valuation()
@@ -369,6 +385,7 @@ def compute_insights(recs, key_ids):
         "region_dist": region_dist,
         "total": total, "gc": gc, "gc_share": gc_share,
         "n_key": len(by_sup), "single_region": sorted(single_region),
+        "single_region_names": sorted(single_region_names),
         "multi_region": sorted(multi_region),
         "verdict_geo": verdict_geo, "cat_region": cat_region,
     }
@@ -431,7 +448,7 @@ def build_geo_data(recs, insights):
         mcap = r["mcap"]
         mcap_s = f"{mcap:.0f}" if isinstance(mcap, (int, float)) else "-"
         html = (f"<div style='font-size:13px;line-height:1.5'>"
-                f"<b>{r['supplier_id']}</b> · {r['city']}<br>"
+                f"<b>{r['name']}</b> <span style='color:#6b7280'>({r['supplier_id']})</span> · {r['city']}<br>"
                 f"区域：{REGION_LABEL.get(r['region'], r['region'])}<br>"
                 f"内容：{r['produces']}<br>"
                 f"判定：{EMOJI.get(vshort,'')} {r['verdict']}<br>"
@@ -443,8 +460,8 @@ def build_geo_data(recs, insights):
         geometries.append({
             "id": str(i), "styleId": st, "sid": r["supplier_id"],
             "lat": r["lat"], "lng": r["lng"],
-            "html": html, "name": f"{r['supplier_id']} · {r['city']}",
-            "cat": r["coarse"],
+            "html": html, "name": f"{r['name']} · {r['city']}",
+            "label": r["name"], "cat": r["coarse"],
         })
 
     # 侧栏洞察 HTML
@@ -458,7 +475,7 @@ def build_geo_data(recs, insights):
         f"<div class='kv'><span>{k}</span><b>{v[0]:.2f} 区域/家</b><span class='sub'>({v[1]} 家)</span></div>"
         for k, v in sorted(insights["verdict_geo"].items(), key=lambda x: -x[1][0])
     )
-    cr = "".join(f"<span class='chip'>{c}</span>" for c in insights["single_region"])
+    cr = "".join(f"<span class='chip'>{c}</span>" for c in insights["single_region_names"])
 
     # ---- 供应链物流连线（供应商基地 -> 苹果组装厂）----
     val = load_valuation()
@@ -556,6 +573,7 @@ def build_geo_data(recs, insights):
         <button id="upToggle" class="fbtn on" onclick="toggleUp(this)">隐藏供应连线</button>
         <button id="downToggle" class="fbtn on" onclick="toggleDown(this)">隐藏下游连线</button>
         <button id="flowToggle" class="fbtn" onclick="toggleFlow(this)">▶ 流动动画</button>
+        <button id="labelToggle" class="fbtn" onclick="toggleLabels(this)">显示供应商名称</button>
       </div>
 
       <h2>⑥ 按品类过滤</h2>
@@ -623,6 +641,7 @@ __TOPNAV_CSS__
   .fbtn {{ cursor: pointer; border: 1px solid #cbd5e1; background: #f8fafc; color: #475569; border-radius: 999px; padding: 3px 10px; font-size: 11px; margin: 2px 0; }}
   .fbtn.on {{ background: #2563eb; color: #fff; border-color: #2563eb; }}
   .chip.gold {{ background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }}
+  .poi-label {{ background: rgba(255,255,255,0.92); border: 1px solid #cbd5e1; border-radius: 4px; padding: 0 4px; font-size: 10px; line-height: 15px; color: #1f2937; white-space: nowrap; box-shadow: 0 1px 2px rgba(0,0,0,0.12); }}
 </style>
 <script type="text/javascript">
   window._TMapSecurityConfig = {{
@@ -646,10 +665,11 @@ __TOPNAV__
   const __HEX = {{ '低估':'#2563eb', '高估':'#dc2626', '困境':'#d97706', '基准':'#111827', '其他':'#94a3b8', 'market':'#f59e0b', 'downstream':'#7c3aed' }};
 
   const RAW = {json.dumps(geometries, ensure_ascii=False)};
-  const GEOMS = RAW.map(r => ({{ id: r.id, styleId: r.styleId, sid: r.sid, lat: r.lat, lng: r.lng, html: r.html, name: r.name, cat: r.cat }}));
+  const GEOMS = RAW.map(r => ({{ id: r.id, styleId: r.styleId, sid: r.sid, lat: r.lat, lng: r.lng, html: r.html, name: r.name, label: r.label, cat: r.cat }}));
   const ALL_CATS = {json.dumps(all_cats, ensure_ascii=False)};
   let activeCats = new Set(ALL_CATS);
   let upVisible = true, downVisible = true, flowOn = false, flowRAF = null, flowT = 0.5;
+  let labelsOn = false;
 
   const MARKET_RAW = {json.dumps(market_geoms, ensure_ascii=False)};
   const MARKET_GEOMS = MARKET_RAW.map(r => ({{ id: r.id, lat: r.lat, lng: r.lng, html: r.html, name: r.name }}));
@@ -688,7 +708,9 @@ __TOPNAV__
       supLayer.clearLayers();
       GEOMS.filter(g => activeCats.has(g.cat)).forEach(g => {{
         const m = L.circleMarker([g.lat, g.lng], {{ radius: 7, color: '#fff', weight: 2, fillColor: colorOf(g.styleId), fillOpacity: 1 }});
-        m.bindPopup(g.html); supLayer.addLayer(m);
+        m.bindPopup(g.html);
+        if (g.label) m.bindTooltip(g.label, {{ permanent: labelsOn, direction: 'right', className: 'poi-label', opacity: 0.92 }});
+        supLayer.addLayer(m);
       }});
     }}
     function renderMarkets() {{
@@ -719,6 +741,7 @@ __TOPNAV__
       applyUp: function() {{ renderLines(); renderArrows(); }},
       applyDown: function() {{ renderLines(); renderArrows(); }},
       refreshArrows: renderArrows,
+      toggleLabels: function() {{ renderSuppliers(); }},
       invalidate: function() {{ map.invalidateSize(); }},
       openSupplier: function(sid) {{
         const g = GEOMS.find(x => x.sid === sid) || GEOMS.find(x => String(x.id) === sid);
@@ -735,6 +758,7 @@ __TOPNAV__
     const markers = new TMap.MultiMarker({{ map: map, styles: {{{styles_js}\n      }}, geometries: GEOMS.map(g => ({{ id: g.id, styleId: g.styleId, position: new TMap.LatLng(g.lat, g.lng), properties: {{ html: g.html, name: g.name, cat: g.cat }} }})) }});
     const info = new TMap.InfoWindow({{ map: map, position: new TMap.LatLng(28, 112), content: '', visible: false }});
     markers.on('click', (e) => {{ const g = GEOMS.find(x => x.id === e.geometry.id); if (!g) return; info.setPosition(e.geometry.position); info.setContent(g.properties.html); info.open(); }});
+    const labelLayer = new TMap.MultiLabel({{ map: map, styles: {{ label: new TMap.LabelStyle({{ color: '#1f2937', size: 12, offset: {{ x: 8, y: 0 }}, background: {{ color: '#ffffff', borderColor: '#cbd5e1', borderWidth: 1, borderRadius: 4 }}, alignment: 'left' }}) }}, geometries: GEOMS.filter(g => g.label).map(g => ({{ id: g.id, styleId: 'label', position: new TMap.LatLng(g.lat, g.lng), content: g.label }})) }});
     const marketLayer = new TMap.MultiMarker({{ map: map, styles: {{ market: new TMap.MarkerStyle({{ width: 24, height: 24, src: '{market_svg()}' }}) }}, geometries: MARKET_GEOMS.map(g => ({{ id: g.id, styleId: 'market', position: new TMap.LatLng(g.lat, g.lng), properties: {{ html: g.html, name: g.name }} }})) }});
     marketLayer.on('click', (e) => {{ const g = MARKET_GEOMS.find(x => x.id === e.geometry.id); if (!g) return; info.setPosition(e.geometry.position); info.setContent(g.properties.html); info.open(); }});
     const upLayer = new TMap.MultiPolyline({{ map: map, styles: {{{line_styles_js}\n      }}, geometries: UP_LINES.map(l => ({{ id: l.id, styleId: l.styleId, paths: [new TMap.LatLng(l.plat, l.plng), new TMap.LatLng(l.alat, l.alng)] }})) }});
@@ -744,10 +768,11 @@ __TOPNAV__
     function refreshArrows() {{ const arr = ARROW_META.filter(a => (a.tier==='up'&&upVisible)||(a.tier==='down'&&downVisible)).map(a => arrowPosAt(a, flowT)); arrowLayer.setGeometries(arr); }}
     refreshArrows();
     window.__B = {{
-      filter: function() {{ markers.setGeometries(GEOMS.filter(g => activeCats.has(g.cat)).map(g => ({{ id: g.id, styleId: g.styleId, position: new TMap.LatLng(g.lat, g.lng), properties: {{ html: g.html, name: g.name, cat: g.cat }} }}))); }},
+      filter: function() {{ markers.setGeometries(GEOMS.filter(g => activeCats.has(g.cat)).map(g => ({{ id: g.id, styleId: g.styleId, position: new TMap.LatLng(g.lat, g.lng), properties: {{ html: g.html, name: g.name, cat: g.cat }} }}))); if (labelLayer) labelLayer.setGeometries(labelsOn ? GEOMS.filter(g => g.label).map(g => ({{ id: g.id, styleId: 'label', position: new TMap.LatLng(g.lat, g.lng), content: g.label }})) : []); }},
       applyUp: function() {{ upLayer.setGeometries(upVisible ? UP_LINES.map(l => ({{ id: l.id, styleId: l.styleId, paths: [new TMap.LatLng(l.plat, l.plng), new TMap.LatLng(l.alat, l.alng)] }})) : []); refreshArrows(); }},
       applyDown: function() {{ downLayer.setGeometries(downVisible ? DOWN_LINES.map(l => ({{ id: l.id, styleId: l.styleId, paths: [new TMap.LatLng(l.plat, l.plng), new TMap.LatLng(l.alat, l.alng)] }})) : []); refreshArrows(); }},
       refreshArrows: refreshArrows,
+      toggleLabels: function() {{ if (labelLayer) labelLayer.setGeometries(labelsOn ? GEOMS.filter(g => g.label).map(g => ({{ id: g.id, styleId: 'label', position: new TMap.LatLng(g.lat, g.lng), content: g.label }})) : []); }},
       invalidate: function() {{}},
       openSupplier: function(sid) {{ const g = GEOMS.find(x => x.sid === sid) || GEOMS.find(x => String(x.id) === sid); if (!g) return; map.setCenter(new TMap.LatLng(g.lat, g.lng)); map.setZoom(6); info.setPosition(new TMap.LatLng(g.lat, g.lng)); info.setContent(g.html); info.open(); }}
     }};
@@ -766,6 +791,7 @@ __TOPNAV__
   function toggleFlow(btn) {{ flowOn = !flowOn; btn.classList.toggle('on', flowOn); btn.textContent = flowOn ? '⏸ 停止动画' : '▶ 流动动画'; if (flowOn) flowStep(); else {{ cancelAnimationFrame(flowRAF); flowT = 0.5; if (window.__B) window.__B.refreshArrows(); }} }}
   function toggleUp(btn) {{ upVisible = !upVisible; if (window.__B) window.__B.applyUp(); btn.classList.toggle('on', upVisible); btn.textContent = upVisible ? '隐藏供应连线' : '显示供应连线'; }}
   function toggleDown(btn) {{ downVisible = !downVisible; if (window.__B) window.__B.applyDown(); btn.classList.toggle('on', downVisible); btn.textContent = downVisible ? '隐藏下游连线' : '显示下游连线'; }}
+  function toggleLabels(btn) {{ labelsOn = !labelsOn; if (window.__B) window.__B.toggleLabels(); btn.classList.toggle('on', labelsOn); btn.textContent = labelsOn ? '隐藏供应商名称' : '显示供应商名称'; }}
 </script>
 </body>
 </html>

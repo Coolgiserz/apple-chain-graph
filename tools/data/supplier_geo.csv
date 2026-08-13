@@ -1,101 +1,101 @@
-﻿supplier_id,city,region,region_label,lng_gcj02,lat_gcj02,produces,verdict,market_cap_usd_b,category,is_key_supplier
-tsmc,新竹,TW,中国台湾,120.97129,24.8109,总部/研发 + 晶圆厂,高估,1900.0,Foundry,True
-tsmc,台南(南部科学园区),TW,中国台湾,120.27395,23.04735,先进制程晶圆厂(3nm/2nm),高估,1900.0,Foundry,True
-tsmc,台中(中科),TW,中国台湾,120.67374,24.14719,晶圆厂(7/5nm),高估,1900.0,Foundry,True
-tsmc,凤凰城(美国亚利桑那),US,美国,-111.84,33.3,5/4nm 美国厂(地缘分散),高估,1900.0,Foundry,True
-tsmc,熊本(日本),JP,日本,130.7,32.8,JASM 合资厂(索尼/丰田),高估,1900.0,Foundry,True
-foxconn,深圳(龙华),CN,中国大陆,114.05511,22.65728,早期 iPhone 组装/总部体系,低估,108.0,Assembly,True
-foxconn,郑州,CN,中国大陆,113.62604,34.74882,iPhone 主力组装基地(最大单体),低估,108.0,Assembly,True
-foxconn,成都,CN,中国大陆,104.07251,30.56755,iPad / Mac 组装,低估,108.0,Assembly,True
-foxconn,新北(土城),TW,中国台湾,121.46408,25.00734,鸿海总部,低估,108.0,Assembly,True
-foxconn,钦奈(印度),IN,印度,79.9,12.92,iPhone 印度组装(分散风险),低估,108.0,Assembly,True
-foxconn,北宁(越南),VN,越南,106.06,21.18,部分组装/零部件,低估,108.0,Assembly,True
-samsung_elec,水原,KR,韩国,127.03,37.26,总部,低估,1196.0,Memory,True
-samsung_elec,华城,KR,韩国,126.82,37.2,半导体/存储/晶圆代工,低估,1196.0,Memory,True
-samsung_elec,平泽,KR,韩国,127.08,36.99,最大半导体复合体(HBM/DRAM/代工),低估,1196.0,Memory,True
-samsung_elec,牙山,KR,韩国,127.0,36.8,显示面板,低估,1196.0,Memory,True
-skhynix,利川,KR,韩国,127.44,37.27,总部/DRAM 研发,合理,979.0,Memory,True
-skhynix,清州,KR,韩国,127.49,36.64,DRAM/NAND 晶圆厂,合理,979.0,Memory,True
-skhynix,无锡(中国),CN,中国大陆,120.29459,31.56808,DRAM 封装/测试,合理,979.0,Memory,True
-sony,熊本,JP,日本,130.7,32.8,CMOS 图像传感器主力厂,低估,137.8,CIS/Optical,True
-sony,长崎,JP,日本,129.87,32.75,CMOS 图像传感器,低估,137.8,CIS/Optical,True
-sony,山形,JP,日本,140.36,38.24,CMOS 图像传感器,低估,137.8,CIS/Optical,True
-qualcomm,圣迭戈(美国),US,美国,-117.16,32.72,总部/芯片设计(无晶圆厂),低估,193.9,Semiconductor,True
-broadcom,圣何塞(美国),US,美国,-121.89,37.33,总部/芯片设计(无晶圆厂),高估,2040.0,Semiconductor,True
-boe,北京,CN,中国大陆,116.40626,40.00141,B5/B8 面板厂,合理,32.3,Display,True
-boe,成都,CN,中国大陆,104.07251,30.56755,B7 柔性 OLED,合理,32.3,Display,True
-boe,重庆,CN,中国大陆,106.55372,29.55715,B8 面板,合理,32.3,Display,True
-boe,合肥,CN,中国大陆,117.23548,31.818,B5/B9 面板,合理,32.3,Display,True
-boe,绵阳,CN,中国大陆,104.68262,31.46773,B11 柔性 OLED,合理,32.3,Display,True
-boe,昆山,CN,中国大陆,120.98432,31.38797,B10 面板,合理,32.3,Display,True
-boe,武汉,CN,中国大陆,114.30544,30.58758,B17 面板,合理,32.3,Display,True
-lgd,坡州,KR,韩国,126.6,37.7,最大 OLED/LCD 复合体,困境（亏损）·倍数失真,3.55,Display,True
-lgd,龟尾,KR,韩国,128.34,36.13,OLED 工厂,困境（亏损）·倍数失真,3.55,Display,True
-lgd,广州(中国),CN,中国大陆,113.26533,23.12732,OLED(原 LCD)工厂,困境（亏损）·倍数失真,3.55,Display,True
-murata,长冈京(京都),JP,日本,135.68,34.94,总部/MLCC 主力,低估,82.4,Passive,True
-murata,野洲,JP,日本,136.0,35.0,MLCC,低估,82.4,Passive,True
-murata,无锡(中国),CN,中国大陆,120.29459,31.56808,MLCC/组件,低估,82.4,Passive,True
-murata,北宁(越南),VN,越南,106.06,21.18,MLCC/组件,低估,82.4,Passive,True
-largan,台中,TW,中国台湾,120.67374,24.14719,总部/手机镜头,低估,17.8,Optics,True
-corning,康宁(美国纽约),US,美国,-77.05,42.14,总部/玻璃研发,高估,142.7,Material,True
-corning,合肥(中国),CN,中国大陆,117.23548,31.818,LCD 玻璃基板,高估,142.7,Material,True
-corning,上海(中国),CN,中国大陆,121.47453,31.22807,光通信/显示,高估,142.7,Material,True
-corning,台南(中国台湾),TW,中国台湾,120.27395,23.04735,光学/玻璃,高估,142.7,Material,True
-luxshare,东莞(中国),CN,中国大陆,113.75519,23.01728,AirPods/连接器,高估,65.9,Assembly,True
-luxshare,昆山(中国),CN,中国大陆,120.98432,31.38797,零部件,高估,65.9,Assembly,True
-luxshare,宜春(江西),CN,中国大陆,114.40532,27.7969,零部件,高估,65.9,Assembly,True
-luxshare,北江(越南),VN,越南,106.2,21.27,组装/零部件,高估,65.9,Assembly,True
-ase,高雄,TW,中国台湾,120.30394,22.59723,总部/封测,高估,77.3,OSAT,True
-ase,中坜(桃园),TW,中国台湾,121.22396,24.94723,封测,高估,77.3,OSAT,True
-ase,苏州(中国),CN,中国大陆,120.60417,31.29781,封测,高估,77.3,OSAT,True
-ase,槟城(马来西亚),MY,马来西亚,100.3,5.4,封测,高估,77.3,OSAT,True
-micron,博伊西(美国爱达荷),US,美国,-116.2,43.6,总部/研发,高估,991.1,Memory,True
-micron,马纳萨斯(美国弗吉尼亚),US,美国,-77.47,38.75,DRAM,高估,991.1,Memory,True
-micron,广岛(日本),JP,日本,132.45,34.4,DRAM/NAND,高估,991.1,Memory,True
-micron,台中(中国台湾),TW,中国台湾,120.67374,24.14719,DRAM 封测,高估,991.1,Memory,True
-micron,新加坡,SG,新加坡,103.82,1.35,NAND 制造,高估,991.1,Memory,True
-pegatron,台北,TW,中国台湾,121.52389,25.04717,总部/代表据点,定性（未上市/无倍数）,,Assembly,False
-quanta,桃园,TW,中国台湾,121.22397,24.98724,总部/代表据点,定性（未上市/无倍数）,,Assembly,False
-wistron,台北,TW,中国台湾,121.54383,25.02711,总部/代表据点,定性（未上市/无倍数）,,Assembly,False
-byd_e,深圳,CN,中国大陆,114.05511,22.65728,总部/代表据点,定性（未上市/无倍数）,,Assembly/Enclosure,False
-catcher,桃园,TW,中国台湾,121.22397,24.98724,总部/代表据点,定性（未上市/无倍数）,,Enclosure,False
-lens_tech,长沙,CN,中国大陆,112.94545,28.22649,总部/代表据点,定性（未上市/无倍数）,,Glass/Enclosure,False
-goertek,潍坊,CN,中国大陆,119.16589,36.71045,总部/代表据点,定性（未上市/无倍数）,,Assembly/Acoustics,False
-sunwoda,深圳,CN,中国大陆,114.05511,22.65728,总部/代表据点,定性（未上市/无倍数）,,Battery,False
-desay,惠州,CN,中国大陆,114.42496,23.1075,总部/代表据点,定性（未上市/无倍数）,,Battery,False
-zhending,桃园,TW,中国台湾,121.22397,24.98724,总部/代表据点,定性（未上市/无倍数）,,FPC,False
-unimicron,桃园,TW,中国台湾,121.22397,24.98724,总部/代表据点,定性（未上市/无倍数）,,Substrate/PCB,False
-ibiden,大垣,JP,日本,136.62,35.37,总部/代表据点,定性（未上市/无倍数）,,Substrate,False
-amkor,坦佩(美国),US,美国,-111.91,33.39,总部/代表据点,定性（未上市/无倍数）,,OSAT,False
-cirrus,奥斯汀(美国),US,美国,-97.74,30.27,总部/代表据点,定性（未上市/无倍数）,,Semiconductor,False
-ti,达拉斯(美国),US,美国,-96.8,32.78,总部/代表据点,定性（未上市/无倍数）,,Semiconductor,False
-st,日内瓦,CH,瑞士,6.14,46.18,总部/代表据点,定性（未上市/无倍数）,,Semiconductor,False
-arm,剑桥(英国),UK,英国,0.12,52.2,总部/代表据点,定性（未上市/无倍数）,,IP/EDA,False
-ams,普雷斯塔滕(奥地利),AT,奥地利,15.41,46.99,总部/代表据点,定性（未上市/无倍数）,,Sensor,False
-alps,东京,JP,日本,139.76,35.68,总部/代表据点,定性（未上市/无倍数）,,Mech/Actuator,False
-tdk,东京,JP,日本,139.76,35.68,总部/代表据点,定性（未上市/无倍数）,,Passive/Battery,False
-knowles,伊塔斯卡(美国),US,美国,-88.02,41.97,总部/代表据点,定性（未上市/无倍数）,,Acoustics,False
-aac,深圳,CN,中国大陆,114.05511,22.65728,总部/代表据点,定性（未上市/无倍数）,,Acoustics,False
-sunny,余姚(宁波),CN,中国大陆,121.16445,30.04767,总部/代表据点,定性（未上市/无倍数）,,Optics,False
-cowell,东莞,CN,中国大陆,113.75519,23.01728,总部/代表据点,定性（未上市/无倍数）,,Camera Module,False
-gis,台中,TW,中国台湾,120.67374,24.14719,总部/代表据点,定性（未上市/无倍数）,,Touch/Display,False
-genius,台中,TW,中国台湾,120.67374,24.14719,总部/代表据点,定性（未上市/无倍数）,,Optics,False
-crystal,台州,CN,中国大陆,121.43442,28.67705,总部/代表据点,定性（未上市/无倍数）,,Optical,False
-lante,宁波,CN,中国大陆,121.55416,29.86742,总部/代表据点,定性（未上市/无倍数）,,Optical,False
-viseira,新竹,TW,中国台湾,120.9738,24.8071,总部/代表据点,定性（未上市/无倍数）,,CIS/Optical,False
-zhaowei,深圳,CN,中国大陆,114.05511,22.65728,总部/代表据点,定性（未上市/无倍数）,,Mech,False
-apple,库比蒂诺(美国),US,美国,-122.03,37.32,总部/代表据点,基准（终端厂，非供应商）,,Semiconductor,True
-kioxia,东京,JP,日本,139.76,35.68,总部/代表据点,定性（未上市/无倍数）,,Memory,False
-wdc,圣何塞(美国),US,美国,-121.89,37.33,总部/代表据点,定性（未上市/无倍数）,,Memory,False
-sdc,牙山,KR,韩国,127.0,36.8,总部/代表据点,定性（未上市/无倍数）,,Display,False
-sharp,堺市,JP,日本,135.49,34.57,总部/代表据点,定性（未上市/无倍数）,,Display,False
-berne,惠州,CN,中国大陆,114.42496,23.1075,总部/代表据点,定性（未上市/无倍数）,,Glass,False
-atl,东莞,CN,中国大陆,113.75519,23.01728,总部/代表据点,定性（未上市/无倍数）,,Battery,False
-bosch,斯图加特,DE,德国,9.18,48.78,总部/代表据点,定性（未上市/无倍数）,,Sensor,False
-mitsumi,东京,JP,日本,139.76,35.68,总部/代表据点,定性（未上市/无倍数）,,Mech/Actuator,False
-nanya_pcb,台北,TW,中国台湾,121.54383,25.02711,总部/代表据点,定性（未上市/无倍数）,,Substrate/PCB,False
-flexium,桃园,TW,中国台湾,121.22397,24.98724,总部/代表据点,定性（未上市/无倍数）,,FPC,False
-dongshan,苏州,CN,中国大陆,120.60417,31.29781,总部/代表据点,定性（未上市/无倍数）,,FPC/Component,False
-shennan,深圳,CN,中国大陆,114.05511,22.65728,总部/代表据点,定性（未上市/无倍数）,,PCB,False
-changying,深圳,CN,中国大陆,114.05511,22.65728,总部/代表据点,定性（未上市/无倍数）,,Enclosure,False
-lingyi,深圳,CN,中国大陆,114.05511,22.65728,总部/代表据点,定性（未上市/无倍数）,,Enclosure/Module,False
+﻿supplier_id,name,city,region,region_label,lng_gcj02,lat_gcj02,produces,verdict,market_cap_usd_b,category,is_key_supplier
+tsmc,TSMC / 台积电,新竹,TW,中国台湾,120.97129,24.8109,总部/研发 + 晶圆厂,高估,1900.0,Foundry,True
+tsmc,TSMC / 台积电,台南(南部科学园区),TW,中国台湾,120.27395,23.04735,先进制程晶圆厂(3nm/2nm),高估,1900.0,Foundry,True
+tsmc,TSMC / 台积电,台中(中科),TW,中国台湾,120.67374,24.14719,晶圆厂(7/5nm),高估,1900.0,Foundry,True
+tsmc,TSMC / 台积电,凤凰城(美国亚利桑那),US,美国,-111.84,33.3,5/4nm 美国厂(地缘分散),高估,1900.0,Foundry,True
+tsmc,TSMC / 台积电,熊本(日本),JP,日本,130.7,32.8,JASM 合资厂(索尼/丰田),高估,1900.0,Foundry,True
+foxconn,Foxconn / 富士康,深圳(龙华),CN,中国大陆,114.05511,22.65728,早期 iPhone 组装/总部体系,低估,108.0,Assembly,True
+foxconn,Foxconn / 富士康,郑州,CN,中国大陆,113.62604,34.74882,iPhone 主力组装基地(最大单体),低估,108.0,Assembly,True
+foxconn,Foxconn / 富士康,成都,CN,中国大陆,104.07251,30.56755,iPad / Mac 组装,低估,108.0,Assembly,True
+foxconn,Foxconn / 富士康,新北(土城),TW,中国台湾,121.46408,25.00734,鸿海总部,低估,108.0,Assembly,True
+foxconn,Foxconn / 富士康,钦奈(印度),IN,印度,79.9,12.92,iPhone 印度组装(分散风险),低估,108.0,Assembly,True
+foxconn,Foxconn / 富士康,北宁(越南),VN,越南,106.06,21.18,部分组装/零部件,低估,108.0,Assembly,True
+samsung_elec,SEC / 三星电子,水原,KR,韩国,127.03,37.26,总部,低估,1196.0,Memory,True
+samsung_elec,SEC / 三星电子,华城,KR,韩国,126.82,37.2,半导体/存储/晶圆代工,低估,1196.0,Memory,True
+samsung_elec,SEC / 三星电子,平泽,KR,韩国,127.08,36.99,最大半导体复合体(HBM/DRAM/代工),低估,1196.0,Memory,True
+samsung_elec,SEC / 三星电子,牙山,KR,韩国,127.0,36.8,显示面板,低估,1196.0,Memory,True
+skhynix,SK hynix / SK海力士,利川,KR,韩国,127.44,37.27,总部/DRAM 研发,合理,979.0,Memory,True
+skhynix,SK hynix / SK海力士,清州,KR,韩国,127.49,36.64,DRAM/NAND 晶圆厂,合理,979.0,Memory,True
+skhynix,SK hynix / SK海力士,无锡(中国),CN,中国大陆,120.29459,31.56808,DRAM 封装/测试,合理,979.0,Memory,True
+sony,Sony / 索尼,熊本,JP,日本,130.7,32.8,CMOS 图像传感器主力厂,低估,137.8,CIS/Optical,True
+sony,Sony / 索尼,长崎,JP,日本,129.87,32.75,CMOS 图像传感器,低估,137.8,CIS/Optical,True
+sony,Sony / 索尼,山形,JP,日本,140.36,38.24,CMOS 图像传感器,低估,137.8,CIS/Optical,True
+qualcomm,Qualcomm / 高通,圣迭戈(美国),US,美国,-117.16,32.72,总部/芯片设计(无晶圆厂),低估,193.9,Semiconductor,True
+broadcom,Broadcom / 博通,圣何塞(美国),US,美国,-121.89,37.33,总部/芯片设计(无晶圆厂),高估,2040.0,Semiconductor,True
+boe,BOE / 京东方,北京,CN,中国大陆,116.40626,40.00141,B5/B8 面板厂,合理,32.3,Display,True
+boe,BOE / 京东方,成都,CN,中国大陆,104.07251,30.56755,B7 柔性 OLED,合理,32.3,Display,True
+boe,BOE / 京东方,重庆,CN,中国大陆,106.55372,29.55715,B8 面板,合理,32.3,Display,True
+boe,BOE / 京东方,合肥,CN,中国大陆,117.23548,31.818,B5/B9 面板,合理,32.3,Display,True
+boe,BOE / 京东方,绵阳,CN,中国大陆,104.68262,31.46773,B11 柔性 OLED,合理,32.3,Display,True
+boe,BOE / 京东方,昆山,CN,中国大陆,120.98432,31.38797,B10 面板,合理,32.3,Display,True
+boe,BOE / 京东方,武汉,CN,中国大陆,114.30544,30.58758,B17 面板,合理,32.3,Display,True
+lgd,LGD / LG显示,坡州,KR,韩国,126.6,37.7,最大 OLED/LCD 复合体,困境（亏损）·倍数失真,3.55,Display,True
+lgd,LGD / LG显示,龟尾,KR,韩国,128.34,36.13,OLED 工厂,困境（亏损）·倍数失真,3.55,Display,True
+lgd,LGD / LG显示,广州(中国),CN,中国大陆,113.26533,23.12732,OLED(原 LCD)工厂,困境（亏损）·倍数失真,3.55,Display,True
+murata,Murata / 村田,长冈京(京都),JP,日本,135.68,34.94,总部/MLCC 主力,低估,82.4,Passive,True
+murata,Murata / 村田,野洲,JP,日本,136.0,35.0,MLCC,低估,82.4,Passive,True
+murata,Murata / 村田,无锡(中国),CN,中国大陆,120.29459,31.56808,MLCC/组件,低估,82.4,Passive,True
+murata,Murata / 村田,北宁(越南),VN,越南,106.06,21.18,MLCC/组件,低估,82.4,Passive,True
+largan,Largan / 大立光,台中,TW,中国台湾,120.67374,24.14719,总部/手机镜头,低估,17.8,Optics,True
+corning,Corning / 康宁,康宁(美国纽约),US,美国,-77.05,42.14,总部/玻璃研发,高估,142.7,Material,True
+corning,Corning / 康宁,合肥(中国),CN,中国大陆,117.23548,31.818,LCD 玻璃基板,高估,142.7,Material,True
+corning,Corning / 康宁,上海(中国),CN,中国大陆,121.47453,31.22807,光通信/显示,高估,142.7,Material,True
+corning,Corning / 康宁,台南(中国台湾),TW,中国台湾,120.27395,23.04735,光学/玻璃,高估,142.7,Material,True
+luxshare,Luxshare / 立讯精密,东莞(中国),CN,中国大陆,113.75519,23.01728,AirPods/连接器,高估,65.9,Assembly,True
+luxshare,Luxshare / 立讯精密,昆山(中国),CN,中国大陆,120.98432,31.38797,零部件,高估,65.9,Assembly,True
+luxshare,Luxshare / 立讯精密,宜春(江西),CN,中国大陆,114.40532,27.7969,零部件,高估,65.9,Assembly,True
+luxshare,Luxshare / 立讯精密,北江(越南),VN,越南,106.2,21.27,组装/零部件,高估,65.9,Assembly,True
+ase,ASE / 日月光,高雄,TW,中国台湾,120.30394,22.59723,总部/封测,高估,77.3,OSAT,True
+ase,ASE / 日月光,中坜(桃园),TW,中国台湾,121.22396,24.94723,封测,高估,77.3,OSAT,True
+ase,ASE / 日月光,苏州(中国),CN,中国大陆,120.60417,31.29781,封测,高估,77.3,OSAT,True
+ase,ASE / 日月光,槟城(马来西亚),MY,马来西亚,100.3,5.4,封测,高估,77.3,OSAT,True
+micron,Micron / 美光,博伊西(美国爱达荷),US,美国,-116.2,43.6,总部/研发,高估,991.1,Memory,True
+micron,Micron / 美光,马纳萨斯(美国弗吉尼亚),US,美国,-77.47,38.75,DRAM,高估,991.1,Memory,True
+micron,Micron / 美光,广岛(日本),JP,日本,132.45,34.4,DRAM/NAND,高估,991.1,Memory,True
+micron,Micron / 美光,台中(中国台湾),TW,中国台湾,120.67374,24.14719,DRAM 封测,高估,991.1,Memory,True
+micron,Micron / 美光,新加坡,SG,新加坡,103.82,1.35,NAND 制造,高估,991.1,Memory,True
+pegatron,Pegatron / 和硕,台北,TW,中国台湾,121.52389,25.04717,总部/代表据点,定性（未上市/无倍数）,,Assembly,False
+quanta,Quanta / 广达,桃园,TW,中国台湾,121.22397,24.98724,总部/代表据点,定性（未上市/无倍数）,,Assembly,False
+wistron,Wistron / 纬创,台北,TW,中国台湾,121.54383,25.02711,总部/代表据点,定性（未上市/无倍数）,,Assembly,False
+byd_e,BYD Electronic / 比亚迪电子,深圳,CN,中国大陆,114.05511,22.65728,总部/代表据点,定性（未上市/无倍数）,,Assembly/Enclosure,False
+catcher,Catcher / 可成科技,桃园,TW,中国台湾,121.22397,24.98724,总部/代表据点,定性（未上市/无倍数）,,Enclosure,False
+lens_tech,Lens / 蓝思科技,长沙,CN,中国大陆,112.94545,28.22649,总部/代表据点,定性（未上市/无倍数）,,Glass/Enclosure,False
+goertek,GoerTek / 歌尔股份,潍坊,CN,中国大陆,119.16589,36.71045,总部/代表据点,定性（未上市/无倍数）,,Assembly/Acoustics,False
+sunwoda,Sunwoda / 欣旺达,深圳,CN,中国大陆,114.05511,22.65728,总部/代表据点,定性（未上市/无倍数）,,Battery,False
+desay,Desay / 德赛电池,惠州,CN,中国大陆,114.42496,23.1075,总部/代表据点,定性（未上市/无倍数）,,Battery,False
+zhending,ZDT / 鹏鼎控股,桃园,TW,中国台湾,121.22397,24.98724,总部/代表据点,定性（未上市/无倍数）,,FPC,False
+unimicron,Unimicron / 欣兴电子,桃园,TW,中国台湾,121.22397,24.98724,总部/代表据点,定性（未上市/无倍数）,,Substrate/PCB,False
+ibiden,Ibiden / 揖斐电,大垣,JP,日本,136.62,35.37,总部/代表据点,定性（未上市/无倍数）,,Substrate,False
+amkor,Amkor / 安靠,坦佩(美国),US,美国,-111.91,33.39,总部/代表据点,定性（未上市/无倍数）,,OSAT,False
+cirrus,Cirrus / 凌云逻辑,奥斯汀(美国),US,美国,-97.74,30.27,总部/代表据点,定性（未上市/无倍数）,,Semiconductor,False
+ti,TI / 德州仪器,达拉斯(美国),US,美国,-96.8,32.78,总部/代表据点,定性（未上市/无倍数）,,Semiconductor,False
+st,ST / 意法半导体,日内瓦,CH,瑞士,6.14,46.18,总部/代表据点,定性（未上市/无倍数）,,Semiconductor,False
+arm,Arm,剑桥(英国),UK,英国,0.12,52.2,总部/代表据点,定性（未上市/无倍数）,,IP/EDA,False
+ams,ams OSRAM,普雷斯塔滕(奥地利),AT,奥地利,15.41,46.99,总部/代表据点,定性（未上市/无倍数）,,Sensor,False
+alps,Alps / 阿尔卑斯,东京,JP,日本,139.76,35.68,总部/代表据点,定性（未上市/无倍数）,,Mech/Actuator,False
+tdk,TDK,东京,JP,日本,139.76,35.68,总部/代表据点,定性（未上市/无倍数）,,Passive/Battery,False
+knowles,Knowles / 楼氏,伊塔斯卡(美国),US,美国,-88.02,41.97,总部/代表据点,定性（未上市/无倍数）,,Acoustics,False
+aac,AAC / 瑞声科技,深圳,CN,中国大陆,114.05511,22.65728,总部/代表据点,定性（未上市/无倍数）,,Acoustics,False
+sunny,Sunny / 舜宇光学,余姚(宁波),CN,中国大陆,121.16445,30.04767,总部/代表据点,定性（未上市/无倍数）,,Optics,False
+cowell,Cowell / 高伟电子,东莞,CN,中国大陆,113.75519,23.01728,总部/代表据点,定性（未上市/无倍数）,,Camera Module,False
+gis,GIS / 业成,台中,TW,中国台湾,120.67374,24.14719,总部/代表据点,定性（未上市/无倍数）,,Touch/Display,False
+genius,Genius / 玉晶光,台中,TW,中国台湾,120.67374,24.14719,总部/代表据点,定性（未上市/无倍数）,,Optics,False
+crystal,Crystal / 水晶光电,台州,CN,中国大陆,121.43442,28.67705,总部/代表据点,定性（未上市/无倍数）,,Optical,False
+lante,Lante / 蓝特光学,宁波,CN,中国大陆,121.55416,29.86742,总部/代表据点,定性（未上市/无倍数）,,Optical,False
+viseira,VisEra / 采钰科技,新竹,TW,中国台湾,120.9738,24.8071,总部/代表据点,定性（未上市/无倍数）,,CIS/Optical,False
+zhaowei,Zhaowei / 兆威机电,深圳,CN,中国大陆,114.05511,22.65728,总部/代表据点,定性（未上市/无倍数）,,Mech,False
+apple,Apple / 苹果自研,库比蒂诺(美国),US,美国,-122.03,37.32,总部/代表据点,基准（终端厂，非供应商）,,Semiconductor,True
+kioxia,Kioxia / 铠侠,东京,JP,日本,139.76,35.68,总部/代表据点,定性（未上市/无倍数）,,Memory,False
+wdc,WD / 西部数据,圣何塞(美国),US,美国,-121.89,37.33,总部/代表据点,定性（未上市/无倍数）,,Memory,False
+sdc,SDC / 三星显示,牙山,KR,韩国,127.0,36.8,总部/代表据点,定性（未上市/无倍数）,,Display,False
+sharp,Sharp / 夏普,堺市,JP,日本,135.49,34.57,总部/代表据点,定性（未上市/无倍数）,,Display,False
+berne,Berne / 伯恩光学,惠州,CN,中国大陆,114.42496,23.1075,总部/代表据点,定性（未上市/无倍数）,,Glass,False
+atl,ATL / 新能源科技,东莞,CN,中国大陆,113.75519,23.01728,总部/代表据点,定性（未上市/无倍数）,,Battery,False
+bosch,Bosch / 博世,斯图加特,DE,德国,9.18,48.78,总部/代表据点,定性（未上市/无倍数）,,Sensor,False
+mitsumi,Mitsumi / 三美,东京,JP,日本,139.76,35.68,总部/代表据点,定性（未上市/无倍数）,,Mech/Actuator,False
+nanya_pcb,NYP / 南亚电路板,台北,TW,中国台湾,121.54383,25.02711,总部/代表据点,定性（未上市/无倍数）,,Substrate/PCB,False
+flexium,Flexium / 台郡科技,桃园,TW,中国台湾,121.22397,24.98724,总部/代表据点,定性（未上市/无倍数）,,FPC,False
+dongshan,Dongshan / 东山精密,苏州,CN,中国大陆,120.60417,31.29781,总部/代表据点,定性（未上市/无倍数）,,FPC/Component,False
+shennan,SCC / 深南电路,深圳,CN,中国大陆,114.05511,22.65728,总部/代表据点,定性（未上市/无倍数）,,PCB,False
+changying,Changying / 长盈精密,深圳,CN,中国大陆,114.05511,22.65728,总部/代表据点,定性（未上市/无倍数）,,Enclosure,False
+lingyi,Lingyi / 领益智造,深圳,CN,中国大陆,114.05511,22.65728,总部/代表据点,定性（未上市/无倍数）,,Enclosure/Module,False
