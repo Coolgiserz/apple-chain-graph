@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.9.0](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.8.0...v1.9.0) (2026-08-13)
+
+
+### Features
+
+* **supplier-map:** 优化供应商地图交互逻辑 ([308d146](https://github.com/Coolgiserz/apple-chain-graph/commit/308d146949f39a61d683c396923d86b394db8ef0))
+* **supplier-map:** 优化供应商地图交互逻辑 ([54a777d](https://github.com/Coolgiserz/apple-chain-graph/commit/54a777dff9ca93a01d52a20ff1de62e13e6737a6))
+
 ## [1.8.0](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.7.1...v1.8.0) (2026-08-13)
 
 
