@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.8.0](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.7.1...v1.8.0) (2026-08-13)
+
+
+### Features
+
+* 瓶颈视图增加单国供应集中度与数据置信度（仅用现有字段） ([952f0e7](https://github.com/Coolgiserz/apple-chain-graph/commit/952f0e7784732a47212fd038fb38b09be2a848ee))
+* 瓶颈视图增加单国供应集中度与数据置信度（仅用现有字段） ([7fced2f](https://github.com/Coolgiserz/apple-chain-graph/commit/7fced2feb84b66862c438061eaafef09cd54a15e))
+
 ## [1.7.1](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.7.0...v1.7.1) (2026-08-12)
 
 
