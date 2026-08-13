@@ -276,12 +276,12 @@
   "report.limits.l4": "別名（alias）は公開かつ信頼できる発表前コードネーム／通称のみ記録し、ない場合は空欄；発売日は発表／発売日による、未確定機種は年のみ記載。",
   "report.limits.l5": "データは産業構造の研究と教育を目的とし、いかなる投資や調達の助言も構成しない。",
   "report.model.h3": "階層の定義",
-  "report.model.intro": "グラフは 3 層のノードと 3 種類の関係を用い、上下流の伝播経路を表します：",
+  "report.model.intro": "グラフは 4 層のノードと 5 種類の関係を用い、上下流の伝播に加え組立／量産の経路も完全に表します：",
   "report.model.l0": "第 0 層 端末製品（Product）：iPhone 17 Pro、MacBook Pro 14″ (M4)、Apple Vision Pro (M5) などの具体モデルまで特定；発売日、ステータス、開始価格などの属性を含む。",
   "report.model.l1": "第 1 層 中核部品（Component）：SoC、ディスプレイパネル、CIS、レンズ、メモリ、モデム、PMIC、バッテリー、構造部品、FPC／基板、先進パッケージ等；中英名を持つ。",
   "report.model.l2": "第 2 層 サプライヤー／製造受託（Supplier）：ウェハ受託、ディスプレイ、メモリ、半導体、音響、構造部品、FPC／基板、OSAT、組立などに分類；正式名／英語名／略称を別記、tier=1 は中核／高参入障壁、tier=2 は二次／代替容易な供給先。",
-  "report.model.rel1": "Product ──USES_COMPONENT──▶ Component ──SUPPLIED_BY──▶ Supplier",
-  "report.model.rel2": "Product ──ASSEMBLED_BY──▶ Supplier（製造受託）",
+  "report.model.rel1": "Product ──USES_COMPONENT──▶ Component ──SUPPLIED_BY──▶ Supplier ──OPERATED_BY──▶ Base",
+  "report.model.rel2": "Product ──ASSEMBLED_BY──▶ Supplier（EMS 組立）",
   "report.risk.note": "上記の比率と時期（BOE パネル 51%、Samsung DRAM 約 60–70%、Sony CIS 独占、カメラ部品の日本製比率 60% 超、TSMC アリゾナは旧 A16 のみ、Amkor 米国工場 2028 年見込み等）は、公開分解調査および市場リサーチ（Counterpoint / Nikkei / TrendForce / stockanalysis）とベンダー開示に基づき、2025–2026 年の主流構成を反映；時とともに変化し得り、サプライチェーン構造の研究目的のみで提供。",
   "report.risk.r1": "ウェハ受託の単一点依存（TSMC／台湾）：A19／A19 Pro／M シリーズなど最尖端チップは TSMC 台湾工場（3nm N3E／N3P）で 100% 製造され、先端プロセスは法令で海外移転が禁止されている。地政学リスクが極めて集中しており、アリゾナ工場は現状旧型 A16 とパッケージ工程のみを担当。",
   "report.risk.r2": "イメージセンサーの単一点依存（ソニー／日本）：iPhone メインカメラの CIS はソニーが独占、1 台の iPhone カメラモジュールに占める日本部品は 60% を超え、短期的な代替は困難（サムスンは将来の潜在第 2 供給先に過ぎない）。",
@@ -395,5 +395,10 @@
   "home.detailEmptySup": "この部品に関連する供給元はありません",
   "home.detailEmptyBase": "この部品に関連する生産拠点はありません",
   "home.detailNoResult": "一致する結果がありません",
-  "field.share": "シェア"
+  "field.share": "シェア",
+  "report.model.flow": "4 層のノードは 5 種類のエッジで結ばれます（実線＝隣接層の伝播；破線＝跨層直結）：",
+  "report.model.rel3": "Supplier ──OPERATED_BY──▶ Base（運営拠点）",
+  "report.model.rel4": "Product ──MANUFACTURED_AT──▶ Base（量産拠点）",
+  "report.model.caption": "実線は隣接層の伝播関係；破線の弧は跨層直結関係（EMS 組立、量産拠点）。",
+  "report.model.l3": "第 3 層 製造拠点（Base）：鄭州／成都／深圳などの最終組立・主要部品拠点；都市、省、運営者（Foxconn／Luxshare 等）、対象製品ライン、信頼度を含む。"
 }

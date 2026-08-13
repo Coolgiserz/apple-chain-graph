@@ -274,42 +274,108 @@ def summary_section(G):
 
 
 def model_section(G):
-    svg = '''<svg viewBox='0 0 680 220' width='100%' style='max-width:680px;margin:8px 0'>
- <rect x='12' y='20' width='190' height='150' rx='12' fill='#e8f1fb' stroke='#0a66c2'/>
- <text x='107' y='44' text-anchor='middle' fill='#0a66c2' font-size='13' font-weight='bold'>第0层 产品 Product</text>
- <text x='107' y='74' text-anchor='middle' font-size='12'>iPhone 17 Pro</text>
- <text x='107' y='96' text-anchor='middle' font-size='12'>MacBook Pro 14"</text>
- <text x='107' y='118' text-anchor='middle' font-size='12'>Vision Pro (M5)</text>
- <text x='107' y='140' text-anchor='middle' font-size='12'>AirPods Pro 3</text>
- <rect x='245' y='20' width='190' height='150' rx='12' fill='#e7f6ee' stroke='#0e7c4f'/>
- <text x='340' y='44' text-anchor='middle' fill='#0e7c4f' font-size='13' font-weight='bold'>第1层 零部件 Component</text>
- <text x='340' y='74' text-anchor='middle' font-size='12'>Apple Silicon SoC</text>
- <text x='340' y='96' text-anchor='middle' font-size='12'>OLED 显示面板</text>
- <text x='340' y='118' text-anchor='middle' font-size='12'>CIS / 镜头</text>
- <text x='340' y='140' text-anchor='middle' font-size='12'>DRAM / NAND / 电池</text>
- <rect x='478' y='20' width='190' height='150' rx='12' fill='#fff3e0' stroke='#b06a00'/>
- <text x='573' y='44' text-anchor='middle' fill='#b06a00' font-size='13' font-weight='bold'>第2层 供应商 Supplier</text>
- <text x='573' y='74' text-anchor='middle' font-size='12'>TSMC / 索尼</text>
- <text x='573' y='96' text-anchor='middle' font-size='12'>三星/LG/京东方</text>
- <text x='573' y='118' text-anchor='middle' font-size='12'>富士康/立讯</text>
- <text x='573' y='140' text-anchor='middle' font-size='12'>海力士/美光</text>
- <line x1='202' y1='95' x2='245' y2='95' stroke='#0a66c2' stroke-width='2' marker-end='url(#ar)'/>
- <line x1='435' y1='95' x2='478' y2='95' stroke='#0e7c4f' stroke-width='2' marker-end='url(#ar)'/>
- <text x='223' y='88' text-anchor='middle' font-size='10' fill='#0a66c2'>USES</text>
- <text x='456' y='88' text-anchor='middle' font-size='10' fill='#0e7c4f'>SUPPLIED_BY</text>
- <defs><marker id='ar' markerWidth='8' markerHeight='8' refX='6' refY='3' orient='auto'><path d='M0,0 L6,3 L0,6 Z' fill='#444'/></marker></defs>
- </svg>'''
+    """数据驱动的四层供应链分层模型：产品 → 零部件 → 供应商 → 生产基地。
+
+    每层显示真实计数与代表性实体；相邻层用实线箭头表示传导关系，
+    跨层直达关系（ASSEMBLED_BY 总装 / MANUFACTURED_AT 量产）用虚线弧箭头标识。
+    """
+    _, _, _, comp_sups, sup_products = _indexes(G)
+    n_prod = len(G["nodes"]["products"])
+    n_comp = len(G["nodes"]["components"])
+    n_sup = len(G["nodes"]["suppliers"])
+    n_base = len(G["nodes"]["bases"])
+
+    # 代表性实体（数据驱动挑选）
+    prod_ex = sorted(G["nodes"]["products"], key=lambda p: -len(p.get("components", [])))[:4]
+    comp_ex = sorted(G["nodes"]["components"], key=lambda c: -len(comp_sups.get(c["id"], [])))[:4]
+    sup_ex = sorted(G["nodes"]["suppliers"], key=lambda s: -len(sup_products.get(s["id"], set())))[:4]
+    base_cnt = {b["id"]: len(b.get("products", [])) for b in G["nodes"]["bases"]}
+    base_ex = sorted(G["nodes"]["bases"], key=lambda b: -base_cnt[b["id"]])[:4]
+
+    def trunc(s, n=12):
+        s = str(s)
+        return s if len(s) <= n else s[:n] + "…"
+
+    cols = [
+        ("L0 产品 Product", n_prod, [p["name"] for p in prod_ex], "#0a66c2", "#e8f1fb"),
+        ("L1 零部件 Component", n_comp, [c["name"] for c in comp_ex], "#0e7c4f", "#e7f6ee"),
+        ("L2 供应商 Supplier", n_sup, [s.get("short_name") or s["name"] for s in sup_ex], "#b06a00", "#fff3e0"),
+        ("L3 生产基地 Base", n_base, [b["name"] for b in base_ex], "#6d28d9", "#f1e9ff"),
+    ]
+    x0, w, gap = 10, 150, 60
+    y, h = 64, 232
+    svg = ["<svg viewBox='0 0 800 340' width='100%' style='max-width:800px;margin:10px 0' "
+           "font-family='-apple-system,Segoe UI,PingFang SC,Microsoft YaHei,sans-serif'>"]
+
+    for i, (title, cnt, items, color, bg) in enumerate(cols):
+        x = x0 + i * (w + gap)
+        svg.append("<rect x='%d' y='%d' width='%d' height='%d' rx='12' fill='%s' stroke='%s' stroke-width='1.5'/>"
+                   % (x, y, w, h, bg, color))
+        # 顶部圆角表头带（顶部圆角、底部直角）
+        svg.append("<path d='M%d,%d a12,12 0 0 1 12,-12 h%d a12,12 0 0 1 12,12 v18 h-%d z' fill='%s'/>"
+                   % (x, y + 12, w - 24, w, color))
+        svg.append("<text x='%d' y='%d' text-anchor='middle' fill='#fff' font-size='11' font-weight='bold'>%s</text>"
+                   % (x + w // 2, y + 20, esc(title)))
+        svg.append("<text x='%d' y='%d' text-anchor='middle' fill='%s' font-size='19' font-weight='bold'>%d</text>"
+                   % (x + w // 2, y + 50, color, cnt))
+        cy = y + 70
+        for it in items:
+            svg.append("<rect x='%d' y='%d' width='%d' height='26' rx='6' fill='#fff' stroke='%s' stroke-width='0.8'/>"
+                       % (x + 8, cy, w - 16, color))
+            svg.append("<text x='%d' y='%d' text-anchor='middle' font-size='10.5' fill='#1c2430'>%s</text>"
+                       % (x + w // 2, cy + 17, esc(trunc(it))))
+            cy += 32
+
+    # 箭头标记（按颜色区分）
+    svg.append("<defs>"
+               "<marker id='arB' markerWidth='9' markerHeight='9' refX='7' refY='3' orient='auto'><path d='M0,0 L7,3 L0,6 Z' fill='#0a66c2'/></marker>"
+               "<marker id='arG' markerWidth='9' markerHeight='9' refX='7' refY='3' orient='auto'><path d='M0,0 L7,3 L0,6 Z' fill='#0e7c4f'/></marker>"
+               "<marker id='arA' markerWidth='9' markerHeight='9' refX='7' refY='3' orient='auto'><path d='M0,0 L7,3 L0,6 Z' fill='#b06a00'/></marker>"
+               "<marker id='arP' markerWidth='9' markerHeight='9' refX='7' refY='3' orient='auto'><path d='M0,0 L7,3 L0,6 Z' fill='#6d28d9'/></marker>"
+               "</defs>")
+
+    ym = y + h / 2
+    # 相邻层直连箭头
+    straight = [
+        (x0 + w, x0 + (w + gap), "#0a66c2", "arB", "USES_COMPONENT", 402),
+        (x0 + 2 * (w + gap) + w, x0 + 3 * (w + gap), "#0e7c4f", "arG", "SUPPLIED_BY", 80),
+        (x0 + 3 * (w + gap) + w, x0 + 4 * (w + gap), "#b06a00", "arA", "OPERATED_BY", 17),
+    ]
+    for x1, x2, col, mk, label, n in straight:
+        svg.append("<line x1='%d' y1='%d' x2='%d' y2='%d' stroke='%s' stroke-width='2' marker-end='url(#%s)'/>"
+                   % (x1, ym, x2 - 4, ym, col, mk))
+        svg.append("<text x='%d' y='%d' text-anchor='middle' font-size='9.5' fill='%s'>%s · %d</text>"
+                   % ((x1 + x2) // 2, ym - 8, col, label, n))
+
+    # 跨层直达（虚线弧）：ASSEMBLED_BY 总装（产品→供应商，上方）
+    xr0, xl2, xr3 = x0 + w, x0 + 2 * (w + gap), x0 + 3 * (w + gap) + w
+    svg.append("<path d='M%d,%d Q400,32 %d,%d' fill='none' stroke='#b06a00' stroke-width='2' "
+               "stroke-dasharray='5 3' marker-end='url(#arA)'/>" % (xr0, ym - 6, xl2 + 4, ym - 6))
+    svg.append("<text x='400' y='28' text-anchor='middle' font-size='9.5' fill='#b06a00'>ASSEMBLED_BY（EMS 总装）· 45</text>")
+    # 跨层直达（虚线弧）：MANUFACTURED_AT 量产（产品→生产基地，下方）
+    svg.append("<path d='M%d,%d Q400,322 %d,%d' fill='none' stroke='#6d28d9' stroke-width='2' "
+               "stroke-dasharray='5 3' marker-end='url(#arP)'/>" % (xr0, ym + 6, xr3 - 4, ym + 6))
+    svg.append("<text x='400' y='336' text-anchor='middle' font-size='9.5' fill='#6d28d9'>MANUFACTURED_AT（量产基地）· 33</text>")
+
+    svg.append("</svg>")
+    svg_html = "".join(svg)
+
     return "".join([
         "<section id='sec-model'><h2>", i18n("report.sec.model"), "</h2>",
         "<p>", i18n("report.model.intro"), "</p>",
-        "<p><code>", esc(ZH.get("report.model.rel1", "Product ──USES_COMPONENT──▶ Component ──SUPPLIED_BY──▶ Supplier")), "</code><br>",
-        "<code>", esc(ZH.get("report.model.rel2", "Product ──ASSEMBLED_BY──▶ Supplier (EMS)")), "</code></p>",
+        "<p>", i18n("report.model.flow"), "</p>",
+        "<p><code>", i18n("report.model.rel1"), "</code><br>",
+        "<code>", i18n("report.model.rel2"), "</code><br>",
+        "<code>", i18n("report.model.rel3"), "</code><br>",
+        "<code>", i18n("report.model.rel4"), "</code></p>",
+        "<p class='muted'>", i18n("report.model.caption"), "</p>",
         "<h3>", i18n("report.model.h3"), "</h3>",
         "<ul>",
         "<li>", i18n("report.model.l0"), "</li>",
         "<li>", i18n("report.model.l1"), "</li>",
         "<li>", i18n("report.model.l2"), "</li>",
-        "</ul>", svg, "</section>",
+        "<li>", i18n("report.model.l3"), "</li>",
+        "</ul>", svg_html, "</section>",
     ])
 
 

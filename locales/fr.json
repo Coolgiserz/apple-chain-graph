@@ -276,12 +276,12 @@
   "report.limits.l4": "L'alias ne consigne que les noms de code / surnoms publics et crédibles d'avant lancement, vide si aucun ; les dates de sortie suivent les dates d'annonce / de lancement, l'année étant indiquée pour les modèles non confirmés.",
   "report.limits.l5": "Les données servent à la recherche sur la structure de la filière et à l'enseignement, et ne constituent aucun conseil en investissement ou en achats.",
   "report.model.h3": "Définition des niveaux",
-  "report.model.intro": "Le graphe utilise trois niveaux de nœuds et trois types de relations, reflétant le chemin de propagation amont–aval :",
+  "report.model.intro": "Le graphe utilise quatre niveaux de nœuds et cinq types de relations, reflétant pleinement le chemin amont–aval ainsi que les liens d'assemblage / production de masse :",
   "report.model.l0": "Niveau 0 — Produits finis (Product) : jusqu'au modèle précis, ex. iPhone 17 Pro, MacBook Pro 14″ (M4), Apple Vision Pro (M5) ; avec des attributs tels que date de sortie, statut et prix de départ.",
   "report.model.l1": "Niveau 1 — Composants clés (Component) : SoC, panneaux d'affichage, CIS, optiques, mémoire, modems, PMIC, batteries, pièces mécaniques, FPC/substrat, packaging avancé, etc. ; avec noms chinois et anglais.",
   "report.model.l2": "Niveau 2 — Fournisseurs / sous-traitants (Supplier) : répartis en fonderie, affichage, mémoire, semi-conducteurs, acoustique, mécanique, FPC/substrat, OSAT, assemblage, etc. ; noms complet/anglais/abrégé listés séparément ; tier=1 marque les fournisseurs clés / à forte barrière, tier=2 les fournisseurs secondaires / plus substituables.",
-  "report.model.rel1": "Product ──USES_COMPONENT──▶ Component ──SUPPLIED_BY──▶ Supplier",
-  "report.model.rel2": "Product ──ASSEMBLED_BY──▶ Supplier (EMS)",
+  "report.model.rel1": "Product ──USES_COMPONENT──▶ Component ──SUPPLIED_BY──▶ Supplier ──OPERATED_BY──▶ Base",
+  "report.model.rel2": "Product ──ASSEMBLED_BY──▶ Supplier（assemblage EMS）",
   "report.risk.note": "Les parts et dates ci-dessus (panneau BOE 51 %, DRAM Samsung ~60–70 %, monopole CIS Sony, composants japonais >60 % dans l'appareil photo, TSMC Arizona uniquement l'A16 héritée, usine américaine Amkor ~2028, etc.) proviennent de démontages publics et d'études de marché (Counterpoint / Nikkei / TrendForce / stockanalysis) et de communications des fournisseurs, reflétant les configurations dominantes de 2025–2026 ; elles peuvent évoluer et ne sont fournies qu'à des fins d'étude de la structure de la chaîne.",
   "report.risk.r1": "Dépendance monopoint en fonderie (TSMC / Taïwan) : les puces les plus avancées (A19 / A19 Pro / série M) sont fabriquées à 100 % par les usines TSMC à Taïwan (3 nm N3E/N3P), et les nœuds avancés ne peuvent légalement pas être délocalisés. Le risque géopolitique est très concentré ; l'usine d'Arizona ne traite pour l'instant que l'ancien A16 et l'encapsulation.",
   "report.risk.r2": "Dépendance monopoint en capteurs d'image (Sony / Japon) : le CIS de l'appareil photo principal de l'iPhone est l'exclusivité de Sony ; les composants japonais dépassent 60 % d'un module photo iPhone, rendant une substitution à court terme difficile (Samsung n'étant qu'un potentiel futur second source).",
@@ -395,5 +395,10 @@
   "home.detailEmptySup": "Aucun fournisseur associé à ce composant",
   "home.detailEmptyBase": "Aucune base de production associée",
   "home.detailNoResult": "Aucun résultat",
-  "field.share": "Part"
+  "field.share": "Part",
+  "report.model.flow": "Quatre niveaux de nœuds reliés par cinq types d'arêtes (trait plein = flux entre niveaux adjacents ; tireté = lien direct entre niveaux non adjacents) :",
+  "report.model.rel3": "Supplier ──OPERATED_BY──▶ Base（site exploité）",
+  "report.model.rel4": "Product ──MANUFACTURED_AT──▶ Base（site de production）",
+  "report.model.caption": "Les flèches pleines sont des flux entre niveaux adjacents ; les arcs tiretés sont des liens directs entre niveaux non adjacents (assemblage EMS, production de masse).",
+  "report.model.l3": "Niveau 3 — Sites de production (Base) : sites d'assemblage final et de composants clés tels que Zhengzhou / Chengdu / Shenzhen ; avec ville, province, opérateur (Foxconn / Luxshare, etc.), gammes couvertes et niveau de confiance."
 }

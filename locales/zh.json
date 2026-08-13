@@ -276,12 +276,12 @@
   "report.limits.l4": "别名(alias)仅记录公开可信的发布前代号或别称，无则留空；发布时间以发布会/发售日期为准，未确认机型标注年份。",
   "report.limits.l5": "数据用于产业链结构研究与教学，不构成任何投资或采购建议。",
   "report.model.h3": "层级定义",
-  "report.model.intro": "图谱采用三层节点 + 三类关系，反映上下游传导路径：",
+  "report.model.intro": "图谱采用四层节点 + 五类关系，完整反映上下游传导与总装 / 量产路径：",
   "report.model.l0": "第 0 层 终端产品（Product）：精确到具体型号，如 iPhone 17 Pro、MacBook Pro 14″ (M4)、Apple Vision Pro (M5)；含发布时间、状态、起售价等属性。",
   "report.model.l1": "第 1 层 核心零部件（Component）：SoC、显示面板、CIS、镜头、存储、调制解调器、PMIC、电池、结构件、FPC/载板、先进封装等；含中英文名称。",
   "report.model.l2": "第 2 层 供应商/代工厂（Supplier）：按类别分为晶圆代工、显示、存储、半导体、声学、结构件、FPC/载板、OSAT、组装等；全称/英文名/简称分列，tier=1 为核心/技术壁垒高者，tier=2 为次级/可替代性较强者。",
-  "report.model.rel1": "Product ──USES_COMPONENT──▶ Component ──SUPPLIED_BY──▶ Supplier",
-  "report.model.rel2": "Product ──ASSEMBLED_BY──▶ Supplier（代工）",
+  "report.model.rel1": "Product ──USES_COMPONENT──▶ Component ──SUPPLIED_BY──▶ Supplier ──OPERATED_BY──▶ Base",
+  "report.model.rel2": "Product ──ASSEMBLED_BY──▶ Supplier（EMS 总装）",
   "report.risk.note": "上述份额与时间点（BOE 面板 51%、三星 DRAM 约 60–70%、索尼 CIS 独占、摄像头日本元件占比超 60%、台积电亚利桑那厂仅承接旧款 A16、Amkor 美国厂预计 2028 年投产等）来自公开供应链拆解与市场研究（Counterpoint / Nikkei / TrendForce / stockanalysis 等）及厂商披露，反映 2025–2026 年主流配置，随时间可能变化，仅供产业链结构研究参考。",
   "report.risk.r1": "晶圆代工单点依赖（台积电 / 台湾）：A19 / A19 Pro / M 系列等最先进芯片 100% 由台积电台湾厂代工（3nm N3E/N3P），且先进制程依法不得外移。地缘风险高度集中，亚利桑那厂目前仅承接旧款 A16 及封装环节。",
   "report.risk.r2": "图像传感器单点依赖（索尼 / 日本）：iPhone 主摄 CIS 由索尼独占，单部 iPhone 摄像头组件中日本元件占比超 60%，短期内难以替代（三星仅为未来潜在二供）。",
@@ -395,5 +395,10 @@
   "home.detailEmptySup": "该零部件暂无关联供应商",
   "home.detailEmptyBase": "该零部件暂无关联生产基地",
   "home.detailNoResult": "无匹配结果",
-  "field.share": "份额"
+  "field.share": "份额",
+  "report.model.flow": "四类节点经五类边连接（实线 = 相邻层传导；虚线 = 跨层直达）：",
+  "report.model.rel3": "Supplier ──OPERATED_BY──▶ Base（运营基地）",
+  "report.model.rel4": "Product ──MANUFACTURED_AT──▶ Base（量产基地）",
+  "report.model.caption": "实线为相邻层传导关系；虚线弧为跨层直达关系（EMS 总装、量产基地）。",
+  "report.model.l3": "第 3 层 生产基地（Base）：郑州 / 成都 / 深圳等总装与关键部件基地，含城市、省份、运营商（富士康 / 立讯等）、覆盖产品线与置信度。"
 }
