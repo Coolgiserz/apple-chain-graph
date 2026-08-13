@@ -172,6 +172,17 @@
   #bottleneckPanel .bn-noalt-bad { color: #ffb4b4; background: rgba(239,68,68,.14); border: 1px solid rgba(239,68,68,.4); }
   #bottleneckPanel .bn-noalt b { font-size: 15px; }
   #bottleneckPanel .bn-noalt-n { font-size: 15px; font-weight: 700; }
+  /* 供应地区集中度（单国集中 ≠ 真冗余） */
+  #bottleneckPanel .bn-conc { font-size: 12.5px; border-radius: 8px; padding: 8px 10px; margin-top: 8px; }
+  #bottleneckPanel .bn-conc-ok { color: #bbf7d0; background: rgba(16,185,129,.12); border: 1px solid rgba(16,185,129,.4); }
+  #bottleneckPanel .bn-conc-bad { color: #ffb4b4; background: rgba(239,68,68,.14); border: 1px solid rgba(239,68,68,.4); }
+  #bottleneckPanel .bn-conc-mid { color: #fde68a; background: rgba(245,158,11,.12); border: 1px solid rgba(245,158,11,.4); }
+  #bottleneckPanel .bn-conc-n { font-size: 11.5px; color: #cdd8ee; line-height: 1.5; margin-top: 3px; }
+  /* 数据置信度徽标（基于溯源来源质量） */
+  #bottleneckPanel .bn-conf { display: inline-block; font-size: 11px; padding: 2px 8px; border-radius: 999px; margin: 0 6px 8px 0; border: 1px solid; }
+  #bottleneckPanel .bn-conf-high { color: #bbf7d0; background: rgba(16,185,129,.12); border-color: rgba(16,185,129,.45); }
+  #bottleneckPanel .bn-conf-mid { color: #fde68a; background: rgba(245,158,11,.12); border-color: rgba(245,158,11,.45); }
+  #bottleneckPanel .bn-conf-low { color: #ffb4b4; background: rgba(239,68,68,.12); border-color: rgba(239,68,68,.45); }
   #bottleneckPanel .risk-legend { display: flex; gap: 12px; align-items: center; font-size: 11.5px; color: #9fb0d0; margin-top: 8px; flex-wrap: wrap; }
   #bottleneckPanel .risk-legend .dot { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
   /* 关联邻居可点击：指向 + 悬停高亮，提示可聚焦 */

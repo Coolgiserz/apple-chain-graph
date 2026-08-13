@@ -8,6 +8,18 @@ import { S } from "../engine/state.js";
 
 function label(n) { return (n && (n.name || n.english_name || n.id)) || ""; }
 
+// 溯源注册表（缺失时返回空表，保证纯函数可单测 / 无 window 环境不崩溃）。
+function sourceRegistry() {
+  return (typeof window !== "undefined" && window.SUPPLY_DATA && window.SUPPLY_DATA.meta && window.SUPPLY_DATA.meta.source_registry) || {};
+}
+// 一条边的溯源置信度：有 ≥1 个非 generic（有实证文章）来源 = 1，全为 generic 主页 / 无来源 = 0；-1 表示无溯源边。
+function edgeConfidence(sources, reg) {
+  if (!sources || !sources.length) return -1;
+  var good = 0;
+  sources.forEach(function (sid) { var m = reg[sid]; if (m && !m.generic) good++; });
+  return good / sources.length;
+}
+
 // 取某节点的出方向邻居 key 列表（供应链「流出」方向）。
 function outNeighbors(key) {
   var es = S.adj[key] || [], out = [];
@@ -85,14 +97,19 @@ export function computeMetrics() {
 
   // —— 2) 断供影响（reach） + 逐节点明细 ——
   // 先由边推导每个零部件的供应商集合（不依赖 model 是否填充 n_suppliers，更稳健）。
-  var compSup = {};
-  nodes.forEach(function (n) { if (n.type === "Component") compSup[n._key] = new Set(); });
+  // 同时收集供应商国家，用于「单国供应集中度」判断（相关失效风险，比裸 n_c≥2 更贴合物理）。
+  var compSup = {}, compCountries = {};
+  nodes.forEach(function (n) { if (n.type === "Component") { compSup[n._key] = new Set(); compCountries[n._key] = { set: new Set(), known: 0, total: 0 }; } });
   (S.links || []).forEach(function (l) {
-    if (l.type === "SUPPLIES" && compSup[l.a._key]) compSup[l.a._key].add(l.b._key);   // 零部件 → 供应商
+    if (l.type === "SUPPLIES" && compSup[l.a._key]) {
+      compSup[l.a._key].add(l.b._key);   // 零部件 → 供应商
+      var cc = compCountries[l.a._key]; cc.total++;
+      if (l.b && l.b.country) { cc.set.add(l.b.country); cc.known++; }
+    }
   });
 
   var info = {};
-  nodes.forEach(function (n) { info[n._key] = { reach: 0, noAlt: 0, affected: [], suppliedComps: [], reuseProducts: [], spComps: [], compCount: 0 }; });
+  nodes.forEach(function (n) { info[n._key] = { reach: 0, noAlt: 0, affected: [], suppliedComps: [], reuseProducts: [], spComps: [], compCount: 0, singleCountry: false, supplyCountry: "", nSupplyCountries: 0, confidence: -1 }; });
   nodes.forEach(function (n) {
     if (n.type === "Supplier" || n.type === "Component") {
       var d = impactReach(n._key, compSup);
@@ -117,6 +134,34 @@ export function computeMetrics() {
         }
       });
     }
+  });
+
+  // —— 单国供应集中度：零部件供应商是否全部位于同一国家 ——
+  // 物理意义：同国多源 ≠ 真冗余（地震 / 出口管制等属地冲击会同时打掉所有货源）。
+  // 仅在「全部供应商国家已知且同属一国」时判定为集中，避免把未知国家误判。
+  var singleCountryComps = [];
+  nodes.forEach(function (n) {
+    if (n.type !== "Component") return;
+    var cc = compCountries[n._key];
+    var single = cc && cc.total > 0 && cc.known === cc.total && cc.set.size === 1;
+    info[n._key].singleCountry = single;
+    info[n._key].supplyCountry = single ? cc.set.values().next().value : "";
+    info[n._key].nSupplyCountries = cc ? cc.set.size : 0;
+    if (single) singleCountryComps.push(n._key);
+  });
+
+  // —— 溯源置信度：节点相关边的「有实证来源」占比（generic 出版商主页不计入）——
+  var reg = sourceRegistry();
+  nodes.forEach(function (n) {
+    var edges = [];
+    (S.links || []).forEach(function (l) {
+      if (l.type === "SUPPLIES" && (l.a._key === n._key || l.b._key === n._key)) edges.push(l);
+      else if (l.type === "USES" && l.a._key === n._key) edges.push(l);
+    });
+    if (!edges.length) { info[n._key].confidence = -1; return; }
+    var sum = 0;
+    edges.forEach(function (l) { var c = edgeConfidence(l.source, reg); sum += (c < 0 ? 0 : c); });
+    info[n._key].confidence = sum / edges.length;
   });
 
   // —— 汇总：range / 排行 / 单点 / 地理集中度 ——
@@ -156,6 +201,7 @@ export function computeMetrics() {
       reach: { min: rMin === Infinity ? 0 : rMin, max: rMax === -Infinity ? 0 : rMax },
     },
     singleSourced: singleSourced,
+    singleCountryComps: singleCountryComps,
     geoCN: supTotal ? +(eastCount / supTotal).toFixed(3) : 0,
     suppliersTotal: supTotal,
     topByReach: reachCands.slice(0, 15),

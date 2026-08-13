@@ -221,6 +221,7 @@ export function renderBottleneckPanel(n) {
     h += "<div class='bn-cards'>";
     h += "<div class='bn-card'><div class='bn-card-v'>" + m.singleSourced.length + "</div><div class='bn-card-k'>" + i18nText("bottleneck.cardSingle") + "</div></div>";
     h += "<div class='bn-card'><div class='bn-card-v'>" + cnPct + "%</div><div class='bn-card-k'>" + i18nText("bottleneck.cardGeo") + "</div></div>";
+    h += "<div class='bn-card'><div class='bn-card-v'>" + m.singleCountryComps.length + "</div><div class='bn-card-k'>" + i18nText("bottleneck.cardCountry") + "</div></div>";
     h += "<div class='bn-card'><div class='bn-card-v' style='font-size:13px;line-height:1.4'>" + esc(m.worstSingle || "—") + "</div><div class='bn-card-k'>" + i18nText("bottleneck.cardWorst") + "</div></div>";
     h += "</div>";
     // 排行随指标切换：reach → 断供影响排行；pagerank → 网络核心度排行。
@@ -249,7 +250,15 @@ export function renderBottleneckPanel(n) {
   var h = "<h3>" + esc(n.name || n.id) + "</h3><div class='sub'>" + esc(n.english_name || "") + "</div>";
   h += "<span class='tag' style='background:" + col + "22;color:" + col + ";border:1px solid " + col + "'>" + typeLabel(n.type) + "</span>";
   if (n.type === "Product" && n.product_line) h += "<span class='tag' style='background:#2a3450;color:#cfe0ff'>" + esc(i18nVal("product_line", n.product_line)) + "</span>";
-  var info = m.info[n._key] || { reach: 0, noAlt: 0, affected: [], suppliedComps: [], reuseProducts: [], spComps: [] };
+  var info = m.info[n._key] || { reach: 0, noAlt: 0, affected: [], suppliedComps: [], reuseProducts: [], spComps: [], singleCountry: false, supplyCountry: "", nSupplyCountries: 0, confidence: -1 };
+
+  // 数据置信度徽标：基于溯源来源质量（generic 出版商主页不计入）；-1 表示无溯源边则不显示
+  var conf = (info.confidence != null ? info.confidence : -1);
+  if (conf >= 0) {
+    var clevel = conf >= 0.67 ? "high" : (conf >= 0.34 ? "mid" : "low");
+    var clabel = clevel === "high" ? i18nText("bottleneck.confHigh") : (clevel === "mid" ? i18nText("bottleneck.confMid") : i18nText("bottleneck.confLow"));
+    h += "<span class='bn-conf bn-conf-" + clevel + "'>" + i18nText("bottleneck.confidence") + "：" + clabel + "</span>";
+  }
 
   // 选中节点在当前指标排行中的位次（让「切换指标」在详情视图也有可见反馈）。
   var activeRanking = (S.bottleneckMetric === "pagerank") ? m.topByPagerank : m.topByReach;
@@ -300,6 +309,14 @@ export function renderBottleneckPanel(n) {
     // 零部件：被 N 款产品共用，断供即波及这 N 款（reuse==reach，合并为单一清晰表述，避免重复数字困惑）
     h += "<div class='bn-impact-b'>" + i18nText("bottleneck.impactDescComp").replace("{n}", reuse) + "</div>";
     h += "</div>";
+    // 供应地区集中度：单国集中 ≠ 真冗余（同地冲击会同时打掉所有货源）
+    var conc = info.singleCountry, ctry = info.supplyCountry, nCtry = info.nSupplyCountries || 0;
+    h += "<div class='bn-conc " + (conc ? "bn-conc-bad" : (nCtry > 1 ? "bn-conc-ok" : "bn-conc-mid")) + "'>" +
+      (conc ? "⚠ " : (nCtry > 1 ? "✓ " : "")) + i18nText("bottleneck.countryConc") + "：" +
+      (conc ? i18nText("bottleneck.countrySingle").replace("{c}", esc(ctry))
+            : i18nText("bottleneck.countryDiverse").replace("{n}", nCtry)) +
+      "</div>";
+    h += "<div class='bn-conc-n'>" + (conc ? i18nText("bottleneck.countryNote") : i18nText("bottleneck.countryDiverseNote").replace("{n}", nCtry)) + "</div>";
     if (sp) h += "<div class='bn-warn'>⚠ " + i18nText("bottleneck.singleWarn") + "</div>";
     else if (reuse) {
       h += "<div class='bn-impact-b' style='margin-top:8px'>" + i18nText("bottleneck.reachClarify") + "</div>";
