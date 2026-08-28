@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.9.2](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.9.1...v1.9.2) (2026-08-28)
+
+
+### Bug Fixes
+
+* **analytics:** P1 数据正确性 — impactReach 补 ASSEMBLES 总装边 + share 字段归一化 ([ead2f3e](https://github.com/Coolgiserz/apple-chain-graph/commit/ead2f3e3b4b3df25b56bb47141b1eadc697cfd25))
+* **security,repro:** P1 安全与可复现 — 深链守卫/URL 编码/时间戳/Python 版本统一 ([83be734](https://github.com/Coolgiserz/apple-chain-graph/commit/83be734509b181e154f3315f9af31531bcde07ea))
+
 ## [1.9.1](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.9.0...v1.9.1) (2026-08-28)
 
 
