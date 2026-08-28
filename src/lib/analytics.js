@@ -28,17 +28,23 @@ function outNeighbors(key) {
 }
 
 // 某节点（供应商 / 零部件）断供后的下游受影响产品集合 + 无替代计数。
-// 供应商路径：供应商 →(SUPPLIES 入边) 零部件 →(USES 入边) 产品。
+// 供应商路径：供应商 →(SUPPLIES 入边) 零部件 →(USES 入边) 产品；
+//            另含 供应商 →(ASSEMBLES 入边) 产品（EMS 总装，如富士康/立讯「总成+供货」双角色）。
 // 零部件路径：该零部件自身 →(USES 入边) 产品（即「被多少产品共用」）。
 // single = 该零部件仅有 1 家供应商（由 compSup 集合从边推导，不依赖节点字段是否已填充）。
+//          注：ASSEMBLES 直接触及的产品不计入 noAlt（单组装方判定需另建 per-product 汇编方集合，
+//              超出本函数职责，保守地不夸大为「无替代」）。
 function impactReach(key, compSup) {
   var n = S.idMap[key];
   if (!n || (n.type !== "Supplier" && n.type !== "Component"))
     return { comps: [], suppliedComps: [], affected: [], noAlt: 0 };
   var comps = [];
+  var assembledProducts = [];   // P1-#6：经 ASSEMBLES(总装) 边直接触及的产品
   if (n.type === "Supplier") {
     (S.adj[key] || []).forEach(function (e) {
       if (e.dir === "in" && e.other.type === "Component" && e.link.type === "SUPPLIES") comps.push(e.other);
+      // P1-#6：补收「总装」边，否则富士康等双角色供应商的断供波及被系统性低估
+      else if (e.dir === "in" && e.other.type === "Product" && e.link.type === "ASSEMBLES") assembledProducts.push(e.other);
     });
   } else {
     comps.push(n);   // 零部件：自身即被产品使用的「组件」
@@ -53,6 +59,10 @@ function impactReach(key, compSup) {
         if (single) seen[pk].single = true;
       }
     });
+  });
+  // P1-#6：合并「总装」直接触及的产品（不覆盖部件路径已标记的 single 状态）
+  assembledProducts.forEach(function (p) {
+    if (!seen[p._key]) { seen[p._key] = { key: p._key, single: false }; affected.push(seen[p._key]); }
   });
   return {
     comps: comps,

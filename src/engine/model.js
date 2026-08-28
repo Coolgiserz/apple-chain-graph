@@ -27,7 +27,12 @@ export function build() {
     o._key = "L:" + ln; S.idMap[o._key] = o; S.nodes.push(o);
   });
   DATA.edges.uses_component.forEach(function (e) { addLink("USES", e.from, e.to, { source: e.source }); });
-  DATA.edges.supplied_by.forEach(function (e) { addLink("SUPPLIES", e.from, e.to, { share: e.share, note: e.note, source: e.source }); });
+  // P1-#3：share 归一化 —— 空串/缺失归一为 null，非空解析为数值，
+  // 避免字符串与数值混入同一字段（下游排序/比较时触发字典序错乱）。
+  DATA.edges.supplied_by.forEach(function (e) {
+    var sh = (e.share === "" || e.share == null) ? null : Number(e.share);
+    addLink("SUPPLIES", e.from, e.to, { share: sh, note: e.note, source: e.source });
+  });
   DATA.edges.assembled_by.forEach(function (e) { addLink("ASSEMBLES", e.from, e.to, { source: e.source }); });
   // 生产基地层（研究中台新增）：ProductLine -[MANUFACTURED_AT]-> ProductionBase，
   // ProductionBase -[OPERATED_BY]-> Supplier。缺失时（如测试 fixture）安全跳过。
