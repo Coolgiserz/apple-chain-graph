@@ -46,7 +46,9 @@ writeFileSync(join(distDir, 'locales.js'), out.join('\n') + '\n', 'utf8');
 console.log('generated: dist/locales.js packs:', Object.keys(bundles).join(', '));
 
 // —— 2) 构建期 i18n 审计 ——
-const re = /i18nText\(\s*["']((?:bottleneck|home)\.[A-Za-z0-9_]+)["']/g;
+// 扫描全部 i18nText("...") 调用（任意命名空间）。正则要求「至少两段」(ns.seg)，
+// 以排除 "field." + k / "edge." + type 这类动态拼接——它们的字面量部分仅是前缀而非完整 key。
+const re = /i18nText\(\s*["']([A-Za-z0-9_]+\.[A-Za-z0-9_]+)["']/g;
 const referenced = new Set();
 for (const d of ['src/engine', 'src/lib']) {
   const dir = join(ROOT, d);

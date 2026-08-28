@@ -26,9 +26,9 @@ export function build() {
     var o = { type: "Line", id: "line:" + ln, line: ln, name: ln, english_name: ln, degree: 0 };
     o._key = "L:" + ln; S.idMap[o._key] = o; S.nodes.push(o);
   });
-  DATA.edges.uses_component.forEach(function (e) { addLink("USES", e.from, e.to); });
-  DATA.edges.supplied_by.forEach(function (e) { addLink("SUPPLIES", e.from, e.to, { share: e.share, note: e.note }); });
-  DATA.edges.assembled_by.forEach(function (e) { addLink("ASSEMBLES", e.from, e.to); });
+  DATA.edges.uses_component.forEach(function (e) { addLink("USES", e.from, e.to, { source: e.source }); });
+  DATA.edges.supplied_by.forEach(function (e) { addLink("SUPPLIES", e.from, e.to, { share: e.share, note: e.note, source: e.source }); });
+  DATA.edges.assembled_by.forEach(function (e) { addLink("ASSEMBLES", e.from, e.to, { source: e.source }); });
   // 生产基地层（研究中台新增）：ProductLine -[MANUFACTURED_AT]-> ProductionBase，
   // ProductionBase -[OPERATED_BY]-> Supplier。缺失时（如测试 fixture）安全跳过。
   if (DATA.nodes.bases && DATA.edges.manufactured_at && DATA.edges.operated_by) {
