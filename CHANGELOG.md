@@ -1,5 +1,14 @@
 # Changelog
 
+## [1.9.1](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.9.0...v1.9.1) (2026-08-28)
+
+
+### Bug Fixes
+
+* **report:** 重写供应链分层模型为数据驱动的完整四层图 ([0e9df17](https://github.com/Coolgiserz/apple-chain-graph/commit/0e9df17387cd1fb086e94678a1dc9df3736b8f09))
+* 修复四项 P0 级缺陷（CI 门禁/置信度/凭据泄露/i18n 审计） ([eb86e2f](https://github.com/Coolgiserz/apple-chain-graph/commit/eb86e2f7dfbfffc913895fc6d11c8c9c56f730cb))
+* 修复四项 P0 级缺陷（CI 门禁/置信度/凭据泄露/i18n 审计） ([1130f51](https://github.com/Coolgiserz/apple-chain-graph/commit/1130f51fa011b1ce10ecbf9983598aec13f9b75e))
+
 ## [1.9.0](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.8.0...v1.9.0) (2026-08-13)
 
 
