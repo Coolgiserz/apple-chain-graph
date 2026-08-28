@@ -67,22 +67,96 @@ var pendingLng = null;
 var api = {
   lng: current,
   ready: false,
-  t: function (k, opts) { return ZH[k] || (opts && opts.defaultValue) || k; }, // 预初始化兜底（中文）
-  changeLanguage: function (lng) { lng = lng; }                              // 预初始化占位
+  t: resolvedT,                                                          // 预初始化即用「ZH 兜底 + 异步自动翻译」
+  changeLanguage: function (lng) { lng = lng; }                          // 预初始化占位
 };
 window.i18n = api;
+
+// ---- 运行时自动翻译：缺 key 时按需调用翻译后端（默认 MyMemory，免密钥 / CORS 开放） ----
+// 配置（可选，写在 i18n.js 之前）：window.I18N_TRANSLATE = { backend:'mymemory'|'libretranslate'|'deepl', url?, key?, email? }
+// 离线 / 请求失败 / 无网络 → 回退 ZH 兜底（绝不显示裸 key）。译文缓存于 localStorage，避免重复请求。
+var TCFG = (typeof window !== "undefined" && window.I18N_TRANSLATE) || { backend: "mymemory" };
+var RUNTIME = {};   // RUNTIME[lng] = { key: text }
+var PENDING = {};   // PENDING[lng][key] = true 去重，防止并发重复请求
+
+function _rtKeyOf(lng) { return "i18n_rt_" + lng; }
+function _rtLoad(lng) { if (!RUNTIME[lng]) { try { RUNTIME[lng] = JSON.parse(lsGet(_rtKeyOf(lng)) || "{}"); } catch (e) { RUNTIME[lng] = {}; } } }
+function _rtSave(lng) { try { lsSet(_rtKeyOf(lng), JSON.stringify(RUNTIME[lng] || {})); } catch (e) {} }
+function _rtGet(lng, k) { _rtLoad(lng); return RUNTIME[lng][k]; }
+function _rtSet(lng, k, t) { _rtLoad(lng); RUNTIME[lng][k] = t; _rtSave(lng); }
+
+async function _fetchTranslation(lng, text) {
+  try {
+    if (TCFG.backend === "libretranslate") {
+      var lu = TCFG.url || "https://libretranslate.com/translate";
+      var lr = await fetch(lu, { method: "POST", headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ q: text, source: "zh", target: lng }) });
+      if (!lr.ok) return null;
+      var ld = await lr.json(); return ld.translatedText || null;
+    }
+    if (TCFG.backend === "deepl") {
+      var dr = await fetch("https://api-free.deepl.com/v2/translate", {
+        method: "POST", headers: { "Content-Type": "application/json", "Authorization": "DeepL-Auth-Key " + (TCFG.key || "") },
+        body: JSON.stringify({ text: [text], target_lang: lng.toUpperCase() }) });
+      if (!dr.ok) return null;
+      var dd = await dr.json();
+      return (dd.translations && dd.translations[0] && dd.translations[0].text) || null;
+    }
+    // 默认 MyMemory：免密钥、CORS 开放、单次请求上限 500 字节
+    var p = new URLSearchParams({ q: text.slice(0, 500), langpair: "zh|" + lng });
+    if (TCFG.email) p.set("de", TCFG.email);
+    var mr = await fetch("https://api.mymemory.translated.net/get?" + p.toString());
+    if (!mr.ok) return null;
+    var md = await mr.json();
+    if (md.responseStatus === 200 && md.responseData && md.responseData.translatedText) return md.responseData.translatedText;
+    return null;
+  } catch (e) { return null; }
+}
+
+function _ensureTranslated(key, lng, zh) {
+  if (lng === DEFAULT || !zh) return;
+  if (_rtGet(lng, key)) return;
+  PENDING[lng] = PENDING[lng] || {};
+  if (PENDING[lng][key]) return;
+  PENDING[lng][key] = true;
+  _fetchTranslation(lng, zh).then(function (t) {
+    if (t && t !== zh) {
+      _rtSet(lng, key, t);
+      if (window.i18next && window.i18next.addResource) {
+        try { window.i18next.addResource(lng, "translation", key, t); } catch (e) {}
+      }
+      document.dispatchEvent(new CustomEvent("i18n:translated", { detail: { key: key, lng: lng, text: t } }));
+    }
+    PENDING[lng][key] = false;
+  }).catch(function () { PENDING[lng][key] = false; });
+}
+
+// 统一翻译入口：同步返回「最佳可用文本」，并（非中文且缺失时）触发异步翻译。
+function resolvedT(k, opts) {
+  var zh = ZH[k];
+  var src = (zh !== undefined) ? zh : ((opts && opts.defaultValue) || k);
+  if (current === DEFAULT) return src;                 // 中文直接返回源
+  var rt = _rtGet(current, k);                          // 运行时缓存译文
+  if (rt) return rt;
+  if (window.i18next && api.ready) {                   // i18next 资源（含已注入译文）
+    var tr = window.i18next.t(k, opts);
+    if (tr && tr !== k) return tr;
+  }
+  _ensureTranslated(k, current, zh);                   // 异步取译文，先返回 ZH 兜底
+  return src;
+}
 
 function applyDOM() {
   if (!window.i18next) return;
   document.querySelectorAll("[data-i18n]").forEach(function (el) {
     var k = el.getAttribute("data-i18n");
-    var tr = window.i18next.t(k);
-    if (tr && tr !== k) el.textContent = tr; // 仅在有真实译文时覆盖，缺失则保留原始中文
+    var tr = resolvedT(k);                  // 同步返回 ZH 兜底，缺失时触发异步自动翻译
+    if (tr && tr !== k) el.textContent = tr;
   });
   document.querySelectorAll("[data-i18n-attr]").forEach(function (el) {
     el.getAttribute("data-i18n-attr").split(";").forEach(function (pair) {
       var kv = pair.split(":");
-      if (kv.length === 2) { var tr = window.i18next.t(kv[1]); if (tr && tr !== kv[1]) el.setAttribute(kv[0], tr); }
+      if (kv.length === 2) { var tr = resolvedT(kv[1]); if (tr && tr !== kv[1]) el.setAttribute(kv[0], tr); }
     });
   });
 }
@@ -113,8 +187,9 @@ function init() {
     nsSeparator: false
   }, function () {
     api.ready = true;
-    api.t = function (k, opts) { return window.i18next.t(k, opts); };
+    // 注意：api.t 保持 resolvedT（同步 ZH 兜底 + 异步自动翻译），不覆盖为裸 i18next.t
     applyDOM();
+    document.addEventListener("i18n:translated", function () { if (window.i18next) applyDOM(); });
     var sel = document.getElementById("langSwitch");
     if (sel) sel.value = current;
     if (pendingLng) { var pl = pendingLng; pendingLng = null; api.changeLanguage(pl); }

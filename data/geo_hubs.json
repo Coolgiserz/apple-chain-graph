@@ -1,0 +1,14 @@
+{
+  "note": "Canonical coordinate source for Apple supply-chain assembly hubs + terminal markets. Shared by tools/geo_build.py (geo map) and data/production_bases.draft.json to avoid dual-source drift. Coordinates are WGS84; CN/TW/HK are converted to GCJ-02 at render time per region.",
+  "assembly_hubs": {
+    "foxconn": {"city": "郑州", "region": "CN", "lng": 113.62604, "lat": 34.74882},
+    "quanta":   {"city": "桃园", "region": "TW", "lng": 121.22, "lat": 24.99},
+    "luxshare": {"city": "东莞", "region": "CN", "lng": 113.75, "lat": 23.02},
+    "goertek":  {"city": "潍坊", "region": "CN", "lng": 119.16, "lat": 36.71}
+  },
+  "markets": [
+    {"name": "美国市场", "region": "US", "lng": -122.0090, "lat": 37.3349, "desc": "苹果总部所在地，北美终端市场代表"},
+    {"name": "中国市场", "region": "CN", "lng": 121.4737, "lat": 31.2304, "desc": "苹果最大单一消费市场"},
+    {"name": "欧洲市场", "region": "DE", "lng": 11.5820, "lat": 48.1351, "desc": "欧洲终端市场代表（慕尼黑）"}
+  ]
+}
