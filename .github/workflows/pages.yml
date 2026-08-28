@@ -42,8 +42,9 @@ jobs:
 
       - name: Set up Python
         uses: actions/setup-python@v5
+        # P1-#7：与 Dockerfile(3.13) / requirements(推荐 3.13) 统一，保证本地/CI/镜像三处可复现一致
         with:
-          python-version: '3.14'
+          python-version: '3.13'
 
       - name: Set up Node
         uses: actions/setup-node@v4

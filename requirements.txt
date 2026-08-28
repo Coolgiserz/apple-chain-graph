@@ -4,6 +4,7 @@
 # collections / statistics / argparse / urllib.parse）与项目内部模块
 #（topnav、supplier_research 包）。因此本项目的网站构建**无任何第三方运行时依赖**。
 #
-# 只需一个 Python 3.9+ 解释器即可重生成全部页面；推荐用仓库自带的受管运行时
-#（Python 3.13）。前端产物（HTML/JS）本身零运行时依赖、可双击打开。
+# 只需一个 Python 3.9+ 解释器即可重生成全部页面；构建/CI/镜像统一钉在 Python 3.13
+#（见 Dockerfile ARG PYTHON_IMG 与 .github/workflows/pages.yml 的 python-version），
+# 保证本地、GitHub Actions、Docker 三处依赖解析与生成结果可复现一致。
 python >= 3.9

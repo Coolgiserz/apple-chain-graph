@@ -1,10 +1,10 @@
 # 多阶段构建：node 打包前端 -> python 生成静态页 -> nginx 托管
 # 镜像源可经 .env 覆盖为完整镜像名（推荐做法，官方源与镜像源都能正确解析）：
-#   PYTHON_IMG=swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/python:3.11-slim-bookworm-linuxarm64
+#   PYTHON_IMG=swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/python:3.13-slim-bookworm-linuxarm64
 #   NODE_IMG=swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/node:24-slim-linuxarm64
 #   NGINX_IMG=swr.cn-north-4.myhuaweicloud.com/ddn-k8s/docker.io/nginx:1.29.8-alpine3.23-linuxarm64
-# 留空 / 不设 .env 时走官方源 python:3.11-slim / node:24-slim / nginx:1.27-alpine（docker.io 官方仓库）。
-ARG PYTHON_IMG=python:3.11-slim
+# 留空 / 不设 .env 时走官方源 python:3.13-slim / node:24-slim / nginx:1.27-alpine（docker.io 官方仓库）。
+ARG PYTHON_IMG=python:3.13-slim
 ARG NODE_IMG=node:24-slim
 ARG NGINX_IMG=nginx:1.27-alpine
 

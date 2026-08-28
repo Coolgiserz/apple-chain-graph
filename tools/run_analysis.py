@@ -14,6 +14,7 @@ import argparse
 import json
 import os
 import sys
+from datetime import datetime, timezone
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -33,7 +34,8 @@ def main():
     args = ap.parse_args()
 
     records = analysis.build_dataset()
-    meta = {"generated": "2026-08-10", "as_of": args.as_of or "见各供应商 as_of 字段"}
+    # P1-#6：生成时间戳动态化（曾硬编码 "2026-08-10"）
+    meta = {"generated": datetime.now(timezone.utc).strftime("%Y-%m-%d"), "as_of": args.as_of or "见各供应商 as_of 字段"}
 
     if args.id:
         rec = next((r for r in records if r["id"] == args.id), None)

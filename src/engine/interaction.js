@@ -371,6 +371,8 @@ export function applyFocus(n) {
   S.view.ox = W() / 2 - n.x * S.view.scale; S.view.oy = H() / 2 - n.y * S.view.scale;
 }
 export function focus(key) {
+  // P1-#4：原型链守卫，避免 ?focus=__proto__ 等注入命中 Object.prototype 成员导致误聚焦/崩溃。
+  if (key == null || !Object.prototype.hasOwnProperty.call(S.idMap, key)) return;
   var n = S.idMap[key]; if (!n) return;
   if (!W() || !H()) { S.pendingFocus = n; return; }
   applyFocus(n);

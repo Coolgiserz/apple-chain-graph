@@ -70,7 +70,8 @@
         return "<a class='lk' href='dist/apple_supply_chain_report.html#" + sec + "' target='_blank'>" + L("link.report") + "</a>";
       },
       mapLink: function (n) {
-        return "<a class='lk' href='tools/visualizations/supplier_geo.html?supplier=" + window.GraphEngine.esc(n.id) + "' target='_blank'>" + L("link.map") + "</a>";
+        // P1-#5：id 含 &/# 等字符会破坏 URL，esc 仅做 HTML 转义不够，必须用 encodeURIComponent。
+        return "<a class='lk' href='tools/visualizations/supplier_geo.html?supplier=" + encodeURIComponent(n.id) + "' target='_blank'>" + L("link.map") + "</a>";
       }
     }, data);
     g.start();

@@ -14,6 +14,7 @@ import argparse
 import json
 import os
 import sys
+from datetime import datetime, timezone
 
 HERE = os.path.dirname(os.path.abspath(__file__))
 sys.path.insert(0, HERE)
@@ -123,7 +124,8 @@ def main():
     ap.add_argument("--as_of", default="", help="数据截止日期标注")
     args = ap.parse_args()
 
-    generated = "2026-08-09"
+    # P1-#6：生成时间戳动态化（曾硬编码 "2026-08-09"，重跑旧产物会误导读者以为数据未更新）
+    generated = datetime.now(timezone.utc).strftime("%Y-%m-%d")
     as_of = args.as_of or "见图谱 meta.source"
     result = risk.analyze()
 
