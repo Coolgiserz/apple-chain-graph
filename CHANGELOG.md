@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.9.3](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.9.2...v1.9.3) (2026-08-28)
+
+
+### Bug Fixes
+
+* **geo:** i18n 接入 + 双源坐标漂移修复 ([7e15c4f](https://github.com/Coolgiserz/apple-chain-graph/commit/7e15c4fe87c8a0f98c9f92dc8f4455c03961dfe4))
+
 ## [1.9.2](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.9.1...v1.9.2) (2026-08-28)
 
 
