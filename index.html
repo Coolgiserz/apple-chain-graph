@@ -9,19 +9,19 @@
        该策略主要兜住「外部脚本 / 插件 / iframe / 跨域 fetch」等注入来源。 -->
   <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' https://coolgiserz.github.io data:; connect-src 'self'; font-src 'self'; frame-src 'none'; object-src 'none'; base-uri 'self'; form-action 'self'">
   <meta http-equiv="X-Frame-Options" content="DENY">
-  <title>苹果供应链上下游图谱</title>
+  <title>苹果产业链图谱：60家苹果供应商与28款产品供应链拆解</title>
   <!--SEO-->
-  <meta name="description" content="苹果产品供应链上下游知识图谱：以「产品→零部件→供应商」三层模型覆盖6大产品线（iPhone、Mac、iPad、Apple Watch、Vision Pro、AirPods）、28款产品、27个核心零部件、60家供应商，量化单点依赖与供应脆弱性并给出最脆弱产品线排名；数据源自公开供应链报告与苹果供应商名单，以 MIT 许可开源，可作为供应链图分析、脆弱性建模与图神经网络（GNN）教学的参考性实验数据（尚非成熟基准，使用前请留意数据口径与局限性）。">
+  <meta name="description" content="苹果产业链（果链）知识图谱：覆盖 iPhone、Mac、iPad 等 28 款产品、27 类核心零部件与 60 家苹果供应商，571 条上下游关系逐条可溯源，并量化单点依赖与供应脆弱性。数据源自公开报告与苹果供应商名单，MIT 开源。">
     <link rel="canonical" href="https://coolgiserz.github.io/apple-chain-graph/">
     <meta property="og:type" content="website">
-    <meta property="og:title" content="苹果供应链上下游图谱">
-    <meta property="og:description" content="苹果产品供应链上下游知识图谱：以「产品→零部件→供应商」三层模型覆盖6大产品线（iPhone、Mac、iPad、Apple Watch、Vision Pro、AirPods）、28款产品、27个核心零部件、60家供应商，量化单点依赖与供应脆弱性并给出最脆弱产品线排名；数据源自公开供应链报告与苹果供应商名单，以 MIT 许可开源，可作为供应链图分析、脆弱性建模与图神经网络（GNN）教学的参考性实验数据（尚非成熟基准，使用前请留意数据口径与局限性）。">
+    <meta property="og:title" content="苹果产业链图谱：60家苹果供应商与28款产品供应链拆解">
+    <meta property="og:description" content="苹果产业链（果链）知识图谱：覆盖 iPhone、Mac、iPad 等 28 款产品、27 类核心零部件与 60 家苹果供应商，571 条上下游关系逐条可溯源，并量化单点依赖与供应脆弱性。数据源自公开报告与苹果供应商名单，MIT 开源。">
     <meta property="og:url" content="https://coolgiserz.github.io/apple-chain-graph/">
     <meta property="og:image" content="https://coolgiserz.github.io/apple-chain-graph/assets/og-cover.png">
     <meta property="og:site_name" content="Apple Chain Graph">
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="苹果供应链上下游图谱">
-    <meta name="twitter:description" content="苹果产品供应链上下游知识图谱：以「产品→零部件→供应商」三层模型覆盖6大产品线（iPhone、Mac、iPad、Apple Watch、Vision Pro、AirPods）、28款产品、27个核心零部件、60家供应商，量化单点依赖与供应脆弱性并给出最脆弱产品线排名；数据源自公开供应链报告与苹果供应商名单，以 MIT 许可开源，可作为供应链图分析、脆弱性建模与图神经网络（GNN）教学的参考性实验数据（尚非成熟基准，使用前请留意数据口径与局限性）。">
+    <meta name="twitter:title" content="苹果产业链图谱：60家苹果供应商与28款产品供应链拆解">
+    <meta name="twitter:description" content="苹果产业链（果链）知识图谱：覆盖 iPhone、Mac、iPad 等 28 款产品、27 类核心零部件与 60 家苹果供应商，571 条上下游关系逐条可溯源，并量化单点依赖与供应脆弱性。数据源自公开报告与苹果供应商名单，MIT 开源。">
     <meta name="twitter:image" content="https://coolgiserz.github.io/apple-chain-graph/assets/og-cover.png">
     <link rel="alternate" hreflang="zh" href="https://coolgiserz.github.io/apple-chain-graph/?lang=zh">
     <link rel="alternate" hreflang="en" href="https://coolgiserz.github.io/apple-chain-graph/?lang=en">
@@ -29,7 +29,7 @@
     <link rel="alternate" hreflang="ja" href="https://coolgiserz.github.io/apple-chain-graph/?lang=ja">
     <link rel="alternate" hreflang="x-default" href="https://coolgiserz.github.io/apple-chain-graph/?lang=zh">
   <script type="application/ld+json">
-[{"@context": "https://schema.org", "@type": "Organization", "name": "Apple Chain Graph", "url": "https://coolgiserz.github.io/apple-chain-graph/"}, {"@context": "https://schema.org", "@type": "WebSite", "name": "Apple Supply Chain Knowledge Graph", "url": "https://coolgiserz.github.io/apple-chain-graph/"}, {"@context": "https://schema.org", "@type": "Dataset", "name": "Apple Supply Chain Knowledge Graph", "alternateName": "苹果产品供应链上下游图谱", "description": "Apple product supply-chain knowledge graph modelling Product→Component→Supplier relations, quantifying single-point dependency and supply-chain vulnerability across 28 products, 27 components and 60 suppliers. Released as a reproducible, illustrative experimental dataset for supply-chain graph analysis, vulnerability modeling and GNN teaching under the MIT license — an exploratory sample, not a validated benchmark; see the project's data-source and limitations notes before use.", "url": "https://coolgiserz.github.io/apple-chain-graph/", "creator": {"@type": "Organization", "name": "Apple Chain Graph"}, "license": "https://opensource.org/licenses/MIT", "isAccessibleForFree": true, "keywords": ["Apple supply chain", "supply chain risk", "single-point dependency", "research dataset", "experimental dataset", "supply chain graph analysis", "vulnerability modeling", "graph neural network", "GNN teaching example", "TSMC", "Sony", "BOE", "OLED", "CIS", "knowledge graph", "supplier concentration"], "spatialCoverage": {"@type": "Place", "name": "Global (East Asia concentrated)"}, "variableMeasured": ["component vulnerability", "product vulnerability", "supplier count", "single-point dependency rate"], "distribution": {"@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": "https://coolgiserz.github.io/apple-chain-graph/data/apple_supply_chain.json"}, "about": {"@type": "Thing", "name": "Apple Inc. supply chain and supplier risk"}}, {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://coolgiserz.github.io/apple-chain-graph/"}, {"@type": "ListItem", "position": 2, "name": "Report", "item": "https://coolgiserz.github.io/apple-chain-graph/dist/apple_supply_chain_report.html"}]}]
+[{"@context": "https://schema.org", "@type": "Organization", "name": "Apple Chain Graph", "url": "https://coolgiserz.github.io/apple-chain-graph/"}, {"@context": "https://schema.org", "@type": "WebSite", "name": "Apple Supply Chain Knowledge Graph", "url": "https://coolgiserz.github.io/apple-chain-graph/"}, {"@context": "https://schema.org", "@type": "Dataset", "name": "Apple Supply Chain Knowledge Graph", "alternateName": "苹果产业链图谱（果链）", "description": "Apple product supply-chain knowledge graph modelling Product→Component→Supplier relations, quantifying single-point dependency and supply-chain vulnerability across 28 products, 27 components and 60 suppliers. Released as a reproducible, illustrative experimental dataset for supply-chain graph analysis, vulnerability modeling and GNN teaching under the MIT license — an exploratory sample, not a validated benchmark; see the project's data-source and limitations notes before use.", "url": "https://coolgiserz.github.io/apple-chain-graph/", "creator": {"@type": "Organization", "name": "Apple Chain Graph"}, "license": "https://opensource.org/licenses/MIT", "isAccessibleForFree": true, "keywords": ["苹果产业链", "果链", "苹果供应商", "苹果供应链", "Apple supply chain", "supply chain risk", "single-point dependency", "research dataset", "experimental dataset", "supply chain graph analysis", "vulnerability modeling", "graph neural network", "GNN teaching example", "TSMC", "Sony", "BOE", "OLED", "CIS", "knowledge graph", "supplier concentration"], "spatialCoverage": {"@type": "Place", "name": "Global (East Asia concentrated)"}, "variableMeasured": ["component vulnerability", "product vulnerability", "supplier count", "single-point dependency rate"], "distribution": {"@type": "DataDownload", "encodingFormat": "application/json", "contentUrl": "https://coolgiserz.github.io/apple-chain-graph/data/apple_supply_chain.json"}, "about": {"@type": "Thing", "name": "Apple Inc. supply chain and supplier risk"}}, {"@context": "https://schema.org", "@type": "BreadcrumbList", "itemListElement": [{"@type": "ListItem", "position": 1, "name": "Home", "item": "https://coolgiserz.github.io/apple-chain-graph/"}, {"@type": "ListItem", "position": 2, "name": "Report", "item": "https://coolgiserz.github.io/apple-chain-graph/dist/apple_supply_chain_report.html"}]}]
 </script>
 <style>
   * { box-sizing: border-box; }
@@ -190,7 +190,7 @@
   #panel li.rel:hover { background: #1b2742; color: #cfe0ff; }
   /* SEO：给爬虫的可索引文本（忠实反映图谱内容），视觉上裁掉、仍在 DOM 中 */
   .seo-text { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; border: 0; color: #e8ecf4; }
-  .seo-text h2 { font-size: 16px; }
+  .seo-text h1, .seo-text h2 { font-size: 16px; }
   .seo-text p, .seo-text li { font-size: 13px; line-height: 1.7; }
   a { color: #6ea0ff; }
   .lk { color: #6ea0ff; text-decoration: none; border-bottom: 1px dashed #6ea0ff; cursor: pointer; }
@@ -544,7 +544,7 @@
 </script>
 <!--SEO-->
 <div class="seo-text">
-<h2>苹果产品供应链上下游知识图谱（Apple Supply Chain Knowledge Graph）</h2><p>以「产品 → 零部件 → 供应商」三层有向图建模苹果供应链，量化单点依赖与供应脆弱性。</p><p><b>数据规模：</b>覆盖 6 大产品线（iPhone、Mac、iPad、Apple Watch、Vision Pro、AirPods），共 28 款产品型号、27 个核心零部件、60 家供应商与代工厂、571 条上下游关系边。</p><p><b>脆弱性模型：</b>零部件脆弱性 V = 1 / n（n = 供应商数；n=1 即单点依赖，V=1.0）；产品脆弱性 = 0.5×均值 + 0.3×最弱环节 + 0.2×单点率。</p><p><b>单点依赖部件（独家供应商）：</b></p><ul><li>音频编解码与触觉芯片：由 Cirrus Logic, Inc. 独家供应（脆弱性 1.00）。</li></ul><p><b>最脆弱产品线：</b>iPhone 产品线（脆弱性 0.493）。</p><p><b>数据来源：</b>2024–2026 年公开供应链报告与苹果 2024 年供应商名单（约覆盖 98% 直接支出），以 MIT 许可开源，附 CSV / JSON 结构化数据。完整上下游分析见报告页。</p><p><b>研究用途（参考性）：</b>本图谱可作为供应链图分析、供应脆弱性建模与图神经网络（GNN）教学的<strong>参考性实验数据</strong>，而非经校验的成熟基准——规模有限（约 115 节点 / 571 边）、为 AI 联网检索公开资料的二手整合、属单点时点快照，存在口径不一致与模型幻觉风险。所有 CSV / JSON / 网页均由脚本从单一数据源重生成，便于复现、二次加工与算法探索；使用前请务必阅读项目文档中的「数据来源与口径」与「分析方法局限性」，并注明数据与局限。</p>
+<h1>苹果产业链图谱：28 款产品、27 类零部件与 60 家苹果供应商</h1><p>以「产品 → 零部件 → 供应商」三层有向图建模苹果产业链（业内俗称「果链」），量化单点依赖与供应脆弱性。</p><p><b>数据规模：</b>覆盖 6 大产品线（iPhone、Mac、iPad、Apple Watch、Vision Pro、AirPods），共 28 款产品型号、27 个核心零部件、60 家供应商与代工厂、571 条上下游关系边。</p><p><b>脆弱性模型：</b>零部件脆弱性 V = 1 / n（n = 供应商数；n=1 即单点依赖，V=1.0）；产品脆弱性 = 0.5×均值 + 0.3×最弱环节 + 0.2×单点率。</p><p><b>单点依赖部件（独家供应商）：</b></p><ul><li>音频编解码与触觉芯片：由 Cirrus Logic, Inc. 独家供应（脆弱性 1.00）。</li></ul><p><b>最脆弱产品线：</b>iPhone 产品线（脆弱性 0.493）。</p><p><b>数据来源：</b>2024–2026 年公开供应链报告与苹果 2024 年供应商名单（约覆盖 98% 直接支出），以 MIT 许可开源，附 CSV / JSON 结构化数据。完整上下游分析见报告页。</p><p><b>研究用途（参考性）：</b>本图谱可作为供应链图分析、供应脆弱性建模与图神经网络（GNN）教学的<strong>参考性实验数据</strong>，而非经校验的成熟基准——规模有限（约 115 节点 / 571 边）、为 AI 联网检索公开资料的二手整合、属单点时点快照，存在口径不一致与模型幻觉风险。所有 CSV / JSON / 网页均由脚本从单一数据源重生成，便于复现、二次加工与算法探索；使用前请务必阅读项目文档中的「数据来源与口径」与「分析方法局限性」，并注明数据与局限。</p>
 </div>
 </body>
 </html>
