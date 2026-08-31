@@ -263,7 +263,7 @@
   "report.header.neo4jLink": "导入 Neo4j 的方法见技术文档",
   "report.header.source": "数据来源：公开供应链报告与拆解（2024–2026，含 Counterpoint / Nikkei / TrendForce / stockanalysis 等）+ 苹果 2024 年供应商名单（187 家核心供应商，约占直接支出 98%）；本报告据此建模其中 60 家重点供应商、27 个核心零部件、28 款产品型号。",
   "report.header.subtitle": "苹果产品供应链图谱 · 产品线 × 零部件 × 供应商 × 产业链（属性增强版 v2）",
-  "report.header.title": "苹果产品供应链上下游图谱报告",
+  "report.header.title": "苹果产业链供应商分析报告：60 家企业供应关系与脆弱性排名",
   "report.intro.products": "覆盖 iPhone / Mac / iPad / Apple Watch / Vision Pro / AirPods·HomePod 六大产品线（按发布时间排序）。",
   "report.intro.suppliers": "全称、英文名称、简称分列；层级 tier=1 为核心/高壁垒供应商。按区域排序。",
   "report.kpi.components": "核心零部件",
