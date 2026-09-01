@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.11.2](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.11.1...v1.11.2) (2026-09-01)
+
+
+### Bug Fixes
+
+* **ui:** 移动端搜索框不再被收起逻辑抹掉，搜索功能恢复可用 ([1ccad79](https://github.com/Coolgiserz/apple-chain-graph/commit/1ccad79a017006b28e62789ea34a368888cf687a))
+* **ui:** 移动端搜索框不再被收起逻辑抹掉，搜索功能恢复可用 ([3b70d32](https://github.com/Coolgiserz/apple-chain-graph/commit/3b70d32c2f80b84ffc8bb2458c703fe19ad3d68a))
+
 ## [1.11.1](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.11.0...v1.11.1) (2026-09-01)
 
 
