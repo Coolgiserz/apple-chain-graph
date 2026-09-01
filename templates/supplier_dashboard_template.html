@@ -7,9 +7,9 @@
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
   :root{
-    --bg:#f5f7fa; --card:#ffffff; --ink:#1f2937; --muted:#6b7280;
-    --blue:#2563eb; --red:#dc2626; --green:#16a34a; --amber:#d97706;
-    --line:#e5e7eb; --soft:#eef2f7;
+    --bg:#0c1020; --card:#131a2e; --ink:#e8ecf4; --muted:#9fb0d0;
+    --blue:#6ea0ff; --red:#f87171; --green:#4ade80; --amber:#fbbf24;
+    --line:#2a3450; --soft:#1b2340;
   }
   *{box-sizing:border-box;}
   body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
@@ -20,14 +20,14 @@
   .wrap{max-width:1180px;margin:0 auto;padding:24px 20px 60px;}
   .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:22px 0 8px;}
   .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;
-    box-shadow:0 1px 3px rgba(0,0,0,.04);}
+    box-shadow:0 1px 3px rgba(0,0,0,.3);}
   .card .v{font-size:27px;font-weight:800;line-height:1.1;}
   .card .l{font-size:12.5px;color:var(--muted);margin-top:4px;}
   .card.blue .v{color:var(--blue);} .card.red .v{color:var(--red);}
   .tag.t-warn{background:var(--amber);}
   .card.green .v{color:var(--green);} .card.amber .v{color:var(--amber);}
   section{background:var(--card);border:1px solid var(--line);border-radius:14px;
-    padding:20px 22px;margin:18px 0;box-shadow:0 1px 3px rgba(0,0,0,.04);}
+    padding:20px 22px;margin:18px 0;box-shadow:0 1px 3px rgba(0,0,0,.3);}
   section h2{margin:0 0 4px;font-size:17px;}
   section .sub{color:var(--muted);font-size:13px;margin:0 0 14px;}
   .chart-box{position:relative;width:100%;}
@@ -150,7 +150,7 @@ const S = [
 ];
 
 // 估值结论 / 赛道 / 舆情 的颜色与「中文原始值 → 翻译 key」映射。
-const C = {低估:'#2563eb', 高估:'#dc2626', 合理:'#16a34a', 困境:'#d97706'};
+const C = {低估:'#6ea0ff', 高估:'#f87171', 合理:'#4ade80', 困境:'#fbbf24'};
 const VERDICT_KEY = {'低估':'dash.verdict.under','高估':'dash.verdict.over','合理':'dash.verdict.fair','困境':'dash.verdict.distress'};
 const SECTOR_KEY  = {'晶圆代工':'dash.sector.foundry','代工':'dash.sector.ems','存储':'dash.sector.memory','摄像头':'dash.sector.cis','逻辑芯片':'dash.sector.logic','显示面板':'dash.sector.display','元器件':'dash.sector.components','光学':'dash.sector.optics','封测':'dash.sector.osat'};
 const NEWS_KEY    = {'正面':'dash.sent.pos','中性':'dash.sent.neutral','负面':'dash.sent.neg'};
@@ -167,7 +167,7 @@ function drawChart(id, cfg){ if(typeof Chart==='undefined') return; if(charts[id
 
 function renderDashboard(){
   Chart.defaults.font.family = '-apple-system,"PingFang SC","Microsoft YaHei",sans-serif';
-  Chart.defaults.color = '#374151';
+  Chart.defaults.color = '#9fb0d0';
 
   // ===== 概览卡片 =====
   const counts = {低估:0,高估:0,合理:0};
@@ -196,7 +196,7 @@ function renderDashboard(){
       plugins:{legend:{display:false},
         tooltip:{callbacks:{label:c=>`${T('dash.tt.score')} ${c.raw} · ${T(VERDICT_KEY[valSorted[c.dataIndex].verdict])}`}}},
       scales:{x:{title:{display:true,text:T('dash.axis.valScore')},
-        grid:{color:'#f0f0f0'}}}}
+        grid:{color:'#263049'}}}}
   });
 
   // ===== ② 情绪-估值背离矩阵（气泡）=====
@@ -211,9 +211,9 @@ function renderDashboard(){
         tooltip:{callbacks:{label:b=>`${b.raw._d.name}｜${T(VERDICT_KEY[b.raw._d.verdict])}(${b.raw.x})｜${T('dash.axis.sentiment')} ${b.raw.y.toFixed(2)}｜$${b.raw._d.mcap}B`}}},
       scales:{
         x:{title:{display:true,text:T('dash.axis.expensive')},min:0,max:4.3,
-           grid:{color:c=> c.tick.value>=0.85&&c.tick.value<=1.15?'rgba(22,163,74,.25)':'#eee'}},
+           grid:{color:c=> c.tick.value>=0.85&&c.tick.value<=1.15?'rgba(74,222,128,.25)':'#263049'}},
         y:{title:{display:true,text:T('dash.axis.sentiment')},min:-1.2,max:1.3,
-           grid:{color:c=> c.tick.value===0?'#71717a':'#eee'}}}}
+           grid:{color:c=> c.tick.value===0?'#4a5878':'#263049'}}}}
   });
 
   // ===== ③ 舆情分布（环形）=====
@@ -221,15 +221,15 @@ function renderDashboard(){
     const labels = Object.keys(dist).map(k=>T(keyMap[k]));
     drawChart(canvas,{
      type:'doughnut',
-     data:{labels:labels,datasets:[{data:Object.values(dist),backgroundColor:colors,borderWidth:2,borderColor:'#fff'}]},
+     data:{labels:labels,datasets:[{data:Object.values(dist),backgroundColor:colors,borderWidth:2,borderColor:'#131a2e'}]},
      options:{responsive:true,maintainAspectRatio:false,cutout:'58%',
        plugins:{legend:{position:'bottom'},
          title:{display:true,text: canvas==='newsChart'?T('dash.chart.news'):T('dash.chart.analyst')},
          tooltip:{callbacks:{label:c=>`${c.label}: ${c.raw} ${T('dash.unit.firm')} (${Math.round(c.raw/S.length*100)}%)`}}}}
     });
   }
-  doughnut('newsChart',newsDist,NEWS_KEY,['#16a34a','#71717a','#dc2626']);
-  doughnut('analystChart',anDist,AN_KEY,['#2563eb','#71717a','#dc2626']);
+  doughnut('newsChart',newsDist,NEWS_KEY,['#4ade80','#7a8bb0','#f87171']);
+  doughnut('analystChart',anDist,AN_KEY,['#6ea0ff','#7a8bb0','#f87171']);
 
   // ===== ④ 盈利质量（ROE × 净利率）=====
   const profitData = S.map(d=>({x:d.nm,y:d.roe,r:4+Math.sqrt(d.rev)*2.4,_d:d}));
@@ -241,8 +241,8 @@ function renderDashboard(){
     options:{responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false},
         tooltip:{callbacks:{label:b=>`${b.raw._d.name}｜${T('dash.axis.nm')} ${b.raw.x}%｜${T('dash.axis.roe')} ${b.raw.y}%`}}},
-      scales:{x:{title:{display:true,text:T('dash.axis.nm')},grid:{color:'#eee'}},
-        y:{title:{display:true,text:T('dash.axis.roe')},grid:{color:'#eee'}}}}
+      scales:{x:{title:{display:true,text:T('dash.axis.nm')},grid:{color:'#263049'}},
+        y:{title:{display:true,text:T('dash.axis.roe')},grid:{color:'#263049'}}}}
   });
 
   // ===== ⑤ 行业市值分布 =====
@@ -253,10 +253,10 @@ function renderDashboard(){
     type:'bar',
     data:{labels:sectorEntries.map(e=>T(SECTOR_KEY[e[0]]||e[0])),
       datasets:[{label:T('dash.chart.sector'),data:sectorEntries.map(e=>e[1]),
-        backgroundColor:'#1e3a8a',borderRadius:5}]},
+        backgroundColor:'#2f6fed',borderRadius:5}]},
     options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,
       plugins:{legend:{display:false},title:{display:true,text:T('dash.chart.sector')}},
-      scales:{x:{title:{display:true,text:T('dash.axis.mcap')},grid:{color:'#f0f0f0'}}}}
+      scales:{x:{title:{display:true,text:T('dash.axis.mcap')},grid:{color:'#263049'}}}}
   });
 
   // ===== 数据表 =====

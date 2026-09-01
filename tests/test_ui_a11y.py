@@ -143,15 +143,18 @@ class NonTextContrastTest(unittest.TestCase):
         self.assertIn("#64748b", src, "geo 模板应使用 #64748b 替换")
 
     def test_geo_replacement_meets_3_to_1(self):
-        self.assertGreaterEqual(_contrast("#64748b", "#ffffff"), 3.0)
+        # 暗色主题（见 test_ui_theme.py）：标记渲染在暗色瓦片/页面底 #0c1020 上
+        self.assertGreaterEqual(_contrast("#64748b", "#0c1020"), 3.0)
 
     def test_dashboard_legacy_gray_removed(self):
         src = _read("templates", "supplier_dashboard_template.html")
         self.assertNotIn("#9ca3af", src, "dashboard 模板仍含 2.54:1 的 #9ca3af")
-        self.assertIn("#71717a", src, "dashboard 模板应使用 #71717a 替换")
+        self.assertNotIn("#71717a", src, "暗色主题后 #71717a 在暗底偏闷，应升级为 #7a8bb0/#4a5878")
+        self.assertIn("#7a8bb0", src, "dashboard 图表中性色应使用 #7a8bb0")
 
     def test_dashboard_replacement_meets_3_to_1(self):
-        self.assertGreaterEqual(_contrast("#71717a", "#ffffff"), 3.0)
+        # 暗色主题（见 test_ui_theme.py）：底色由白底换为卡片色 #131a2e
+        self.assertGreaterEqual(_contrast("#7a8bb0", "#131a2e"), 3.0)
 
 
 class ReducedMotionTest(unittest.TestCase):
