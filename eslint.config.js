@@ -4,6 +4,8 @@
 const browserGlobals = {
   window: "readonly",
   document: "readonly",
+  // 画布配色从 :root 读令牌（src/engine/util.js），见 tests/test_js_lint.py 的 L2 契约锁
+  getComputedStyle: "readonly",
   fetch: "readonly",
   Intl: "readonly",
   location: "readonly",
