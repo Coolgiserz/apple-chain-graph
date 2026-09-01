@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.1](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.11.0...v1.11.1) (2026-09-01)
+
+
+### Bug Fixes
+
+* **ci:** 登记 getComputedStyle 到 ESLint 白名单，修复色值令牌化的 no-undef 红灯 ([3a657f8](https://github.com/Coolgiserz/apple-chain-graph/commit/3a657f856e817f7807a6a981e3b52d1ed9a21260))
+
 ## [1.11.0](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.10.0...v1.11.0) (2026-09-01)
 
 
