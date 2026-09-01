@@ -550,17 +550,23 @@
 })();
 </script>
 <script>
-/* 移动端控制栏折叠：汉堡按钮切换 .top-expanded（仅 ≤820px 生效，桌面端 #topToggle 隐藏）。 */
+/* 移动端控制栏折叠：汉堡按钮切换 .top-expanded（仅 ≤860px 生效，桌面端 #topToggle 隐藏）。 */
 (function () {
   var bar = document.getElementById("top");
   var btn = document.getElementById("topToggle");
+  // 点了还要继续用的控件：文本输入会唤起软键盘、select 会弹原生选择器。此刻若收起
+  // 控制栏，控件会连同焦点一起被 display:none 抹掉——表现就是移动端「点一下搜索框
+  // 就消失、根本没法输入」。此类控件不触发自动收起（tests/test_ui_mobile_search.py
+  // 的 M3 用例会按工具栏实际控件校验这份名单的覆盖度）。
+  var KEEP_OPEN = "input[type=search], input[type=text], input:not([type]), select, textarea";
   if (bar && btn) {
     btn.addEventListener("click", function () { bar.classList.toggle("top-expanded"); });
-    // 点击控件后自动收起，避免遮挡图谱
+    // 按钮/复选框这类「点完即生效」的控件，点后自动收起，避免遮挡图谱
     bar.addEventListener("click", function (e) {
-      if (bar.classList.contains("top-expanded") && e.target !== btn && e.target.closest(".top-controls")) {
-        bar.classList.remove("top-expanded");
-      }
+      if (!bar.classList.contains("top-expanded") || e.target === btn) return;
+      if (!e.target.closest(".top-controls")) return;
+      if (e.target.closest(KEEP_OPEN)) return;
+      bar.classList.remove("top-expanded");
     });
   }
 })();
