@@ -1,7 +1,7 @@
 // render.js — Canvas 绘制（依赖 S 状态与工具函数；draw 在 pendingFocus 时回调 interaction.applyFocus）。
 // 与 interaction.js 存在循环依赖（interaction 也用 draw/resize），但仅在函数运行时互相调用，esbuild 处理无误。
 import { S } from "./state.js";
-import { W, H, label, COLORS, nodeRadius, heatRing } from "./util.js";
+import { W, H, label, COLORS, RING, nodeRadius, heatRing } from "./util.js";
 import { applyFocus, kick } from "./interaction.js";
 import { visibleSet } from "./model.js";
 
@@ -143,7 +143,7 @@ export function draw(vis) {
       S.ctx.fill();
       S.ctx.setLineDash([5, 4]);
       S.ctx.lineWidth = (S.selected === n) ? 3 : 1.6;
-      S.ctx.strokeStyle = (S.selected === n) ? "#fff" : "#8b5cf6";
+      S.ctx.strokeStyle = (S.selected === n) ? "#fff" : COLORS.Line;
       S.ctx.stroke();
       S.ctx.setLineDash([]);
       // 关键度红环（与类型紫填充分离）
@@ -181,7 +181,7 @@ export function draw(vis) {
       // 单点依赖：琥珀环（任意模式都标，保证 nodeLegend 的 ⚠ 有对应）
       if (n.single_point) {
         S.ctx.beginPath(); S.ctx.rect(n.x - hs - 2, n.y - hs - 2, (hs + 2) * 2, (hs + 2) * 2);
-        S.ctx.strokeStyle = "#fbbf24"; S.ctx.lineWidth = 2; S.ctx.stroke();
+        S.ctx.strokeStyle = RING.active; S.ctx.lineWidth = 2; S.ctx.stroke();
       }
       // 首屏关键洞察自动高亮：白色虚线环（区别于单点琥珀、关键度红）
       if (n._key === S.criticalId) {
@@ -200,7 +200,7 @@ export function draw(vis) {
     // 瓶颈详情点击：下游受影响节点用「洋红环」高亮（区别于关键度红环 + 选中白环）
     if (focusSet && focusSet.has(n._key) && n._key !== sel) {
       S.ctx.beginPath(); S.ctx.arc(n.x, n.y, r + 4, 0, Math.PI * 2);
-      S.ctx.strokeStyle = "#22d3ee"; S.ctx.lineWidth = 2.5; S.ctx.stroke();
+      S.ctx.strokeStyle = RING.focus; S.ctx.lineWidth = 2.5; S.ctx.stroke();
     }
     S.ctx.beginPath(); S.ctx.arc(n.x, n.y, r, 0, Math.PI * 2);
     // 填充：始终为「节点类型色」——类型与权重用两个独立视觉通道，图例不再撞色。
@@ -221,7 +221,7 @@ export function draw(vis) {
     // 单点依赖：琥珀环（任意模式都标，保证 nodeLegend 的 ⚠ 有对应）
     if (n.single_point) {
       S.ctx.beginPath(); S.ctx.arc(n.x, n.y, r + 3, 0, Math.PI * 2);
-      S.ctx.strokeStyle = "#fbbf24"; S.ctx.lineWidth = 2; S.ctx.stroke();
+      S.ctx.strokeStyle = RING.active; S.ctx.lineWidth = 2; S.ctx.stroke();
     }
     // 首屏「关键洞察」浮层自动高亮的最关键节点：白色虚线环（区别于单点琥珀、关键度红）
     if (n._key === S.criticalId) {
@@ -231,7 +231,7 @@ export function draw(vis) {
     // 可展开提示：产品/零部件存在隐藏供应商时，右上角画绿色「+」
     if ((n.type === "Product" || n.type === "Component") && hasHiddenSuppliers(n, vis)) {
       S.ctx.globalAlpha = 1;
-      S.ctx.fillStyle = "#10b981"; S.ctx.font = "bold 13px sans-serif"; S.ctx.textAlign = "center";
+      S.ctx.fillStyle = COLORS.Supplier; S.ctx.font = "bold 13px sans-serif"; S.ctx.textAlign = "center";
       S.ctx.fillText("+", n.x + r + 6, n.y - r + 4);
     }
     if (S.view.scale > 0.7 || n.type === "Product" || n.type === "Line" || S.selected === n || S.hover === n || n._key === S.criticalId) {

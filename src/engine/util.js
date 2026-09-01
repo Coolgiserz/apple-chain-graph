@@ -1,7 +1,51 @@
 // util.js — 纯函数工具与常量（无状态依赖，供 render / panels / interaction 复用）。
 import { S, RISK_HIGH, RISK_MED } from "./state.js";
 
-export const COLORS = { Product: "#2f6fed", Component: "#f59e0b", Supplier: "#10b981", Line: "#8b5cf6", Base: "#ec4899" };
+// —— 画布配色与 CSS 令牌同源（P1-6）——
+// 背景：节点色原本是硬编码字面量，而图例色点用 var(--primary) 之类，两边只要改一处就会分叉。
+// 实测已分叉过：图例 var(--green) 解析为 #4ade80，画布 COLORS.Supplier 却是 #10b981。
+// 方案：模块加载时一次性从 :root 读取令牌值，让 :root 成为唯一真源，图例与画布永不漂移。
+//
+// 前提：<script src="dist/graph_engine.js"> 位于 body 末尾，<style> 已在 <head> 解析完毕，
+//       因此 getComputedStyle 可以读到令牌值；此时尚未进入渲染循环，读取不构成布局抖动。
+// 注意：panels.js 存在 `col + "22"` 拼接 alpha 的写法（col 来自 COLORS），故令牌值必须是
+//       6 位 hex，不能写成 rgb() / hsl() / 8 位带 alpha 的形式，否则拼接结果是非法颜色。
+//       回退值仅用于无 DOM 的极端场景（如 Node 下单测），必须与 :root 保持一致。
+function cssToken(name, fallback) {
+  try {
+    var v = getComputedStyle(document.documentElement).getPropertyValue(name);
+    if (v && v.trim()) return v.trim();
+  } catch (e) { /* 无 DOM 环境，落到回退值 */ }
+  return fallback;
+}
+
+// 批量读取：{ 语义键: CSS 令牌名 } + { 语义键: 回退值 } → { 语义键: 实际颜色 }
+export function cssColors(tokenMap, fallback) {
+  var out = {};
+  Object.keys(fallback).forEach(function (k) {
+    out[k] = cssToken(tokenMap[k], fallback[k]);
+  });
+  return out;
+}
+
+export const COLORS = cssColors(
+  { Product: "--primary", Component: "--warn", Supplier: "--green", Line: "--violet", Base: "--pink" },
+  { Product: "#2f6fed", Component: "#f59e0b", Supplier: "#4ade80", Line: "#8b5cf6", Base: "#ec4899" }
+);
+
+// 环色：单点依赖/关键洞察用琥珀，瓶颈下游聚焦用青
+export const RING = cssColors(
+  { active: "--amber", focus: "--cyan" },
+  { active: "#fbbf24", focus: "#22d3ee" }
+);
+
+// 风险色：高 / 中 / 低。vulnColor 目前无调用方（死代码），一并令牌化以免将来有人
+// 用到时又引入一套与图例不一致的字面量。
+const RISK = cssColors(
+  { high: "--red", mid: "--warn", low: "--green" },
+  { high: "#f87171", mid: "#f59e0b", low: "#4ade80" }
+);
+
 export const BASE_R = { Product: 11, Component: 7, Supplier: 6, Line: 14, Base: 8 };
 
 // 视口相关的节点半径缩放系数：小屏（手机/窄平板）放大世界半径，使节点更大、更易点中；
@@ -52,9 +96,9 @@ export function typeLabel(t) {
 }
 
 export function vulnColor(v) {
-  if (v >= RISK_HIGH) return "#ef4444";   // 高 → 红
-  if (v >= RISK_MED) return "#f59e0b";     // 中 → 琥珀
-  return "#10b981";                        // 低 → 绿
+  if (v >= RISK_HIGH) return RISK.high;   // 高 → 红
+  if (v >= RISK_MED) return RISK.mid;     // 中 → 琥珀
+  return RISK.low;                        // 低 → 绿
 }
 
 // 关键度 / 风险「热力环」：t∈[0,1] 越大，环越粗、越红。

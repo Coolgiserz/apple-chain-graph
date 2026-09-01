@@ -547,7 +547,7 @@ def build_geo_data(recs, insights):
         <span><i style="background:{COLORS['基准']}"></i><span data-i18n="geo.legend.apple">苹果(基准)</span></span>
         <span><i style="background:{COLORS['其他']}"></i><span data-i18n="geo.legend.other">其他供应商</span></span>
         <span><i style="background:#7c3aed"></i><span data-i18n="geo.legend.downstream">下游(组装→市场)</span></span>
-        <span><i style="background:#f59e0b"></i><span data-i18n="geo.legend.market">终端市场</span></span>
+        <span><i style="background:var(--warn)"></i><span data-i18n="geo.legend.market">终端市场</span></span>
       </div>
       <p class="muted" data-i18n="geo.tipClick">点击地图标记查看生产基地 / 市场详情。</p>
 
@@ -609,50 +609,60 @@ def build_html(recs, insights):
 <title>苹果供应商生产基地地理洞察</title>
 <style>
   :root {{
+    --bg: #0c1020; --card: #131a2e; --soft: #1b2340; --line: #2a3450; --line-soft: #1c2336;
+    --ink: #e8ecf4; --ink-soft: #cfe0ff; --muted: #9fb0d0; --muted-dim: #7c8aa8;
+    --bright: #ffffff; --link: #dbeafe; --ink-inverse: #111111;
+    --control: #33406a; --control-hover: #3a4a6e; --control-border: #3f4f7a;
+    --blue: #6ea0ff; --primary: #2f6fed; --primary-hover: #3b82f6; --focus: #5b8cff;
+    --brand: #0a2540; --brand-2: #0a66c2;
+  --violet: #8b5cf6; --pink: #ec4899; --cyan: #22d3ee;
+    --green: #4ade80; --success-ink: #bbf7d0; --success-bg: #163a2a;
+    --red: #f87171; --danger-ink: #ffb4b4; --danger-bg: #3b1520; --danger-line: #7f1d1d;
+    --amber: #fbbf24; --warn: #f59e0b; --warn-ink: #fde68a; --warn-bg: #3a2e16; --warn-line: #7a5c14;
     --fs-xs: 11px; --fs-sm: 12px; --fs-base: 13px; --fs-md: 14px;
     --fs-lg: 16px; --fs-xl: 18px; --fs-display: 24px;
   }}
-  html, body {{ margin: 0; padding: 0; height: 100%; background: #0c1020; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; }}
+  html, body {{ margin: 0; padding: 0; height: 100%; background: var(--bg); font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; }}
   #map {{ position: absolute; top: 52px; left: 0; right: 0; bottom: 0; }}
 __TOPNAV_CSS__
   #panel {{
     position: absolute; top: 64px; right: 12px; width: 340px; max-height: calc(100vh - 76px);
     overflow-y: auto; background: rgba(19,26,46,0.96); border-radius: 12px;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.45); padding: 16px 18px; font-size: var(--fs-base); color: #e8ecf4; z-index: 1000;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.45); padding: 16px 18px; font-size: var(--fs-base); color: var(--ink); z-index: 1000;
   }}
   #panel h1 {{ font-size: var(--fs-lg); margin: 0 0 4px; }}
-  #panel h2 {{ font-size: var(--fs-base); margin: 16px 0 6px; color: #e8ecf4; }}
-  .muted {{ color: #9fb0d0; font-size: var(--fs-xs); line-height: 1.5; }}
+  #panel h2 {{ font-size: var(--fs-base); margin: 16px 0 6px; color: var(--ink); }}
+  .muted {{ color: var(--muted); font-size: var(--fs-xs); line-height: 1.5; }}
   .bars {{ display: flex; flex-direction: column; gap: 4px; }}
   .bar-row {{ display: flex; align-items: center; gap: 6px; }}
   .bar-label {{ width: 64px; flex: none; font-size: var(--fs-sm); }}
-  .bar-track {{ flex: 1; background: #1b2340; border-radius: 4px; height: 14px; overflow: hidden; }}
-  .bar-fill {{ display: block; height: 100%; background: linear-gradient(90deg,#6ea0ff,#2f6fed); }}
+  .bar-track {{ flex: 1; background: var(--soft); border-radius: 4px; height: 14px; overflow: hidden; }}
+  .bar-fill {{ display: block; height: 100%; background: linear-gradient(90deg,var(--blue),var(--primary)); }}
   .bar-num {{ width: 24px; text-align: right; font-size: var(--fs-sm); }}
-  .hl {{ margin-top: 8px; padding: 8px 10px; background: #2b2313; border-left: 3px solid #f59e0b; border-radius: 6px; font-size: var(--fs-sm); }}
-  .hl b {{ font-size: var(--fs-md); color: #fbbf24; }}
+  .hl {{ margin-top: 8px; padding: 8px 10px; background: var(--warn-bg); border-left: 3px solid var(--warn); border-radius: 6px; font-size: var(--fs-sm); }}
+  .hl b {{ font-size: var(--fs-md); color: var(--amber); }}
   .chips {{ display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }}
-  .chip {{ background: #3b1520; color: #f87171; border: 1px solid #7f1d1d; border-radius: 999px; padding: 2px 8px; font-size: var(--fs-xs); }}
-  .chip-h {{ color: #9fb0d0; align-self: center; }}
+  .chip {{ background: var(--danger-bg); color: var(--red); border: 1px solid var(--danger-line); border-radius: 999px; padding: 2px 8px; font-size: var(--fs-xs); }}
+  .chip-h {{ color: var(--muted); align-self: center; }}
   .kvs {{ display: flex; flex-direction: column; gap: 3px; }}
   .kv {{ display: flex; align-items: baseline; gap: 6px; font-size: var(--fs-sm); }}
-  .kv b {{ color: #6ea0ff; }}
-  .kv .sub {{ color: #9fb0d0; font-size: var(--fs-xs); }}
+  .kv b {{ color: var(--blue); }}
+  .kv .sub {{ color: var(--muted); font-size: var(--fs-xs); }}
   .legend {{ display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; font-size: var(--fs-sm); }}
   .legend span {{ display: flex; align-items: center; gap: 4px; }}
   .legend i {{ width: 12px; height: 12px; border-radius: 50%; display: inline-block; }}
-  .fbtn {{ cursor: pointer; border: 1px solid #2a3450; background: #1b2340; color: #c7d2ea; border-radius: 999px; padding: 5px 12px; font-size: var(--fs-xs); margin: 2px 0; }}
-  .fbtn.on {{ background: #2f6fed; color: #fff; border-color: #2f6fed; }}
-  .fbtn:hover {{ border-color: #3b82f6; color: #6ea0ff; }}
-  .fbtn.on:hover {{ color: #fff; }}
-  .chip.gold {{ background: #3a2f10; color: #fbbf24; border: 1px solid #7a5c14; }}
-  .poi-label {{ background: rgba(27,35,64,0.92); border: 1px solid #2a3450; border-radius: 4px; padding: 0 4px; font-size: var(--fs-xs); line-height: 15px; color: #e8ecf4; white-space: nowrap; box-shadow: 0 1px 2px rgba(0,0,0,0.12); }}
-  .sup-search {{ width: 100%; box-sizing: border-box; margin: 6px 0; padding: 6px 10px; border: 1px solid #2a3450; background: #131a2e; color: #e8ecf4; border-radius: 8px; font-size: var(--fs-sm); outline: none; }}
-  .sup-search:focus {{ border-color: #3b82f6; }}
-  .leaflet-popup-content-wrapper {{ background: #131a2e; color: #e8ecf4; border: 1px solid #2a3450; border-radius: 8px; box-shadow: 0 8px 30px rgba(0,0,0,0.45); }}
-  .leaflet-popup-tip {{ background: #131a2e; border: 1px solid #2a3450; }}
-  .leaflet-popup-content {{ color: #e8ecf4; line-height: 1.5; }}
-  a.leaflet-popup-close-button {{ color: #9fb0d0; }}
+  .fbtn {{ cursor: pointer; border: 1px solid var(--line); background: var(--soft); color: var(--ink-soft); border-radius: 999px; padding: 5px 12px; font-size: var(--fs-xs); margin: 2px 0; }}
+  .fbtn.on {{ background: var(--primary); color: var(--bright); border-color: var(--primary); }}
+  .fbtn:hover {{ border-color: var(--primary-hover); color: var(--blue); }}
+  .fbtn.on:hover {{ color: var(--bright); }}
+  .chip.gold {{ background: var(--warn-bg); color: var(--amber); border: 1px solid var(--warn-line); }}
+  .poi-label {{ background: rgba(27,35,64,0.92); border: 1px solid var(--line); border-radius: 4px; padding: 0 4px; font-size: var(--fs-xs); line-height: 15px; color: var(--ink); white-space: nowrap; box-shadow: 0 1px 2px rgba(0,0,0,0.12); }}
+  .sup-search {{ width: 100%; box-sizing: border-box; margin: 6px 0; padding: 6px 10px; border: 1px solid var(--line); background: var(--card); color: var(--ink); border-radius: 8px; font-size: var(--fs-sm); outline: none; }}
+  .sup-search:focus {{ border-color: var(--primary-hover); }}
+  .leaflet-popup-content-wrapper {{ background: var(--card); color: var(--ink); border: 1px solid var(--line); border-radius: 8px; box-shadow: 0 8px 30px rgba(0,0,0,0.45); }}
+  .leaflet-popup-tip {{ background: var(--card); border: 1px solid var(--line); }}
+  .leaflet-popup-content {{ color: var(--ink); line-height: 1.5; }}
+  a.leaflet-popup-close-button {{ color: var(--muted); }}
 </style>
 <script type="text/javascript">
   window._TMapSecurityConfig = {{
@@ -723,13 +733,13 @@ __TOPNAV__
     const rl = T('geo.region.' + g.region, {{ defaultValue: g.region }});
     const emo = VERDICT_EMOJI[g.styleId] || '';
     let h = "<div style='font-size: var(--fs-base);line-height:1.5'>"
-      + "<b>" + g.name + "</b> <span style='color:#6b7280'>(" + g.sid + ")</span> · " + g.city + "<br>"
+      + "<b>" + g.name + "</b> <span style='color:var(--muted-dim)'>(" + g.sid + ")</span> · " + g.city + "<br>"
       + T('geo.popup.region') + "：" + rl + "<br>"
       + T('geo.popup.content') + "：" + g.produces + "<br>"
       + T('geo.popup.verdict') + "：" + emo + " " + g.verdict + "<br>";
     if (g.mcap && g.mcap !== '-') h += T('geo.popup.mcap') + "：" + g.mcap + " " + T('geo.popup.mcapUnit') + "<br>";
     h += "</div><div style='margin-top:6px'>"
-      + "<a href='../../index.html?focus=S:" + g.sid + "' target='_blank' style='color:#6ea0ff'>" + T('geo.popup.viewLink') + "</a>"
+      + "<a href='../../index.html?focus=S:" + g.sid + "' target='_blank' style='color:var(--blue)'>" + T('geo.popup.viewLink') + "</a>"
       + "</div>";
     return h;
   }}
