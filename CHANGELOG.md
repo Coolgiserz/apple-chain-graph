@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.10.0](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.9.4...v1.10.0) (2026-09-01)
+
+
+### Features
+
+* **ui:** 全站统一暗色主题——dashboard 令牌翻转 + geo 地图/面板暗色化 ([cbfb44c](https://github.com/Coolgiserz/apple-chain-graph/commit/cbfb44ce1540ada257dc871f1f42cac220e96fdf))
+* **ui:** 全站统一暗色主题——dashboard 令牌翻转 + geo 地图/面板暗色化 ([5ca6cd8](https://github.com/Coolgiserz/apple-chain-graph/commit/5ca6cd8194d7b4d8f830001ae97e25c48465d188))
+
 ## [1.9.4](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.9.3...v1.9.4) (2026-09-01)
 
 
