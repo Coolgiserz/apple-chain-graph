@@ -225,7 +225,7 @@ def make_arrow_metas(line_geoms, tier, start=0):
     for g in line_geoms:
         idx = start + len(metas)
         brg = bearing(g["plat"], g["plng"], g["alat"], g["alng"])
-        color = COLORS.get(g["styleId"], "#94a3b8") if tier == "up" else "#7c3aed"
+        color = COLORS.get(g["styleId"], "#64748b") if tier == "up" else "#7c3aed"
         mid = [(g["plat"] + g["alat"]) / 2.0, (g["plng"] + g["alng"]) / 2.0]
     metas.append({
         "id": f"A{idx}", "styleId": f"A{idx}", "tier": tier,
@@ -387,7 +387,7 @@ def compute_insights(recs, key_ids):
 # HTML 生成（腾讯地图 GL JS，代理模式，合规）
 # ---------------------------------------------------------------------------
 COLORS = {"低估": "#2563eb", "高估": "#dc2626", "困境": "#d97706",
-          "基准": "#111827", "其他": "#94a3b8"}
+          "基准": "#111827", "其他": "#64748b"}
 EMOJI = {"低估": "🔵", "高估": "🔴", "困境": "⚠️", "基准": "🖥️", "其他": "⚪"}
 
 def style_for(r):
@@ -512,7 +512,7 @@ def build_geo_data(recs, insights):
     line_styles_js = ",\n".join(
         f"        {name}: new TMap.PolylineStyle({{ color: 0x{h}, width: 1.5 }})"
         for name, h in [("低估", "2563eb"), ("高估", "dc2626"), ("困境", "d97706"),
-                        ("其他", "94a3b8"), ("downstream", "7c3aed")]
+                        ("其他", "64748b"), ("downstream", "7c3aed")]
     )
     arrow_styles_js = ",\n".join(
         f"        {m['id']}: new TMap.MarkerStyle({{ width: 16, height: 16, src: '{m['src']}' }})"
@@ -637,8 +637,10 @@ __TOPNAV_CSS__
   .legend {{ display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; font-size: 12px; }}
   .legend span {{ display: flex; align-items: center; gap: 4px; }}
   .legend i {{ width: 12px; height: 12px; border-radius: 50%; display: inline-block; }}
-  .fbtn {{ cursor: pointer; border: 1px solid #cbd5e1; background: #f8fafc; color: #475569; border-radius: 999px; padding: 3px 10px; font-size: 11px; margin: 2px 0; }}
+  .fbtn {{ cursor: pointer; border: 1px solid #cbd5e1; background: #f8fafc; color: #475569; border-radius: 999px; padding: 5px 12px; font-size: 11px; margin: 2px 0; }}
   .fbtn.on {{ background: #2563eb; color: #fff; border-color: #2563eb; }}
+  .fbtn:hover {{ border-color: #2563eb; color: #1d4ed8; }}
+  .fbtn.on:hover {{ color: #fff; }}
   .chip.gold {{ background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }}
   .poi-label {{ background: rgba(255,255,255,0.92); border: 1px solid #cbd5e1; border-radius: 4px; padding: 0 4px; font-size: 10px; line-height: 15px; color: #1f2937; white-space: nowrap; box-shadow: 0 1px 2px rgba(0,0,0,0.12); }}
   .sup-search {{ width: 100%; box-sizing: border-box; margin: 6px 0; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; }}
@@ -663,7 +665,7 @@ __TOPNAV__
   // 若已配置真实代理域名（自建签名代理 + Key），则保留腾讯地图 GL 原样式。
   const __SH = 'http://127.0.0.1:__WB_HTTP_PORT__/_TMapService/_wbt/__WB_TMAP_SECRET__';
   const __USE_TMAP = !__SH.includes('127.0.0.1') && typeof TMap !== 'undefined';
-  const __HEX = {{ '低估':'#2563eb', '高估':'#dc2626', '困境':'#d97706', '基准':'#111827', '其他':'#94a3b8', 'market':'#f59e0b', 'downstream':'#7c3aed' }};
+  const __HEX = {{ '低估':'#2563eb', '高估':'#dc2626', '困境':'#d97706', '基准':'#111827', '其他':'#64748b', 'market':'#f59e0b', 'downstream':'#7c3aed' }};
 
   const RAW = {json.dumps(geometries, ensure_ascii=False)};
   const GEOMS = RAW.map(r => ({{ id: r.id, styleId: r.styleId, sid: r.sid, lat: r.lat, lng: r.lng,
@@ -783,7 +785,7 @@ __TOPNAV__
     const downLayer = L.layerGroup().addTo(map);
     const arrowLayer = L.layerGroup().addTo(map);
     const marketLayer = L.layerGroup().addTo(map);
-    const colorOf = (s) => __HEX[s] || '#94a3b8';
+    const colorOf = (s) => __HEX[s] || '#64748b';
     function renderSuppliers() {{
       supLayer.clearLayers();
       GEOMS.forEach(g => {{
