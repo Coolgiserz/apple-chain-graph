@@ -213,7 +213,7 @@ function renderDashboard(){
         x:{title:{display:true,text:T('dash.axis.expensive')},min:0,max:4.3,
            grid:{color:c=> c.tick.value>=0.85&&c.tick.value<=1.15?'rgba(22,163,74,.25)':'#eee'}},
         y:{title:{display:true,text:T('dash.axis.sentiment')},min:-1.2,max:1.3,
-           grid:{color:c=> c.tick.value===0?'#9ca3af':'#eee'}}}}
+           grid:{color:c=> c.tick.value===0?'#71717a':'#eee'}}}}
   });
 
   // ===== ③ 舆情分布（环形）=====
@@ -228,8 +228,8 @@ function renderDashboard(){
          tooltip:{callbacks:{label:c=>`${c.label}: ${c.raw} ${T('dash.unit.firm')} (${Math.round(c.raw/S.length*100)}%)`}}}}
     });
   }
-  doughnut('newsChart',newsDist,NEWS_KEY,['#16a34a','#9ca3af','#dc2626']);
-  doughnut('analystChart',anDist,AN_KEY,['#2563eb','#9ca3af','#dc2626']);
+  doughnut('newsChart',newsDist,NEWS_KEY,['#16a34a','#71717a','#dc2626']);
+  doughnut('analystChart',anDist,AN_KEY,['#2563eb','#71717a','#dc2626']);
 
   // ===== ④ 盈利质量（ROE × 净利率）=====
   const profitData = S.map(d=>({x:d.nm,y:d.roe,r:4+Math.sqrt(d.rev)*2.4,_d:d}));

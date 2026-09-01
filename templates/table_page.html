@@ -21,6 +21,12 @@
   #top input[type=search] { width: 240px; }
   #top button { background: #2f6fed; color: #fff; border: none; border-radius: 8px; padding: 6px 12px; cursor: pointer; font-size: 13px; }
   #top button.ghost { background: #2a3450; }
+  /* 键盘焦点可见（WCAG 2.4.7）：覆盖 outline:none 的控件与可排序表头 */
+  #top input:focus-visible, #top select:focus-visible, #top button:focus-visible,
+  #tbl thead th:focus-visible, a:focus-visible, button:focus-visible,
+  input:focus-visible, select:focus-visible {
+    outline: 2px solid #5b8cff; outline-offset: 2px;
+  }
   #count { color: #9fb0d0; font-size: 13px; margin-left: auto; white-space: nowrap; }
   .wrap { overflow: auto; border: 1px solid #2a3450; border-radius: 12px; max-height: calc(100vh - 200px); }
   table { border-collapse: collapse; width: 100%; font-size: 13px; min-width: 880px; }
@@ -48,6 +54,10 @@
     #top .grp { flex: 1 1 auto; }
     #top label { font-size: 12px; }
   }
+  /* 前庭友好：系统开启「减少动态效果」时压缩过渡时长（WCAG 2.3.3） */
+  @media (prefers-reduced-motion: reduce) {
+    * { transition-duration: .01ms !important; animation-duration: .01ms !important; }
+  }
 __TOPNAV_CSS__
 </style>
 </head>
@@ -55,27 +65,27 @@ __TOPNAV_CSS__
 __TOPNAV__
 <main>
   <h1>📋 供应链企业列表</h1>
-  <div class="desc">图谱中共有 <b id="total">0</b> 家企业（供应商节点）。可按地区 / 国家 / 类别 / 层级筛选，点击列标题排序；点名称可在图谱中定位该企业。</div>
+  <div class="desc">图谱中共有 <b id="total">0</b> 家企业（供应商节点）。可按地区 / 国家 / 类别 / 层级筛选，点击或用键盘（Tab 聚焦后回车）排序列标题；点名称可在图谱中定位该企业。</div>
   <div id="top">
-    <div class="grp"><input type="search" id="q" placeholder="搜索 名称 / 简称 / 英文名 / ID…"></div>
-    <div class="grp"><label>地区</label><select id="fRegion"><option value="">全部</option></select></div>
-    <div class="grp"><label>国家/地区</label><select id="fCountry"><option value="">全部</option></select></div>
-    <div class="grp"><label>类别</label><select id="fCategory"><option value="">全部</option></select></div>
-    <div class="grp"><label>层级</label><select id="fTier"><option value="">全部</option></select></div>
+    <div class="grp"><input type="search" id="q" aria-label="搜索企业名称、简称、英文名或 ID" placeholder="搜索 名称 / 简称 / 英文名 / ID…"></div>
+    <div class="grp"><label for="fRegion">地区</label><select id="fRegion"><option value="">全部</option></select></div>
+    <div class="grp"><label for="fCountry">国家/地区</label><select id="fCountry"><option value="">全部</option></select></div>
+    <div class="grp"><label for="fCategory">类别</label><select id="fCategory"><option value="">全部</option></select></div>
+    <div class="grp"><label for="fTier">层级</label><select id="fTier"><option value="">全部</option></select></div>
     <button id="reset" class="ghost">重置筛选</button>
     <span id="count"></span>
   </div>
   <div class="wrap">
     <table id="tbl">
       <thead><tr>
-        <th data-k="name">名称 <span class="ar"></span></th>
-        <th data-k="short_name">简称 <span class="ar"></span></th>
-        <th data-k="english_name">英文名 <span class="ar"></span></th>
-        <th data-k="country">国家/地区 <span class="ar"></span></th>
-        <th data-k="region">地区 <span class="ar"></span></th>
-        <th data-k="category">类别 <span class="ar"></span></th>
-        <th data-k="tier">层级 <span class="ar"></span></th>
-        <th>操作</th>
+        <th data-k="name" scope="col" tabindex="0" aria-sort="none">名称 <span class="ar"></span></th>
+        <th data-k="short_name" scope="col" tabindex="0" aria-sort="none">简称 <span class="ar"></span></th>
+        <th data-k="english_name" scope="col" tabindex="0" aria-sort="none">英文名 <span class="ar"></span></th>
+        <th data-k="country" scope="col" tabindex="0" aria-sort="none">国家/地区 <span class="ar"></span></th>
+        <th data-k="region" scope="col" tabindex="0" aria-sort="none">地区 <span class="ar"></span></th>
+        <th data-k="category" scope="col" tabindex="0" aria-sort="none">类别 <span class="ar"></span></th>
+        <th data-k="tier" scope="col" tabindex="0" aria-sort="none">层级 <span class="ar"></span></th>
+        <th scope="col">操作</th>
       </tr></thead>
       <tbody id="tbody"></tbody>
     </table>
@@ -150,6 +160,9 @@ __TOPNAV__
     document.querySelectorAll("#tbl thead th[data-k]").forEach(function (th) {
       var ar = th.querySelector(".ar");
       ar.textContent = (th.dataset.k === sortKey) ? (sortDir > 0 ? "▲" : "▼") : "";
+      // aria-sort 同步，屏幕阅读器可感知当前排序列与方向
+      th.setAttribute("aria-sort",
+        th.dataset.k === sortKey ? (sortDir > 0 ? "ascending" : "descending") : "none");
     });
 
     if (!rows.length) {
@@ -181,10 +194,15 @@ __TOPNAV__
     q.value = ""; fR.value = ""; fC.value = ""; fCat.value = ""; fT.value = ""; sortKey = null; sortDir = 1; render();
   });
   document.querySelectorAll("#tbl thead th[data-k]").forEach(function (th) {
-    th.addEventListener("click", function () {
+    var activate = function () {
       var k = th.dataset.k;
       if (sortKey === k) { sortDir = -sortDir; } else { sortKey = k; sortDir = 1; }
       render();
+    };
+    th.addEventListener("click", activate);
+    // 键盘可达排序（WCAG 2.1.1）：Enter / 空格 与鼠标点击等效
+    th.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") { e.preventDefault(); activate(); }
     });
   });
 
