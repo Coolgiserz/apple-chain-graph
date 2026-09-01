@@ -45,13 +45,17 @@ GITHUB_LINK = (
 # 因此即便脚本未执行，也绝不会把链接横向铺开溢出；且不依赖 <details>，避免其关闭态被
 # 浏览器引擎级隐藏导致桌面端菜单整条消失的问题。
 TOPNAV_CSS = """
+:root{
+  --fs-xs: 11px; --fs-sm: 12px; --fs-base: 13px; --fs-md: 14px;
+    --fs-lg: 16px; --fs-xl: 18px; --fs-display: 24px;
+}
 .wb-topnav{position:fixed;top:0;left:0;right:0;height:calc(52px + env(safe-area-inset-top));padding:env(safe-area-inset-top) 12px 0;z-index:9999;
   display:flex;align-items:center;gap:8px;min-width:0;
   background:linear-gradient(135deg,#0a2540,#0a66c2);color:#fff;
   font-family:-apple-system,'Segoe UI',Roboto,'PingFang SC','Microsoft YaHei',sans-serif;
   box-shadow:0 2px 8px rgba(0,0,0,.18)}
-.wb-topnav .brand{font-weight:700;font-size:14px;margin-right:8px;white-space:nowrap;opacity:.95;flex:0 0 auto}
-.wb-topnav a{color:#dbeafe;text-decoration:none;font-size:13.5px;padding:7px 13px;border-radius:8px;
+.wb-topnav .brand{font-weight:700;font-size: var(--fs-md);margin-right:8px;white-space:nowrap;opacity:.95;flex:0 0 auto}
+.wb-topnav a{color:#dbeafe;text-decoration:none;font-size: var(--fs-base);padding:7px 13px;border-radius:8px;
   white-space:nowrap;transition:background .15s}
 .wb-topnav a:hover{background:rgba(255,255,255,.16);color:#fff}
 .wb-topnav a.active{background:#fff;color:#0a2540;font-weight:700}
@@ -60,7 +64,7 @@ TOPNAV_CSS = """
 .wb-topnav .nav-toggle-cb{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;margin:0}
 /* 汉堡按钮（label）：移动端显示、桌面端媒体查询隐藏 */
 .wb-topnav .nav-toggle{display:inline-flex;align-items:center;justify-content:center;width:38px;height:34px;
-  margin:0;border-radius:8px;color:#fff;font-size:18px;line-height:1;cursor:pointer;user-select:none}
+  margin:0;border-radius:8px;color:#fff;font-size: var(--fs-xl);line-height:1;cursor:pointer;user-select:none}
 .wb-topnav .nav-toggle:hover{background:rgba(255,255,255,.16)}
 .wb-topnav .nav-collapse{position:relative;flex:0 0 auto}
 /* 菜单默认隐藏（移动端），由 :checked 切换为下拉 */
@@ -73,7 +77,7 @@ TOPNAV_CSS = """
   margin-left:6px;border-radius:8px;color:#fff;opacity:.9;transition:background .15s,opacity .15s;flex:0 0 auto}
 .wb-topnav .wb-github:hover{background:rgba(255,255,255,.16);color:#fff;opacity:1}
 .wb-topnav #langSwitch{height:34px;margin-left:6px;border-radius:8px;border:1px solid rgba(255,255,255,.25);
-  background:rgba(255,255,255,.08);color:#fff;font-size:13px;padding:0 6px;cursor:pointer;flex:0 0 auto}
+  background:rgba(255,255,255,.08);color:#fff;font-size: var(--fs-base);padding:0 6px;cursor:pointer;flex:0 0 auto}
 .wb-topnav #langSwitch:hover{background:rgba(255,255,255,.16);color:#fff}
 .wb-topnav #langSwitch option{color:#111}
 /* 桌面端（≥860px）：菜单常驻横向排列（永远可见），隐藏汉堡与复选框 */
