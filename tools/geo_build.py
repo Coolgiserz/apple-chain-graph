@@ -608,43 +608,47 @@ def build_html(recs, insights):
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>苹果供应商生产基地地理洞察</title>
 <style>
-  html, body {{ margin: 0; padding: 0; height: 100%; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; }}
+  html, body {{ margin: 0; padding: 0; height: 100%; background: #0c1020; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; }}
   #map {{ position: absolute; top: 52px; left: 0; right: 0; bottom: 0; }}
 __TOPNAV_CSS__
   #panel {{
     position: absolute; top: 64px; right: 12px; width: 340px; max-height: calc(100vh - 76px);
-    overflow-y: auto; background: rgba(255,255,255,0.96); border-radius: 12px;
-    box-shadow: 0 8px 30px rgba(0,0,0,0.18); padding: 16px 18px; font-size: 13px; color: #1f2937; z-index: 1000;
+    overflow-y: auto; background: rgba(19,26,46,0.96); border-radius: 12px;
+    box-shadow: 0 8px 30px rgba(0,0,0,0.45); padding: 16px 18px; font-size: 13px; color: #e8ecf4; z-index: 1000;
   }}
   #panel h1 {{ font-size: 16px; margin: 0 0 4px; }}
-  #panel h2 {{ font-size: 13px; margin: 16px 0 6px; color: #111827; }}
-  .muted {{ color: #6b7280; font-size: 11px; line-height: 1.5; }}
+  #panel h2 {{ font-size: 13px; margin: 16px 0 6px; color: #e8ecf4; }}
+  .muted {{ color: #9fb0d0; font-size: 11px; line-height: 1.5; }}
   .bars {{ display: flex; flex-direction: column; gap: 4px; }}
   .bar-row {{ display: flex; align-items: center; gap: 6px; }}
   .bar-label {{ width: 64px; flex: none; font-size: 12px; }}
-  .bar-track {{ flex: 1; background: #eef2f7; border-radius: 4px; height: 14px; overflow: hidden; }}
-  .bar-fill {{ display: block; height: 100%; background: linear-gradient(90deg,#3b82f6,#2563eb); }}
+  .bar-track {{ flex: 1; background: #1b2340; border-radius: 4px; height: 14px; overflow: hidden; }}
+  .bar-fill {{ display: block; height: 100%; background: linear-gradient(90deg,#6ea0ff,#2f6fed); }}
   .bar-num {{ width: 24px; text-align: right; font-size: 12px; }}
-  .hl {{ margin-top: 8px; padding: 8px 10px; background: #fff7ed; border-left: 3px solid #f59e0b; border-radius: 6px; font-size: 12px; }}
-  .hl b {{ font-size: 14px; color: #b45309; }}
+  .hl {{ margin-top: 8px; padding: 8px 10px; background: #2b2313; border-left: 3px solid #f59e0b; border-radius: 6px; font-size: 12px; }}
+  .hl b {{ font-size: 14px; color: #fbbf24; }}
   .chips {{ display: flex; flex-wrap: wrap; gap: 4px; margin-top: 6px; }}
-  .chip {{ background: #fef2f2; color: #b91c1c; border: 1px solid #fecaca; border-radius: 999px; padding: 2px 8px; font-size: 11px; }}
-  .chip-h {{ color: #6b7280; align-self: center; }}
+  .chip {{ background: #3b1520; color: #f87171; border: 1px solid #7f1d1d; border-radius: 999px; padding: 2px 8px; font-size: 11px; }}
+  .chip-h {{ color: #9fb0d0; align-self: center; }}
   .kvs {{ display: flex; flex-direction: column; gap: 3px; }}
   .kv {{ display: flex; align-items: baseline; gap: 6px; font-size: 12px; }}
-  .kv b {{ color: #1d4ed8; }}
-  .kv .sub {{ color: #9ca3af; font-size: 11px; }}
+  .kv b {{ color: #6ea0ff; }}
+  .kv .sub {{ color: #9fb0d0; font-size: 11px; }}
   .legend {{ display: flex; flex-wrap: wrap; gap: 10px; margin-top: 6px; font-size: 12px; }}
   .legend span {{ display: flex; align-items: center; gap: 4px; }}
   .legend i {{ width: 12px; height: 12px; border-radius: 50%; display: inline-block; }}
-  .fbtn {{ cursor: pointer; border: 1px solid #cbd5e1; background: #f8fafc; color: #475569; border-radius: 999px; padding: 5px 12px; font-size: 11px; margin: 2px 0; }}
-  .fbtn.on {{ background: #2563eb; color: #fff; border-color: #2563eb; }}
-  .fbtn:hover {{ border-color: #2563eb; color: #1d4ed8; }}
+  .fbtn {{ cursor: pointer; border: 1px solid #2a3450; background: #1b2340; color: #c7d2ea; border-radius: 999px; padding: 5px 12px; font-size: 11px; margin: 2px 0; }}
+  .fbtn.on {{ background: #2f6fed; color: #fff; border-color: #2f6fed; }}
+  .fbtn:hover {{ border-color: #3b82f6; color: #6ea0ff; }}
   .fbtn.on:hover {{ color: #fff; }}
-  .chip.gold {{ background: #fffbeb; color: #b45309; border: 1px solid #fde68a; }}
-  .poi-label {{ background: rgba(255,255,255,0.92); border: 1px solid #cbd5e1; border-radius: 4px; padding: 0 4px; font-size: 10px; line-height: 15px; color: #1f2937; white-space: nowrap; box-shadow: 0 1px 2px rgba(0,0,0,0.12); }}
-  .sup-search {{ width: 100%; box-sizing: border-box; margin: 6px 0; padding: 6px 10px; border: 1px solid #cbd5e1; border-radius: 8px; font-size: 12px; outline: none; }}
-  .sup-search:focus {{ border-color: #2563eb; }}
+  .chip.gold {{ background: #3a2f10; color: #fbbf24; border: 1px solid #7a5c14; }}
+  .poi-label {{ background: rgba(27,35,64,0.92); border: 1px solid #2a3450; border-radius: 4px; padding: 0 4px; font-size: 10px; line-height: 15px; color: #e8ecf4; white-space: nowrap; box-shadow: 0 1px 2px rgba(0,0,0,0.12); }}
+  .sup-search {{ width: 100%; box-sizing: border-box; margin: 6px 0; padding: 6px 10px; border: 1px solid #2a3450; background: #131a2e; color: #e8ecf4; border-radius: 8px; font-size: 12px; outline: none; }}
+  .sup-search:focus {{ border-color: #3b82f6; }}
+  .leaflet-popup-content-wrapper {{ background: #131a2e; color: #e8ecf4; border: 1px solid #2a3450; border-radius: 8px; box-shadow: 0 8px 30px rgba(0,0,0,0.45); }}
+  .leaflet-popup-tip {{ background: #131a2e; border: 1px solid #2a3450; }}
+  .leaflet-popup-content {{ color: #e8ecf4; line-height: 1.5; }}
+  a.leaflet-popup-close-button {{ color: #9fb0d0; }}
 </style>
 <script type="text/javascript">
   window._TMapSecurityConfig = {{
@@ -721,7 +725,7 @@ __TOPNAV__
       + T('geo.popup.verdict') + "：" + emo + " " + g.verdict + "<br>";
     if (g.mcap && g.mcap !== '-') h += T('geo.popup.mcap') + "：" + g.mcap + " " + T('geo.popup.mcapUnit') + "<br>";
     h += "</div><div style='margin-top:6px'>"
-      + "<a href='../../index.html?focus=S:" + g.sid + "' target='_blank' style='color:#2563eb'>" + T('geo.popup.viewLink') + "</a>"
+      + "<a href='../../index.html?focus=S:" + g.sid + "' target='_blank' style='color:#6ea0ff'>" + T('geo.popup.viewLink') + "</a>"
       + "</div>";
     return h;
   }}
@@ -779,7 +783,7 @@ __TOPNAV__
   // ---------- Leaflet 后端（默认，静态托管可用） ----------
   function initLeaflet() {{
     const map = L.map('map', {{ zoomControl: true }}).setView([28, 112], 3);
-    L.tileLayer('https://{{s}}.tile.openstreetmap.org/{{z}}/{{x}}/{{y}}.png', {{ maxZoom: 19, attribution: '© OpenStreetMap' }}).addTo(map);
+    L.tileLayer('https://{{s}}.basemaps.cartocdn.com/dark_all/{{z}}/{{x}}/{{y}}.png', {{ maxZoom: 19, attribution: '© OpenStreetMap © CARTO' }}).addTo(map);
     const supLayer = L.layerGroup().addTo(map);
     const upLayer = L.layerGroup().addTo(map);
     const downLayer = L.layerGroup().addTo(map);
@@ -855,11 +859,11 @@ __TOPNAV__
 
   // ---------- 腾讯地图后端（配置了真实代理 + Key 时） ----------
   function initTMap() {{
-    const map = new TMap.Map('map', {{ zoom: 3, center: new TMap.LatLng(28, 112) }});
+    const map = new TMap.Map('map', {{ zoom: 3, center: new TMap.LatLng(28, 112), mapStyleId: 'style1' }});
     const markers = new TMap.MultiMarker({{ map: map, styles: {{{styles_js}\n        , dim: new TMap.MarkerStyle({{ width: 22, height: 22, src: '{dim_marker_svg()}' }}) }}, geometries: GEOMS.map(g => ({{ id: g.id, styleId: (focusSid && g.sid !== focusSid) ? 'dim' : g.styleId, position: new TMap.LatLng(g.lat, g.lng), properties: {{ name: g.name, cat: g.cat }} }})) }});
     const info = new TMap.InfoWindow({{ map: map, position: new TMap.LatLng(28, 112), content: '', visible: false }});
     markers.on('click', (e) => {{ const g = GEOMS.find(x => x.id === e.geometry.id); if (!g) return; info.setPosition(e.geometry.position); info.setContent(supHtml(g)); info.open(); setFocus(g.sid); }});
-    const labelLayer = new TMap.MultiLabel({{ map: map, styles: {{ label: new TMap.LabelStyle({{ color: '#1f2937', size: 12, offset: {{ x: 8, y: 0 }}, background: {{ color: '#ffffff', borderColor: '#cbd5e1', borderWidth: 1, borderRadius: 4 }}, alignment: 'left' }}) }}, geometries: (labelsOn ? GEOMS.filter(g => g.label && activeCats.has(g.cat)) : []).map(g => ({{ id: g.id, styleId: 'label', position: new TMap.LatLng(g.lat, g.lng), content: g.label }})) }});
+    const labelLayer = new TMap.MultiLabel({{ map: map, styles: {{ label: new TMap.LabelStyle({{ color: '#e8ecf4', size: 12, offset: {{ x: 8, y: 0 }}, background: {{ color: '#1b2340', borderColor: '#2a3450', borderWidth: 1, borderRadius: 4 }}, alignment: 'left' }}) }}, geometries: (labelsOn ? GEOMS.filter(g => g.label && activeCats.has(g.cat)) : []).map(g => ({{ id: g.id, styleId: 'label', position: new TMap.LatLng(g.lat, g.lng), content: g.label }})) }});
     const marketLayer = new TMap.MultiMarker({{ map: map, styles: {{ market: new TMap.MarkerStyle({{ width: 24, height: 24, src: '{market_svg()}' }}) }}, geometries: MARKET_GEOMS.map(g => ({{ id: g.id, styleId: 'market', position: new TMap.LatLng(g.lat, g.lng), properties: {{ name: g.name }} }})) }});
     marketLayer.on('click', (e) => {{ const g = MARKET_GEOMS.find(x => x.id === e.geometry.id); if (!g) return; info.setPosition(e.geometry.position); info.setContent(marketHtml(g)); info.open(); }});
     const upLayer = new TMap.MultiPolyline({{ map: map, styles: {{{line_styles_js}\n      }}, geometries: UP_LINES.map(l => ({{ id: l.id, styleId: l.styleId, paths: [new TMap.LatLng(l.plat, l.plng), new TMap.LatLng(l.alat, l.alng)] }})) }});
