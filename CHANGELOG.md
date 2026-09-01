@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.9.4](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.9.3...v1.9.4) (2026-09-01)
+
+
+### Bug Fixes
+
+* **ui:** 可访问性速赢包——键盘焦点/label 绑定/键盘排序/canvas aria/触控目标/对比度 ([82d6229](https://github.com/Coolgiserz/apple-chain-graph/commit/82d6229018ada06741120f8baf4184ee0e087118))
+* **ui:** 可访问性速赢包——键盘焦点/label 绑定/键盘排序/canvas aria/触控目标/对比度 ([d6fb34c](https://github.com/Coolgiserz/apple-chain-graph/commit/d6fb34c91d15e70ba66592f7d40e121de791cd1b))
+
 ## [1.9.3](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.9.2...v1.9.3) (2026-08-28)
 
 
