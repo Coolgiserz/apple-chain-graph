@@ -22,8 +22,10 @@ export function showBottleneckPanel(on) {
 function syncPanelOpen() {
   if (typeof document === "undefined" || !document.body) return;
   var open = false;
-  // 用 offsetParent 判可见性：display:none 时 offsetParent 为 null，无需 getComputedStyle
-  // （getComputedStyle 在 eslint browser:false 视角下会触发 no-undef，且 Node 桩环境无此全局）。
+  // 用 offsetParent 判可见性：display:none 时 offsetParent 为 null，比 getComputedStyle 少一次
+  // 样式计算。注：旧注释称 getComputedStyle 会触发 no-undef——那只是 eslint.config.js 的
+  // browserGlobals 白名单缺项所致，现已登记，util.js 读配色令牌走的就是它。这里不用它纯粹是
+  // 因为 offsetParent 更便宜，不是因为用不了。
   ["panel", "riskPanel", "bottleneckPanel"].forEach(function (id) {
     var el = document.getElementById(id);
     if (el && el.offsetParent !== null) open = true;

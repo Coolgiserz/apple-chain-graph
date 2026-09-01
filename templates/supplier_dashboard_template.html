@@ -6,19 +6,26 @@
 <title data-i18n="dash.title">苹果供应链重点供应商 · 估值 × 舆情可视化</title>
 <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.1/dist/chart.umd.min.js"></script>
 <style>
-  :root{
-    --bg:#0c1020; --card:#131a2e; --ink:#e8ecf4; --muted:#9fb0d0;
-    --blue:#6ea0ff; --red:#f87171; --green:#4ade80; --amber:#fbbf24;
-    --line:#2a3450; --soft:#1b2340;
-    --fs-xs: 11px; --fs-sm: 12px; --fs-base: 13px; --fs-md: 14px;
-    --fs-lg: 16px; --fs-xl: 18px; --fs-display: 24px;
-  }
+  :root {
+  --bg: #0c1020; --card: #131a2e; --soft: #1b2340; --line: #2a3450; --line-soft: #1c2336;
+  --ink: #e8ecf4; --ink-soft: #cfe0ff; --muted: #9fb0d0; --muted-dim: #7c8aa8;
+  --bright: #ffffff; --link: #dbeafe; --ink-inverse: #111111;
+  --control: #33406a; --control-hover: #3a4a6e; --control-border: #3f4f7a;
+  --blue: #6ea0ff; --primary: #2f6fed; --primary-hover: #3b82f6; --focus: #5b8cff;
+  --brand: #0a2540; --brand-2: #0a66c2;
+  --violet: #8b5cf6; --pink: #ec4899; --cyan: #22d3ee;
+  --green: #4ade80; --success-ink: #bbf7d0; --success-bg: #163a2a;
+  --red: #f87171; --danger-ink: #ffb4b4; --danger-bg: #3b1520; --danger-line: #7f1d1d;
+  --amber: #fbbf24; --warn: #f59e0b; --warn-ink: #fde68a; --warn-bg: #3a2e16; --warn-line: #7a5c14;
+  --fs-xs: 11px; --fs-sm: 12px; --fs-base: 13px; --fs-md: 14px;
+  --fs-lg: 16px; --fs-xl: 18px; --fs-display: 24px;
+}
   *{box-sizing:border-box;}
   body{margin:0;font-family:-apple-system,BlinkMacSystemFont,"Segoe UI","PingFang SC","Microsoft YaHei",sans-serif;
     background:var(--bg);color:var(--ink);line-height:1.5;}
-  header{background:linear-gradient(120deg,#0f172a,#1e3a8a);color:#fff;padding:28px 32px;}
+  header{background:linear-gradient(120deg,var(--brand),#1e3a8a);color:var(--bright);padding:28px 32px;}
   header h1{margin:0;font-size: var(--fs-display);font-weight:700;letter-spacing:.5px;}
-  header p{margin:8px 0 0;color:#cbd5e1;font-size: var(--fs-base);}
+  header p{margin:8px 0 0;color:var(--ink-soft);font-size: var(--fs-base);}
   .wrap{max-width:1180px;margin:0 auto;padding:24px 20px 60px;}
   .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:22px 0 8px;}
   .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;
@@ -44,7 +51,7 @@
   th,td{padding:7px 9px;border-bottom:1px solid var(--line);text-align:right;}
   th:first-child,td:first-child{text-align:left;}
   thead th{background:var(--soft);color:var(--muted);font-weight:600;position:sticky;top:0;}
-  .tag{display:inline-block;padding:2px 9px;border-radius:20px;font-size: var(--fs-xs);font-weight:700;color:#fff;}
+  .tag{display:inline-block;padding:2px 9px;border-radius:20px;font-size: var(--fs-xs);font-weight:700;color:var(--bright);}
   .t-under{background:var(--blue);} .t-over{background:var(--red);} .t-fair{background:var(--green);}
   .note{font-size: var(--fs-xs);color:var(--muted);margin-top:10px;}
   @media (max-width: 860px){.cards{grid-template-columns:repeat(2,1fr);}.grid2{grid-template-columns:1fr;}}

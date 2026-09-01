@@ -6,50 +6,60 @@
 <title>苹果供应商名单：60 家企业供应品类与覆盖产品</title>
 <style>
   :root {
-    --fs-xs: 11px; --fs-sm: 12px; --fs-base: 13px; --fs-md: 14px;
-    --fs-lg: 16px; --fs-xl: 18px; --fs-display: 24px;
-  }
+  --bg: #0c1020; --card: #131a2e; --soft: #1b2340; --line: #2a3450; --line-soft: #1c2336;
+  --ink: #e8ecf4; --ink-soft: #cfe0ff; --muted: #9fb0d0; --muted-dim: #7c8aa8;
+  --bright: #ffffff; --link: #dbeafe; --ink-inverse: #111111;
+  --control: #33406a; --control-hover: #3a4a6e; --control-border: #3f4f7a;
+  --blue: #6ea0ff; --primary: #2f6fed; --primary-hover: #3b82f6; --focus: #5b8cff;
+  --brand: #0a2540; --brand-2: #0a66c2;
+  --violet: #8b5cf6; --pink: #ec4899; --cyan: #22d3ee;
+  --green: #4ade80; --success-ink: #bbf7d0; --success-bg: #163a2a;
+  --red: #f87171; --danger-ink: #ffb4b4; --danger-bg: #3b1520; --danger-line: #7f1d1d;
+  --amber: #fbbf24; --warn: #f59e0b; --warn-ink: #fde68a; --warn-bg: #3a2e16; --warn-line: #7a5c14;
+  --fs-xs: 11px; --fs-sm: 12px; --fs-base: 13px; --fs-md: 14px;
+  --fs-lg: 16px; --fs-xl: 18px; --fs-display: 24px;
+}
   * { box-sizing: border-box; }
-  html, body { margin: 0; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: #0f1320; color: #e8ecf4; }
+  html, body { margin: 0; font-family: -apple-system, "PingFang SC", "Microsoft YaHei", sans-serif; background: var(--bg); color: var(--ink); }
   body { padding-top: calc(52px + env(safe-area-inset-top)); padding-left: env(safe-area-inset-left); padding-right: env(safe-area-inset-right); }
   main { padding: 16px 18px 48px; max-width: 1280px; margin: 0 auto; }
   h1 { font-size: var(--fs-xl); margin: 6px 0 4px; }
-  .desc { color: #9fb0d0; font-size: var(--fs-base); margin-bottom: 14px; }
-  .desc b { color: #cfe0ff; }
+  .desc { color: var(--muted); font-size: var(--fs-base); margin-bottom: 14px; }
+  .desc b { color: var(--ink-soft); }
   #top { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; background: rgba(20,26,42,.7);
-         border: 1px solid #2a3450; border-radius: 12px; padding: 12px 14px; margin-bottom: 14px; }
+         border: 1px solid var(--line); border-radius: 12px; padding: 12px 14px; margin-bottom: 14px; }
   #top .grp { display: flex; align-items: center; gap: 6px; }
-  #top label { font-size: var(--fs-sm); color: #9fb0d0; white-space: nowrap; }
-  #top input[type=search], #top select { background: #0c1020; border: 1px solid #2a3450; color: #e8ecf4;
+  #top label { font-size: var(--fs-sm); color: var(--muted); white-space: nowrap; }
+  #top input[type=search], #top select { background: var(--bg); border: 1px solid var(--line); color: var(--ink);
          border-radius: 8px; padding: 6px 10px; outline: none; font-size: var(--fs-base); }
   #top input[type=search] { width: 240px; }
-  #top button { background: #2f6fed; color: #fff; border: none; border-radius: 8px; padding: 6px 12px; cursor: pointer; font-size: var(--fs-base); }
-  #top button.ghost { background: #2a3450; }
+  #top button { background: var(--primary); color: var(--bright); border: none; border-radius: 8px; padding: 6px 12px; cursor: pointer; font-size: var(--fs-base); }
+  #top button.ghost { background: var(--line); }
   /* 键盘焦点可见（WCAG 2.4.7）：覆盖 outline:none 的控件与可排序表头 */
   #top input:focus-visible, #top select:focus-visible, #top button:focus-visible,
   #tbl thead th:focus-visible, a:focus-visible, button:focus-visible,
   input:focus-visible, select:focus-visible {
-    outline: 2px solid #5b8cff; outline-offset: 2px;
+    outline: 2px solid var(--focus); outline-offset: 2px;
   }
-  #count { color: #9fb0d0; font-size: var(--fs-base); margin-left: auto; white-space: nowrap; }
-  .wrap { overflow: auto; border: 1px solid #2a3450; border-radius: 12px; max-height: calc(100vh - 200px); }
+  #count { color: var(--muted); font-size: var(--fs-base); margin-left: auto; white-space: nowrap; }
+  .wrap { overflow: auto; border: 1px solid var(--line); border-radius: 12px; max-height: calc(100vh - 200px); }
   table { border-collapse: collapse; width: 100%; font-size: var(--fs-base); min-width: 880px; }
-  thead th { position: sticky; top: 0; background: #15203a; color: #cfe0ff; text-align: left; padding: 11px 12px;
-             cursor: pointer; user-select: none; white-space: nowrap; border-bottom: 1px solid #2a3450; }
-  thead th:hover { background: #1b2b4d; }
-  thead th .ar { color: #6ea0ff; font-size: var(--fs-xs); margin-left: 4px; }
-  tbody td { padding: 9px 12px; border-bottom: 1px solid #1c2740; white-space: nowrap; }
+  thead th { position: sticky; top: 0; background: var(--card); color: var(--ink-soft); text-align: left; padding: 11px 12px;
+             cursor: pointer; user-select: none; white-space: nowrap; border-bottom: 1px solid var(--line); }
+  thead th:hover { background: var(--control-hover); }
+  thead th .ar { color: var(--blue); font-size: var(--fs-xs); margin-left: 4px; }
+  tbody td { padding: 9px 12px; border-bottom: 1px solid var(--card); white-space: nowrap; }
   tbody tr:hover { background: rgba(47,111,237,.10); }
-  td.name a { color: #6ea0ff; text-decoration: none; font-weight: 600; }
+  td.name a { color: var(--blue); text-decoration: none; font-weight: 600; }
   td.name a:hover { text-decoration: underline; }
-  .pill { display: inline-block; font-size: var(--fs-xs); padding: 2px 9px; border-radius: 999px; background: #1b2742; color: #9fc1ff; }
-  .tier1 { background: #163a2a; color: #67e0a3; }
-  .tier2 { background: #3a2e16; color: #f5c45e; }
+  .pill { display: inline-block; font-size: var(--fs-xs); padding: 2px 9px; border-radius: 999px; background: var(--soft); color: var(--ink-soft); }
+  .tier1 { background: var(--success-bg); color: var(--green); }
+  .tier2 { background: var(--warn-bg); color: var(--warn-ink); }
   .acts a { margin-right: 10px; font-size: var(--fs-sm); }
-  a { color: #6ea0ff; }
-  .lk { color: #6ea0ff; text-decoration: none; border-bottom: 1px dashed #6ea0ff; cursor: pointer; }
+  a { color: var(--blue); }
+  .lk { color: var(--blue); text-decoration: none; border-bottom: 1px dashed var(--blue); cursor: pointer; }
   .lk:hover { background: rgba(110,160,255,.15); }
-  .empty { padding: 28px; text-align: center; color: #7c8aa8; }
+  .empty { padding: 28px; text-align: center; color: var(--muted-dim); }
   /* 移动端适配：搜索框全宽、缩小内边距；表格横向滚动交由 .wrap 处理 */
   @media (max-width: 860px) {
     main { padding: 12px; }

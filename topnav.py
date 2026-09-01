@@ -45,41 +45,51 @@ GITHUB_LINK = (
 # 因此即便脚本未执行，也绝不会把链接横向铺开溢出；且不依赖 <details>，避免其关闭态被
 # 浏览器引擎级隐藏导致桌面端菜单整条消失的问题。
 TOPNAV_CSS = """
-:root{
+:root {
+  --bg: #0c1020; --card: #131a2e; --soft: #1b2340; --line: #2a3450; --line-soft: #1c2336;
+  --ink: #e8ecf4; --ink-soft: #cfe0ff; --muted: #9fb0d0; --muted-dim: #7c8aa8;
+  --bright: #ffffff; --link: #dbeafe; --ink-inverse: #111111;
+  --control: #33406a; --control-hover: #3a4a6e; --control-border: #3f4f7a;
+  --blue: #6ea0ff; --primary: #2f6fed; --primary-hover: #3b82f6; --focus: #5b8cff;
+  --brand: #0a2540; --brand-2: #0a66c2;
+  --violet: #8b5cf6; --pink: #ec4899; --cyan: #22d3ee;
+  --green: #4ade80; --success-ink: #bbf7d0; --success-bg: #163a2a;
+  --red: #f87171; --danger-ink: #ffb4b4; --danger-bg: #3b1520; --danger-line: #7f1d1d;
+  --amber: #fbbf24; --warn: #f59e0b; --warn-ink: #fde68a; --warn-bg: #3a2e16; --warn-line: #7a5c14;
   --fs-xs: 11px; --fs-sm: 12px; --fs-base: 13px; --fs-md: 14px;
-    --fs-lg: 16px; --fs-xl: 18px; --fs-display: 24px;
+  --fs-lg: 16px; --fs-xl: 18px; --fs-display: 24px;
 }
 .wb-topnav{position:fixed;top:0;left:0;right:0;height:calc(52px + env(safe-area-inset-top));padding:env(safe-area-inset-top) 12px 0;z-index:9999;
   display:flex;align-items:center;gap:8px;min-width:0;
-  background:linear-gradient(135deg,#0a2540,#0a66c2);color:#fff;
+  background:linear-gradient(135deg,var(--brand),var(--brand-2));color:var(--bright);
   font-family:-apple-system,'Segoe UI',Roboto,'PingFang SC','Microsoft YaHei',sans-serif;
   box-shadow:0 2px 8px rgba(0,0,0,.18)}
 .wb-topnav .brand{font-weight:700;font-size: var(--fs-md);margin-right:8px;white-space:nowrap;opacity:.95;flex:0 0 auto}
-.wb-topnav a{color:#dbeafe;text-decoration:none;font-size: var(--fs-base);padding:7px 13px;border-radius:8px;
+.wb-topnav a{color:var(--link);text-decoration:none;font-size: var(--fs-base);padding:7px 13px;border-radius:8px;
   white-space:nowrap;transition:background .15s}
-.wb-topnav a:hover{background:rgba(255,255,255,.16);color:#fff}
-.wb-topnav a.active{background:#fff;color:#0a2540;font-weight:700}
+.wb-topnav a:hover{background:rgba(255,255,255,.16);color:var(--bright)}
+.wb-topnav a.active{background:var(--bright);color:var(--brand);font-weight:700}
 .wb-topnav .spacer{flex:1 1 auto;min-width:0}
 /* 隐藏的驱动复选框（label 联动切换）；桌面端一并彻底隐藏 */
 .wb-topnav .nav-toggle-cb{position:absolute;width:1px;height:1px;opacity:0;pointer-events:none;margin:0}
 /* 汉堡按钮（label）：移动端显示、桌面端媒体查询隐藏 */
 .wb-topnav .nav-toggle{display:inline-flex;align-items:center;justify-content:center;width:38px;height:34px;
-  margin:0;border-radius:8px;color:#fff;font-size: var(--fs-xl);line-height:1;cursor:pointer;user-select:none}
+  margin:0;border-radius:8px;color:var(--bright);font-size: var(--fs-xl);line-height:1;cursor:pointer;user-select:none}
 .wb-topnav .nav-toggle:hover{background:rgba(255,255,255,.16)}
 .wb-topnav .nav-collapse{position:relative;flex:0 0 auto}
 /* 菜单默认隐藏（移动端），由 :checked 切换为下拉 */
 .wb-topnav .nav-collapse > ul{position:absolute;top:calc(100% + 8px);left:0;z-index:1;margin:0;padding:6px;
   list-style:none;display:none;flex-direction:column;gap:2px;min-width:172px;
-  background:#0a2540;border:1px solid rgba(255,255,255,.16);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.45)}
+  background:var(--brand);border:1px solid rgba(255,255,255,.16);border-radius:12px;box-shadow:0 10px 30px rgba(0,0,0,.45)}
 .wb-topnav .nav-toggle-cb:checked ~ .nav-collapse > ul{display:flex}
 .wb-topnav .nav-collapse > ul a{display:block;width:100%;text-align:left}
 .wb-topnav .wb-github{display:flex;align-items:center;justify-content:center;width:34px;height:34px;
-  margin-left:6px;border-radius:8px;color:#fff;opacity:.9;transition:background .15s,opacity .15s;flex:0 0 auto}
-.wb-topnav .wb-github:hover{background:rgba(255,255,255,.16);color:#fff;opacity:1}
+  margin-left:6px;border-radius:8px;color:var(--bright);opacity:.9;transition:background .15s,opacity .15s;flex:0 0 auto}
+.wb-topnav .wb-github:hover{background:rgba(255,255,255,.16);color:var(--bright);opacity:1}
 .wb-topnav #langSwitch{height:34px;margin-left:6px;border-radius:8px;border:1px solid rgba(255,255,255,.25);
-  background:rgba(255,255,255,.08);color:#fff;font-size: var(--fs-base);padding:0 6px;cursor:pointer;flex:0 0 auto}
-.wb-topnav #langSwitch:hover{background:rgba(255,255,255,.16);color:#fff}
-.wb-topnav #langSwitch option{color:#111}
+  background:rgba(255,255,255,.08);color:var(--bright);font-size: var(--fs-base);padding:0 6px;cursor:pointer;flex:0 0 auto}
+.wb-topnav #langSwitch:hover{background:rgba(255,255,255,.16);color:var(--bright)}
+.wb-topnav #langSwitch option{color:var(--ink-inverse)}
 /* 桌面端（≥860px）：菜单常驻横向排列（永远可见），隐藏汉堡与复选框 */
 @media (min-width: 860px){
   .wb-topnav .nav-toggle, .wb-topnav .nav-toggle-cb{display:none}
