@@ -138,25 +138,49 @@ __ANALYTICS__
 </div>
 
 <script>
-// ===== 数据（来自 supplier_fundamentals.csv + supplier_sentiment.csv + supplier_analysis.json）=====
-// news/analyst: 1=正面/看多, 0=中性, -1=负面/看空
-const S = [
- {id:'tsmc',     name:'台积电',   sector:'晶圆代工',   mcap:1880, rev:139.6, score:1.59, verdict:'高估', news:1,  analyst:1,  gm:59.0, nm:50.0,  roe:40.0,  pe:27.1,  pb:9.3,  ev:18.4,  con:'强烈买入，约98%覆盖机构买入'},
- {id:'foxconn',  name:'富士康',   sector:'代工',       mcap:90.3, rev:253.1, score:0.48, verdict:'低估', news:1,  analyst:1,  gm:6.15, nm:2.3,   roe:11.5,  pe:16.8,  pb:1.7,  ev:8.0,   con:'多数买入，目标价普遍上修'},
- {id:'samsung_elec',name:'三星电子',sector:'存储',     mcap:1120, rev:346.6, score:0.44, verdict:'低估', news:1,  analyst:1,  gm:57.5, nm:30.9,  roe:30.8,  pe:10.83, pb:2.71, ev:6.11,  con:'强烈买入，目标价约+78%空间'},
- {id:'skhynix',  name:'SK海力士', sector:'存储',       mcap:915.8,rev:94.3,  score:1.21, verdict:'高估', news:1,  analyst:1,  gm:62.0, nm:56.9,  roe:61.2,  pe:16.7,  pb:7.8,  ev:13.7,  con:'多数买入，HBM4龙头'},
- {id:'sony',     name:'索尼',     sector:'摄像头',     mcap:131,  rev:80.5,  score:0.59, verdict:'低估', news:1,  analyst:1,  gm:30.8, nm:8.5,   roe:12.3,  pe:20.2,  pb:2.4,  ev:10.1,  con:'强烈买入，目标价约+31%'},
- {id:'qualcomm', name:'高通',     sector:'逻辑芯片',   mcap:193.9,rev:44.5,  score:0.32, verdict:'低估', news:-1, analyst:0,  gm:54.8, nm:22.3,  roe:36.1,  pe:20.7,  pb:7.3,  ev:15.4,  con:'中性：9家下调目标价（苹果modem替代）'},
- {id:'broadcom', name:'博通',     sector:'逻辑芯片',   mcap:1990, rev:63.9,  score:3.13, verdict:'高估', news:1,  analyst:1,  gm:64.7, nm:36.2,  roe:31.1,  pe:69.6,  pb:22.7, ev:45.0,  con:'强烈买入，AI ASIC双引擎'},
- {id:'boe',      name:'京东方',   sector:'显示面板',   mcap:31.1, rev:28.5,  score:1.21, verdict:'高估', news:1,  analyst:1,  gm:15.6, nm:2.9,   roe:2.3,   pe:35.5,  pb:1.7,  ev:29.5,  con:'买入为主，中尺寸OLED成长'},
- {id:'lgd',      name:'LG显示',   sector:'显示面板',   mcap:4.6,  rev:18.1,  score:null, verdict:'困境', news:0,  analyst:0,  gm:11.0, nm:-5.4,  roe:3.4,   pe:null,  pb:0.9,  ev:3.4,   con:'中性：OLED扭亏途中（亏损，倍数失真不判低估）'},
- {id:'murata',   name:'村田',     sector:'元器件',     mcap:87.1, rev:12.4,  score:0.56, verdict:'低估', news:1,  analyst:1,  gm:40.0, nm:13.8,  roe:8.8,   pe:54.5,  pb:3.2,  ev:24.0,  con:'普遍买入，AI服务器MLCC'},
- {id:'largan',   name:'大立光',   sector:'光学',       mcap:18.3, rev:1.94,  score:0.83, verdict:'低估', news:1,  analyst:1,  gm:49.2, nm:33.7,  roe:11.4,  pe:28.4,  pb:3.1,  ev:14.4,  con:'外资买入，CPO新业务催化'},
- {id:'corning',  name:'康宁',     sector:'元器件',     mcap:137.1,rev:16.3,  score:2.15, verdict:'高估', news:0,  analyst:1,  gm:36.4, nm:11.1,  roe:16.7,  pe:73.38, pb:11.53,ev:35.85, con:'多数买入，光通信爆发'},
- {id:'luxshare', name:'立讯精密', sector:'代工',       mcap:64.6, rev:49.2,  score:2.17, verdict:'高估', news:1,  analyst:1,  gm:11.7, nm:4.9,   roe:19.0,  pe:26.0,  pb:4.3,  ev:19.4,  con:'多家唱多，H股IPO后'},
- {id:'ase',      name:'日月光',   sector:'封测',       mcap:93.8, rev:21.0,  score:2.1,  verdict:'高估', news:1,  analyst:1,  gm:16.8, nm:7.0,   roe:13.6,  pe:66.1,  pb:7.9,  ev:24.6,  con:'普遍看多，AI先进封装'},
- {id:'micron',   name:'美光',     sector:'存储',       mcap:1040, rev:90.3,  score:1.61, verdict:'高估', news:1,  analyst:1,  gm:72.57,nm:55.91, roe:66.64, pe:20.14, pb:10.01,ev:14.42, con:'强烈买入，HBM售罄至2027'}
-];
+// ===== 数据 =====
+//
+// 【管道数据·勿手改】S_PIPELINE 由 scripts/build_dashboard_data.py 在构建期从
+// tools/output/supplier_analysis.json（tools/run_analysis.py 的产物）生成，
+// 占位符由 tools/build_dashboard.py 替换。
+//
+// ⚠ 注释里不要写出占位符的字面量：str.replace 不分代码还是注释，注释里那份也会被
+// 整段 JSON 换掉。同理生成器只产出「值」，不产出声明——占位符已经写在等号右边了。
+//
+// 改这里没用：下次构建会被覆盖，而且 tests/test_dashboard_data.py 的 D7 用例会拿
+// 产物里的数值与上游逐项比对，对不上就红——「数据过时」这件事已经从「靠人记得更新」
+// 变成「结构上不可能」。要改口径请改上游 run_analysis.py 或生成器的映射表。
+const S_PIPELINE = __DASHBOARD_DATA__;
+
+// 【人工维护·非管道数据】news / analyst
+// ------------------------------------
+// 取值：1=正面/看多，0=中性，-1=负面/看空。
+// 为什么还留着手写：管道里没有这两列的结构化来源——supplier_sentiment.json 只有一份
+// markdown 综述，没有逐家打分。所以它们不随构建刷新，需要人定期过一遍。
+//
+// 维护须知：公司若从管道消失（被移出供应链研究范围、或不再有估值倍数），这里的条目要
+// 一并删掉，否则会变成指向空值的僵尸数据。tests/test_dashboard_data.py 的 D5 用例
+// 会检查这一点。新公司没条目也不影响渲染——下面按中性 (0, 0) 兜底。
+const MANUAL_SENTIMENT = {
+  tsmc:         {news: 1,  analyst: 1},
+  foxconn:      {news: 1,  analyst: 1},
+  samsung_elec: {news: 1,  analyst: 1},
+  skhynix:      {news: 1,  analyst: 1},
+  sony:         {news: 1,  analyst: 1},
+  qualcomm:     {news: -1, analyst: 0},
+  broadcom:     {news: 1,  analyst: 1},
+  boe:          {news: 1,  analyst: 1},
+  lgd:          {news: 0,  analyst: 0},
+  murata:       {news: 1,  analyst: 1},
+  largan:       {news: 1,  analyst: 1},
+  corning:      {news: 0,  analyst: 1},
+  luxshare:     {news: 1,  analyst: 1},
+  ase:          {news: 1,  analyst: 1},
+  micron:       {news: 1,  analyst: 1}
+};
+
+// 合并成页面实际用的 S：管道字段 + 人工情绪，缺人工条目的按中性兜底。
+const S = S_PIPELINE.map(d => Object.assign({}, d, MANUAL_SENTIMENT[d.id] || {news: 0, analyst: 0}));
 
 // 估值结论 / 赛道 / 舆情 的颜色与「中文原始值 → 翻译 key」映射。
 const C = {低估:'#6ea0ff', 高估:'#f87171', 合理:'#4ade80', 困境:'#fbbf24'};
@@ -179,7 +203,9 @@ function renderDashboard(){
   Chart.defaults.color = '#9fb0d0';
 
   // ===== 概览卡片 =====
-  const counts = {低估:0,高估:0,合理:0};
+  // 四种结论都登记：管道会给「困境」，漏登记会让 counts['困境'] 变成 NaN（虽不影响
+  // 卡片取值，但会在调试时误导）。
+  const counts = {低估:0,高估:0,合理:0,困境:0};
   S.forEach(d=>counts[d.verdict]++);
   const newsDist = {正面:0,中性:0,负面:0}; const anDist={看多:0,中性:0,看空:0};
   S.forEach(d=>{ newsDist[d.news===1?'正面':d.news===0?'中性':'负面']++; anDist[d.analyst===1?'看多':d.analyst===0?'中性':'看空']++;});
@@ -278,7 +304,7 @@ function renderDashboard(){
       <td>$${d.mcap}B</td>
       <td><span class="tag ${vtag}">${T(VERDICT_KEY[d.verdict])}</span></td>
       <td>${sLabel}</td>
-      <td>${d.pe??'—'}</td><td>${d.roe}</td>
+      <td>${d.pe??'—'}</td><td>${d.roe??'—'}</td>
     </tr>`;
   }).join('');
 }
