@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.11.3](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.11.2...v1.11.3) (2026-09-02)
+
+
+### Bug Fixes
+
+* **dash:** 估值看板数据接回构建管道，不再手写快照 ([5cd9e04](https://github.com/Coolgiserz/apple-chain-graph/commit/5cd9e04bd84c7447c5274add5389e7388e4c1f08))
+* **dash:** 看板估值数据接回构建管道，不再手写快照 ([418970d](https://github.com/Coolgiserz/apple-chain-graph/commit/418970de90d4dd429158a6539eb53b20431b788e))
+
 ## [1.11.2](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.11.1...v1.11.2) (2026-09-01)
 
 
