@@ -1,5 +1,13 @@
 # Changelog
 
+## [1.11.4](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.11.3...v1.11.4) (2026-09-02)
+
+
+### Bug Fixes
+
+* **dashboard:** as_of 从 CSV 透传到看板与报告，替换硬编码 2026-08-10 ([46c5cd0](https://github.com/Coolgiserz/apple-chain-graph/commit/46c5cd0a08896a43e8f024d7868423bc8c97b9ae))
+* **dashboard:** as_of 从 CSV 透传到看板与报告，替换硬编码 2026-08-10 ([ccc7a4a](https://github.com/Coolgiserz/apple-chain-graph/commit/ccc7a4a2b54dd720127f0a80fd428ada3bfc213d))
+
 ## [1.11.3](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.11.2...v1.11.3) (2026-09-02)
 
 
