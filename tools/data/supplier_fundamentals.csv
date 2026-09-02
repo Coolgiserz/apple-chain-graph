@@ -1,16 +1,16 @@
 ﻿supplier_id,as_of,market_cap_usd_b,revenue_ttm_usd_b,net_income_ttm_usd_b,gross_margin_pct,net_margin_pct,roe_pct,pe,pb,ev_ebitda,debt_to_equity,trend,recent,source
-tsmc,2026-08-10,1900.0,139.6,69.7,59.0,50.0,40.0,27.3,9.3,18.4,0.15,AI与HPC需求驱动先进制程(3nm/2nm)满载 CoWoS先进封装产能持续紧张,2纳米量产推进 资本开支上修 毛利率维持约59%高位 苹果为其最大客户之一 同时承接英伟达等AI芯片代工,https://stockanalysis.com/stocks/tsm/statistics/
-foxconn,2026-08-10,108.0,264.0,6.06,6.15,2.3,11.8,17.8,1.97,7.1,0.67,iPhone组装基本盘 向EV(裕隆/MIH)与AI服务器(GB200机柜)转型,2026年AI服务器营收占比快速提升 市值升至约1080亿美元 毛利率仅约6%体现代工属性,https://stockanalysis.com/quote/tpe/2317/statistics
-samsung_elec,2026-08-10,1196.0,351.6,108.5,57.5,30.9,18.9,22.4,2.71,6.11,0.04,存储超级周期中HBM3E/4量产追赶SK海力士 DX部门利润率修复,市值重回万亿美元以上(约1.14万亿) 但HBM份额仍落后,https://stockanalysis.com/quote/krx/005930/statistics
-skhynix,2026-08-10,979.0,95.7,54.4,62.0,56.9,61.2,19.9,6.21,10.85,0.13,HBM绝对龙头 HBM4量产并与英伟达/AMD深度绑定,近一年涨幅显著 市值约9790亿美元(USD) ROE 61% 与英伟达/AMD深度绑定HBM4,https://stockanalysis.com/quote/krx/000660/statistics
-sony,2026-08-10,137.8,83.2,6.87,30.8,8.5,12.3,19.8,2.4,9.9,0.20,CIS(图像传感器)为苹果主摄核心供应商 发力车载与AI感知,游戏与半导体双轮驱动 利润率稳健 市值约1330亿美元,https://stockanalysis.com/quote/tyo/6758/statistics
-qualcomm,2026-08-10,193.9,44.5,9.9,54.8,22.3,36.1,20.7,7.3,15.4,0.56,骁龙旗舰与AI PC主线 苹果自研基带(C1)2026年起逐步替代带来确定性收入撤出风险,PE约21倍 在逻辑芯片同业中估值偏低 营收净利基本持平,https://stockanalysis.com/stocks/qcom/statistics/
-broadcom,2026-08-10,2040.0,75.5,29.3,64.7,38.8,37.3,71.2,23.2,50.1,0.74,AI ASIC(定制芯片)与VMware软件双引擎高增,市值突破2万亿美元 PE约71 EV/EBITDA约50 估值高企反映AI预期,https://stockanalysis.com/stocks/avgo/statistics/
-boe,2026-08-10,32.3,28.5,0.82,15.6,2.9,2.3,32.4,1.5,25.7,0.69,OLED在iPhone供应链份额提升 但仍受面板价格周期拖累,2026上半年归母净利预增54%-69% 利润拐点显现 净利率仍约3%,https://finance.yahoo.com/quote/000725.SZ/key-statistics
-lgd,2026-08-10,3.55,18.3,-0.06,13.5,-0.3,,,0.63,4.46,1.62,退出LCD 聚焦OLED(IT/OLED iPad与Mac) W-OLED电视面板扭亏,接近盈亏平衡(净利率约-0.3%) 负债权益比升至约1.6 PB低于1,https://stockanalysis.com/quote/krx/034220/statistics
-murata,2026-08-10,82.4,12.8,1.77,40.0,13.8,10.1,57.3,4.97,26.3,0.20,MLCC受益AI服务器与车用电子 需求结构性上行,利润率温和修复 市值约900亿美元 估值中等,https://stockanalysis.com/quote/tyo/6981/
-largan,2026-08-10,17.8,1.91,0.65,49.2,33.7,11.4,25.9,3.0,14.4,0.0,高端手机镜头(潜望/大底)壁垒高 iPhone主供,净利率33.7% 零有息负债 盈利质量高 市值约179亿美元,https://stockanalysis.com/quote/tpe/3008/statistics
-corning,2026-08-10,142.7,17.0,1.9,36.4,11.1,16.7,76.4,11.5,35.9,0.80,Gorilla Glass与AI数据中心光通信(光纤/连接)双主线,光通信需求爆发带动股价近一年约+159% 市值约1430亿美元 估值高,https://stockanalysis.com/stocks/glw/statistics/
-luxshare,2026-08-10,65.9,49.2,2.39,11.7,4.9,,25.1,4.3,19.4,1.23,苹果链新星 AirPods/Apple Watch/iPhone/Vision Pro组装与连接器份额提升 2026年7月H股IPO,BNY Mellon减持约7.9个百分点引发股价波动 Q1营收同比+43.7% 苹果营收占比超70%,https://stockanalysis.com/quote/she/002475/statistics/
-ase,2026-08-10,77.3,21.9,1.87,18.5,7.0,13.6,53.6,7.6,24.6,0.67,AI芯片先进封装(CoWoS后端与FC-BGA)需求爆发,52周涨幅约+360% 近期回落至市值约790亿美元 PE约42倍,https://stockanalysis.com/quote/tpe/3711/statistics
-micron,2026-08-10,991.1,90.3,50.5,72.57,55.91,66.64,19.8,9.3,13.4,0.06,HBM与DRAM超级周期核心受益者 HBM产能售罄至2027年,近一年约+691% 毛利率72.6% ROE 66.6% 市值约9910亿美元,https://stockanalysis.com/stocks/mu/statistics/
+tsmc,2026-09-02,2000.0,139.6,69.7,64.2,49.9,40.0,28.7,9.8,19.3,0.17,AI与HPC(占营收66%)驱动先进制程满载 2nm爬坡(占晶圆营收3%) CoWoS先进封装持续紧张 与索尼签MOU合资熊本传感器厂,市值突破2万亿美元 Q2毛利率67.7%创新高 2026营收指引上调至+40%以上 capex上修至600-640亿美元 7月营收同比+44.7%,https://stockanalysis.com/stocks/tsm/statistics/
+foxconn,2026-09-02,113.3,293.9,6.72,6.1,2.3,13.2,17.0,1.69,8.3,0.64,iPhone组装基本盘 向EV(裕隆/MIH)与AI服务器(GB200机柜)转型,2026年AI服务器营收占比快速提升 市值约1133亿美元 毛利率约6%体现代工属性 净利率2.3%,https://stockanalysis.com/quote/tpe/2317/statistics
+samsung_elec,2026-09-02,1208.9,353.9,109.1,57.5,30.8,30.8,11.6,2.86,6.6,0.04,存储超级周期中HBM3E/4量产追赶SK海力士 DX部门利润率修复,存储超级周期驱动业绩修复(Q2净利率31%) 市值约1.21万亿美元 但HBM份额仍落后SK海力士,https://stockanalysis.com/quote/krx/005930/statistics
+skhynix,2026-09-02,900.0,137.9,118.1,76.3,85.6,92.7,7.44,4.7,8.16,0.08,HBM绝对龙头 HBM4量产出货并与英伟达/AMD深度绑定 与约10家客户签多年期长期供货协议(LTA),Q2营收79.3万亿韩元(+257%)营业利润率76%创纪录 净利率118%含63万亿韩元一次性投资收益 股价自6月高点回撤约47% 市值约9000亿美元,https://stockanalysis.com/quote/krx/000660/statistics
+sony,2026-09-02,148.1,79.2,-1.38,32.3,-1.8,13.2,21.6,2.71,11.3,0.21,CIS(图像传感器)为苹果主摄核心供应商 I&SS营业利润创纪录 与台积电签MOU转向fab-lite传感器制造,金融业务分拆会计重分类致FY2026净亏损3269亿日元(非现金 继续经营净利10309亿日元创新高) 市值约1481亿美元,https://stockanalysis.com/quote/tyo/6758/statistics
+qualcomm,2026-09-02,178.0,44.1,9.3,54.2,21.0,33.8,19.4,6.37,15.4,0.55,骁龙旗舰与AI PC主线 苹果自研基带(C1)2026年起逐步替代带来确定性收入撤出风险,PE约19倍 在逻辑芯片同业中估值偏低 营收净利基本持平 市值约1780亿美元,https://stockanalysis.com/stocks/qcom/statistics/
+broadcom,2026-09-02,1760.0,75.5,29.3,76.3,38.9,37.3,61.5,20.1,42.9,0.74,AI ASIC(定制芯片)与VMware软件双引擎高增,市值回落至约1.76万亿美元 FQ2营收+48% AI收入+143% 但Google订单分散与客户融资风险担忧压估值 PE约62倍,https://stockanalysis.com/stocks/avgo/statistics/
+boe,2026-09-02,32.4,30.7,1.17,14.2,3.8,3.4,28.6,1.05,8.5,0.68,OLED在iPhone供应链份额提升 但仍受面板价格周期拖累,2026上半年归母净利预增54%-69% 净利率升至约3.8% 市值约324亿美元,https://stockanalysis.com/quote/she/000725/statistics/
+lgd,2026-09-02,3.38,18.5,-0.99,14.5,-5.3,-17.6,,0.61,4.4,1.76,退出LCD 聚焦OLED(OLED占营收57%) IT用OLED(iPad/Mac)与游戏OLED显示器,上半年营业利润390亿韩元 2021年来首次上半年盈利 Q2含2400亿韩元一次性重组费用致单季亏损 市值约34亿美元 PB 0.61,https://stockanalysis.com/quote/krx/034220/statistics
+murata,2026-09-02,82.7,12.0,1.66,43.4,13.9,10.1,50.1,4.81,23.2,0.02,MLCC受益AI服务器与车用电子 需求结构性上行,利润率温和修复(净利率14%) 市值约827亿美元 PE约50倍高于元器件同业中位,https://stockanalysis.com/quote/tyo/6981/
+largan,2026-09-02,31.3,2.02,0.78,48.4,38.4,13.3,41.3,5.12,26.9,0.0,高端手机镜头(潜望/大底)壁垒高 iPhone主供 新切入CPO光纤阵列(FAU)供应链,CPO题材发酵 股价8月连创历史新高 市值突破9000亿新台币(约313亿美元) 但7月营收同比-11% 股价与基本面背离 FAU最快2027年中量产,https://stockanalysis.com/quote/tpe/3008/statistics
+corning,2026-09-02,125.4,17.0,1.9,36.4,11.2,16.8,67.2,10.5,32.4,0.71,Gorilla Glass与AI数据中心光通信(光纤/连接)双主线,光通信需求爆发 市值约1254亿美元 PE约67倍 自高点有所回落,https://stockanalysis.com/stocks/glw/statistics/
+luxshare,2026-09-02,68.6,56.9,2.65,11.6,4.7,19.0,23.8,4.05,18.8,1.27,苹果链新星 AirPods/Apple Watch/iPhone/Vision Pro组装与连接器份额提升 2026年7月H股IPO,Q1营收同比+43.7% 苹果营收占比超70% H股IPO后市值约686亿美元,https://stockanalysis.com/quote/she/002475/statistics/
+ase,2026-09-02,84.6,22.5,1.92,19.5,8.6,17.0,46.2,6.4,19.9,0.71,AI芯片先进封装(CoWoS后端与FC-BGA)需求爆发,先进封装景气驱动 市值回升至约846亿美元 PE约46倍 自6月板块回调后部分收复,https://stockanalysis.com/quote/tpe/3711/statistics
+micron,2026-09-02,1050.0,90.3,50.5,72.6,55.9,66.6,21.6,10.8,15.1,0.06,HBM与DRAM超级周期核心受益者 HBM产能售罄至2027年,7月市值首破1万亿美元后随存储板块回调震荡(现约1.05万亿) 毛利率72.6% ROE 66.6% 多年期协议保底价高于上轮周期峰值,https://stockanalysis.com/stocks/mu/statistics/
