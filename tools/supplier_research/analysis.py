@@ -44,6 +44,26 @@ def load_fundamentals():
     return out
 
 
+def latest_as_of():
+    """CSV 里所有供应商的 as_of 去重后取唯一值；多个不同值直接报错。
+
+    用途：``run_analysis.py`` 不传 ``--as_of`` 时，meta.as_of 从这里拿真实日期，
+    而不是占位串。各供应商数据日期必须一致——若不一致说明某家的数据是另一天
+    抓的，页面显示一个谁都不代表的日期比报错更危险，因此宁可构建失败。
+    返回空串表示 CSV 尚无 as_of 数据（此时调用方不应展示日期）。
+    """
+    dates = {f.get("as_of", "").strip() for f in load_fundamentals().values()}
+    dates.discard("")
+    if not dates:
+        return ""
+    if len(dates) > 1:
+        raise ValueError(
+            "supplier_fundamentals.csv 的 as_of 不一致（%r）：各供应商数据日期必须"
+            "统一，页面无法为一个谁都不代表的日期署名。请核对 CSV 后重跑。"
+            % sorted(dates))
+    return dates.pop()
+
+
 def _num(x):
     try:
         return float(x)

@@ -144,6 +144,26 @@ def load_suppliers():
     return json.loads(SRC_JSON.read_text(encoding="utf-8")).get("suppliers", [])
 
 
+def load_meta():
+    """读取上游 meta 的数据日期与「有市值」家数，供页面元信息行（subtitle）使用。
+
+    返回 ``{"as_of": str, "count": int}``。as_of 来自上游 run_analysis 的
+    meta.as_of（它又取自 CSV 的单一 as_of，见 analysis.latest_as_of），count 是
+    有真实估值倍数的供应商数——与 build_rows() 的过滤口径一致（不锁死 15 家）。
+
+    build_dashboard.py 用返回值替换模板里的 ``__AS_OF__`` / ``__SUPPLIER_COUNT__``
+    占位符，取代原先模板/locales 里硬编码的 "2026-08-10"。
+    """
+    if not SRC_JSON.is_file():
+        raise SystemExit(
+            "缺少 %s\n请在仓库根执行 python3 build_all.py"
+            "（或先 python3 tools/run_analysis.py）生成它。" % SRC_JSON)
+    data = json.loads(SRC_JSON.read_text(encoding="utf-8"))
+    meta = data.get("meta") or {}
+    count = sum(1 for s in data.get("suppliers", []) if _market_cap(s) is not None)
+    return {"as_of": meta.get("as_of", ""), "count": count}
+
+
 def _num(v):
     """上游数值字段统一成 float 或 None（未上市/缺失时上游是 null）。"""
     if v is None:

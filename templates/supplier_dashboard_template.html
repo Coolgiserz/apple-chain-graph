@@ -26,6 +26,7 @@
   header{background:linear-gradient(120deg,var(--brand),#1e3a8a);color:var(--bright);padding:28px 32px;}
   header h1{margin:0;font-size: var(--fs-display);font-weight:700;letter-spacing:.5px;}
   header p{margin:8px 0 0;color:var(--ink-soft);font-size: var(--fs-base);}
+  header .meta{font-size: var(--fs-sm);opacity:.85;margin-top:6px;}
   .wrap{max-width:1180px;margin:0 auto;padding:24px 20px 60px;}
   .cards{display:grid;grid-template-columns:repeat(4,1fr);gap:14px;margin:22px 0 8px;}
   .card{background:var(--card);border:1px solid var(--line);border-radius:12px;padding:16px 18px;
@@ -66,7 +67,18 @@ __TOPNAV__
 __ANALYTICS__
 <header>
   <h1 data-i18n="dash.title">苹果供应链重点供应商 · 估值 × 舆情可视化</h1>
-  <p data-i18n="dash.subtitle">15 家核心供应商 | 同业相对估值（便宜/合理/贵）+ 市场舆情（新闻情绪 / 卖方共识）| 数据快照 2026-08-10</p>
+  <p data-i18n="dash.subtitle">同业相对估值（便宜/合理/贵）+ 市场舆情（新闻情绪 / 卖方共识）</p>
+  <!-- 数据日期/家数由 build_dashboard.py 注入（两个注入占位符）。
+       刻意不放 data-i18n：applyDOM() 用 textContent 整体覆盖 data-i18n 元素，
+       构建期注入值会被 i18n ready/changed 冲掉。文案词（数据截至/家核心供应商）
+       单独用 data-i18n span，日期与数字放无 data-i18n 的 span。 -->
+  <p class="meta">
+    <span data-i18n="dash.metaAsOf">数据截至</span>
+    <span class="as-of">__AS_OF__</span>
+    ·
+    <span class="sup-count">__SUPPLIER_COUNT__</span>
+    <span data-i18n="dash.metaUnit">家核心供应商</span>
+  </p>
 </header>
 
 <div class="wrap">

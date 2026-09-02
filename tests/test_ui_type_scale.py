@@ -32,7 +32,9 @@ TS1 五个样式源（index / table / dashboard / geo / topnav）的 :root 均�
     7 个 --fs-* 令牌且值正确。
 TS2 五个文件的字号令牌块（按出现顺序拼接）完全一致 —— 防止某页漏同步。
 TS3 全站 font-size 不再出现裸 px 值（:root 定义本身不含 font-size，故可全局断言）。
-TS4 var(--fs-*) 使用总数恰为 137（改造前声明数），防止漏改 / 多改。
+TS4 var(--fs-*) 使用总数恰为 138（改造前 137；as_of 透传为看板新增
+    元信息行 header .meta 用 var(--fs-sm)，属合法新增，快照随之上调），
+    防止漏改 / 多改。
 TS5 旧档位值（10/11.5/12.3/12.5/12.8/13.5/15/17/19/20/23/27）在 font-size
     声明中彻底绝迹。
 TS6 实际引用的令牌集合 ⊆ 七个令牌名，防止引用未定义令牌（如 var(--fs-xxl)）。
@@ -64,7 +66,7 @@ SCALE = {
 LEGACY_SIZES = {"10", "11.5", "12.3", "12.5", "12.8", "13.5",
                 "15", "17", "19", "20", "23", "27"}
 
-TOTAL_DECLARATIONS = 137  # 改造前全站 font-size 声明数
+TOTAL_DECLARATIONS = 138  # 改造前 137 处；+1 = as_of 透传新增的看板元信息行（header .meta，var(--fs-sm)）
 
 
 def _read(path):

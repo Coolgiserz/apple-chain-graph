@@ -44,29 +44,36 @@ def main():
     # 占位符必须恰好 1 处。str.replace 不区分代码与注释——若有人在注释里也提到
     # 占位符字面量，整段 JSON 会被换进注释位置，造成数据双份注入 + JS 语法错误
     # （const S_PIPELINE = const S_PIPELINE = ...，整页脚本解析失败）。宁可构建失败。
-    n_placeholder = html.count("__DASHBOARD_DATA__")
-    if n_placeholder != 1:
-        sys.stderr.write("✗ 模板中 __DASHBOARD_DATA__ 占位符应恰好出现 1 次，"
-                         "实际 %d 次（注释里写它的字面量也会被替换，请改用文字描述）。\n"
-                         % n_placeholder)
-        return 1
+    for ph in ("__DASHBOARD_DATA__", "__AS_OF__", "__SUPPLIER_COUNT__"):
+        n = html.count(ph)
+        if n != 1:
+            sys.stderr.write("✗ 模板中 %s 占位符应恰好出现 1 次，"
+                             "实际 %d 次（注释里写它的字面量也会被替换，请改用文字描述）。\n"
+                             % (ph, n))
+            return 1
+
+    meta = gen.load_meta()
+    as_of = meta["as_of"] or "—"
 
     # topnav() 本身已附带 analytics_js()，故 __ANALYTICS__ 占位用空串移除重复统计脚本
     html = (html
             .replace("__DASHBOARD_DATA__", gen.render_snippet(rows))
+            .replace("__AS_OF__", as_of)
+            .replace("__SUPPLIER_COUNT__", str(meta["count"]))
             .replace("__TOPNAV_CSS__", TOPNAV_CSS)
             .replace("__TOPNAV__", topnav("../../", "dash"))
             .replace("__ANALYTICS__", ""))
-    if "__DASHBOARD_DATA__" in html:
-        sys.stderr.write("✗ 模板中的 __DASHBOARD_DATA__ 占位符未被替换（模板被改坏？）\n")
-        return 1
+    for ph in ("__DASHBOARD_DATA__", "__AS_OF__", "__SUPPLIER_COUNT__"):
+        if ph in html:
+            sys.stderr.write("✗ 模板中的 %s 占位符未被替换（模板被改坏？）\n" % ph)
+            return 1
     if html.count("const S_PIPELINE") != 1:
         sys.stderr.write("✗ 产物中 const S_PIPELINE 应只声明 1 次，实际 %d 次。\n"
                          % html.count("const S_PIPELINE"))
         return 1
     open(OUT, "w", encoding="utf-8").write(html)
     print("Dashboard written:", OUT, "bytes:", len(html),
-          "(suppliers: %d)" % len(rows))
+          "(suppliers: %d, as_of: %s)" % (len(rows), as_of))
     return 0
 
 
