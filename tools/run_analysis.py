@@ -34,8 +34,13 @@ def main():
     args = ap.parse_args()
 
     records = analysis.build_dataset()
-    # P1-#6：生成时间戳动态化（曾硬编码 "2026-08-10"）
-    meta = {"generated": datetime.now(timezone.utc).strftime("%Y-%m-%d"), "as_of": args.as_of or "见各供应商 as_of 字段"}
+    # P1-#6：生成时间戳动态化（曾硬编码 "2026-08-10"）。
+    # as_of 默认取 CSV 单一日期（latest_as_of 遇多日期会 raise，构建失败胜于显示
+    # 一个谁都不代表的日期）；显式传 --as_of 时以显式值为准。
+    meta = {
+        "generated": datetime.now(timezone.utc).strftime("%Y-%m-%d"),
+        "as_of": args.as_of or analysis.latest_as_of(),
+    }
 
     if args.id:
         rec = next((r for r in records if r["id"] == args.id), None)

@@ -100,6 +100,9 @@ def render_json(records, meta=None):
                 "ticker": r["ticker"],
                 "category": r["category"],
                 "peer_group": r["peer_group"],
+                # 透传 CSV 的 as_of（record 里已有，此前 render_json 漏掉了它，
+                # 导致下游看板无处读取真实数据日期，只能靠模板/locales 硬编码）
+                "as_of": r.get("as_of", ""),
                 "market_cap_usd_b": r["market_cap_usd_b"],
                 "revenue_ttm_usd_b": r["revenue_ttm_usd_b"],
                 "net_income_ttm_usd_b": r["net_income_ttm_usd_b"],
