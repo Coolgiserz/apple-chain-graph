@@ -96,10 +96,26 @@ def link(name, key, jump, mode="spa"):
 
 
 CSS = """
-:root{--bg:#f5f7fa;--card:#fff;--ink:#1c2430;--muted:#5b6b7d;--line:#e3e8ef;
-  --blue:#0a66c2;--blue2:#e8f1fb;--green:#0e7c4f;--amber:#b06a00;--red:#b3261e;}
 *{box-sizing:border-box}
-body{margin:0;font-family:-apple-system,'Segoe UI',Roboto,'PingFang SC','Microsoft YaHei',sans-serif;
+/* 浅色主题令牌声明在 body、而不是全局根作用域（:root）——这是被真实事故逼出来的：
+   共享导航 topnav.py 的 TOPNAV_CSS 在全局根作用域定义了一整套**暗色**令牌
+   （--ink:#e8ecf4 / --bg:#0c1020 / --card:#131a2e …），而本页 CSS 先于它拼接，
+   同名变量由后定义的暗色值胜出。后果是：body{color:var(--ink)} 拿到亮色文字，
+   而斑马纹 tr:nth-child(even) td{background:#fafcff} 是硬编码白色 ——
+   亮字压白底、对比度仅 1.15:1（WCAG 正文要求 4.5:1），表格「根本看不清楚有什么字」。
+   收敛到 body 后同一处对比度回到 15.2:1。
+
+   CSS 自定义属性就近继承：body 上定义的值优先于从根作用域继承来的值，所以声明在
+   body 即可免疫后续的全局覆盖，且**不依赖拼接顺序**（比把整段 CSS 挪到 TOPNAV_CSS
+   之后更稳 —— 挪顺序只要有人调整拼接就再次失效）。
+
+   ⚠ 别把这些令牌挪回根作用域：tests/test_report_theme.py 的 RT1 守着这一点。
+   ⚠ 也别顺手改 topnav.py：它的令牌块是 test_ui_color_tokens.py CT1/CT2 认定的
+     全站共享契约（与 index / table_page / dashboard 模板 / geo_build 逐字比对），
+     除本页外其余 4 页都是暗色主题，为唯一浅色页去动共享契约收益小、回归面大。 */
+body{--bg:#f5f7fa;--card:#fff;--ink:#1c2430;--muted:#5b6b7d;--line:#e3e8ef;
+  --blue:#0a66c2;--blue2:#e8f1fb;--green:#0e7c4f;--amber:#b06a00;--red:#b3261e;
+  margin:0;font-family:-apple-system,'Segoe UI',Roboto,'PingFang SC','Microsoft YaHei',sans-serif;
   background:var(--bg);color:var(--ink);line-height:1.6;font-size:15px}
 header{background:linear-gradient(135deg,#0a2540,#0a66c2);color:#fff;padding:42px 28px}
 header h1{margin:0 0 6px;font-size:28px;letter-spacing:.5px}
