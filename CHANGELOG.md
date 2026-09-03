@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.11.5](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.11.4...v1.11.5) (2026-09-03)
+
+
+### Bug Fixes
+
+* **report:** 报告页浅色令牌收敛到 body，修复表格文字看不清 ([2d1c832](https://github.com/Coolgiserz/apple-chain-graph/commit/2d1c832eae558d5ea911564701fc3086fb5d3acb))
+
 ## [1.11.4](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.11.3...v1.11.4) (2026-09-02)
 
 
