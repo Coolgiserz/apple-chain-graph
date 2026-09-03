@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.12.0](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.11.5...v1.12.0) (2026-09-03)
+
+
+### Features
+
+* **dashboard:** 舆情分布可点击展开企业与来源链接，并消除手写打分表的双源漂移 ([9c2c76d](https://github.com/Coolgiserz/apple-chain-graph/commit/9c2c76d213c9928104c2cf493a05599a6573fc98))
+
 ## [1.11.5](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.11.4...v1.11.5) (2026-09-03)
 
 
