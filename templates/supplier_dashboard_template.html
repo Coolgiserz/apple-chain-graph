@@ -55,7 +55,46 @@
   .tag{display:inline-block;padding:2px 9px;border-radius:20px;font-size: var(--fs-xs);font-weight:700;color:var(--bright);}
   .t-under{background:var(--blue);} .t-over{background:var(--red);} .t-fair{background:var(--green);}
   .note{font-size: var(--fs-xs);color:var(--muted);margin-top:10px;}
-  @media (max-width: 860px){.cards{grid-template-columns:repeat(2,1fr);}.grid2{grid-template-columns:1fr;}}
+  /* ③ 舆情分布：点击分类 → 展开企业与来源链接。
+     新增色值一律走已有令牌：test_ui_color_tokens 的 CT3 会拒收未登记的裸 hex，
+     CT4 会拒收未定义的自定义属性（所以这里没有 --tab-color 之类的局部令牌）。 */
+  .sent-tabs{display:flex;flex-wrap:wrap;gap:8px;margin-top:12px;}
+  .sent-tab{display:inline-flex;align-items:center;gap:6px;padding:5px 12px;
+    border:1px solid var(--control-border);border-radius:999px;background:var(--soft);
+    color:var(--ink);font-family:inherit;font-size:var(--fs-base);line-height:1.4;cursor:pointer;}
+  .sent-tab:hover{background:var(--control-hover);}
+  .sent-tab.is-on{border-color:var(--focus);background:var(--control-hover);font-weight:700;}
+  .sent-tab:disabled{opacity:.45;cursor:default;}
+  .sent-tab:focus-visible{outline:2px solid var(--focus);outline-offset:2px;}
+  .sent-tab .n{font-size:var(--fs-sm);font-variant-numeric:tabular-nums;
+    background:var(--control);border-radius:999px;padding:0 6px;}
+  .swatch{width:9px;height:9px;border-radius:50%;display:inline-block;}
+  .sw-pos{background:var(--green);} .sw-bull{background:var(--blue);} .sw-neu{background:var(--muted-dim);} .sw-neg{background:var(--red);}
+  .sent-panel{margin-top:16px;border-top:1px solid var(--line);padding-top:14px;}
+  .sent-head{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px;}
+  .sent-title{font-size:var(--fs-md);font-weight:700;color:var(--ink);}
+  .sent-count{font-weight:400;color:var(--muted);margin-left:6px;}
+  .sent-close{padding:4px 12px;border:1px solid var(--control-border);border-radius:8px;
+    background:var(--soft);color:var(--ink);font-family:inherit;font-size:var(--fs-base);cursor:pointer;}
+  .sent-close:hover{background:var(--control-hover);}
+  .sent-close:focus-visible{outline:2px solid var(--focus);outline-offset:2px;}
+  .sent-empty{color:var(--muted);font-size:var(--fs-base);}
+  .sent-card{border:1px solid var(--line);border-radius:12px;background:var(--soft);padding:14px 16px;margin:0 0 12px;}
+  .sent-card-h{display:flex;flex-wrap:wrap;align-items:center;gap:8px;margin:0 0 10px;font-size:var(--fs-md);}
+  .sent-name{font-weight:700;color:var(--bright);}
+  .sent-badge{padding:2px 9px;border-radius:20px;font-size:var(--fs-xs);font-weight:700;color:var(--bright);}
+  .b-pos{background:var(--success-bg);} .b-neu{background:var(--control);} .b-neg{background:var(--danger-bg);}
+  .sent-dl{margin:0;display:grid;grid-template-columns:auto 1fr;gap:6px 12px;font-size:var(--fs-base);}
+  .sent-dl dt{color:var(--muted);white-space:nowrap;}
+  .sent-dl dd{margin:0;color:var(--ink);}
+  .sent-src-h{margin:12px 0 6px;font-size:var(--fs-base);color:var(--muted);}
+  .sent-src{margin:0;padding-left:18px;font-size:var(--fs-base);}
+  .sent-src li{margin:3px 0;}
+  .sent-src a{color:var(--link);text-decoration:none;}
+  .sent-src a:hover{text-decoration:underline;}
+  .sent-meta{color:var(--muted);font-size:var(--fs-sm);margin-left:6px;}
+  @media (max-width: 860px){.cards{grid-template-columns:repeat(2,1fr);}.grid2{grid-template-columns:1fr;}
+    .sent-dl{grid-template-columns:1fr;}.sent-dl dt{margin-top:6px;}.sent-src{padding-left:16px;}}
 __TOPNAV_CSS__
 body{padding-top:52px}
 section{scroll-margin-top:60px}
@@ -106,14 +145,23 @@ __ANALYTICS__
     </div>
   </section>
 
-  <!-- 3. 舆情分布 -->
+  <!-- 3. 舆情分布（点击分类可展开企业与来源） -->
   <section>
     <h2 data-i18n="dash.sec3">③ 市场舆情分布</h2>
     <p class="sub" data-i18n="dash.sec3.sub">新闻情绪（媒体/事件）与卖方分析师共识（评级/目标价）的占比。</p>
+    <p class="note" data-i18n="dash.sec3.hint">点击环形图的任一扇区（或下方分类按钮）可展开该分类下的企业：新闻综述、分析师共识、关键催化剂与风险，以及可点击的原始来源链接。</p>
     <div class="grid2">
-      <div class="chart-box h-360"><canvas id="newsChart"></canvas></div>
-      <div class="chart-box h-360"><canvas id="analystChart"></canvas></div>
+      <div>
+        <div class="chart-box h-360"><canvas id="newsChart"></canvas></div>
+        <div class="sent-tabs" id="newsTabs"></div>
+      </div>
+      <div>
+        <div class="chart-box h-360"><canvas id="analystChart"></canvas></div>
+        <div class="sent-tabs" id="analystTabs"></div>
+      </div>
     </div>
+    <!-- 展开面板：内容由 JS 按当前选中分类渲染；无选中时 hidden。 -->
+    <div class="sent-panel" id="sentPanel" hidden></div>
   </section>
 
   <!-- 4. 盈利质量 -->
@@ -164,35 +212,32 @@ __ANALYTICS__
 // 变成「结构上不可能」。要改口径请改上游 run_analysis.py 或生成器的映射表。
 const S_PIPELINE = __DASHBOARD_DATA__;
 
-// 【人工维护·非管道数据】news / analyst
-// ------------------------------------
-// 取值：1=正面/看多，0=中性，-1=负面/看空。
-// 为什么还留着手写：管道里没有这两列的结构化来源——supplier_sentiment.json 只有一份
-// markdown 综述，没有逐家打分。所以它们不随构建刷新，需要人定期过一遍。
+// 【管道数据·勿手改】SENTIMENT_DETAIL：新闻情绪 / 卖方共识 + 展开面板要用的明细
+// ---------------------------------------------------------------------------
+// 由 scripts/build_sentiment_data.py 在构建期从 tools/data/supplier_sentiment.csv
+// 生成，占位符由 tools/build_dashboard.py 替换。逐条包含：
+//   news / analyst（-1/0/1，由 CSV 的 positive|neutral|negative 等枚举映射而来）
+//   newsSummary / analystConsensus / catalysts / risks（综述文本）
+//   sources: [{title, url, publisher, date}]（面板里可点击的来源链接）
 //
-// 维护须知：公司若从管道消失（被移出供应链研究范围、或不再有估值倍数），这里的条目要
-// 一并删掉，否则会变成指向空值的僵尸数据。tests/test_dashboard_data.py 的 D5 用例
-// 会检查这一点。新公司没条目也不影响渲染——下面按中性 (0, 0) 兜底。
-const MANUAL_SENTIMENT = {
-  tsmc:         {news: 1,  analyst: 1},
-  foxconn:      {news: 1,  analyst: 1},
-  samsung_elec: {news: 1,  analyst: 1},
-  skhynix:      {news: 1,  analyst: 1},
-  sony:         {news: 1,  analyst: 1},
-  qualcomm:     {news: -1, analyst: 0},
-  broadcom:     {news: 1,  analyst: 1},
-  boe:          {news: 1,  analyst: 1},
-  lgd:          {news: 0,  analyst: 0},
-  murata:       {news: 1,  analyst: 1},
-  largan:       {news: 1,  analyst: 1},
-  corning:      {news: 0,  analyst: 1},
-  luxshare:     {news: 1,  analyst: 1},
-  ase:          {news: 1,  analyst: 1},
-  micron:       {news: 1,  analyst: 1}
-};
+// 这里曾经是一张手写的情绪打分表，与 CSV 里的舆情并存——两份数据各改各的，就是
+// 典型的双源漂移。CSV 里本来就有这些字段，只是看板没接，于是手写那份一路停在旧
+// 快照。现在改由管道派生，CSV 成为唯一事实来源；tests/test_sentiment_data.py 的
+// S4 用例还会锁死 CSV 内部 sources 与 sources_detail 两列同源同序。
+// （tests/test_dashboard_data.py 的 D5 直接断言模板里不再出现那张表的标识符，
+// 所以这里只用文字描述它，不写标识符字面量——与上面占位符同一条纪律。）
+//
+// ⚠ 与上面同一条纪律：注释里不要写出占位符的字面量，生成器也只产出「值」。
+const SENTIMENT_DETAIL = __SENTIMENT_DATA__;
 
-// 合并成页面实际用的 S：管道字段 + 人工情绪，缺人工条目的按中性兜底。
-const S = S_PIPELINE.map(d => Object.assign({}, d, MANUAL_SENTIMENT[d.id] || {news: 0, analyst: 0}));
+const SENT_BY_ID = Object.fromEntries(SENTIMENT_DETAIL.map(d => [d.id, d]));
+
+// 合并成页面实际用的 S：管道估值字段 + 管道舆情字段。
+// 顺序是「兜底 → 估值 → 舆情」：估值行不带 news/analyst，舆情行不带 name/mcap，
+// 两者只有 id 重叠，先铺中性兜底可保证任何一家缺舆情时页面都不炸。
+const S = S_PIPELINE.map(d => Object.assign(
+  {news: 0, analyst: 0, sources: [], newsSummary: '', analystConsensus: '', catalysts: '', risks: ''},
+  d, SENT_BY_ID[d.id]));
 
 // 估值结论 / 赛道 / 舆情 的颜色与「中文原始值 → 翻译 key」映射。
 const C = {低估:'#6ea0ff', 高估:'#f87171', 合理:'#4ade80', 困境:'#fbbf24'};
@@ -210,6 +255,100 @@ const T = k => (window.i18n ? window.i18n.t(k) : k);
 const charts = {};
 function drawChart(id, cfg){ if(typeof Chart==='undefined') return; if(charts[id]) charts[id].destroy(); charts[id] = new Chart(document.getElementById(id), cfg); }
 
+// ===== ③ 舆情分布：点分类 → 展开企业与来源 =====
+// 只有计数时，读者看到「正面 8 家」却不知道是哪 8 家、依据是什么。这里让环形图的
+// 扇区和下方胶囊按钮都成为入口：点一下展开该分类的企业卡片（综述 + 催化剂 + 风险 +
+// 可点击的原始来源），再点一下收起。
+//
+// SENT_META 把「分类顺序 / 分值→分类 / 翻译 key / 色点 class / 按钮容器」收在一处。
+// keys 的顺序同时决定扇区顺序与按钮顺序，所以扇区的 els[0].index 可以直接当索引用。
+const SENT_META = {
+  news: {keys:['正面','中性','负面'], map:{1:'正面', 0:'中性', '-1':'负面'}, keyMap:NEWS_KEY,
+         swatch:{正面:'sw-pos', 中性:'sw-neu', 负面:'sw-neg'},
+         tabId:'newsTabs', dimKey:'dash.sent.dim.news'},
+  analyst: {keys:['看多','中性','看空'], map:{1:'看多', 0:'中性', '-1':'看空'}, keyMap:AN_KEY,
+            swatch:{看多:'sw-bull', 中性:'sw-neu', 看空:'sw-neg'},
+            tabId:'analystTabs', dimKey:'dash.sent.dim.analyst'}
+};
+
+// 当前展开的分类。放在 renderDashboard 外面，这样切换语言重渲染时选中项不会丢。
+let sentSel = {dim:null, key:null};
+
+// 环形图扇区色（数据色，硬编码：CT6 明确要求数据侧色值保持裸 hex，var() 在 JS
+// 上下文会失效；与图例 swatch 的令牌值一一对应，改色时两处一起改）。
+const DIST_COLOR = {正面:'#4ade80', 中性:'#7a8bb0', 负面:'#f87171', 看多:'#6ea0ff', 看空:'#f87171'};
+
+// 来源标题与综述来自外部，可能带尖括号或引号；渲染前转义，避免把面板结构弄坏。
+const esc = s => String(s == null ? '' : s).replace(/[&<>"]/g,
+  c => ({'&':'&amp;', '<':'&lt;', '>':'&gt;', '"':'&quot;'}[c]));
+
+function sentCompanies(dim, key){
+  const map = SENT_META[dim].map;
+  return S.filter(d => map[dim === 'news' ? d.news : d.analyst] === key);
+}
+
+function sentCardHTML(d){
+  const bCls = v => (v === 1 ? 'b-pos' : v === 0 ? 'b-neu' : 'b-neg');
+  const srcs = (d.sources || []).map(s =>
+    `<li><a href="${esc(s.url)}" target="_blank" rel="noopener noreferrer">${esc(s.title)}`
+    + `<span class="sent-meta">${esc(s.publisher)} · ${esc(s.date)}</span></a></li>`).join('');
+  return `<article class="sent-card">
+    <h3 class="sent-card-h">
+      <span class="sent-name">${esc(d.name)}</span>
+      <span class="sent-badge ${bCls(d.news)}">${T('dash.sent.newsShort')} ${T(NEWS_KEY[SENT_META.news.map[d.news]])}</span>
+      <span class="sent-badge ${bCls(d.analyst)}">${T('dash.sent.analystShort')} ${T(AN_KEY[SENT_META.analyst.map[d.analyst]])}</span>
+    </h3>
+    <dl class="sent-dl">
+      <dt>${T('dash.sent.summary')}</dt><dd>${esc(d.newsSummary)}</dd>
+      <dt>${T('dash.sent.consensus')}</dt><dd>${esc(d.analystConsensus)}</dd>
+      <dt>${T('dash.sent.catalysts')}</dt><dd>${esc(d.catalysts)}</dd>
+      <dt>${T('dash.sent.risks')}</dt><dd>${esc(d.risks)}</dd>
+    </dl>
+    <p class="sent-src-h">${T('dash.sent.sources')}（${(d.sources || []).length}）</p>
+    <ul class="sent-src">${srcs || `<li class="sent-empty">${T('dash.sent.noSource')}</li>`}</ul>
+  </article>`;
+}
+
+function renderSentTabs(){
+  Object.keys(SENT_META).forEach(dim => {
+    const meta = SENT_META[dim];
+    const box = document.getElementById(meta.tabId);
+    if (!box) return;
+    const dimLabel = T(meta.dimKey);
+    box.innerHTML = meta.keys.map(k => {
+      const n = sentCompanies(dim, k).length;
+      const on = sentSel.dim === dim && sentSel.key === k;
+      return `<button type="button" class="sent-tab${on ? ' is-on' : ''}" data-dim="${dim}" data-key="${k}"`
+        + ` aria-pressed="${on}"${n ? '' : ' disabled'}`
+        + ` aria-label="${esc(dimLabel)} ${esc(T(meta.keyMap[k]))}（${n} ${esc(T('dash.unit.firm'))}）"`
+        + `><span class="swatch ${meta.swatch[k]}"></span>${esc(T(meta.keyMap[k]))}<span class="n">${n}</span></button>`;
+    }).join('');
+  });
+}
+
+function renderSentPanel(){
+  const box = document.getElementById('sentPanel');
+  if (!box) return;
+  if (!sentSel.dim){ box.hidden = true; box.innerHTML = ''; return; }
+  const meta = SENT_META[sentSel.dim];
+  const rows = sentCompanies(sentSel.dim, sentSel.key);
+  box.hidden = false;
+  box.innerHTML = `<div class="sent-head">
+      <span class="sent-title">${esc(T(meta.dimKey))} · ${esc(T(meta.keyMap[sentSel.key]))}`
+      + `<span class="sent-count">${rows.length} ${esc(T('dash.unit.firm'))}</span></span>`
+      + `<button type="button" class="sent-close" id="sentClose">${esc(T('dash.sent.collapse'))}</button>`
+    + `</div>` + (rows.length ? rows.map(sentCardHTML).join('')
+      : `<p class="sent-empty">${esc(T('dash.sent.empty'))}</p>`);
+  const close = document.getElementById('sentClose');
+  if (close) close.addEventListener('click', () => toggleSent(sentSel.dim, sentSel.key));
+}
+
+function toggleSent(dim, key){
+  sentSel = (sentSel.dim === dim && sentSel.key === key) ? {dim:null, key:null} : {dim:dim, key:key};
+  renderSentTabs();
+  renderSentPanel();
+}
+
 function renderDashboard(){
   Chart.defaults.font.family = '-apple-system,"PingFang SC","Microsoft YaHei",sans-serif';
   Chart.defaults.color = '#9fb0d0';
@@ -219,8 +358,6 @@ function renderDashboard(){
   // 卡片取值，但会在调试时误导）。
   const counts = {低估:0,高估:0,合理:0,困境:0};
   S.forEach(d=>counts[d.verdict]++);
-  const newsDist = {正面:0,中性:0,负面:0}; const anDist={看多:0,中性:0,看空:0};
-  S.forEach(d=>{ newsDist[d.news===1?'正面':d.news===0?'中性':'负面']++; anDist[d.analyst===1?'看多':d.analyst===0?'中性':'看空']++;});
   const sentimentIndex = d => (d.news + d.analyst)/2;
   const posCount = S.filter(d=>sentimentIndex(d)>=0.5).length;
   const cards = [
@@ -263,20 +400,26 @@ function renderDashboard(){
            grid:{color:c=> c.tick.value===0?'#4a5878':'#263049'}}}}
   });
 
-  // ===== ③ 舆情分布（环形）=====
-  function doughnut(canvas,dist,keyMap,colors){
-    const labels = Object.keys(dist).map(k=>T(keyMap[k]));
+  // ===== ③ 舆情分布（环形，扇区可点击）=====
+  // dist 由 S（而不是另算一份）派生，保证扇区计数与展开出来的企业列表永远一致。
+  function doughnut(canvas, dim){
+    const meta = SENT_META[dim];
     drawChart(canvas,{
      type:'doughnut',
-     data:{labels:labels,datasets:[{data:Object.values(dist),backgroundColor:colors,borderWidth:2,borderColor:'#131a2e'}]},
+     data:{labels:meta.keys.map(k=>T(meta.keyMap[k])),
+       datasets:[{data:meta.keys.map(k=>sentCompanies(dim,k).length),
+         backgroundColor:meta.keys.map(k=>DIST_COLOR[k]),borderWidth:2,borderColor:'#131a2e'}]},
      options:{responsive:true,maintainAspectRatio:false,cutout:'58%',
+       onClick:(e, els)=>{ if(els && els.length) toggleSent(dim, meta.keys[els[0].index]); },
        plugins:{legend:{position:'bottom'},
-         title:{display:true,text: canvas==='newsChart'?T('dash.chart.news'):T('dash.chart.analyst')},
+         title:{display:true,text: dim==='news'?T('dash.chart.news'):T('dash.chart.analyst')},
          tooltip:{callbacks:{label:c=>`${c.label}: ${c.raw} ${T('dash.unit.firm')} (${Math.round(c.raw/S.length*100)}%)`}}}}
     });
   }
-  doughnut('newsChart',newsDist,NEWS_KEY,['#4ade80','#7a8bb0','#f87171']);
-  doughnut('analystChart',anDist,AN_KEY,['#6ea0ff','#7a8bb0','#f87171']);
+  doughnut('newsChart','news');
+  doughnut('analystChart','analyst');
+  renderSentTabs();
+  renderSentPanel();
 
   // ===== ④ 盈利质量（ROE × 净利率）=====
   const profitData = S.map(d=>({x:d.nm,y:d.roe,r:4+Math.sqrt(d.rev)*2.4,_d:d}));
@@ -326,6 +469,17 @@ function renderDashboard(){
 renderDashboard();
 document.addEventListener('i18n:ready', renderDashboard);
 document.addEventListener('i18n:changed', renderDashboard);
+
+// 分类按钮用事件委托：renderSentTabs() 每次渲染都重建按钮，逐个挂监听会随语言切换
+// 不断堆积。这里在容器上挂一次，靠 data-dim / data-key 反查点到的是哪个分类。
+['newsTabs','analystTabs'].forEach(id => {
+  const box = document.getElementById(id);
+  if (box) box.addEventListener('click', e => {
+    const btn = e.target.closest('.sent-tab');
+    if (!btn || btn.disabled) return;
+    toggleSent(btn.dataset.dim, btn.dataset.key);
+  });
+});
 </script>
 </body>
 </html>

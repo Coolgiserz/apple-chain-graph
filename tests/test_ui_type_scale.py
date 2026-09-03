@@ -66,7 +66,10 @@ SCALE = {
 LEGACY_SIZES = {"10", "11.5", "12.3", "12.5", "12.8", "13.5",
                 "15", "17", "19", "20", "23", "27"}
 
-TOTAL_DECLARATIONS = 138  # 改造前 137 处；+1 = as_of 透传新增的看板元信息行（header .meta，var(--fs-sm)）
+TOTAL_DECLARATIONS = 149  # 改造前 137 处；+1 = as_of 透传新增的看板元信息行（header .meta，var(--fs-sm)）
+#                          ↑ +11 = ③ 舆情展开面板（胶囊按钮 var(--fs-base/sm)、面板标题
+#                            var(--fs-md)、企业名 var(--fs-md)、徽标 var(--fs-xs)、
+#                            定义列表与来源链接 var(--fs-base)、来源元信息 var(--fs-sm)）
 
 
 def _read(path):
