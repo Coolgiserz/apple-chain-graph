@@ -22,13 +22,17 @@ UI 轮次碰过（a11y / 断点 / 暗色 / 字号 / 色值），从未有过数�
 
 分工原则
 --------
-管道里有的字段一律取自管道；管道没有结构化来源的字段留在模板里人工维护：
+凡是管道里有结构化来源的字段一律取自管道，不留手写副本：
 
-- **管道字段**：id / name / sector / mcap / rev / score / verdict / gm / nm / roe /
-  pe / pb / ev / con —— 本文件生成，每次构建刷新。
-- **人工字段**：news / analyst（新闻情绪、卖方共识）—— 留在模板的
-  ``MANUAL_SENTIMENT`` 里，因为 ``sentiment.json`` 只有 markdown 综述、没有逐家
-  结构化打分。见模板里「人工维护·非管道数据」注释。
+- **估值字段**：id / name / sector / mcap / rev / score / verdict / gm / nm / roe /
+  pe / pb / ev / con —— 本文件从 ``supplier_analysis.json`` 生成，每次构建刷新。
+- **舆情字段**：news / analyst / newsSummary / analystConsensus / catalysts / risks /
+  sources —— 由 ``scripts/build_sentiment_data.py`` 从 ``supplier_sentiment.csv``
+  生成，同样每次构建刷新。
+
+曾经把 news / analyst 留在模板里手写，理由是「sentiment.json 只有 markdown 综述、
+没有逐家结构化打分」。这个理由不成立：``supplier_sentiment.csv`` 里一直有逐家打分，
+只是看板没接。两份数据各改各的就是典型的双源漂移，已改为从 CSV 派生。
 
 用法
 ----

@@ -24,9 +24,12 @@
 修复思路
 --------
 把这块数据接回管道：每次构建从 ``tools/output/supplier_analysis.json`` 重新生成。
-分工原则——管道里有的字段一律取自管道；管道没有结构化来源的字段（news / analyst
-舆情与分析师情绪，``sentiment.json`` 只有 markdown、没有逐家结构化分）留在模板的
-``MANUAL_SENTIMENT`` 里人工维护，并显式标注。
+分工原则——凡是管道里有结构化来源的字段一律取自管道，不留手写副本。
+
+（原先把 news / analyst 舆情留在模板的 ``MANUAL_SENTIMENT`` 里手写，理由是
+"sentiment.json 只有 markdown、没有逐家结构化分"。这个理由不成立：
+``tools/data/supplier_sentiment.csv`` 里一直有逐家打分，只是看板没接。两份数据
+各改各的就是双源漂移，已改为从 CSV 派生，见 tests/test_sentiment_data.py。）
 
 本文件要防的回归
 ----------------
@@ -37,8 +40,9 @@
    四种之内，``sector`` 必须落在 ``SECTOR_KEY`` 之内。管道将来新增文案
    （如「基准（终端厂，非供应商）」）时，这里先红，提示补映射——而不是让页面
    显示一个没颜色、没译文的裸值。
-3. **D5（人工字段不腐烂）**：``MANUAL_SENTIMENT`` 的 key 必须是当前数据里还存在的
-   id。公司从管道里消失后，残留的手工条目会变成僵尸数据。
+3. **D5（舆情不回流手写表）**：news / analyst 打分必须来自 ``supplier_sentiment.csv``
+   的管道派生，模板里不得再出现手写打分表。手写那份的真正问题不是"会有僵尸条目"，
+   而是**它不会随 CSV 刷新**——页面上的情绪结论会悄悄停在旧快照。
 4. **D6（结构）**：模板里不能再有手写的快照数组，只能是占位符。
 
 为什么 D1 不写死「15 家」
@@ -81,21 +85,6 @@ def _sectors_from_template(tpl_src):
     m = re.search(r"const SECTOR_KEY\s*=\s*\{(.*?)\};", tpl_src, re.S)
     assert m, "模板中未找到 SECTOR_KEY"
     return set(re.findall(r"'([^']+)'\s*:", m.group(1)))
-
-
-def _manual_sentiment(tpl_src):
-    """解析人工维护的 MANUAL_SENTIMENT，返回 {id: {'news': n, 'analyst': n}}。"""
-    m = re.search(r"const MANUAL_SENTIMENT\s*=\s*\{(.*?)\n\};", tpl_src, re.S)
-    assert m, "模板中未找到 MANUAL_SENTIMENT"
-    out = {}
-    for sid, body in re.findall(r"(\w+)\s*:\s*\{([^}]*)\}", m.group(1)):
-        news = re.search(r"news\s*:\s*(-?\d+)", body)
-        analyst = re.search(r"analyst\s*:\s*(-?\d+)", body)
-        out[sid] = {
-            "news": int(news.group(1)) if news else None,
-            "analyst": int(analyst.group(1)) if analyst else None,
-        }
-    return out
 
 
 def _pipeline_from_product(product_src):
@@ -152,20 +141,20 @@ class DashboardDataPipeline(unittest.TestCase):
                          "以下 sector 不在模板 SECTOR_KEY 内（会显示为未翻译裸值）。"
                          "请在 build_dashboard_data.SECTOR_BY_CATEGORY 补映射：%r" % bad)
 
-    def test_d5_manual_sentiment_has_no_zombies(self):
-        """D5：人工维护的 news/analyst 条目必须对应当前仍存在的公司。"""
-        import build_dashboard_data as gen
+    def test_d5_sentiment_comes_from_pipeline(self):
+        """D5：舆情打分必须由 CSV 派生，模板里不得再有手写打分表。
 
-        manual = _manual_sentiment(TPL.read_text(encoding="utf-8"))
-        self.assertTrue(manual, "MANUAL_SENTIMENT 为空")
-        live = {r["id"] for r in gen.build_rows()}
-        zombies = sorted(set(manual) - live)
-        self.assertEqual(zombies, [],
-                         "MANUAL_SENTIMENT 里有以下已不在数据中的公司（僵尸条目）：%r" % zombies)
-        for sid, v in manual.items():
-            for k in ("news", "analyst"):
-                self.assertIn(v[k], (-1, 0, 1),
-                              "%s.%s 应为 -1/0/1，实际 %r" % (sid, k, v[k]))
+        原先模板里有一张 ``MANUAL_SENTIMENT``，与 ``supplier_sentiment.csv`` 并存，
+        两份各改各的（双源漂移）。手写那份不会随 CSV 刷新，页面上的情绪结论因此停在
+        旧快照。现在改由 ``scripts/build_sentiment_data.py`` 从 CSV 派生，这里守住
+        「不再回流」——逐家是否都有舆情条目由 tests/test_sentiment_data.py 的 S1 负责。
+        """
+        tpl = TPL.read_text(encoding="utf-8")
+        self.assertNotIn("MANUAL_SENTIMENT", tpl,
+                         "模板里又出现了手写打分表——舆情应全部由 build_sentiment_data "
+                         "从 supplier_sentiment.csv 派生")
+        self.assertIn("__SENTIMENT_DATA__", tpl,
+                      "模板应有 __SENTIMENT_DATA__ 占位符（舆情明细注入点）")
 
     def test_d6_template_has_no_handwritten_snapshot(self):
         """D6：模板里不得再有手写的快照数组，只能是占位符。"""

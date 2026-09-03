@@ -142,7 +142,10 @@ HEX_RE = re.compile(
     r"|#[0-9a-fA-F]{3}(?![0-9a-fA-F])"
 )
 
-TOTAL_REPLACEMENTS = 315  # 见模块 docstring 的四段口径：270 + 22 + 18 + 5
+TOTAL_REPLACEMENTS = 348  # 见模块 docstring 的五段口径：270 + 22 + 18 + 5 + 33
+#                          ↑ +33 = ③ 舆情展开面板新增的色值引用（分类胶囊 / 企业卡片 /
+#                            来源链接）。新增样式必须继续走令牌：CT3 拒收未登记的裸
+#                            hex，CT4 拒收自定义属性（故面板里没有 --tab-color 之类）。
 
 
 def _read(path):

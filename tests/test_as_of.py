@@ -52,6 +52,7 @@ E6  模板占位符防御：模板里 ``__AS_OF__`` 与 ``__SUPPLIER_COUNT__`` �
 import csv
 import json
 import os
+import re
 import subprocess
 import sys
 import tempfile
@@ -152,8 +153,17 @@ class AsOfDashboard(unittest.TestCase):
         src = PRODUCT.read_text(encoding="utf-8")
         self.assertIn(CURRENT_AS_OF, src,
                       "产物应显示数据日期 %s（as_of 未透传？）" % CURRENT_AS_OF)
-        self.assertNotIn("2026-08-10", src,
-                         "产物不应再出现硬编码的 2026-08-10")
+
+        # 从「数据截至」元素取值比对，而不是断言全文不出现旧日期串。
+        # 全文子串匹配原本够用（旧日期只可能来自写死的 as_of），但接进舆情明细后
+        # 来源链接自带真实的发布日期，恰好也有一天是 2026-08-10——再按全文匹配
+        # 会把一条合法的新闻日期当成回归。真正要保证的是**展示出来的那个日期**，
+        # 取值比对同时也比「旧串不存在」更严：写死成任何别的日期都会红。
+        m = re.search(r'<span class="as-of">([^<]*)</span>', src)
+        self.assertTrue(m, '产物里找不到数据日期元素 <span class="as-of">')
+        self.assertEqual(m.group(1).strip(), CURRENT_AS_OF,
+                         "产物显示的数据日期应为 %s，实际 %r（又写死了旧日期？）"
+                         % (CURRENT_AS_OF, m.group(1).strip()))
         for ph in ("__AS_OF__", "__SUPPLIER_COUNT__"):
             self.assertNotIn(ph, src,
                              "产物不应残留占位符 %s（构建没替换它？）" % ph)
