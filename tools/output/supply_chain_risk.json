@@ -20,7 +20,7 @@
     {
       "product_line": "iPhone",
       "n_products": 7,
-      "mean_product_vuln": 0.49590713902308103,
+      "mean_product_vuln": 0.4941338854382332,
       "tier": "中",
       "mean_weakest": 1.0,
       "single_point_total": 8,
@@ -28,7 +28,7 @@
       "worst_product": {
         "product_id": "iphone_duo",
         "name": "iPhone Duo",
-        "product_vuln": 0.5126543209876543
+        "product_vuln": 0.5111111111111111
       }
     },
     {
@@ -48,7 +48,7 @@
     {
       "product_line": "Audio",
       "n_products": 6,
-      "mean_product_vuln": 0.3177854938271605,
+      "mean_product_vuln": 0.3170138888888889,
       "tier": "中",
       "mean_weakest": 0.5,
       "single_point_total": 0,
@@ -108,12 +108,12 @@
       "name": "iPhone Duo",
       "product_line": "iPhone",
       "n_components": 27,
-      "mean_v": 0.39567901234567904,
+      "mean_v": 0.3925925925925926,
       "weakest": 1.0,
       "weakest_component": "audio_codec",
       "sp_count": 2,
       "sp_rate": 0.07407407407407407,
-      "product_vuln": 0.5126543209876543,
+      "product_vuln": 0.5111111111111111,
       "tier": "中",
       "components": [
         {
@@ -273,8 +273,8 @@
         {
           "component_id": "uwb",
           "name": "超宽带芯片",
-          "vuln": 0.3333333333333333,
-          "n_suppliers": 3,
+          "vuln": 0.25,
+          "n_suppliers": 4,
           "single_point": false
         },
         {
@@ -312,12 +312,12 @@
       "name": "iPhone 18 Pro",
       "product_line": "iPhone",
       "n_components": 23,
-      "mean_v": 0.3688405797101449,
+      "mean_v": 0.3652173913043478,
       "weakest": 1.0,
       "weakest_component": "audio_codec",
       "sp_count": 1,
       "sp_rate": 0.043478260869565216,
-      "product_vuln": 0.4931159420289855,
+      "product_vuln": 0.49130434782608695,
       "tier": "中",
       "components": [
         {
@@ -477,8 +477,8 @@
         {
           "component_id": "uwb",
           "name": "超宽带芯片",
-          "vuln": 0.3333333333333333,
-          "n_suppliers": 3,
+          "vuln": 0.25,
+          "n_suppliers": 4,
           "single_point": false
         }
       ]
@@ -488,12 +488,12 @@
       "name": "iPhone 18 Pro Max",
       "product_line": "iPhone",
       "n_components": 23,
-      "mean_v": 0.3688405797101449,
+      "mean_v": 0.3652173913043478,
       "weakest": 1.0,
       "weakest_component": "audio_codec",
       "sp_count": 1,
       "sp_rate": 0.043478260869565216,
-      "product_vuln": 0.4931159420289855,
+      "product_vuln": 0.49130434782608695,
       "tier": "中",
       "components": [
         {
@@ -653,8 +653,8 @@
         {
           "component_id": "uwb",
           "name": "超宽带芯片",
-          "vuln": 0.3333333333333333,
-          "n_suppliers": 3,
+          "vuln": 0.25,
+          "n_suppliers": 4,
           "single_point": false
         }
       ]
@@ -664,12 +664,12 @@
       "name": "iPhone 17",
       "product_line": "iPhone",
       "n_components": 23,
-      "mean_v": 0.3688405797101449,
+      "mean_v": 0.3652173913043478,
       "weakest": 1.0,
       "weakest_component": "audio_codec",
       "sp_count": 1,
       "sp_rate": 0.043478260869565216,
-      "product_vuln": 0.4931159420289855,
+      "product_vuln": 0.49130434782608695,
       "tier": "中",
       "components": [
         {
@@ -829,8 +829,8 @@
         {
           "component_id": "uwb",
           "name": "超宽带芯片",
-          "vuln": 0.3333333333333333,
-          "n_suppliers": 3,
+          "vuln": 0.25,
+          "n_suppliers": 4,
           "single_point": false
         }
       ]
@@ -840,12 +840,12 @@
       "name": "iPhone 17 Air",
       "product_line": "iPhone",
       "n_components": 23,
-      "mean_v": 0.3688405797101449,
+      "mean_v": 0.3652173913043478,
       "weakest": 1.0,
       "weakest_component": "audio_codec",
       "sp_count": 1,
       "sp_rate": 0.043478260869565216,
-      "product_vuln": 0.4931159420289855,
+      "product_vuln": 0.49130434782608695,
       "tier": "中",
       "components": [
         {
@@ -1005,8 +1005,8 @@
         {
           "component_id": "uwb",
           "name": "超宽带芯片",
-          "vuln": 0.3333333333333333,
-          "n_suppliers": 3,
+          "vuln": 0.25,
+          "n_suppliers": 4,
           "single_point": false
         }
       ]
@@ -1016,12 +1016,12 @@
       "name": "iPhone 17 Pro",
       "product_line": "iPhone",
       "n_components": 23,
-      "mean_v": 0.3688405797101449,
+      "mean_v": 0.3652173913043478,
       "weakest": 1.0,
       "weakest_component": "audio_codec",
       "sp_count": 1,
       "sp_rate": 0.043478260869565216,
-      "product_vuln": 0.4931159420289855,
+      "product_vuln": 0.49130434782608695,
       "tier": "中",
       "components": [
         {
@@ -1181,8 +1181,8 @@
         {
           "component_id": "uwb",
           "name": "超宽带芯片",
-          "vuln": 0.3333333333333333,
-          "n_suppliers": 3,
+          "vuln": 0.25,
+          "n_suppliers": 4,
           "single_point": false
         }
       ]
@@ -1192,12 +1192,12 @@
       "name": "iPhone 17 Pro Max",
       "product_line": "iPhone",
       "n_components": 23,
-      "mean_v": 0.3688405797101449,
+      "mean_v": 0.3652173913043478,
       "weakest": 1.0,
       "weakest_component": "audio_codec",
       "sp_count": 1,
       "sp_rate": 0.043478260869565216,
-      "product_vuln": 0.4931159420289855,
+      "product_vuln": 0.49130434782608695,
       "tier": "中",
       "components": [
         {
@@ -1357,8 +1357,8 @@
         {
           "component_id": "uwb",
           "name": "超宽带芯片",
-          "vuln": 0.3333333333333333,
-          "n_suppliers": 3,
+          "vuln": 0.25,
+          "n_suppliers": 4,
           "single_point": false
         }
       ]
@@ -1906,12 +1906,12 @@
       "name": "AirPods Pro 3",
       "product_line": "Audio",
       "n_components": 9,
-      "mean_v": 0.34259259259259256,
+      "mean_v": 0.3333333333333333,
       "weakest": 0.5,
       "weakest_component": "connectivity",
       "sp_count": 0,
       "sp_rate": 0.0,
-      "product_vuln": 0.3212962962962963,
+      "product_vuln": 0.31666666666666665,
       "tier": "中",
       "components": [
         {
@@ -1973,8 +1973,8 @@
         {
           "component_id": "uwb",
           "name": "超宽带芯片",
-          "vuln": 0.3333333333333333,
-          "n_suppliers": 3,
+          "vuln": 0.25,
+          "n_suppliers": 4,
           "single_point": false
         }
       ]
@@ -4147,11 +4147,11 @@
       "single_point": true,
       "missing_data": false,
       "suppliers": [
-        "usi"
+        "st"
       ],
       "distinct_countries": 1,
       "countries": [
-        "Taiwan/China"
+        "Switzerland/France"
       ]
     },
     {
@@ -4540,26 +4540,6 @@
       ]
     },
     {
-      "component_id": "uwb",
-      "name": "超宽带芯片",
-      "category": "Connectivity",
-      "n_suppliers": 3,
-      "vuln": 0.3333333333333333,
-      "single_point": false,
-      "missing_data": false,
-      "suppliers": [
-        "st",
-        "apple",
-        "murata"
-      ],
-      "distinct_countries": 3,
-      "countries": [
-        "Japan",
-        "Switzerland/France",
-        "USA"
-      ]
-    },
-    {
       "component_id": "lens",
       "name": "镜头",
       "category": "Optics/Camera",
@@ -4618,6 +4598,28 @@
         "China",
         "Japan",
         "Taiwan"
+      ]
+    },
+    {
+      "component_id": "uwb",
+      "name": "超宽带芯片",
+      "category": "Connectivity",
+      "n_suppliers": 4,
+      "vuln": 0.25,
+      "single_point": false,
+      "missing_data": false,
+      "suppliers": [
+        "st",
+        "apple",
+        "murata",
+        "usi"
+      ],
+      "distinct_countries": 4,
+      "countries": [
+        "Japan",
+        "Switzerland/France",
+        "Taiwan/China",
+        "USA"
       ]
     },
     {

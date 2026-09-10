@@ -226,7 +226,7 @@ COMP_SOURCE = {
  "foldable_panel":  ["ubiresearch", "apple_specs"],
  "utg":             ["cn_ir", "apple_specs"],
  "hinge":           ["apple_specs", "cn_ir", "cinno"],
- "esim_module":     ["cn_ir"],
+ "esim_module":     ["ifixit", "techinsights"],
 }
 # 关系级别默认来源集合
 SRC_ASSEMBLY = ["apple_supplier_list", "nikkei"]      # 代工关系
@@ -375,22 +375,31 @@ COMP_SUP = {
  "sensor_motion":  [("bosch", None, "运动/气压传感器"), ("st", None, "传感器"), ("tdk", None, "传感器/IMU")],
  "sensor_bio":     [("st", None, "健康/生物传感器"), ("ams", None, "光学/环境传感器")],
  "optical_filter": [("crystal", None, "光学滤光片/棱镜"), ("lante", None, "光学元件")],
- "uwb":            [("st", None, "U2 超宽带芯片"), ("apple", None, "UWB 设计"), ("murata", None, "UWB 超宽带模块（基于 NXP 方案），用于 iPhone / AirTag 等空间感知")],
+ "uwb":            [("st", None, "U2 超宽带芯片"), ("apple", None, "UWB 设计"), ("murata", None, "UWB 超宽带模块（基于 NXP 方案），用于 iPhone / AirTag 等空间感知"),
+                    ("usi", None, "UWB 超宽带模块 SiP 封装（iPhone 16 Pro 拆解确认 USI 超宽带模块）—— 环旭是封测/SiP 厂，非 eSIM 芯片供应商")],
  "wireless_charging":[("st", None, "无线充电控制器"), ("broadcom", None, "无线充电")],
  "touch":          [("gis", None, "触控模组"), ("lgd", None, "触控显示")],
  "camera_module":  [("cowell", None, "摄像头模组"), ("lgd", None, "模组")],
  # ---- 2026-09 折叠屏 iPhone Duo ----
  # 苹果从不披露折叠屏逐项供应商，以下归属均标注置信度，勿当作已官宣事实。
+ # 重要纪律：A 股公司公告受保密协议约束，通常只披露「某大客户」或「折叠屏客户」，
+ # 不会点名苹果。故凡注明「未点名客户」者，公司公告只能证实其确有相关产品/产能，
+ # 「供应给苹果」属推断而非事实——不可写成已确认。
  "foldable_panel": [("sdc", None, "iPhone Duo 7.6\" 内屏可折叠 OLED（官方仅确认尺寸，供应商为 UBI Research 口径：2026 约 800 万块 / 2027 目标 1500 万块）"),
                     ("lgd", None, "iPhone Duo 5.4\" 外屏 OLED（推断，未官宣）")],
- "utg":            [("lens_tech", None, "iPhone Duo UTG 超薄柔性玻璃、CPI 膜、UTG 支撑板、3D 玻璃盖板（公司 2026-08 投资者交流）"),
-                    ("changxin_tech", None, "UTG 超薄柔性玻璃（2–20 英寸 / 30–100μm，R0.5mm 200K+ 弯折；公司 2025 年报口径）")],
- "hinge":          [("amphenol", None, "iPhone Duo 铰链一级供应商（CINNO Research 分析师口径，未官宣）"),
-                    ("shinzushing", None, "iPhone Duo 铰链一级供应商（CINNO Research 分析师口径，未官宣）"),
-                    ("lingyi", None, "铰链精密结构件、屏幕支撑板、超薄均热板、不锈钢电池壳模组（2026-09-04 机构调研）"),
-                    ("yian_tech", None, "铰链液态金属(非晶合金)主轴结构件（2026 半年报，称已与安费诺合作）"),
-                    ("jingyan_tech", None, "铰链 MIM 精密结构件（2026 半年报口径）")],
- "esim_module":    [("usi", None, "eSIM SiP 模组（0.4mm 超薄封装）—— 来源为二手梳理，尚未核到公司公告原文，待确认")],
+ "utg":            [("lens_tech", None, "UTG 超薄柔性玻璃、CPI 膜、UTG 支撑板、3D 玻璃盖板（公司 2026-08 投资者交流称「向某大客户折叠屏项目」供货，未点名苹果，供苹果系推断）"),
+                    ("changxin_tech", None, "UTG 超薄柔性玻璃（2–20 英寸 / 30–100μm，R0.5mm 200K+ 弯折；公司 2025 年报口径；业绩说明会称苹果是重要终端客户，但未确认供折叠屏 UTG）")],
+ "hinge":          [("amphenol", None, "折叠屏铰链一级供应商（CINNO Research 首席分析师口径，未官宣）"),
+                    ("shinzushing", None, "折叠屏铰链一级供应商（CINNO Research 首席分析师口径，未官宣）"),
+                    ("lingyi", None, "铰链精密结构件、屏幕支撑板、超薄均热板、不锈钢电池壳模组（2026-09-04 机构调研；未点名客户，供苹果系推断）"),
+                    ("yian_tech", None, "铰链液态金属(非晶合金)主轴结构件（2026 半年报确认折叠屏铰链结构件批量供货、与安费诺合作；但未点名苹果，供苹果系推断）"),
+                    ("jingyan_tech", None, "铰链 MIM 精密结构件（2026 半年报仅表述为对折叠屏行业的预期，未披露具体客户，属最弱一档）")],
+ # eSIM 安全元件：iPhone 13–16 系列经 iFixit 拆解确认采用意法半导体 ST33J。
+ # 网传「环旭电子独家供应苹果 eSIM 模组」不成立——环旭 2025-10-17 在上证 e 互动
+ # 公开否认（「尚未有独立的 eSIM 模组应用于客户的端侧产品」「尚未有 eSIM 模组
+ # 应用于智能手机」），2026 半年报与 7 月机构调研亦无 eSIM 模组业务表述；
+ # 该传闻源头为互相转载的荐股社区帖，不予采信。环旭改挂 uwb（见上，拆解确认）。
+ "esim_module":    [("st", None, "eSIM 安全元件 ST33J（iPhone 13–16 系列 iFixit 拆解确认；2026 新品尚未拆解，按历史沿用推断）")],
 }
 
 # ---------------------------------------------------------------------------

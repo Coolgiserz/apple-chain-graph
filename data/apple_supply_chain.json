@@ -7524,6 +7524,16 @@
         ]
       },
       {
+        "from": "uwb",
+        "to": "usi",
+        "share": "",
+        "note": "UWB 超宽带模块 SiP 封装（iPhone 16 Pro 拆解确认 USI 超宽带模块）—— 环旭是封测/SiP 厂，非 eSIM 芯片供应商",
+        "source": [
+          "techinsights",
+          "counterpoint"
+        ]
+      },
+      {
         "from": "wireless_charging",
         "to": "st",
         "share": "",
@@ -7607,7 +7617,7 @@
         "from": "utg",
         "to": "lens_tech",
         "share": "",
-        "note": "iPhone Duo UTG 超薄柔性玻璃、CPI 膜、UTG 支撑板、3D 玻璃盖板（公司 2026-08 投资者交流）",
+        "note": "UTG 超薄柔性玻璃、CPI 膜、UTG 支撑板、3D 玻璃盖板（公司 2026-08 投资者交流称「向某大客户折叠屏项目」供货，未点名苹果，供苹果系推断）",
         "source": [
           "cn_ir",
           "apple_specs"
@@ -7617,7 +7627,7 @@
         "from": "utg",
         "to": "changxin_tech",
         "share": "",
-        "note": "UTG 超薄柔性玻璃（2–20 英寸 / 30–100μm，R0.5mm 200K+ 弯折；公司 2025 年报口径）",
+        "note": "UTG 超薄柔性玻璃（2–20 英寸 / 30–100μm，R0.5mm 200K+ 弯折；公司 2025 年报口径；业绩说明会称苹果是重要终端客户，但未确认供折叠屏 UTG）",
         "source": [
           "cn_ir",
           "apple_specs"
@@ -7627,7 +7637,7 @@
         "from": "hinge",
         "to": "amphenol",
         "share": "",
-        "note": "iPhone Duo 铰链一级供应商（CINNO Research 分析师口径，未官宣）",
+        "note": "折叠屏铰链一级供应商（CINNO Research 首席分析师口径，未官宣）",
         "source": [
           "apple_specs",
           "cn_ir",
@@ -7638,7 +7648,7 @@
         "from": "hinge",
         "to": "shinzushing",
         "share": "",
-        "note": "iPhone Duo 铰链一级供应商（CINNO Research 分析师口径，未官宣）",
+        "note": "折叠屏铰链一级供应商（CINNO Research 首席分析师口径，未官宣）",
         "source": [
           "apple_specs",
           "cn_ir",
@@ -7649,7 +7659,7 @@
         "from": "hinge",
         "to": "lingyi",
         "share": "",
-        "note": "铰链精密结构件、屏幕支撑板、超薄均热板、不锈钢电池壳模组（2026-09-04 机构调研）",
+        "note": "铰链精密结构件、屏幕支撑板、超薄均热板、不锈钢电池壳模组（2026-09-04 机构调研；未点名客户，供苹果系推断）",
         "source": [
           "apple_specs",
           "cn_ir",
@@ -7660,7 +7670,7 @@
         "from": "hinge",
         "to": "yian_tech",
         "share": "",
-        "note": "铰链液态金属(非晶合金)主轴结构件（2026 半年报，称已与安费诺合作）",
+        "note": "铰链液态金属(非晶合金)主轴结构件（2026 半年报确认折叠屏铰链结构件批量供货、与安费诺合作；但未点名苹果，供苹果系推断）",
         "source": [
           "apple_specs",
           "cn_ir",
@@ -7671,7 +7681,7 @@
         "from": "hinge",
         "to": "jingyan_tech",
         "share": "",
-        "note": "铰链 MIM 精密结构件（2026 半年报口径）",
+        "note": "铰链 MIM 精密结构件（2026 半年报仅表述为对折叠屏行业的预期，未披露具体客户，属最弱一档）",
         "source": [
           "apple_specs",
           "cn_ir",
@@ -7680,11 +7690,12 @@
       },
       {
         "from": "esim_module",
-        "to": "usi",
+        "to": "st",
         "share": "",
-        "note": "eSIM SiP 模组（0.4mm 超薄封装）—— 来源为二手梳理，尚未核到公司公告原文，待确认",
+        "note": "eSIM 安全元件 ST33J（iPhone 13–16 系列 iFixit 拆解确认；2026 新品尚未拆解，按历史沿用推断）",
         "source": [
-          "cn_ir"
+          "ifixit",
+          "techinsights"
         ]
       }
     ],
