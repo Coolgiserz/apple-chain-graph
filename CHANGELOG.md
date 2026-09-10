@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.13.0](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.12.0...v1.13.0) (2026-09-10)
+
+
+### Features
+
+* **data:** 录入 2026-09 秋季发布会 6 款新品与折叠屏零部件 ([4ecce47](https://github.com/Coolgiserz/apple-chain-graph/commit/4ecce4789dd7a5ec4e6700dbbcde37eeb222964b))
+
+
+### Bug Fixes
+
+* **seo:** 同步页面硬编码的规模数字并新增防漂移测试 ([e600575](https://github.com/Coolgiserz/apple-chain-graph/commit/e600575e827d633e1bf061f220b63c5106586872))
+
 ## [1.12.0](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.11.5...v1.12.0) (2026-09-03)
 
 
