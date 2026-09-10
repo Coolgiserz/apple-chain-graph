@@ -1,6 +1,6 @@
 {
   "meta": {
-    "generated": "2026-09-02",
+    "generated": "2026-09-10",
     "as_of": "2026-09-02"
   },
   "suppliers": [
@@ -1842,6 +1842,186 @@
           "非公开上市或缺少估值倍数，仅作定性判断。"
         ],
         "peer_group": "Components",
+        "peer_count": 0
+      },
+      "trend": "",
+      "recent": "",
+      "source": ""
+    },
+    {
+      "id": "amphenol",
+      "name": "安费诺集团",
+      "short_name": "Amphenol / 安费诺",
+      "ticker": "",
+      "category": "Mech/Hinge",
+      "peer_group": "Mech/Hinge",
+      "as_of": "",
+      "market_cap_usd_b": null,
+      "revenue_ttm_usd_b": null,
+      "net_income_ttm_usd_b": null,
+      "gross_margin_pct": null,
+      "net_margin_pct": null,
+      "roe_pct": null,
+      "pe": null,
+      "pb": null,
+      "ev_ebitda": null,
+      "valuation": {
+        "verdict": "定性（未上市/无倍数）",
+        "score": null,
+        "detail": [
+          "非公开上市或缺少估值倍数，仅作定性判断。"
+        ],
+        "peer_group": "Mech/Hinge",
+        "peer_count": 0
+      },
+      "trend": "",
+      "recent": "",
+      "source": ""
+    },
+    {
+      "id": "shinzushing",
+      "name": "新日兴股份有限公司",
+      "short_name": "SZS / 新日兴",
+      "ticker": "",
+      "category": "Mech/Hinge",
+      "peer_group": "Mech/Hinge",
+      "as_of": "",
+      "market_cap_usd_b": null,
+      "revenue_ttm_usd_b": null,
+      "net_income_ttm_usd_b": null,
+      "gross_margin_pct": null,
+      "net_margin_pct": null,
+      "roe_pct": null,
+      "pe": null,
+      "pb": null,
+      "ev_ebitda": null,
+      "valuation": {
+        "verdict": "定性（未上市/无倍数）",
+        "score": null,
+        "detail": [
+          "非公开上市或缺少估值倍数，仅作定性判断。"
+        ],
+        "peer_group": "Mech/Hinge",
+        "peer_count": 0
+      },
+      "trend": "",
+      "recent": "",
+      "source": ""
+    },
+    {
+      "id": "yian_tech",
+      "name": "东莞宜安科技股份有限公司",
+      "short_name": "Eontec / 宜安科技",
+      "ticker": "",
+      "category": "Material",
+      "peer_group": "Material",
+      "as_of": "",
+      "market_cap_usd_b": null,
+      "revenue_ttm_usd_b": null,
+      "net_income_ttm_usd_b": null,
+      "gross_margin_pct": null,
+      "net_margin_pct": null,
+      "roe_pct": null,
+      "pe": null,
+      "pb": null,
+      "ev_ebitda": null,
+      "valuation": {
+        "verdict": "定性（未上市/无倍数）",
+        "score": null,
+        "detail": [
+          "非公开上市或缺少估值倍数，仅作定性判断。"
+        ],
+        "peer_group": "Material",
+        "peer_count": 0
+      },
+      "trend": "",
+      "recent": "",
+      "source": ""
+    },
+    {
+      "id": "jingyan_tech",
+      "name": "江苏精研科技股份有限公司",
+      "short_name": "Gian / 精研科技",
+      "ticker": "",
+      "category": "Mech/MIM",
+      "peer_group": "Mech/MIM",
+      "as_of": "",
+      "market_cap_usd_b": null,
+      "revenue_ttm_usd_b": null,
+      "net_income_ttm_usd_b": null,
+      "gross_margin_pct": null,
+      "net_margin_pct": null,
+      "roe_pct": null,
+      "pe": null,
+      "pb": null,
+      "ev_ebitda": null,
+      "valuation": {
+        "verdict": "定性（未上市/无倍数）",
+        "score": null,
+        "detail": [
+          "非公开上市或缺少估值倍数，仅作定性判断。"
+        ],
+        "peer_group": "Mech/MIM",
+        "peer_count": 0
+      },
+      "trend": "",
+      "recent": "",
+      "source": ""
+    },
+    {
+      "id": "changxin_tech",
+      "name": "芜湖长信科技股份有限公司",
+      "short_name": "Token / 长信科技",
+      "ticker": "",
+      "category": "Glass",
+      "peer_group": "Glass",
+      "as_of": "",
+      "market_cap_usd_b": null,
+      "revenue_ttm_usd_b": null,
+      "net_income_ttm_usd_b": null,
+      "gross_margin_pct": null,
+      "net_margin_pct": null,
+      "roe_pct": null,
+      "pe": null,
+      "pb": null,
+      "ev_ebitda": null,
+      "valuation": {
+        "verdict": "定性（未上市/无倍数）",
+        "score": null,
+        "detail": [
+          "非公开上市或缺少估值倍数，仅作定性判断。"
+        ],
+        "peer_group": "Glass",
+        "peer_count": 0
+      },
+      "trend": "",
+      "recent": "",
+      "source": ""
+    },
+    {
+      "id": "usi",
+      "name": "环旭电子股份有限公司",
+      "short_name": "USI / 环旭电子",
+      "ticker": "",
+      "category": "OSAT/SiP",
+      "peer_group": "OSAT/SiP",
+      "as_of": "",
+      "market_cap_usd_b": null,
+      "revenue_ttm_usd_b": null,
+      "net_income_ttm_usd_b": null,
+      "gross_margin_pct": null,
+      "net_margin_pct": null,
+      "roe_pct": null,
+      "pe": null,
+      "pb": null,
+      "ev_ebitda": null,
+      "valuation": {
+        "verdict": "定性（未上市/无倍数）",
+        "score": null,
+        "detail": [
+          "非公开上市或缺少估值倍数，仅作定性判断。"
+        ],
+        "peer_group": "OSAT/SiP",
         "peer_count": 0
       },
       "trend": "",

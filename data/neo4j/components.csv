@@ -26,3 +26,7 @@ uwb,超宽带芯片,UWB Chip,Connectivity,超宽带,Component
 wireless_charging,无线充电模组,Wireless Charging,Power,无线充电,Component
 touch,触控模组,Touch Module,Display,触控模组,Component
 camera_module,摄像头模组,Camera Module,Optics/Camera,摄像头模组,Component
+foldable_panel,可折叠显示面板,Foldable OLED Panel,Display,可折叠 OLED / LTPO,Component
+utg,超薄柔性玻璃(UTG),Ultra-Thin Glass (UTG),Display,UTG / CPI 膜 / 屏幕支撑板,Component
+hinge,折叠铰链模组,Foldable Hinge Module,Mechanical,铰链模组 / 主轴 / MIM 结构件,Component
+esim_module,eSIM 模组(SiP 封装),eSIM Module (SiP),Semiconductor,eSIM SiP 模组,Component

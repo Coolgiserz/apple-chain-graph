@@ -71,6 +71,27 @@ SOURCES = {
    "publisher": "Nikkei Asia",
    "url": "https://asia.nikkei.com/",
    "kind": "analyst"},
+ # ---- 2026-09 折叠屏 iPhone Duo 新增来源 ----
+ "apple_specs": {
+   "title": "Apple 官方产品技术规格页与 Newsroom 新闻稿（2026-09 秋季发布会）",
+   "publisher": "Apple Inc.",
+   "url": "https://www.apple.com/iphone-18-pro/specs/",
+   "kind": "official"},
+ "cn_ir": {
+   "title": "A 股公司投资者关系活动记录与定期报告（蓝思科技 / 领益智造 / 长信科技 / 宜安科技 / 精研科技等）",
+   "publisher": "各上市公司公告（巨潮资讯网）",
+   "url": "http://www.cninfo.com.cn/",
+   "kind": "ir"},
+ "cinno": {
+   "title": "CINNO Research — 折叠屏铰链与零部件供应链研究",
+   "publisher": "CINNO Research",
+   "url": "https://www.cinnoresearch.com/",
+   "kind": "analyst"},
+ "ubiresearch": {
+   "title": "UBI Research — OLED 面板供需与厂商出货追踪",
+   "publisher": "UBI Research",
+   "url": "https://www.ubiresearch.com/",
+   "kind": "analyst"},
 }
 # ---------------------------------------------------------------------------
 # 生产基地来源注册表（BASE_SOURCES） —— 产品线×生产基地关系溯源
@@ -201,6 +222,11 @@ COMP_SOURCE = {
  "wireless_charging":["techinsights", "counterpoint"],
  "touch":            ["techinsights", "ifixit"],
  "camera_module":    ["techinsights", "counterpoint"],
+ # ---- 2026-09 折叠屏 iPhone Duo ----
+ "foldable_panel":  ["ubiresearch", "apple_specs"],
+ "utg":             ["cn_ir", "apple_specs"],
+ "hinge":           ["apple_specs", "cn_ir", "cinno"],
+ "esim_module":     ["cn_ir"],
 }
 # 关系级别默认来源集合
 SRC_ASSEMBLY = ["apple_supplier_list", "nikkei"]      # 代工关系
@@ -274,6 +300,15 @@ SUPPLIERS = {
  "zhaowei":     {"name": "深圳市兆威机电股份有限公司", "english_name": "Shenzhen Zhaowei Machinery & Electronics Co., Ltd.","short_name": "Zhaowei / 兆威机电","country": "China",   "region": "East Asia",     "category": "Mech",              "tier": 2},
  "apple":       {"name": "苹果公司(自研)",          "english_name": "Apple Inc. (in-house)",                           "short_name": "Apple / 苹果自研","country": "USA",          "region": "North America", "category": "Semiconductor",     "tier": 1},
  "ams":         {"name": "艾迈斯欧司朗公司",        "english_name": "ams OSRAM AG",                                    "short_name": "ams OSRAM",      "country": "Austria",       "region": "Europe",       "category": "Sensor",           "tier": 2},
+ # ---- 2026-09 折叠屏 iPhone Duo 新增供应商 ----
+ # 置信度说明：苹果不披露折叠屏逐项供应商，以下归属来自公司投资者关系记录(ir)、
+ # 行业分析师(analyst)与官方规格页(official)三档，详见各条 supplied_by 的 note 与 source。
+ "amphenol":      {"name": "安费诺集团",                "english_name": "Amphenol Corporation",                                 "short_name": "Amphenol / 安费诺",   "country": "USA",           "region": "North America", "category": "Mech/Hinge",       "tier": 1},
+ "shinzushing":   {"name": "新日兴股份有限公司",        "english_name": "Shin Zu Shing Co., Ltd.",                              "short_name": "SZS / 新日兴",        "country": "Taiwan",        "region": "East Asia",     "category": "Mech/Hinge",       "tier": 1},
+ "yian_tech":     {"name": "东莞宜安科技股份有限公司",  "english_name": "Dongguan Eontec Co., Ltd.",                            "short_name": "Eontec / 宜安科技",   "country": "China",         "region": "East Asia",     "category": "Material",         "tier": 2},
+ "jingyan_tech":  {"name": "江苏精研科技股份有限公司",  "english_name": "Jiangsu Gian Technology Co., Ltd.",                    "short_name": "Gian / 精研科技",     "country": "China",         "region": "East Asia",     "category": "Mech/MIM",         "tier": 2},
+ "changxin_tech": {"name": "芜湖长信科技股份有限公司",  "english_name": "Wuhu Token Technology Co., Ltd.",                      "short_name": "Token / 长信科技",    "country": "China",         "region": "East Asia",     "category": "Glass",            "tier": 2},
+ "usi":           {"name": "环旭电子股份有限公司",      "english_name": "Universal Scientific Industrial (Shanghai) Co., Ltd.",  "short_name": "USI / 环旭电子",      "country": "Taiwan/China",  "region": "East Asia",     "category": "OSAT/SiP",         "tier": 1},
 }
 
 # ---------------------------------------------------------------------------
@@ -308,6 +343,11 @@ COMPONENTS = {
  "wireless_charging":{"name": "无线充电模组",         "english_name": "Wireless Charging",       "category": "Power",           "subcategory": "无线充电"},
  "touch":           {"name": "触控模组",              "english_name": "Touch Module",            "category": "Display",         "subcategory": "触控模组"},
  "camera_module":   {"name": "摄像头模组",            "english_name": "Camera Module",           "category": "Optics/Camera",   "subcategory": "摄像头模组"},
+ # ---- 2026-09 折叠屏 iPhone Duo 新增零部件 ----
+ "foldable_panel":  {"name": "可折叠显示面板",        "english_name": "Foldable OLED Panel",     "category": "Display",         "subcategory": "可折叠 OLED / LTPO"},
+ "utg":             {"name": "超薄柔性玻璃(UTG)",     "english_name": "Ultra-Thin Glass (UTG)",  "category": "Display",         "subcategory": "UTG / CPI 膜 / 屏幕支撑板"},
+ "hinge":           {"name": "折叠铰链模组",          "english_name": "Foldable Hinge Module",   "category": "Mechanical",      "subcategory": "铰链模组 / 主轴 / MIM 结构件"},
+ "esim_module":     {"name": "eSIM 模组(SiP 封装)",   "english_name": "eSIM Module (SiP)",       "category": "Semiconductor",   "subcategory": "eSIM SiP 模组"},
 }
 
 # component id -> list of (supplier_id, share_or_None, note)
@@ -339,6 +379,18 @@ COMP_SUP = {
  "wireless_charging":[("st", None, "无线充电控制器"), ("broadcom", None, "无线充电")],
  "touch":          [("gis", None, "触控模组"), ("lgd", None, "触控显示")],
  "camera_module":  [("cowell", None, "摄像头模组"), ("lgd", None, "模组")],
+ # ---- 2026-09 折叠屏 iPhone Duo ----
+ # 苹果从不披露折叠屏逐项供应商，以下归属均标注置信度，勿当作已官宣事实。
+ "foldable_panel": [("sdc", None, "iPhone Duo 7.6\" 内屏可折叠 OLED（官方仅确认尺寸，供应商为 UBI Research 口径：2026 约 800 万块 / 2027 目标 1500 万块）"),
+                    ("lgd", None, "iPhone Duo 5.4\" 外屏 OLED（推断，未官宣）")],
+ "utg":            [("lens_tech", None, "iPhone Duo UTG 超薄柔性玻璃、CPI 膜、UTG 支撑板、3D 玻璃盖板（公司 2026-08 投资者交流）"),
+                    ("changxin_tech", None, "UTG 超薄柔性玻璃（2–20 英寸 / 30–100μm，R0.5mm 200K+ 弯折；公司 2025 年报口径）")],
+ "hinge":          [("amphenol", None, "iPhone Duo 铰链一级供应商（CINNO Research 分析师口径，未官宣）"),
+                    ("shinzushing", None, "iPhone Duo 铰链一级供应商（CINNO Research 分析师口径，未官宣）"),
+                    ("lingyi", None, "铰链精密结构件、屏幕支撑板、超薄均热板、不锈钢电池壳模组（2026-09-04 机构调研）"),
+                    ("yian_tech", None, "铰链液态金属(非晶合金)主轴结构件（2026 半年报，称已与安费诺合作）"),
+                    ("jingyan_tech", None, "铰链 MIM 精密结构件（2026 半年报口径）")],
+ "esim_module":    [("usi", None, "eSIM SiP 模组（0.4mm 超薄封装）—— 来源为二手梳理，尚未核到公司公告原文，待确认")],
 }
 
 # ---------------------------------------------------------------------------
@@ -431,13 +483,22 @@ MAC_COMP   = ["soc","display_panel","cover_glass","dram","nand","connectivity",
               "pmic","battery","enclosure","fpc","pcb","substrate","osat","speaker","mic","sensor_motion"]
 PAD_COMP   = ["soc","display_panel","cover_glass","dram","nand","pmic","battery",
               "enclosure","fpc","touch","speaker","mic","sensor_motion"]
+# iPhone Duo：在直板机基础上叠加折叠屏专属四件。
+# 保留 display_panel / cover_glass —— 它们代表 5.4" 外屏及其盖板；
+# foldable_panel / utg 专指 7.6" 可折叠内屏与超薄柔性玻璃。
+DUO_COMP   = PHONE_COMP + ["foldable_panel", "utg", "hinge", "esim_module"]
 
 PRODUCTS = [
  # ---- iPhone ----
+ # 2026-09-09 发布（Apple Park，新任 CEO John Ternus 首场发布会，主题 Surprise and Shine）
+ # 本代起标准版 iPhone 18 / 18e / Air 2 推迟至 2027 年春季，秋季仅发 Pro 系列与折叠屏。
+ P("iphone_18_pro",  "iPhone 18 Pro",        "iPhone", "iPhone 18 Pro", "", "2026-09-09", 2026, "在售", "A20 Pro", "6.3\" LTPO OLED (SDC/LGD)", 1199, ["foxconn","luxshare","pegatron"], PHONE_COMP),
+ P("iphone_18_pmax", "iPhone 18 Pro Max",    "iPhone", "iPhone 18 Pro Max", "", "2026-09-09", 2026, "在售", "A20 Pro", "6.9\" LTPO OLED (SDC/LGD)", 1299, ["foxconn","luxshare","pegatron"], PHONE_COMP),
+ P("iphone_duo",     "iPhone Duo",           "iPhone", "iPhone Duo", "iPhone Ultra / iPhone Fold (发布前传闻名)", "2026-09-09", 2026, "在售", "A20 Pro", "7.6\" 可折叠 OLED(内) + 5.4\" OLED(外) (SDC)", 1999, ["foxconn"], DUO_COMP),
  P("iphone_17",      "iPhone 17",            "iPhone", "iPhone 17", "", "2025-09-09", 2025, "在售", "A19",      "6.3\" OLED (SDC/LGD/BOE)", 799, ["foxconn","luxshare","pegatron"], PHONE_COMP),
  P("iphone_17_air",  "iPhone 17 Air",        "iPhone", "iPhone 17 Air", "iPhone 17 Slim (发布前代号)", "2025-09-09", 2025, "在售", "A19", "6.6\" OLED 超薄 (SDC/LGD/BOE)", 999, ["foxconn","luxshare","pegatron"], PHONE_COMP),
- P("iphone_17_pro",  "iPhone 17 Pro",        "iPhone", "iPhone 17 Pro", "", "2025-09-09", 2025, "在售", "A19 Pro", "6.3\" LTPO OLED (SDC/LGD/BOE)", 1099, ["foxconn","luxshare","pegatron"], PHONE_COMP),
- P("iphone_17_pmax", "iPhone 17 Pro Max",    "iPhone", "iPhone 17 Pro Max", "", "2025-09-09", 2025, "在售", "A19 Pro", "6.9\" LTPO OLED (SDC/LGD)", 1199, ["foxconn","pegatron"], PHONE_COMP),
+ P("iphone_17_pro",  "iPhone 17 Pro",        "iPhone", "iPhone 17 Pro", "", "2025-09-09", 2025, "停产", "A19 Pro", "6.3\" LTPO OLED (SDC/LGD/BOE)", 1099, ["foxconn","luxshare","pegatron"], PHONE_COMP),
+ P("iphone_17_pmax", "iPhone 17 Pro Max",    "iPhone", "iPhone 17 Pro Max", "", "2025-09-09", 2025, "停产", "A19 Pro", "6.9\" LTPO OLED (SDC/LGD)", 1199, ["foxconn","pegatron"], PHONE_COMP),
  # ---- Mac ----
  P("mba_13_m4",      "MacBook Air 13\" (M4)", "Mac", "MacBook Air 13-inch (M4)", "", "2025-03-05", 2025, "在售", "M4", "13.6\" LCD (BOE)", 999, ["foxconn","wistron"], MAC_COMP),
  P("mba_15_m4",      "MacBook Air 15\" (M4)", "Mac", "MacBook Air 15-inch (M4)", "", "2025-03-05", 2025, "在售", "M4", "15.3\" LCD (BOE)", 1199, ["foxconn","wistron"], MAC_COMP),
@@ -455,6 +516,11 @@ PRODUCTS = [
  P("ipadmini_a17",   "iPad mini (A17 Pro)",   "iPad", "iPad mini (A17 Pro)", "", "2024-10-15", 2024, "在售", "A17 Pro", "8.3\" LCD", 499, ["foxconn"], PAD_COMP),
  P("ipad_11_a16",    "iPad (A16)",            "iPad", "iPad (11-inch, 2025)", "", "2025-03-04", 2025, "在售", "A16", "11\" LCD", 349, ["foxconn"], PAD_COMP),
  # ---- Apple Watch ----
+ # 2026-09-09 发布。注意：Series 12 与 Ultra 4 搭载的都是 S11 SiP，芯片代次与产品代次不同步（官网规格页确认）。
+ P("watch_s12",      "Apple Watch Series 12","Wearable", "Apple Watch Series 12", "", "2026-09-09", 2026, "在售", "S11 SiP", "LTPO3 OLED 全天候视网膜屏 2000 尼特 (LGD)", 399, ["luxshare","quanta","foxconn"],
+   ["soc","display_panel","cover_glass","battery","enclosure","speaker","mic","sensor_bio","sensor_motion","pmic","wireless_charging","connectivity"]),
+ P("watch_ultra4",   "Apple Watch Ultra 4",  "Wearable", "Apple Watch Ultra 4", "", "2026-09-09", 2026, "在售", "S11 SiP", "LTPO3 OLED 3000 尼特 (LGD)", 799, ["luxshare"],
+   ["soc","display_panel","cover_glass","battery","enclosure","speaker","mic","sensor_bio","sensor_motion","pmic","wireless_charging","connectivity"]),
  P("watch_s10",      "Apple Watch Series 10","Wearable", "Apple Watch Series 10", "Apple Watch X (发布前传闻名)", "2024-09-09", 2024, "在售", "S10 SiP", "LTPO3 OLED (LGD/JDI)", 399, ["luxshare","quanta","foxconn"],
    ["soc","display_panel","cover_glass","battery","enclosure","speaker","mic","sensor_bio","sensor_motion","pmic","wireless_charging","connectivity"]),
  P("watch_ultra3",   "Apple Watch Ultra 3",  "Wearable", "Apple Watch Ultra 3", "", "2025-09-09", 2025, "在售", "S? SiP", "OLED (LGD)", 799, ["luxshare"],
@@ -467,6 +533,9 @@ PRODUCTS = [
  P("visionpro_m5",   "Apple Vision Pro (M5)", "Spatial", "Apple Vision Pro (M5)", "", "2025（未确认）", 2025, "传闻/未发布", "M5", "Micro-OLED (SDC) + AMOLED 外屏(LGD)", 3499, ["luxshare"],
    ["soc","display_panel","cover_glass","cis","lens","dram","nand","pmic","battery","enclosure","speaker","mic","sensor_motion","fpc","pcb","optical_filter"]),
  # ---- Audio ----
+ # AirPods 5 标准版首次支持主动降噪（此前为 Pro 独占）；官方规格页未列心率传感。
+ P("airpods_5",      "AirPods 5",            "Audio", "AirPods 5", "", "2026-09-09", 2026, "在售", "H2", "-", 129, ["luxshare","goertek"],
+   ["soc","speaker","mic","battery","pmic","connectivity","enclosure","wireless_charging"]),
  P("airpods_pro3",   "AirPods Pro 3",        "Audio", "AirPods Pro 3", "", "2025-09-09", 2025, "在售", "H2", "-", 249, ["luxshare","goertek"],
    ["soc","speaker","mic","battery","pmic","connectivity","enclosure","wireless_charging","uwb"]),
  P("airpods_4",      "AirPods 4",            "Audio", "AirPods 4", "", "2024-09-09", 2024, "在售", "H2", "-", 129, ["luxshare","goertek"],
@@ -627,9 +696,9 @@ SOURCES.update(BASE_SOURCES)   # 合并生产基地来源注册表，使 MANUFAC
 graph = {
  "meta": {
    "title": "Apple Product Supply Chain Graph (v2)",
-   "generated": "2026-08-04",
-   "source": "Public supply-chain reports 2024-2026 + Apple 2024 Supplier List (187 core suppliers, ~98% of direct spend)",
-   "sources_accessed": "2026-08-05",
+   "generated": "2026-09-10",
+   "source": "Public supply-chain reports 2024-2026 + Apple 2024 Supplier List (187 core suppliers, ~98% of direct spend) + Apple 官网 2026-09 技术规格页与 Newsroom",
+   "sources_accessed": "2026-09-10",
    "schema": {
      "nodes": ["Product", "Component", "Supplier", "ProductionBase"],
      "relationships": [

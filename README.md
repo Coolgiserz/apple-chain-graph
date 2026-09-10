@@ -15,10 +15,10 @@ zero-dependency interactive visualizations.
 >
 > 📊 **研究用途（参考性）**：本图谱可作为供应链图分析、脆弱性建模与图神经网络（GNN）教学的**参考性实验数据**（尚非成熟基准，MIT 许可，详见下方「作为研究 / 分析用实验数据集」）。
 
-[![Nodes](https://img.shields.io/badge/nodes-115-blue)](data/neo4j)
-[![Products](https://img.shields.io/badge/products-28-green)](data/neo4j)
-[![Components](https://img.shields.io/badge/components-27-green)](data/neo4j)
-[![Suppliers](https://img.shields.io/badge/suppliers-60-green)](data/neo4j)
+[![Nodes](https://img.shields.io/badge/nodes-148-blue)](data/neo4j)
+[![Products](https://img.shields.io/badge/products-34-green)](data/neo4j)
+[![Components](https://img.shields.io/badge/components-31-green)](data/neo4j)
+[![Suppliers](https://img.shields.io/badge/suppliers-66-green)](data/neo4j)
 [![Relationships](https://img.shields.io/badge/relationships-510-orange)](data/neo4j)
 [![Python](https://img.shields.io/badge/python-3.9%2B-blue?logo=python)](scripts/generate.py)
 [![Zero deps](https://img.shields.io/badge/dependencies-none-success)](scripts)
@@ -80,7 +80,7 @@ zero-dependency interactive visualizations.
 - **图数据库就绪**：6 个 Neo4j 官方批量导入格式 CSV（`:ID` / `:LABEL` / `:START_ID` / `:END_ID` / `:TYPE` 表头），离线 / 在线两种导入方式任选。
 - **零依赖可视化**：报告、看板等网页数据内嵌，双击即开（看板图表依赖 CDN 上的 Chart.js，首次打开需联网）；首页供应链图谱（`index.html`）在浏览器端 `fetch` `data/apple_supply_chain.json`，需经 HTTP 服务访问（如 `python3 -m http.server`），直接 `file://` 双击会被 CORS 拦截，无法加载数据。
 - **多页互跳、非孤岛**：首页图谱 / 企业列表 / 报告 / 地图 / 看板 共享同一套顶部导航（`topnav.py` 一处维护、全局生效）；跨页深链直达具体实体。这套统一导航条就是「融合」——固定在每页顶部、让用户在板块间自由跳转，无需再为各板块单独造聚合页。
-- **企业列表（表格视图）**：`dist/supplier_table.html` 把图谱中全部 60 家企业以表格呈现，支持按 **地区 / 国家 / 类别 / 层级** 筛选、关键字搜索、点击列标题 **升/降序排序**，每行可一键回到图谱定位或地图打点。
+- **企业列表（表格视图）**：`dist/supplier_table.html` 把图谱中全部 66 家企业以表格呈现，支持按 **地区 / 国家 / 类别 / 层级** 筛选、关键字搜索、点击列标题 **升/降序排序**，每行可一键回到图谱定位或地图打点。
 - **供应商研究层**：对 15 家重点供应商做同业相对估值 + 舆情分析，结论以看板与报告形式呈现。
 - **可复现**：纯 Python 标准库，无任何第三方依赖，从单一数据源可重生成全部产物。
 
@@ -101,7 +101,7 @@ zero-dependency interactive visualizations.
 全站由 **5 个板块**组成，靠顶部**统一导航条**（`topnav.py` 一处维护、全局生效）互相跳转——这正是「融合」的初衷：一个固定在每页顶部的跳转栏，让用户在板块间自由穿行，而无需为每个板块单独造聚合页：
 
 - **🕸️ 供应链图谱**（`index.html`，站点首页）：力导向交互，按产品线 / 类型筛选、搜索、定位；
-- **📋 企业列表**（`dist/supplier_table.html`）：全部 60 家供应商的表格视图，支持按地区 / 国家 / 类别 / 层级筛选、关键字搜索、点击列标题升降序排序；
+- **📋 企业列表**（`dist/supplier_table.html`）：全部 66 家供应商的表格视图，支持按地区 / 国家 / 类别 / 层级筛选、关键字搜索、点击列标题升降序排序；
 - **📄 上下游报告**（`dist/apple_supply_chain_report.html`）：型号总览 + 跨页深链；
 - **🗺️ 供应商地图**（`tools/visualizations/supplier_geo.html`）：生产基地标记 + 物流连线；
 - **📊 估值看板**（`tools/visualizations/supplier_dashboard.html`）：估值 × 舆情可视化。
@@ -287,7 +287,7 @@ python3 tools/geo_build.py      # 生成 tools/visualizations/supplier_geo.html�
 ## 作为研究 / 分析用实验数据集
 
 > ⚠️ **谨慎使用**：本图谱目前仍是**探索性、参考性的实验数据**，**尚不是一个经校验、标准化的成熟数据集 / 基准**。
-> 它规模有限（约 115 节点 / 510 关系）、由 AI 联网检索公开资料二手整合、属单点时点快照，存在口径不一致与模型幻觉风险。
+> 它规模有限（约 148 节点 / 699 关系）、由 AI 联网检索公开资料二手整合、属单点时点快照，存在口径不一致与模型幻觉风险。
 > 下文仅说明「如何把它当作实验数据来用」，不代表它已具备基准数据的质量。
 
 本仓库的全部产出（图数据、Neo4j 导入 CSV、脆弱性分析结果、可视化）可作为一份
@@ -315,7 +315,7 @@ python3 tools/geo_build.py      # 生成 tools/visualizations/supplier_geo.html�
 
 ## 供应商基本面与相对估值分析
 
-在「图谱（结构）」之外，额外对 **60 家供应商中的 15 家重点企业**做了基本面与估值研究：
+在「图谱（结构）」之外，额外对 **66 家供应商中的 15 家重点企业**做了基本面与估值研究：
 营收 / 净利 / 毛利率 / ROE、P/E·P/B·EV/EBITDA 等倍数，并用**同业相对估值**判断其当前被
 高估 / 低估 / 合理，逐家附**发展趋势、近况、数据来源链接**。
 
@@ -373,7 +373,7 @@ python3 tools/run_sentiment.py --id qualcomm    # 只看某一家
 在图谱上直接做经典图分析，**纯前端实时计算、无后端**：类型感知度中心性、断供波及（反向可达 BFS）、PageRank 网络核心度。
 
 - **产品化包装**：独家供应 / 断供影响模拟 / 网络核心度；红 / 琥珀 / 绿语义色；排行点击聚焦到图谱节点。
-- **第 2 跳下游高亮**：选中供应商 / 零部件时，图谱高亮其第 2 跳下游产品，直观看到「断供波及 N 款」（如歌尔股份断供波及 28 款产品）。
+- **第 2 跳下游高亮**：选中供应商 / 零部件时，图谱高亮其第 2 跳下游产品，直观看到「断供波及 N 款」（如歌尔股份断供波及 34 款产品）。
 - **文案防误读**：「波及」≠「停产」——无替代将真正停产的产品数用独立绿 / 红 callout 单独标出。
 
 算法、口径与局限见 **[docs/bottleneck-analytics.md](docs/bottleneck-analytics.md)**。
@@ -483,7 +483,7 @@ apple_supply_chain/
 │   └── screenshots/          # README 截图（见「截图预览」一节）
 └── dist/                     # 构建产物（.gitignore，不入库；由 npm run build + build_all.py 生成）
     ├── apple_supply_chain_report.html  # 分析报告（独立页）
-    ├── supplier_table.html       # 企业列表：全部 60 家供应商的筛选 + 排序表格视图
+    ├── supplier_table.html       # 企业列表：全部 66 家供应商的筛选 + 排序表格视图
     ├── graph_engine.js           # 共享图谱画布物理引擎（由 src/engine/ 经 esbuild 构建，首页 index.html 复用）
     ├── graph_bootstrap.js        # 首页图谱启动脚本（由 templates/ 复制）
     ├── graph_table_panel.js      # 首页表格面板（由 templates/ 复制）

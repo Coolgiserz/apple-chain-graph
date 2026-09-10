@@ -159,7 +159,11 @@ class AsOfDashboard(unittest.TestCase):
         # 来源链接自带真实的发布日期，恰好也有一天是 2026-08-10——再按全文匹配
         # 会把一条合法的新闻日期当成回归。真正要保证的是**展示出来的那个日期**，
         # 取值比对同时也比「旧串不存在」更严：写死成任何别的日期都会红。
-        m = re.search(r'<span class="as-of">([^<]*)</span>', src)
+        #
+        # 正则必须容忍 <span> 上的其他属性：产物会被外部流程注入
+        # data-page-node-id 之类的标记属性，若写死 `<span class="as-of">` 就会
+        # 在属性出现时误报「找不到元素」——那与 as_of 是否透传毫无关系。
+        m = re.search(r'<span[^>]*\bclass="as-of"[^>]*>([^<]*)</span>', src)
         self.assertTrue(m, '产物里找不到数据日期元素 <span class="as-of">')
         self.assertEqual(m.group(1).strip(), CURRENT_AS_OF,
                          "产物显示的数据日期应为 %s，实际 %r（又写死了旧日期？）"

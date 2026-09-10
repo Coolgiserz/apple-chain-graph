@@ -1,9 +1,9 @@
 {
   "meta": {
     "title": "Apple Product Supply Chain Graph (v2)",
-    "generated": "2026-08-04",
-    "source": "Public supply-chain reports 2024-2026 + Apple 2024 Supplier List (187 core suppliers, ~98% of direct spend)",
-    "sources_accessed": "2026-08-05",
+    "generated": "2026-09-10",
+    "source": "Public supply-chain reports 2024-2026 + Apple 2024 Supplier List (187 core suppliers, ~98% of direct spend) + Apple 官网 2026-09 技术规格页与 Newsroom",
+    "sources_accessed": "2026-09-10",
     "schema": {
       "nodes": [
         "Product",
@@ -36,8 +36,7 @@
         "title": "TechInsights 硬件拆解与物料清单(BOM)分析",
         "publisher": "TechInsights",
         "url": "https://www.techinsights.com/teardown",
-        "kind": "teardown",
-        "generic": true
+        "kind": "teardown"
       },
       "ifixit": {
         "title": "iFixit 产品拆解数据库",
@@ -49,36 +48,55 @@
         "title": "Counterpoint Research — 零部件供应与份额研究",
         "publisher": "Counterpoint Research",
         "url": "https://www.counterpointresearch.com/",
-        "kind": "analyst",
-        "generic": true
+        "kind": "analyst"
       },
       "trendforce": {
         "title": "TrendForce — 存储/半导体供需与份额报告",
         "publisher": "TrendForce",
         "url": "https://www.trendforce.com/press-center/",
-        "kind": "analyst",
-        "generic": true
+        "kind": "analyst"
       },
       "dscc": {
         "title": "DSCC (Display Supply Chain Consultants) — 显示面板供给分析",
         "publisher": "DSCC / Omdia",
         "url": "https://www.displaysupplychain.com/",
-        "kind": "analyst",
-        "generic": true
+        "kind": "analyst"
       },
       "omdia": {
         "title": "Omdia — 显示与半导体市场追踪",
         "publisher": "Omdia (Informa)",
         "url": "https://omdia.tech.informa.com/",
-        "kind": "analyst",
-        "generic": true
+        "kind": "analyst"
       },
       "nikkei": {
         "title": "Nikkei Asia — 苹果供应链报道",
         "publisher": "Nikkei Asia",
         "url": "https://asia.nikkei.com/",
-        "kind": "analyst",
-        "generic": true
+        "kind": "analyst"
+      },
+      "apple_specs": {
+        "title": "Apple 官方产品技术规格页与 Newsroom 新闻稿（2026-09 秋季发布会）",
+        "publisher": "Apple Inc.",
+        "url": "https://www.apple.com/iphone-18-pro/specs/",
+        "kind": "official"
+      },
+      "cn_ir": {
+        "title": "A 股公司投资者关系活动记录与定期报告（蓝思科技 / 领益智造 / 长信科技 / 宜安科技 / 精研科技等）",
+        "publisher": "各上市公司公告（巨潮资讯网）",
+        "url": "http://www.cninfo.com.cn/",
+        "kind": "ir"
+      },
+      "cinno": {
+        "title": "CINNO Research — 折叠屏铰链与零部件供应链研究",
+        "publisher": "CINNO Research",
+        "url": "https://www.cinnoresearch.com/",
+        "kind": "analyst"
+      },
+      "ubiresearch": {
+        "title": "UBI Research — OLED 面板供需与厂商出货追踪",
+        "publisher": "UBI Research",
+        "url": "https://www.ubiresearch.com/",
+        "kind": "analyst"
       },
       "base_appleinsider": {
         "title": "AppleInsider — Where Apple products are assembled (and where parts come from)",
@@ -405,6 +423,137 @@
   "nodes": {
     "products": [
       {
+        "id": "iphone_18_pro",
+        "name": "iPhone 18 Pro",
+        "product_line": "iPhone",
+        "english_name": "iPhone 18 Pro",
+        "alias": "",
+        "release_date": "2026-09-09",
+        "release_year": 2026,
+        "status": "在售",
+        "soc": "A20 Pro",
+        "display": "6.3\" LTPO OLED (SDC/LGD)",
+        "price_usd": 1199,
+        "assembly": [
+          "foxconn",
+          "luxshare",
+          "pegatron"
+        ],
+        "components": [
+          "soc",
+          "display_panel",
+          "cover_glass",
+          "cis",
+          "lens",
+          "ois",
+          "dram",
+          "nand",
+          "modem",
+          "connectivity",
+          "audio_codec",
+          "pmic",
+          "battery",
+          "enclosure",
+          "fpc",
+          "pcb",
+          "substrate",
+          "osat",
+          "speaker",
+          "mic",
+          "sensor_motion",
+          "optical_filter",
+          "uwb"
+        ]
+      },
+      {
+        "id": "iphone_18_pmax",
+        "name": "iPhone 18 Pro Max",
+        "product_line": "iPhone",
+        "english_name": "iPhone 18 Pro Max",
+        "alias": "",
+        "release_date": "2026-09-09",
+        "release_year": 2026,
+        "status": "在售",
+        "soc": "A20 Pro",
+        "display": "6.9\" LTPO OLED (SDC/LGD)",
+        "price_usd": 1299,
+        "assembly": [
+          "foxconn",
+          "luxshare",
+          "pegatron"
+        ],
+        "components": [
+          "soc",
+          "display_panel",
+          "cover_glass",
+          "cis",
+          "lens",
+          "ois",
+          "dram",
+          "nand",
+          "modem",
+          "connectivity",
+          "audio_codec",
+          "pmic",
+          "battery",
+          "enclosure",
+          "fpc",
+          "pcb",
+          "substrate",
+          "osat",
+          "speaker",
+          "mic",
+          "sensor_motion",
+          "optical_filter",
+          "uwb"
+        ]
+      },
+      {
+        "id": "iphone_duo",
+        "name": "iPhone Duo",
+        "product_line": "iPhone",
+        "english_name": "iPhone Duo",
+        "alias": "iPhone Ultra / iPhone Fold (发布前传闻名)",
+        "release_date": "2026-09-09",
+        "release_year": 2026,
+        "status": "在售",
+        "soc": "A20 Pro",
+        "display": "7.6\" 可折叠 OLED(内) + 5.4\" OLED(外) (SDC)",
+        "price_usd": 1999,
+        "assembly": [
+          "foxconn"
+        ],
+        "components": [
+          "soc",
+          "display_panel",
+          "cover_glass",
+          "cis",
+          "lens",
+          "ois",
+          "dram",
+          "nand",
+          "modem",
+          "connectivity",
+          "audio_codec",
+          "pmic",
+          "battery",
+          "enclosure",
+          "fpc",
+          "pcb",
+          "substrate",
+          "osat",
+          "speaker",
+          "mic",
+          "sensor_motion",
+          "optical_filter",
+          "uwb",
+          "foldable_panel",
+          "utg",
+          "hinge",
+          "esim_module"
+        ]
+      },
+      {
         "id": "iphone_17",
         "name": "iPhone 17",
         "product_line": "iPhone",
@@ -498,7 +647,7 @@
         "alias": "",
         "release_date": "2025-09-09",
         "release_year": 2025,
-        "status": "在售",
+        "status": "停产",
         "soc": "A19 Pro",
         "display": "6.3\" LTPO OLED (SDC/LGD/BOE)",
         "price_usd": 1099,
@@ -541,7 +690,7 @@
         "alias": "",
         "release_date": "2025-09-09",
         "release_year": 2025,
-        "status": "在售",
+        "status": "停产",
         "soc": "A19 Pro",
         "display": "6.9\" LTPO OLED (SDC/LGD)",
         "price_usd": 1199,
@@ -1038,6 +1187,68 @@
         ]
       },
       {
+        "id": "watch_s12",
+        "name": "Apple Watch Series 12",
+        "product_line": "Wearable",
+        "english_name": "Apple Watch Series 12",
+        "alias": "",
+        "release_date": "2026-09-09",
+        "release_year": 2026,
+        "status": "在售",
+        "soc": "S11 SiP",
+        "display": "LTPO3 OLED 全天候视网膜屏 2000 尼特 (LGD)",
+        "price_usd": 399,
+        "assembly": [
+          "luxshare",
+          "quanta",
+          "foxconn"
+        ],
+        "components": [
+          "soc",
+          "display_panel",
+          "cover_glass",
+          "battery",
+          "enclosure",
+          "speaker",
+          "mic",
+          "sensor_bio",
+          "sensor_motion",
+          "pmic",
+          "wireless_charging",
+          "connectivity"
+        ]
+      },
+      {
+        "id": "watch_ultra4",
+        "name": "Apple Watch Ultra 4",
+        "product_line": "Wearable",
+        "english_name": "Apple Watch Ultra 4",
+        "alias": "",
+        "release_date": "2026-09-09",
+        "release_year": 2026,
+        "status": "在售",
+        "soc": "S11 SiP",
+        "display": "LTPO3 OLED 3000 尼特 (LGD)",
+        "price_usd": 799,
+        "assembly": [
+          "luxshare"
+        ],
+        "components": [
+          "soc",
+          "display_panel",
+          "cover_glass",
+          "battery",
+          "enclosure",
+          "speaker",
+          "mic",
+          "sensor_bio",
+          "sensor_motion",
+          "pmic",
+          "wireless_charging",
+          "connectivity"
+        ]
+      },
+      {
         "id": "watch_s10",
         "name": "Apple Watch Series 10",
         "product_line": "Wearable",
@@ -1193,6 +1404,33 @@
           "fpc",
           "pcb",
           "optical_filter"
+        ]
+      },
+      {
+        "id": "airpods_5",
+        "name": "AirPods 5",
+        "product_line": "Audio",
+        "english_name": "AirPods 5",
+        "alias": "",
+        "release_date": "2026-09-09",
+        "release_year": 2026,
+        "status": "在售",
+        "soc": "H2",
+        "display": "-",
+        "price_usd": 129,
+        "assembly": [
+          "luxshare",
+          "goertek"
+        ],
+        "components": [
+          "soc",
+          "speaker",
+          "mic",
+          "battery",
+          "pmic",
+          "connectivity",
+          "enclosure",
+          "wireless_charging"
         ]
       },
       {
@@ -1511,6 +1749,34 @@
         "english_name": "Camera Module",
         "category": "Optics/Camera",
         "subcategory": "摄像头模组"
+      },
+      {
+        "id": "foldable_panel",
+        "name": "可折叠显示面板",
+        "english_name": "Foldable OLED Panel",
+        "category": "Display",
+        "subcategory": "可折叠 OLED / LTPO"
+      },
+      {
+        "id": "utg",
+        "name": "超薄柔性玻璃(UTG)",
+        "english_name": "Ultra-Thin Glass (UTG)",
+        "category": "Display",
+        "subcategory": "UTG / CPI 膜 / 屏幕支撑板"
+      },
+      {
+        "id": "hinge",
+        "name": "折叠铰链模组",
+        "english_name": "Foldable Hinge Module",
+        "category": "Mechanical",
+        "subcategory": "铰链模组 / 主轴 / MIM 结构件"
+      },
+      {
+        "id": "esim_module",
+        "name": "eSIM 模组(SiP 封装)",
+        "english_name": "eSIM Module (SiP)",
+        "category": "Semiconductor",
+        "subcategory": "eSIM SiP 模组"
       }
     ],
     "suppliers": [
@@ -2113,6 +2379,66 @@
         "region": "Europe",
         "category": "Sensor",
         "tier": 2
+      },
+      {
+        "id": "amphenol",
+        "name": "安费诺集团",
+        "english_name": "Amphenol Corporation",
+        "short_name": "Amphenol / 安费诺",
+        "country": "USA",
+        "region": "North America",
+        "category": "Mech/Hinge",
+        "tier": 1
+      },
+      {
+        "id": "shinzushing",
+        "name": "新日兴股份有限公司",
+        "english_name": "Shin Zu Shing Co., Ltd.",
+        "short_name": "SZS / 新日兴",
+        "country": "Taiwan",
+        "region": "East Asia",
+        "category": "Mech/Hinge",
+        "tier": 1
+      },
+      {
+        "id": "yian_tech",
+        "name": "东莞宜安科技股份有限公司",
+        "english_name": "Dongguan Eontec Co., Ltd.",
+        "short_name": "Eontec / 宜安科技",
+        "country": "China",
+        "region": "East Asia",
+        "category": "Material",
+        "tier": 2
+      },
+      {
+        "id": "jingyan_tech",
+        "name": "江苏精研科技股份有限公司",
+        "english_name": "Jiangsu Gian Technology Co., Ltd.",
+        "short_name": "Gian / 精研科技",
+        "country": "China",
+        "region": "East Asia",
+        "category": "Mech/MIM",
+        "tier": 2
+      },
+      {
+        "id": "changxin_tech",
+        "name": "芜湖长信科技股份有限公司",
+        "english_name": "Wuhu Token Technology Co., Ltd.",
+        "short_name": "Token / 长信科技",
+        "country": "China",
+        "region": "East Asia",
+        "category": "Glass",
+        "tier": 2
+      },
+      {
+        "id": "usi",
+        "name": "环旭电子股份有限公司",
+        "english_name": "Universal Scientific Industrial (Shanghai) Co., Ltd.",
+        "short_name": "USI / 环旭电子",
+        "country": "Taiwan/China",
+        "region": "East Asia",
+        "category": "OSAT/SiP",
+        "tier": 1
       }
     ],
     "bases": [
@@ -2448,6 +2774,590 @@
   "edges": {
     "uses_component": [
       {
+        "from": "iphone_18_pro",
+        "to": "soc",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pro",
+        "to": "display_panel",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pro",
+        "to": "cover_glass",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pro",
+        "to": "cis",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pro",
+        "to": "lens",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pro",
+        "to": "ois",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pro",
+        "to": "dram",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pro",
+        "to": "nand",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pro",
+        "to": "modem",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pro",
+        "to": "connectivity",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pro",
+        "to": "audio_codec",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pro",
+        "to": "pmic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pro",
+        "to": "battery",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pro",
+        "to": "enclosure",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pro",
+        "to": "fpc",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pro",
+        "to": "pcb",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pro",
+        "to": "substrate",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pro",
+        "to": "osat",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pro",
+        "to": "speaker",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pro",
+        "to": "mic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pro",
+        "to": "sensor_motion",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pro",
+        "to": "optical_filter",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pro",
+        "to": "uwb",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pmax",
+        "to": "soc",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pmax",
+        "to": "display_panel",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pmax",
+        "to": "cover_glass",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pmax",
+        "to": "cis",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pmax",
+        "to": "lens",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pmax",
+        "to": "ois",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pmax",
+        "to": "dram",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pmax",
+        "to": "nand",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pmax",
+        "to": "modem",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pmax",
+        "to": "connectivity",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pmax",
+        "to": "audio_codec",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pmax",
+        "to": "pmic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pmax",
+        "to": "battery",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pmax",
+        "to": "enclosure",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pmax",
+        "to": "fpc",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pmax",
+        "to": "pcb",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pmax",
+        "to": "substrate",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pmax",
+        "to": "osat",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pmax",
+        "to": "speaker",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pmax",
+        "to": "mic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pmax",
+        "to": "sensor_motion",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pmax",
+        "to": "optical_filter",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_18_pmax",
+        "to": "uwb",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_duo",
+        "to": "soc",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_duo",
+        "to": "display_panel",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_duo",
+        "to": "cover_glass",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_duo",
+        "to": "cis",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_duo",
+        "to": "lens",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_duo",
+        "to": "ois",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_duo",
+        "to": "dram",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_duo",
+        "to": "nand",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_duo",
+        "to": "modem",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_duo",
+        "to": "connectivity",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_duo",
+        "to": "audio_codec",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_duo",
+        "to": "pmic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_duo",
+        "to": "battery",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_duo",
+        "to": "enclosure",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_duo",
+        "to": "fpc",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_duo",
+        "to": "pcb",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_duo",
+        "to": "substrate",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_duo",
+        "to": "osat",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_duo",
+        "to": "speaker",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_duo",
+        "to": "mic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_duo",
+        "to": "sensor_motion",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_duo",
+        "to": "optical_filter",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_duo",
+        "to": "uwb",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_duo",
+        "to": "foldable_panel",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_duo",
+        "to": "utg",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_duo",
+        "to": "hinge",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "iphone_duo",
+        "to": "esim_module",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
         "from": "iphone_17",
         "to": "soc",
         "source": [
@@ -4826,6 +5736,198 @@
       {
         "from": "ipad_11_a16",
         "to": "sensor_motion",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "watch_s12",
+        "to": "soc",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "watch_s12",
+        "to": "display_panel",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "watch_s12",
+        "to": "cover_glass",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "watch_s12",
+        "to": "battery",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "watch_s12",
+        "to": "enclosure",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "watch_s12",
+        "to": "speaker",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "watch_s12",
+        "to": "mic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "watch_s12",
+        "to": "sensor_bio",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "watch_s12",
+        "to": "sensor_motion",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "watch_s12",
+        "to": "pmic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "watch_s12",
+        "to": "wireless_charging",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "watch_s12",
+        "to": "connectivity",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "watch_ultra4",
+        "to": "soc",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "watch_ultra4",
+        "to": "display_panel",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "watch_ultra4",
+        "to": "cover_glass",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "watch_ultra4",
+        "to": "battery",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "watch_ultra4",
+        "to": "enclosure",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "watch_ultra4",
+        "to": "speaker",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "watch_ultra4",
+        "to": "mic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "watch_ultra4",
+        "to": "sensor_bio",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "watch_ultra4",
+        "to": "sensor_motion",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "watch_ultra4",
+        "to": "pmic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "watch_ultra4",
+        "to": "wireless_charging",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "watch_ultra4",
+        "to": "connectivity",
         "source": [
           "techinsights",
           "ifixit"
@@ -5360,6 +6462,70 @@
         ]
       },
       {
+        "from": "airpods_5",
+        "to": "soc",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "airpods_5",
+        "to": "speaker",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "airpods_5",
+        "to": "mic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "airpods_5",
+        "to": "battery",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "airpods_5",
+        "to": "pmic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "airpods_5",
+        "to": "connectivity",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "airpods_5",
+        "to": "enclosure",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "airpods_5",
+        "to": "wireless_charging",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
         "from": "airpods_pro3",
         "to": "soc",
         "source": [
@@ -5610,54 +6776,6 @@
       {
         "from": "homepod_mini",
         "to": "mic",
-        "source": [
-          "techinsights",
-          "ifixit"
-        ]
-      },
-      {
-        "from": "iphone_17",
-        "to": "camera_module",
-        "source": [
-          "techinsights",
-          "ifixit"
-        ]
-      },
-      {
-        "from": "iphone_17_air",
-        "to": "camera_module",
-        "source": [
-          "techinsights",
-          "ifixit"
-        ]
-      },
-      {
-        "from": "iphone_17_pro",
-        "to": "camera_module",
-        "source": [
-          "techinsights",
-          "ifixit"
-        ]
-      },
-      {
-        "from": "iphone_17_pmax",
-        "to": "camera_module",
-        "source": [
-          "techinsights",
-          "ifixit"
-        ]
-      },
-      {
-        "from": "visionpro_m2",
-        "to": "camera_module",
-        "source": [
-          "techinsights",
-          "ifixit"
-        ]
-      },
-      {
-        "from": "visionpro_m5",
-        "to": "camera_module",
         "source": [
           "techinsights",
           "ifixit"
@@ -6464,9 +7582,169 @@
           "techinsights",
           "counterpoint"
         ]
+      },
+      {
+        "from": "foldable_panel",
+        "to": "sdc",
+        "share": "",
+        "note": "iPhone Duo 7.6\" 内屏可折叠 OLED（官方仅确认尺寸，供应商为 UBI Research 口径：2026 约 800 万块 / 2027 目标 1500 万块）",
+        "source": [
+          "ubiresearch",
+          "apple_specs"
+        ]
+      },
+      {
+        "from": "foldable_panel",
+        "to": "lgd",
+        "share": "",
+        "note": "iPhone Duo 5.4\" 外屏 OLED（推断，未官宣）",
+        "source": [
+          "ubiresearch",
+          "apple_specs"
+        ]
+      },
+      {
+        "from": "utg",
+        "to": "lens_tech",
+        "share": "",
+        "note": "iPhone Duo UTG 超薄柔性玻璃、CPI 膜、UTG 支撑板、3D 玻璃盖板（公司 2026-08 投资者交流）",
+        "source": [
+          "cn_ir",
+          "apple_specs"
+        ]
+      },
+      {
+        "from": "utg",
+        "to": "changxin_tech",
+        "share": "",
+        "note": "UTG 超薄柔性玻璃（2–20 英寸 / 30–100μm，R0.5mm 200K+ 弯折；公司 2025 年报口径）",
+        "source": [
+          "cn_ir",
+          "apple_specs"
+        ]
+      },
+      {
+        "from": "hinge",
+        "to": "amphenol",
+        "share": "",
+        "note": "iPhone Duo 铰链一级供应商（CINNO Research 分析师口径，未官宣）",
+        "source": [
+          "apple_specs",
+          "cn_ir",
+          "cinno"
+        ]
+      },
+      {
+        "from": "hinge",
+        "to": "shinzushing",
+        "share": "",
+        "note": "iPhone Duo 铰链一级供应商（CINNO Research 分析师口径，未官宣）",
+        "source": [
+          "apple_specs",
+          "cn_ir",
+          "cinno"
+        ]
+      },
+      {
+        "from": "hinge",
+        "to": "lingyi",
+        "share": "",
+        "note": "铰链精密结构件、屏幕支撑板、超薄均热板、不锈钢电池壳模组（2026-09-04 机构调研）",
+        "source": [
+          "apple_specs",
+          "cn_ir",
+          "cinno"
+        ]
+      },
+      {
+        "from": "hinge",
+        "to": "yian_tech",
+        "share": "",
+        "note": "铰链液态金属(非晶合金)主轴结构件（2026 半年报，称已与安费诺合作）",
+        "source": [
+          "apple_specs",
+          "cn_ir",
+          "cinno"
+        ]
+      },
+      {
+        "from": "hinge",
+        "to": "jingyan_tech",
+        "share": "",
+        "note": "铰链 MIM 精密结构件（2026 半年报口径）",
+        "source": [
+          "apple_specs",
+          "cn_ir",
+          "cinno"
+        ]
+      },
+      {
+        "from": "esim_module",
+        "to": "usi",
+        "share": "",
+        "note": "eSIM SiP 模组（0.4mm 超薄封装）—— 来源为二手梳理，尚未核到公司公告原文，待确认",
+        "source": [
+          "cn_ir"
+        ]
       }
     ],
     "assembled_by": [
+      {
+        "from": "iphone_18_pro",
+        "to": "foxconn",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "iphone_18_pro",
+        "to": "luxshare",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "iphone_18_pro",
+        "to": "pegatron",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "iphone_18_pmax",
+        "to": "foxconn",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "iphone_18_pmax",
+        "to": "luxshare",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "iphone_18_pmax",
+        "to": "pegatron",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "iphone_duo",
+        "to": "foxconn",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
       {
         "from": "iphone_17",
         "to": "foxconn",
@@ -6700,6 +7978,38 @@
         ]
       },
       {
+        "from": "watch_s12",
+        "to": "luxshare",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "watch_s12",
+        "to": "quanta",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "watch_s12",
+        "to": "foxconn",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "watch_ultra4",
+        "to": "luxshare",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
         "from": "watch_s10",
         "to": "luxshare",
         "source": [
@@ -6750,6 +8060,22 @@
       {
         "from": "visionpro_m5",
         "to": "luxshare",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "airpods_5",
+        "to": "luxshare",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "airpods_5",
+        "to": "goertek",
         "source": [
           "apple_supplier_list",
           "nikkei"

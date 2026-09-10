@@ -27,9 +27,9 @@
 
 ```
 data/neo4j/
-├── products.csv              产品型号节点（28 行）
-├── components.csv            零部件节点（27 行）
-├── suppliers.csv            供应商/代工厂节点（60 行）
+├── products.csv              产品型号节点（34 行）
+├── components.csv            零部件节点（31 行）
+├── suppliers.csv            供应商/代工厂节点（66 行）
 ├── rel_product_component.csv   关系：产品→零部件（396 行）
 ├── rel_component_supplier.csv 关系：零部件→供应商（77 行）
 └── rel_product_assembly.csv   关系：产品→代工厂（37 行）
