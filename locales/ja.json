@@ -276,7 +276,7 @@
   "report.geo.p33": "サプライヤーが直接または間接的に何機種の製品に使われているかでソートし、アップル体の中での組み込みの深さを示す。",
   "report.header.generated": "構造化データ（CSV / JSON）同梱",
   "report.header.neo4jLink": "Neo4j のインポート方法は技術ドキュメント参照",
-  "report.header.source": "データ出所：公開サプライチェーンレポートと分解調査（2024–2026、Counterpoint / Nikkei / TrendForce / stockanalysis 等を含む）＋ Apple の 2024 年サプライヤー一覧（主要サプライヤー 187 社、直接支出の約 98%）；本レポートはそこから主要サプライヤー 60 社、中核コンポーネント 27、製品モデル 28 をモデル化。",
+  "report.header.source": "データ出所：公開サプライチェーンレポートと分解調査（2024–2026、Counterpoint / Nikkei / TrendForce / stockanalysis 等を含む）＋ Apple の 2024 年サプライヤー一覧（主要サプライヤー 187 社、直接支出の約 98%）；本レポートはそこから主要サプライヤー 66 社、中核コンポーネント 31、製品モデル 34 をモデル化。",
   "report.header.subtitle": "Apple 製品サプライチェーングラフ · 製品ライン × 部品 × サプライヤー × 産業チェーン（属性拡張版 v2）",
   "report.header.title": "Apple 製品サプライチェーン・グラフレポート",
   "report.intro.products": "iPhone / Mac / iPad / Apple Watch / Vision Pro / AirPods・HomePod の 6 製品ラインを網羅（発売日順）。",

@@ -276,7 +276,7 @@
   "report.geo.p33": "Triés selon le nombre de modèles de produits utilisant directement ou indirectement un fournisseur, reflétant à quel point celui-ci est intégré à l'écosystème Apple.",
   "report.header.generated": "Données structurées (CSV / JSON) jointes",
   "report.header.neo4jLink": "Voir les docs techniques pour l'import Neo4j",
-  "report.header.source": "Source des données : rapports publics et démontages de la chaîne (2024–2026, dont Counterpoint / Nikkei / TrendForce / stockanalysis) + liste 2024 des fournisseurs Apple (187 fournisseurs clés, ~98 % des dépenses directes) ; ce rapport en modélise 60 fournisseurs clés, 27 composants centraux et 28 modèles de produits.",
+  "report.header.source": "Source des données : rapports publics et démontages de la chaîne (2024–2026, dont Counterpoint / Nikkei / TrendForce / stockanalysis) + liste 2024 des fournisseurs Apple (187 fournisseurs clés, ~98 % des dépenses directes) ; ce rapport en modélise 66 fournisseurs clés, 31 composants centraux et 34 modèles de produits.",
   "report.header.subtitle": "Graphe de la chaîne d'approvisionnement Apple · Gamme × Composant × Fournisseur × Chaîne (version enrichie v2)",
   "report.header.title": "Rapport sur le graphe de la chaîne d'approvisionnement des produits Apple",
   "report.intro.products": "Couvre six gammes — iPhone / Mac / iPad / Apple Watch / Vision Pro / AirPods·HomePod (tri par date de sortie).",

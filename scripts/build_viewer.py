@@ -76,6 +76,9 @@ def seo_scope():
     n_prod = len(data["nodes"].get("products", []))
     n_comp = len(data["nodes"].get("components", []))
     n_supp = len(data["nodes"].get("suppliers", []))
+    # 生产基地（bases）也是图谱节点：自 2026-09 起数据模型为「产品/零部件/供应商/生产基地」
+    # 四类节点，漏算会让「约 N 节点」对外少报 17 个。此前 seo_text_html 只累加前三类。
+    n_base = len(data["nodes"].get("bases", []))
     n_edge = sum(len(v) for v in data["edges"].values())
     lines = []
     for p in data["nodes"].get("products", []):
@@ -83,7 +86,7 @@ def seo_scope():
         if pl and pl not in lines:
             lines.append(pl)
     lines_zh = "、".join(LINE_ZH.get(l, l) for l in lines)
-    return n_prod, n_comp, n_supp, n_edge, lines_zh
+    return n_prod, n_comp, n_supp, n_edge, lines_zh, n_base
 
 
 def seo_single_points(risk):
@@ -112,7 +115,7 @@ def seo_worst_line(risk):
 
 def seo_description(risk):
     """页面 meta description（中文，默认语言）。"""
-    n_prod, n_comp, n_supp, n_edge, lines_zh = seo_scope()
+    n_prod, n_comp, n_supp, n_edge, lines_zh, n_base = seo_scope()
     nlines = len(lines_zh.split("、"))
     return ("苹果产品供应链上下游知识图谱：以「产品→零部件→供应商」三层模型覆盖%d大产品线（%s）、%d款产品、"
             "%d个核心零部件、%d家供应商，量化单点依赖与供应脆弱性并给出最脆弱产品线排名；"
@@ -127,7 +130,7 @@ def seo_text_html(risk):
     注意：Plan C 后这段 HTML 已被内联进仓库根的静态 index.html，此处函数仅保留供
     单测（XSS 转义不变量）与本地预览；线上内容以 index.html 内联版本为准。
     """
-    n_prod, n_comp, n_supp, n_edge, lines_zh = seo_scope()
+    n_prod, n_comp, n_supp, n_edge, lines_zh, n_base = seo_scope()
     nlines = len(lines_zh.split("、"))
     sps = seo_single_points(risk)
     wl = seo_worst_line(risk)
@@ -152,13 +155,13 @@ def seo_text_html(risk):
           "为 AI 联网检索公开资料的二手整合、属单点时点快照，存在口径不一致与模型幻觉风险。"
           "所有 CSV / JSON / 网页均由脚本从单一数据源重生成，便于复现、二次加工与算法探索；"
           "使用前请务必阅读项目文档中的「数据来源与口径」与「分析方法局限性」，并注明数据与局限。</p>"
-          % (n_prod + n_comp + n_supp, n_edge))
+          % (n_prod + n_comp + n_supp + n_base, n_edge))
     return h
 
 
 def jsonld(risk):
     """schema.org 结构化数据：Organization + WebSite + Dataset + BreadcrumbList。"""
-    n_prod, n_comp, n_supp, n_edge, lines_zh = seo_scope()
+    n_prod, n_comp, n_supp, n_edge, lines_zh, n_base = seo_scope()
     desc = ("Apple product supply-chain knowledge graph modelling Product→Component→Supplier relations, "
             "quantifying single-point dependency and supply-chain vulnerability across %d products, %d components and %d suppliers. "
             "Released as a reproducible, illustrative experimental dataset for supply-chain graph analysis, vulnerability modeling "

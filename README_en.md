@@ -10,10 +10,10 @@
 
 > 📊 **Research use (illustrative)**: this graph can also serve as an **illustrative experimental dataset** for supply-chain graph analysis, vulnerability modeling, and **graph neural network (GNN) teaching** — *not a mature benchmark* (MIT license; see "As a research / analytical experimental dataset" below).
 
-[![Nodes](https://img.shields.io/badge/nodes-115-blue)](data/neo4j)
-[![Products](https://img.shields.io/badge/products-28-green)](data/neo4j)
-[![Components](https://img.shields.io/badge/components-27-green)](data/neo4j)
-[![Suppliers](https://img.shields.io/badge/suppliers-60-green)](data/neo4j)
+[![Nodes](https://img.shields.io/badge/nodes-148-blue)](data/neo4j)
+[![Products](https://img.shields.io/badge/products-34-green)](data/neo4j)
+[![Components](https://img.shields.io/badge/components-31-green)](data/neo4j)
+[![Suppliers](https://img.shields.io/badge/suppliers-66-green)](data/neo4j)
 [![Relationships](https://img.shields.io/badge/relationships-510-orange)](data/neo4j)
 [![Python](https://img.shields.io/badge/python-3.9%2B-blue?logo=python)](scripts/generate.py)
 [![Zero deps](https://img.shields.io/badge/dependencies-none-success)](scripts)
@@ -73,7 +73,7 @@ This project drives a three-layer directed graph from a **single source of truth
 - **Graph-database ready**: 6 Neo4j official bulk-import-format CSVs (`:ID` / `:LABEL` / `:START_ID` / `:END_ID` / `:TYPE` headers), with offline / online import options.
 - **Zero-dependency visualization**: the report, dashboard and other pages embed data — just open, no network or database needed (the dashboard charts rely on Chart.js from CDN, requiring network on first open); the home graph (`index.html`) `fetch`es `data/apple_supply_chain.json` in the browser at runtime, so it must be served over HTTP (e.g. `python3 -m http.server`) — opening via `file://` double-click is blocked by CORS and fails to load data.
 - **Multi-page navigation, not silos**: home graph / supplier list / report / map / dashboard share one top navigation bar (`topnav.py`, maintained in one place, applied globally); cross-page deep links jump straight to a specific entity. This unified nav bar *is* the "fusion" — pinned to the top of every page so users can move freely between sections, without building a separate aggregator page per section.
-- **Supplier list (table view)**: `dist/supplier_table.html` presents all 60 suppliers as a table, with filtering by **region / country / category / tier**, keyword search, and click-to-sort columns **ascending / descending**; each row jumps back to the graph or map in one click.
+- **Supplier list (table view)**: `dist/supplier_table.html` presents all 66 suppliers as a table, with filtering by **region / country / category / tier**, keyword search, and click-to-sort columns **ascending / descending**; each row jumps back to the graph or map in one click.
 - **Supplier research layer**: relative valuation + sentiment analysis for 15 key suppliers, presented as a dashboard and a report.
 - **Reproducible**: pure Python standard library, no third-party dependencies; all artifacts regenerable from a single source.
 
@@ -95,7 +95,7 @@ This project drives a three-layer directed graph from a **single source of truth
 The whole site consists of **5 sections**, linked by a top **unified navigation bar** (`topnav.py`, maintained in one place, applied globally) — this is exactly the intent of "fusion": a jump bar pinned to the top of every page, letting users travel freely between sections without building a separate aggregator page for each:
 
 - **🕸️ Supply chain graph** (`index.html`, site home): force-directed interactive; filter by product line / type, search, locate.
-- **📋 Supplier list** (`dist/supplier_table.html`): table view of all 60 suppliers, with filtering by region / country / category / tier, keyword search, and click-to-sort columns.
+- **📋 Supplier list** (`dist/supplier_table.html`): table view of all 66 suppliers, with filtering by region / country / category / tier, keyword search, and click-to-sort columns.
 - **📄 Upstream/downstream report** (`dist/apple_supply_chain_report.html`): model overview + cross-page deep links.
 - **🗺️ Supplier map** (`tools/visualizations/supplier_geo.html`): production-base markers + logistics lines.
 - **📊 Valuation dashboard** (`tools/visualizations/supplier_dashboard.html`): valuation × sentiment visualization.
@@ -311,7 +311,7 @@ python3 tools/run_sentiment.py --id qualcomm    # view a single supplier only
 Classic graph analytics run **directly on the graph, computed in-browser with no backend**: type-aware degree centrality, disruption reach (reverse-reachability BFS), and PageRank network coreness.
 
 - **Productized presentation**: sole-source supply / disruption-impact simulation / network coreness; red·amber·green semantic colors; click a ranking entry to focus the graph node.
-- **2nd-hop downstream highlight**: selecting a supplier / component highlights its 2nd-hop downstream products, making "disruption hits N products" visible on the graph (e.g. Goertek's disruption reaches 28 products).
+- **2nd-hop downstream highlight**: selecting a supplier / component highlights its 2nd-hop downstream products, making "disruption hits N products" visible on the graph (e.g. Goertek's disruption reaches 34 products).
 - **Anti-misreading copy**: "reach" ≠ "halt" — the count of products that would actually stop (no alternative) is shown in a separate green/red callout.
 
 Algorithms, conventions, and limitations: **[docs/bottleneck-analytics.md](docs/bottleneck-analytics.md)**.
@@ -420,7 +420,7 @@ apple_supply_chain/
 │   └── screenshots/          # README screenshots (see "Screenshots" section)
 └── dist/                     # build artifacts (.gitignore'd, not committed; generated by npm run build + build_all.py)
     ├── apple_supply_chain_report.html  # analysis report (standalone page)
-    ├── supplier_table.html       # supplier list: filter + sort table view of all 60 suppliers
+    ├── supplier_table.html       # supplier list: filter + sort table view of all 66 suppliers
     ├── graph_engine.js           # shared graph canvas physics engine (built from src/engine/ by esbuild, reused by home index.html)
     ├── graph_bootstrap.js        # home graph bootstrap script (copied from templates/)
     ├── graph_table_panel.js      # home graph table panel (copied from templates/)
