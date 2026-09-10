@@ -1,8 +1,11 @@
 product_id:ID(Product),name,product_line,english_name,alias,release_date,release_year:int,status,soc,display,price_usd:int,:LABEL
+iphone_18_pro,iPhone 18 Pro,iPhone,iPhone 18 Pro,,2026-09-09,2026,在售,A20 Pro,"6.3"" LTPO OLED (SDC/LGD)",1199,Product
+iphone_18_pmax,iPhone 18 Pro Max,iPhone,iPhone 18 Pro Max,,2026-09-09,2026,在售,A20 Pro,"6.9"" LTPO OLED (SDC/LGD)",1299,Product
+iphone_duo,iPhone Duo,iPhone,iPhone Duo,iPhone Ultra / iPhone Fold (发布前传闻名),2026-09-09,2026,在售,A20 Pro,"7.6"" 可折叠 OLED(内) + 5.4"" OLED(外) (SDC)",1999,Product
 iphone_17,iPhone 17,iPhone,iPhone 17,,2025-09-09,2025,在售,A19,"6.3"" OLED (SDC/LGD/BOE)",799,Product
 iphone_17_air,iPhone 17 Air,iPhone,iPhone 17 Air,iPhone 17 Slim (发布前代号),2025-09-09,2025,在售,A19,"6.6"" OLED 超薄 (SDC/LGD/BOE)",999,Product
-iphone_17_pro,iPhone 17 Pro,iPhone,iPhone 17 Pro,,2025-09-09,2025,在售,A19 Pro,"6.3"" LTPO OLED (SDC/LGD/BOE)",1099,Product
-iphone_17_pmax,iPhone 17 Pro Max,iPhone,iPhone 17 Pro Max,,2025-09-09,2025,在售,A19 Pro,"6.9"" LTPO OLED (SDC/LGD)",1199,Product
+iphone_17_pro,iPhone 17 Pro,iPhone,iPhone 17 Pro,,2025-09-09,2025,停产,A19 Pro,"6.3"" LTPO OLED (SDC/LGD/BOE)",1099,Product
+iphone_17_pmax,iPhone 17 Pro Max,iPhone,iPhone 17 Pro Max,,2025-09-09,2025,停产,A19 Pro,"6.9"" LTPO OLED (SDC/LGD)",1199,Product
 mba_13_m4,"MacBook Air 13"" (M4)",Mac,MacBook Air 13-inch (M4),,2025-03-05,2025,在售,M4,"13.6"" LCD (BOE)",999,Product
 mba_15_m4,"MacBook Air 15"" (M4)",Mac,MacBook Air 15-inch (M4),,2025-03-05,2025,在售,M4,"15.3"" LCD (BOE)",1199,Product
 mbp_14_m4,"MacBook Pro 14"" (M4)",Mac,MacBook Pro 14-inch (M4),,2024-10-30,2024,在售,M4/M4 Pro/M4 Max,"14.2"" Mini-LED (Sharp/LGD)",1599,Product
@@ -17,11 +20,14 @@ ipadair_11_m3,"iPad Air 11"" (M3)",iPad,iPad Air 11-inch (M3),,2025-03-04,2025,�
 ipadair_13_m3,"iPad Air 13"" (M3)",iPad,iPad Air 13-inch (M3),,2025-03-04,2025,在售,M3,"13"" LCD",799,Product
 ipadmini_a17,iPad mini (A17 Pro),iPad,iPad mini (A17 Pro),,2024-10-15,2024,在售,A17 Pro,"8.3"" LCD",499,Product
 ipad_11_a16,iPad (A16),iPad,"iPad (11-inch, 2025)",,2025-03-04,2025,在售,A16,"11"" LCD",349,Product
+watch_s12,Apple Watch Series 12,Wearable,Apple Watch Series 12,,2026-09-09,2026,在售,S11 SiP,LTPO3 OLED 全天候视网膜屏 2000 尼特 (LGD),399,Product
+watch_ultra4,Apple Watch Ultra 4,Wearable,Apple Watch Ultra 4,,2026-09-09,2026,在售,S11 SiP,LTPO3 OLED 3000 尼特 (LGD),799,Product
 watch_s10,Apple Watch Series 10,Wearable,Apple Watch Series 10,Apple Watch X (发布前传闻名),2024-09-09,2024,在售,S10 SiP,LTPO3 OLED (LGD/JDI),399,Product
 watch_ultra3,Apple Watch Ultra 3,Wearable,Apple Watch Ultra 3,,2025-09-09,2025,在售,S? SiP,OLED (LGD),799,Product
 watch_se3,Apple Watch SE (3rd),Wearable,Apple Watch SE (3rd generation),,2025-09-09,2025,在售,S? SiP,OLED,249,Product
 visionpro_m2,Apple Vision Pro (M2+R1),Spatial,Apple Vision Pro (M2+R1),Apple Vision Pro (1st gen),2024-02-02,2024,在售,M2+R1,Micro-OLED (Sony) + AMOLED 外屏(LGD),3499,Product
 visionpro_m5,Apple Vision Pro (M5),Spatial,Apple Vision Pro (M5),,2025（未确认）,2025,传闻/未发布,M5,Micro-OLED (SDC) + AMOLED 外屏(LGD),3499,Product
+airpods_5,AirPods 5,Audio,AirPods 5,,2026-09-09,2026,在售,H2,-,129,Product
 airpods_pro3,AirPods Pro 3,Audio,AirPods Pro 3,,2025-09-09,2025,在售,H2,-,249,Product
 airpods_4,AirPods 4,Audio,AirPods 4,,2024-09-09,2024,在售,H2,-,129,Product
 airpodsmax_usbc,AirPods Max (USB-C),Audio,AirPods Max (USB-C),,2024-09-09,2024,在售,-,-,549,Product

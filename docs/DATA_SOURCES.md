@@ -23,7 +23,7 @@
 
 | 文件 | 内容 | 来源口径 |
 | --- | --- | --- |
-| `data/apple_supply_chain.json` | 产品/零部件/供应商/基地拓扑（28 产品 / 27 零部件 / 60 供应商 / 17 基地） | `meta.source`：公开供应链报告 2024–2026 + 苹果 2024 供应商名单（187 家核心供应商，≈98% 直接支出）；`sources_accessed: 2026-08-05` |
+| `data/apple_supply_chain.json` | 产品/零部件/供应商/基地拓扑（34 产品 / 31 零部件 / 66 供应商 / 17 基地） | `meta.source`：公开供应链报告 2024–2026 + 苹果 2024 供应商名单（187 家核心供应商，≈98% 直接支出）；`sources_accessed: 2026-09-10` |
 | `data/supply_chain_risk.json` | 单点依赖 / 脆弱性评分 | 模型 `component_supplier_count_v1`；权重 `mean 0.5 / weakest 0.3 / single_point_rate 0.2`；阈值 `high 0.6 / medium 0.3`；`as_of: 见图谱 meta.source` |
 | `data/production_bases.draft.json` | 17 个总装基地（**DRAFT，未接入 build**） | 方法：联网公开资料二手整合（AppleInsider、WSJ 经媒体转述、越南投资评论 VIR、中国官方媒体、行业研究） |
 

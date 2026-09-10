@@ -1,4 +1,11 @@
 :START_ID(Product),:END_ID(Supplier),:TYPE,source
+iphone_18_pro,foxconn,ASSEMBLED_BY,apple_supplier_list;nikkei
+iphone_18_pro,luxshare,ASSEMBLED_BY,apple_supplier_list;nikkei
+iphone_18_pro,pegatron,ASSEMBLED_BY,apple_supplier_list;nikkei
+iphone_18_pmax,foxconn,ASSEMBLED_BY,apple_supplier_list;nikkei
+iphone_18_pmax,luxshare,ASSEMBLED_BY,apple_supplier_list;nikkei
+iphone_18_pmax,pegatron,ASSEMBLED_BY,apple_supplier_list;nikkei
+iphone_duo,foxconn,ASSEMBLED_BY,apple_supplier_list;nikkei
 iphone_17,foxconn,ASSEMBLED_BY,apple_supplier_list;nikkei
 iphone_17,luxshare,ASSEMBLED_BY,apple_supplier_list;nikkei
 iphone_17,pegatron,ASSEMBLED_BY,apple_supplier_list;nikkei
@@ -28,6 +35,10 @@ ipadair_11_m3,foxconn,ASSEMBLED_BY,apple_supplier_list;nikkei
 ipadair_13_m3,foxconn,ASSEMBLED_BY,apple_supplier_list;nikkei
 ipadmini_a17,foxconn,ASSEMBLED_BY,apple_supplier_list;nikkei
 ipad_11_a16,foxconn,ASSEMBLED_BY,apple_supplier_list;nikkei
+watch_s12,luxshare,ASSEMBLED_BY,apple_supplier_list;nikkei
+watch_s12,quanta,ASSEMBLED_BY,apple_supplier_list;nikkei
+watch_s12,foxconn,ASSEMBLED_BY,apple_supplier_list;nikkei
+watch_ultra4,luxshare,ASSEMBLED_BY,apple_supplier_list;nikkei
 watch_s10,luxshare,ASSEMBLED_BY,apple_supplier_list;nikkei
 watch_s10,quanta,ASSEMBLED_BY,apple_supplier_list;nikkei
 watch_s10,foxconn,ASSEMBLED_BY,apple_supplier_list;nikkei
@@ -35,6 +46,8 @@ watch_ultra3,luxshare,ASSEMBLED_BY,apple_supplier_list;nikkei
 watch_se3,quanta,ASSEMBLED_BY,apple_supplier_list;nikkei
 visionpro_m2,luxshare,ASSEMBLED_BY,apple_supplier_list;nikkei
 visionpro_m5,luxshare,ASSEMBLED_BY,apple_supplier_list;nikkei
+airpods_5,luxshare,ASSEMBLED_BY,apple_supplier_list;nikkei
+airpods_5,goertek,ASSEMBLED_BY,apple_supplier_list;nikkei
 airpods_pro3,luxshare,ASSEMBLED_BY,apple_supplier_list;nikkei
 airpods_pro3,goertek,ASSEMBLED_BY,apple_supplier_list;nikkei
 airpods_4,luxshare,ASSEMBLED_BY,apple_supplier_list;nikkei

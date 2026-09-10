@@ -79,3 +79,13 @@ touch,gis,SUPPLIED_BY,,触控模组,techinsights;ifixit
 touch,lgd,SUPPLIED_BY,,触控显示,techinsights;ifixit
 camera_module,cowell,SUPPLIED_BY,,摄像头模组,techinsights;counterpoint
 camera_module,lgd,SUPPLIED_BY,,模组,techinsights;counterpoint
+foldable_panel,sdc,SUPPLIED_BY,,"iPhone Duo 7.6"" 内屏可折叠 OLED（官方仅确认尺寸，供应商为 UBI Research 口径：2026 约 800 万块 / 2027 目标 1500 万块）",ubiresearch;apple_specs
+foldable_panel,lgd,SUPPLIED_BY,,"iPhone Duo 5.4"" 外屏 OLED（推断，未官宣）",ubiresearch;apple_specs
+utg,lens_tech,SUPPLIED_BY,,iPhone Duo UTG 超薄柔性玻璃、CPI 膜、UTG 支撑板、3D 玻璃盖板（公司 2026-08 投资者交流）,cn_ir;apple_specs
+utg,changxin_tech,SUPPLIED_BY,,UTG 超薄柔性玻璃（2–20 英寸 / 30–100μm，R0.5mm 200K+ 弯折；公司 2025 年报口径）,cn_ir;apple_specs
+hinge,amphenol,SUPPLIED_BY,,iPhone Duo 铰链一级供应商（CINNO Research 分析师口径，未官宣）,apple_specs;cn_ir;cinno
+hinge,shinzushing,SUPPLIED_BY,,iPhone Duo 铰链一级供应商（CINNO Research 分析师口径，未官宣）,apple_specs;cn_ir;cinno
+hinge,lingyi,SUPPLIED_BY,,铰链精密结构件、屏幕支撑板、超薄均热板、不锈钢电池壳模组（2026-09-04 机构调研）,apple_specs;cn_ir;cinno
+hinge,yian_tech,SUPPLIED_BY,,铰链液态金属(非晶合金)主轴结构件（2026 半年报，称已与安费诺合作）,apple_specs;cn_ir;cinno
+hinge,jingyan_tech,SUPPLIED_BY,,铰链 MIM 精密结构件（2026 半年报口径）,apple_specs;cn_ir;cinno
+esim_module,usi,SUPPLIED_BY,,eSIM SiP 模组（0.4mm 超薄封装）—— 来源为二手梳理，尚未核到公司公告原文，待确认,cn_ir
