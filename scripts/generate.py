@@ -230,7 +230,11 @@ COMP_SOURCE = {
 }
 # 关系级别默认来源集合
 SRC_ASSEMBLY = ["apple_supplier_list", "nikkei"]      # 代工关系
-SRC_BOM      = ["techinsights", "ifixit"]             # 产品-零部件(BOM 推导)
+# 产品-零部件(USES_COMPONENT)边的来源。
+# 重要：这些边由「产品线 BOM 模板」套用生成（见下方 MAC_COMP / PHONE_COMP / PAD_COMP 等常量），
+# 并非每个型号都经过逐机拆解取证。此处的来源标识表示该 BOM 结构参照了这两家的行业拆解与分析，
+# 不等同于「每一条边都有对应型号的实证」。逐条带 note 的 component_supplier 边证据等级更高。
+SRC_BOM      = ["techinsights", "ifixit"]
 
 
 # ---------------------------------------------------------------------------
@@ -503,43 +507,74 @@ PRODUCTS = [
  # 本代起标准版 iPhone 18 / 18e / Air 2 推迟至 2027 年春季，秋季仅发 Pro 系列与折叠屏。
  P("iphone_18_pro",  "iPhone 18 Pro",        "iPhone", "iPhone 18 Pro", "", "2026-09-09", 2026, "在售", "A20 Pro", "6.3\" LTPO OLED (SDC/LGD)", 1199, ["foxconn","luxshare","pegatron"], PHONE_COMP),
  P("iphone_18_pmax", "iPhone 18 Pro Max",    "iPhone", "iPhone 18 Pro Max", "", "2026-09-09", 2026, "在售", "A20 Pro", "6.9\" LTPO OLED (SDC/LGD)", 1299, ["foxconn","luxshare","pegatron"], PHONE_COMP),
- P("iphone_duo",     "iPhone Duo",           "iPhone", "iPhone Duo", "iPhone Ultra / iPhone Fold (发布前传闻名)", "2026-09-09", 2026, "在售", "A20 Pro", "7.6\" 可折叠 OLED(内) + 5.4\" OLED(外) (SDC)", 1999, ["foxconn"], DUO_COMP),
+ P("iphone_duo",     "iPhone Duo",           "iPhone", "iPhone Duo", "苹果首款折叠屏（书本式内折）；2026-09-09 发布，10-16 预购、10-23 发售（Apple 官网）。iPhone Ultra / iPhone Fold 为发布前传闻名", "2026-09-09", 2026, "在售", "A20 Pro", "7.6\" 可折叠 OLED(内) + 5.4\" OLED(外) (SDC)", 1999, ["foxconn"], DUO_COMP),
  P("iphone_17",      "iPhone 17",            "iPhone", "iPhone 17", "", "2025-09-09", 2025, "在售", "A19",      "6.3\" OLED (SDC/LGD/BOE)", 799, ["foxconn","luxshare","pegatron"], PHONE_COMP),
  P("iphone_17_air",  "iPhone 17 Air",        "iPhone", "iPhone 17 Air", "iPhone 17 Slim (发布前代号)", "2025-09-09", 2025, "在售", "A19", "6.6\" OLED 超薄 (SDC/LGD/BOE)", 999, ["foxconn","luxshare","pegatron"], PHONE_COMP),
  P("iphone_17_pro",  "iPhone 17 Pro",        "iPhone", "iPhone 17 Pro", "", "2025-09-09", 2025, "停产", "A19 Pro", "6.3\" LTPO OLED (SDC/LGD/BOE)", 1099, ["foxconn","luxshare","pegatron"], PHONE_COMP),
  P("iphone_17_pmax", "iPhone 17 Pro Max",    "iPhone", "iPhone 17 Pro Max", "", "2025-09-09", 2025, "停产", "A19 Pro", "6.9\" LTPO OLED (SDC/LGD)", 1199, ["foxconn","pegatron"], PHONE_COMP),
  # ---- Mac ----
- P("mba_13_m4",      "MacBook Air 13\" (M4)", "Mac", "MacBook Air 13-inch (M4)", "", "2025-03-05", 2025, "在售", "M4", "13.6\" LCD (BOE)", 999, ["foxconn","wistron"], MAC_COMP),
- P("mba_15_m4",      "MacBook Air 15\" (M4)", "Mac", "MacBook Air 15-inch (M4)", "", "2025-03-05", 2025, "在售", "M4", "15.3\" LCD (BOE)", 1199, ["foxconn","wistron"], MAC_COMP),
- P("mbp_14_m4",      "MacBook Pro 14\" (M4)", "Mac", "MacBook Pro 14-inch (M4)", "", "2024-10-30", 2024, "在售", "M4/M4 Pro/M4 Max", "14.2\" Mini-LED (Sharp/LGD)", 1599, ["foxconn","wistron"], MAC_COMP),
- P("mbp_16_m4",      "MacBook Pro 16\" (M4)", "Mac", "MacBook Pro 16-inch (M4)", "", "2024-10-30", 2024, "在售", "M4 Pro/M4 Max", "16.2\" Mini-LED (Sharp/LGD)", 2499, ["foxconn","wistron"], MAC_COMP),
- P("imac_24_m4",     "iMac 24\" (M4)",        "Mac", "iMac 24-inch (M4)", "", "2024-10-30", 2024, "在售", "M4", "24\" 4.5K LCD", 1299, ["foxconn"], MAC_COMP),
- P("macmini_m4",     "Mac mini (M4)",         "Mac", "Mac mini (M4)", "", "2024-10-29", 2024, "在售", "M4/M4 Pro", "-", 599, ["foxconn"], MAC_COMP),
- P("macstudio_m4",   "Mac Studio (M4 Max)",   "Mac", "Mac Studio (M4 Max)", "", "2025-03-05", 2025, "在售", "M4 Max/M3 Ultra", "-", 1999, ["foxconn"], MAC_COMP),
- P("macpro_m2u",     "Mac Pro (M2 Ultra)",    "Mac", "Mac Pro (M2 Ultra)", "", "2023-06-05", 2023, "在售", "M2 Ultra", "-", 6999, ["foxconn"], MAC_COMP),
+# 2025-10-15：M5 首发（14" MacBook Pro，官方 Newsroom 确认），同批还有 iPad Pro 与 Vision Pro。
+# 2026-03-04：MacBook Air / MacBook Pro 全系转 M5，并新增入门线 MacBook Neo。
+# 2026-08-25 / 08-26：Mac mini 与 Mac Studio 更新（官网标注 New，价格已上调）。
+# 价格来源：Apple 美国官网当前在售价（USD 起售价）。同尺寸高低配的分别定价若官网未单列，
+#          按同代定价结构推断并在此标注「推断价」，勿当作已确认值。
+P("macbook_neo",    "MacBook Neo",            "Mac", "MacBook Neo (A18 Pro)", "", "2026-03-04", 2026, "在售", "A18 Pro", "13.0\" LCD 2408×1506 500 尼特", 699, ["foxconn"], MAC_COMP),
+ P("mba_13_m5",      "MacBook Air 13\" (M5)",  "Mac", "MacBook Air 13-inch (M5)", "", "2026-03-04", 2026, "在售", "M5", "13.6\" LCD (BOE)", 1299, ["foxconn","wistron"], MAC_COMP),
+ P("mba_15_m5",      "MacBook Air 15\" (M5)",  "Mac", "MacBook Air 15-inch (M5)", "", "2026-03-04", 2026, "在售", "M5", "15.3\" LCD (BOE)", 1499, ["foxconn","wistron"], MAC_COMP),
+ P("mbp_14_m5",      "MacBook Pro 14\" (M5)",  "Mac", "MacBook Pro 14-inch (M5)", "", "2025-10-15", 2025, "在售", "M5/M5 Pro/M5 Max", "14.2\" Mini-LED (Sharp/LGD)", 1999, ["foxconn","wistron"], MAC_COMP),
+ P("mbp_16_m5",      "MacBook Pro 16\" (M5)",  "Mac", "MacBook Pro 16-inch (M5)", "", "2026-03-04", 2026, "在售", "M5 Pro/M5 Max", "16.2\" Mini-LED (Sharp/LGD)", 2699, ["foxconn","wistron"], MAC_COMP),
+ P("imac_24_m4",     "iMac 24\" (M4)",        "Mac", "iMac 24-inch (M4)", "", "2024-10-30", 2024, "在售", "M4", "24\" 4.5K LCD 500 尼特（可选纳米纹理玻璃）", 1499, ["foxconn"], MAC_COMP),
+ P("macmini_2026",   "Mac mini (2026)",        "Mac", "Mac mini (2026)", "Apple 官网 Mac 产品页已确认「M6 chip or M5 Pro chip」（2026-09-15 核）；当前为预售 Pre-order", "2026-08-25", 2026, "在售", "M5 Pro/M6", "-", 899, ["foxconn"], MAC_COMP),
+ P("macstudio_2026", "Mac Studio (2026)",      "Mac", "Mac Studio (2026)", "当前为预售 Pre-order（Apple 官网 2026-09-15 核）；芯片型号待官方确认", "2026-08-26", 2026, "在售", "M5 Max/M5 Ultra/M6", "-", 2499, ["foxconn"], MAC_COMP),
+ # 以下 M4 世代机型随 M5 上市下架；Mac Pro 已从 Apple 官网产品线移除（无继任机型）。
+ P("mba_13_m4",      "MacBook Air 13\" (M4)", "Mac", "MacBook Air 13-inch (M4)", "", "2025-03-05", 2025, "停产", "M4", "13.6\" LCD (BOE)", 999, ["foxconn","wistron"], MAC_COMP),
+ P("mba_15_m4",      "MacBook Air 15\" (M4)", "Mac", "MacBook Air 15-inch (M4)", "", "2025-03-05", 2025, "停产", "M4", "15.3\" LCD (BOE)", 1199, ["foxconn","wistron"], MAC_COMP),
+ P("mbp_14_m4",      "MacBook Pro 14\" (M4)", "Mac", "MacBook Pro 14-inch (M4)", "", "2024-10-30", 2024, "停产", "M4/M4 Pro/M4 Max", "14.2\" Mini-LED (Sharp/LGD)", 1599, ["foxconn","wistron"], MAC_COMP),
+ P("mbp_16_m4",      "MacBook Pro 16\" (M4)", "Mac", "MacBook Pro 16-inch (M4)", "", "2024-10-30", 2024, "停产", "M4 Pro/M4 Max", "16.2\" Mini-LED (Sharp/LGD)", 2499, ["foxconn","wistron"], MAC_COMP),
+ P("macmini_m4",     "Mac mini (M4)",         "Mac", "Mac mini (M4)", "", "2024-10-29", 2024, "停产", "M4/M4 Pro", "-", 599, ["foxconn"], MAC_COMP),
+ P("macstudio_m4",   "Mac Studio (M4 Max)",   "Mac", "Mac Studio (M4 Max)", "", "2025-03-05", 2025, "停产", "M4 Max/M3 Ultra", "-", 1999, ["foxconn"], MAC_COMP),
+ P("macpro_m2u",     "Mac Pro (M2 Ultra)",    "Mac", "Mac Pro (M2 Ultra)", "", "2023-06-05", 2023, "停产", "M2 Ultra", "-", 6999, ["foxconn"], MAC_COMP),
  # ---- iPad ----
- P("ipadpro_11_m4",  "iPad Pro 11\" (M4)",    "iPad", "iPad Pro 11-inch (M4)", "", "2024-05-07", 2024, "在售", "M4", "11\" Tandem OLED (SDC/LGD)", 999, ["foxconn"], PAD_COMP),
- P("ipadpro_13_m4",  "iPad Pro 13\" (M4)",    "iPad", "iPad Pro 13-inch (M4)", "", "2024-05-07", 2024, "在售", "M4", "13\" Tandem OLED (SDC/LGD)", 1299, ["foxconn"], PAD_COMP),
- P("ipadair_11_m3",  "iPad Air 11\" (M3)",    "iPad", "iPad Air 11-inch (M3)", "", "2025-03-04", 2025, "在售", "M3", "11\" LCD", 599, ["foxconn"], PAD_COMP),
- P("ipadair_13_m3",  "iPad Air 13\" (M3)",    "iPad", "iPad Air 13-inch (M3)", "", "2025-03-04", 2025, "在售", "M3", "13\" LCD", 799, ["foxconn"], PAD_COMP),
- P("ipadmini_a17",   "iPad mini (A17 Pro)",   "iPad", "iPad mini (A17 Pro)", "", "2024-10-15", 2024, "在售", "A17 Pro", "8.3\" LCD", 499, ["foxconn"], PAD_COMP),
- P("ipad_11_a16",    "iPad (A16)",            "iPad", "iPad (11-inch, 2025)", "", "2025-03-04", 2025, "在售", "A16", "11\" LCD", 349, ["foxconn"], PAD_COMP),
+ # 2025-10-15 与 M5 MacBook Pro / Vision Pro 同批发布；官方 Newsroom 确认搭载 M5。
+ # 该代同时换用自研 N1 无线芯片（Wi-Fi 7）与 C1X 蜂窝调制解调器。
+ # 价格：Apple 美国官网 2026-09-15 在售价「iPad Pro From $1,199」为硬证据，对应 11 英寸机型；
+ #       13 英寸官网列表页未单列，按同代 11 到 13 英寸的 $300 价差结构推为 $1,499，标注为推断值。
+ # 注：M4 世代 11 英寸起价 $999，故 M5 世代实为涨价 $200。
+ P("ipadpro_11_m5",  "iPad Pro 11\" (M5)",    "iPad", "iPad Pro 11-inch (M5)", "官网在售价 From $1,199（2026-09-15 核）", "2025-10-15", 2025, "在售", "M5", "11\" Ultra Retina XDR Tandem OLED (SDC/LGD)", 1199, ["foxconn"], PAD_COMP),
+ P("ipadpro_13_m5",  "iPad Pro 13\" (M5)",    "iPad", "iPad Pro 13-inch (M5)", "价格按 11 到 13 英寸价差结构推断，待官网单列价核实", "2025-10-15", 2025, "在售", "M5", "13\" Ultra Retina XDR Tandem OLED (SDC/LGD)", 1499, ["foxconn"], PAD_COMP),
+ P("ipadpro_11_m4",  "iPad Pro 11\" (M4)",    "iPad", "iPad Pro 11-inch (M4)", "", "2024-05-07", 2024, "停产", "M4", "11\" Tandem OLED (SDC/LGD)", 999, ["foxconn"], PAD_COMP),
+ P("ipadpro_13_m4",  "iPad Pro 13\" (M4)",    "iPad", "iPad Pro 13-inch (M4)", "", "2024-05-07", 2024, "停产", "M4", "13\" Tandem OLED (SDC/LGD)", 1299, ["foxconn"], PAD_COMP),
+ P("ipadair_11_m3",  "iPad Air 11\" (M3)",    "iPad", "iPad Air 11-inch (M3)", "", "2025-03-04", 2025, "停产", "M3", "11\" LCD", 599, ["foxconn"], PAD_COMP),
+ P("ipadair_13_m3",  "iPad Air 13\" (M3)",    "iPad", "iPad Air 13-inch (M3)", "", "2025-03-04", 2025, "停产", "M3", "13\" LCD", 799, ["foxconn"], PAD_COMP),
+ # 2026-03 换代：官网文案「Now supercharged by M4」，并新增 N1 无线芯片（Wi-Fi 7）与 C1X 蜂窝调制解调器。
+ # 发布月依据：Apple 环保报告文件名 iPad_Air_11-inch_and_13-inch_M4_PER_Mar2026.pdf；精确发布日待核。
+ # 价格：官网 2026-09-15「From $749」为 11 英寸硬证据；13 英寸按 M3 世代 $200 价差结构推为 $949（推断值）。
+ P("ipadair_11_m4",  "iPad Air 11\" (M4)",    "iPad", "iPad Air 11-inch (M4)", "官网在售价 From $749（2026-09-15 核）", "2026-03-11", 2026, "在售", "M4", "11\" Liquid Retina LCD", 749, ["foxconn"], PAD_COMP),
+ P("ipadair_13_m4",  "iPad Air 13\" (M4)",    "iPad", "iPad Air 13-inch (M4)", "价格按 11 到 13 英寸价差结构推断，待官网单列价核实", "2026-03-11", 2026, "在售", "M4", "13\" Liquid Retina LCD", 949, ["foxconn"], PAD_COMP),
+ P("ipadmini_a17",   "iPad mini (A17 Pro)",   "iPad", "iPad mini (A17 Pro)", "官网在售价 From $599（2026-09-15 核）", "2024-10-15", 2024, "在售", "A17 Pro", "8.3\" LCD", 599, ["foxconn"], PAD_COMP),
+ P("ipad_11_a16",    "iPad (A16)",            "iPad", "iPad (11-inch, 2025)", "官网在售价 From $449（2026-09-15 核）；首发价为 $349", "2025-03-04", 2025, "在售", "A16", "11\" Liquid Retina LCD", 449, ["foxconn"], PAD_COMP),
  # ---- Apple Watch ----
  # 2026-09-09 发布。注意：Series 12 与 Ultra 4 搭载的都是 S11 SiP，芯片代次与产品代次不同步（官网规格页确认）。
- P("watch_s12",      "Apple Watch Series 12","Wearable", "Apple Watch Series 12", "", "2026-09-09", 2026, "在售", "S11 SiP", "LTPO3 OLED 全天候视网膜屏 2000 尼特 (LGD)", 399, ["luxshare","quanta","foxconn"],
+ P("watch_s12",      "Apple Watch Series 12","Wearable", "Apple Watch Series 12", "当前为预售 Pre-order，非在售（Apple 官网 2026-09-15 核）", "2026-09-09", 2026, "在售", "S11 SiP", "LTPO3 OLED 全天候视网膜屏 2000 尼特 (LGD)", 399, ["luxshare","quanta","foxconn"],
    ["soc","display_panel","cover_glass","battery","enclosure","speaker","mic","sensor_bio","sensor_motion","pmic","wireless_charging","connectivity"]),
- P("watch_ultra4",   "Apple Watch Ultra 4",  "Wearable", "Apple Watch Ultra 4", "", "2026-09-09", 2026, "在售", "S11 SiP", "LTPO3 OLED 3000 尼特 (LGD)", 799, ["luxshare"],
+ P("watch_ultra4",   "Apple Watch Ultra 4",  "Wearable", "Apple Watch Ultra 4", "当前为预售 Pre-order，非在售（Apple 官网 2026-09-15 核）", "2026-09-09", 2026, "在售", "S11 SiP", "LTPO3 OLED 3000 尼特 (LGD)", 799, ["luxshare"],
    ["soc","display_panel","cover_glass","battery","enclosure","speaker","mic","sensor_bio","sensor_motion","pmic","wireless_charging","connectivity"]),
- P("watch_s10",      "Apple Watch Series 10","Wearable", "Apple Watch Series 10", "Apple Watch X (发布前传闻名)", "2024-09-09", 2024, "在售", "S10 SiP", "LTPO3 OLED (LGD/JDI)", 399, ["luxshare","quanta","foxconn"],
+ # 2025-09-09 发布（9/19 发售）。芯片仍为 S10 SiP —— 与 Series 10 同款，代次不同步；
+ # 新增睡眠评分与高血压通知、5G RedCap、Ion-X 玻璃抗刮提升 2 倍。官方 Newsroom + 支持页规格确认。
+ P("watch_s11",      "Apple Watch Series 11","Wearable", "Apple Watch Series 11", "已被 Series 12 取代下架（2026-09 核）", "2025-09-09", 2025, "停产", "S10 SiP", "LTPO3 OLED 全天候视网膜屏 2000 尼特 (LGD)", 399, ["luxshare","quanta","foxconn"],
    ["soc","display_panel","cover_glass","battery","enclosure","speaker","mic","sensor_bio","sensor_motion","pmic","wireless_charging","connectivity"]),
- P("watch_ultra3",   "Apple Watch Ultra 3",  "Wearable", "Apple Watch Ultra 3", "", "2025-09-09", 2025, "在售", "S? SiP", "OLED (LGD)", 799, ["luxshare"],
+ P("watch_s10",      "Apple Watch Series 10","Wearable", "Apple Watch Series 10", "Apple Watch X (发布前传闻名)", "2024-09-09", 2024, "停产", "S10 SiP", "LTPO3 OLED (LGD/JDI)", 399, ["luxshare","quanta","foxconn"],
+   ["soc","display_panel","cover_glass","battery","enclosure","speaker","mic","sensor_bio","sensor_motion","pmic","wireless_charging","connectivity"]),
+ P("watch_ultra3",   "Apple Watch Ultra 3",  "Wearable", "Apple Watch Ultra 3", "已被 Ultra 4 取代下架（2026-09 核）", "2025-09-09", 2025, "停产", "S? SiP", "OLED (LGD)", 799, ["luxshare"],
    ["soc","display_panel","cover_glass","battery","enclosure","speaker","mic","sensor_bio","sensor_motion","pmic","wireless_charging","connectivity"]),
  P("watch_se3",      "Apple Watch SE (3rd)", "Wearable", "Apple Watch SE (3rd generation)", "", "2025-09-09", 2025, "在售", "S? SiP", "OLED", 249, ["quanta"],
    ["soc","display_panel","battery","enclosure","speaker","mic","sensor_motion","pmic","wireless_charging","connectivity"]),
  # ---- Vision Pro ----
- P("visionpro_m2",   "Apple Vision Pro (M2+R1)","Spatial", "Apple Vision Pro (M2+R1)", "Apple Vision Pro (1st gen)", "2024-02-02", 2024, "在售", "M2+R1", "Micro-OLED (Sony) + AMOLED 外屏(LGD)", 3499, ["luxshare"],
+ P("visionpro_m2",   "Apple Vision Pro (M2+R1)","Spatial", "Apple Vision Pro (M2+R1)", "Apple Vision Pro (1st gen)", "2024-02-02", 2024, "停产", "M2+R1", "Micro-OLED (Sony) + AMOLED 外屏(LGD)", 3499, ["luxshare"],
    ["soc","display_panel","cover_glass","cis","lens","dram","nand","pmic","battery","enclosure","speaker","mic","sensor_motion","fpc","pcb","optical_filter"]),
- P("visionpro_m5",   "Apple Vision Pro (M5)", "Spatial", "Apple Vision Pro (M5)", "", "2025（未确认）", 2025, "传闻/未发布", "M5", "Micro-OLED (SDC) + AMOLED 外屏(LGD)", 3499, ["luxshare"],
+ # 2025-10-15 与 M5 MacBook Pro / iPad Pro 同批发布，10/22 发售；价格维持 $3,499 不变。
+ # 渲染像素较上代 +10%、刷新率提升至 120Hz、新增双圈编织头带（官方 Newsroom）。
+ P("visionpro_m5",   "Apple Vision Pro (M5)", "Spatial", "Apple Vision Pro (M5)", "Apple Vision Pro (2nd gen)", "2025-10-15", 2025, "在售", "M5+R1", "Micro-OLED + AMOLED 外屏 (LGD)", 3499, ["luxshare"],
    ["soc","display_panel","cover_glass","cis","lens","dram","nand","pmic","battery","enclosure","speaker","mic","sensor_motion","fpc","pcb","optical_filter"]),
  # ---- Audio ----
  # AirPods 5 标准版首次支持主动降噪（此前为 Pro 独占）；官方规格页未列心率传感。
@@ -692,7 +727,7 @@ DATA_DICT = {
    {"field": "confidence", "desc": "归属置信度（high/medium/low）", "obtainable": "高=多源强证据；中=单一可靠源或 EMS+地区推断；低=单一弱源或前瞻"},
  ],
  "Relationship": [
-   {"field": "USES_COMPONENT", "desc": "Product → Component", "obtainable": "BOM 拆解，公开可得", "source": "每条边附 source 字段，引用 source_registry 中的来源 id 列表"},
+   {"field": "USES_COMPONENT", "desc": "Product → Component", "obtainable": "由产品线 BOM 模板套用生成，参照行业拆解分析，非逐型号拆解实证", "source": "每条边附 source 字段，引用 source_registry 中的来源 id 列表"},
    {"field": "SUPPLIED_BY", "desc": "Component → Supplier（含 share/note/source）", "obtainable": "供应链报道，份额仅个别环节量化", "source": "source 继承所属组件，引用 Apple Supplier List / TechInsights / Counterpoint 等"},
    {"field": "ASSEMBLED_BY", "desc": "Product → Supplier（代工，含 source）", "obtainable": "苹果供应链名单，公开可得", "source": "source 引用 Apple Supplier List / Nikkei 等"},
    {"field": "MANUFACTURED_AT", "desc": "ProductLine → ProductionBase（基地生产哪些产品线，含 source/confidence）", "obtainable": "工厂/组装报道整合，Apple 不逐厂披露，属推断", "source": "每条边附 source，引用 BASE_SOURCES 中的来源 id 列表"},
@@ -705,9 +740,9 @@ SOURCES.update(BASE_SOURCES)   # 合并生产基地来源注册表，使 MANUFAC
 graph = {
  "meta": {
    "title": "Apple Product Supply Chain Graph (v2)",
-   "generated": "2026-09-10",
-   "source": "Public supply-chain reports 2024-2026 + Apple 2024 Supplier List (187 core suppliers, ~98% of direct spend) + Apple 官网 2026-09 技术规格页与 Newsroom",
-   "sources_accessed": "2026-09-10",
+   "generated": "2026-09-15",
+   "source": "Public supply-chain reports 2024-2026 + Apple 2024 Supplier List (187 core suppliers, ~98% of direct spend) + Apple 官网 2026-09 技术规格页、产品列表页（在售价与在售机型）与 Newsroom",
+   "sources_accessed": "2026-09-15",
    "schema": {
      "nodes": ["Product", "Component", "Supplier", "ProductionBase"],
      "relationships": [

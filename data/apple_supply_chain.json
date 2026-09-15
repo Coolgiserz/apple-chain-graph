@@ -1,9 +1,9 @@
 {
   "meta": {
     "title": "Apple Product Supply Chain Graph (v2)",
-    "generated": "2026-09-10",
-    "source": "Public supply-chain reports 2024-2026 + Apple 2024 Supplier List (187 core suppliers, ~98% of direct spend) + Apple 官网 2026-09 技术规格页与 Newsroom",
-    "sources_accessed": "2026-09-10",
+    "generated": "2026-09-15",
+    "source": "Public supply-chain reports 2024-2026 + Apple 2024 Supplier List (187 core suppliers, ~98% of direct spend) + Apple 官网 2026-09 技术规格页、产品列表页（在售价与在售机型）与 Newsroom",
+    "sources_accessed": "2026-09-15",
     "schema": {
       "nodes": [
         "Product",
@@ -385,7 +385,7 @@
         {
           "field": "USES_COMPONENT",
           "desc": "Product → Component",
-          "obtainable": "BOM 拆解，公开可得",
+          "obtainable": "由产品线 BOM 模板套用生成，参照行业拆解分析，非逐型号拆解实证",
           "source": "每条边附 source 字段，引用 source_registry 中的来源 id 列表"
         },
         {
@@ -513,7 +513,7 @@
         "name": "iPhone Duo",
         "product_line": "iPhone",
         "english_name": "iPhone Duo",
-        "alias": "iPhone Ultra / iPhone Fold (发布前传闻名)",
+        "alias": "苹果首款折叠屏（书本式内折）；2026-09-09 发布，10-16 预购、10-23 发售（Apple 官网）。iPhone Ultra / iPhone Fold 为发布前传闻名",
         "release_date": "2026-09-09",
         "release_year": 2026,
         "status": "在售",
@@ -725,6 +725,282 @@
         ]
       },
       {
+        "id": "macbook_neo",
+        "name": "MacBook Neo",
+        "product_line": "Mac",
+        "english_name": "MacBook Neo (A18 Pro)",
+        "alias": "",
+        "release_date": "2026-03-04",
+        "release_year": 2026,
+        "status": "在售",
+        "soc": "A18 Pro",
+        "display": "13.0\" LCD 2408×1506 500 尼特",
+        "price_usd": 699,
+        "assembly": [
+          "foxconn"
+        ],
+        "components": [
+          "soc",
+          "display_panel",
+          "cover_glass",
+          "dram",
+          "nand",
+          "connectivity",
+          "pmic",
+          "battery",
+          "enclosure",
+          "fpc",
+          "pcb",
+          "substrate",
+          "osat",
+          "speaker",
+          "mic",
+          "sensor_motion"
+        ]
+      },
+      {
+        "id": "mba_13_m5",
+        "name": "MacBook Air 13\" (M5)",
+        "product_line": "Mac",
+        "english_name": "MacBook Air 13-inch (M5)",
+        "alias": "",
+        "release_date": "2026-03-04",
+        "release_year": 2026,
+        "status": "在售",
+        "soc": "M5",
+        "display": "13.6\" LCD (BOE)",
+        "price_usd": 1299,
+        "assembly": [
+          "foxconn",
+          "wistron"
+        ],
+        "components": [
+          "soc",
+          "display_panel",
+          "cover_glass",
+          "dram",
+          "nand",
+          "connectivity",
+          "pmic",
+          "battery",
+          "enclosure",
+          "fpc",
+          "pcb",
+          "substrate",
+          "osat",
+          "speaker",
+          "mic",
+          "sensor_motion"
+        ]
+      },
+      {
+        "id": "mba_15_m5",
+        "name": "MacBook Air 15\" (M5)",
+        "product_line": "Mac",
+        "english_name": "MacBook Air 15-inch (M5)",
+        "alias": "",
+        "release_date": "2026-03-04",
+        "release_year": 2026,
+        "status": "在售",
+        "soc": "M5",
+        "display": "15.3\" LCD (BOE)",
+        "price_usd": 1499,
+        "assembly": [
+          "foxconn",
+          "wistron"
+        ],
+        "components": [
+          "soc",
+          "display_panel",
+          "cover_glass",
+          "dram",
+          "nand",
+          "connectivity",
+          "pmic",
+          "battery",
+          "enclosure",
+          "fpc",
+          "pcb",
+          "substrate",
+          "osat",
+          "speaker",
+          "mic",
+          "sensor_motion"
+        ]
+      },
+      {
+        "id": "mbp_14_m5",
+        "name": "MacBook Pro 14\" (M5)",
+        "product_line": "Mac",
+        "english_name": "MacBook Pro 14-inch (M5)",
+        "alias": "",
+        "release_date": "2025-10-15",
+        "release_year": 2025,
+        "status": "在售",
+        "soc": "M5/M5 Pro/M5 Max",
+        "display": "14.2\" Mini-LED (Sharp/LGD)",
+        "price_usd": 1999,
+        "assembly": [
+          "foxconn",
+          "wistron"
+        ],
+        "components": [
+          "soc",
+          "display_panel",
+          "cover_glass",
+          "dram",
+          "nand",
+          "connectivity",
+          "pmic",
+          "battery",
+          "enclosure",
+          "fpc",
+          "pcb",
+          "substrate",
+          "osat",
+          "speaker",
+          "mic",
+          "sensor_motion"
+        ]
+      },
+      {
+        "id": "mbp_16_m5",
+        "name": "MacBook Pro 16\" (M5)",
+        "product_line": "Mac",
+        "english_name": "MacBook Pro 16-inch (M5)",
+        "alias": "",
+        "release_date": "2026-03-04",
+        "release_year": 2026,
+        "status": "在售",
+        "soc": "M5 Pro/M5 Max",
+        "display": "16.2\" Mini-LED (Sharp/LGD)",
+        "price_usd": 2699,
+        "assembly": [
+          "foxconn",
+          "wistron"
+        ],
+        "components": [
+          "soc",
+          "display_panel",
+          "cover_glass",
+          "dram",
+          "nand",
+          "connectivity",
+          "pmic",
+          "battery",
+          "enclosure",
+          "fpc",
+          "pcb",
+          "substrate",
+          "osat",
+          "speaker",
+          "mic",
+          "sensor_motion"
+        ]
+      },
+      {
+        "id": "imac_24_m4",
+        "name": "iMac 24\" (M4)",
+        "product_line": "Mac",
+        "english_name": "iMac 24-inch (M4)",
+        "alias": "",
+        "release_date": "2024-10-30",
+        "release_year": 2024,
+        "status": "在售",
+        "soc": "M4",
+        "display": "24\" 4.5K LCD 500 尼特（可选纳米纹理玻璃）",
+        "price_usd": 1499,
+        "assembly": [
+          "foxconn"
+        ],
+        "components": [
+          "soc",
+          "display_panel",
+          "cover_glass",
+          "dram",
+          "nand",
+          "connectivity",
+          "pmic",
+          "battery",
+          "enclosure",
+          "fpc",
+          "pcb",
+          "substrate",
+          "osat",
+          "speaker",
+          "mic",
+          "sensor_motion"
+        ]
+      },
+      {
+        "id": "macmini_2026",
+        "name": "Mac mini (2026)",
+        "product_line": "Mac",
+        "english_name": "Mac mini (2026)",
+        "alias": "Apple 官网 Mac 产品页已确认「M6 chip or M5 Pro chip」（2026-09-15 核）；当前为预售 Pre-order",
+        "release_date": "2026-08-25",
+        "release_year": 2026,
+        "status": "在售",
+        "soc": "M5 Pro/M6",
+        "display": "-",
+        "price_usd": 899,
+        "assembly": [
+          "foxconn"
+        ],
+        "components": [
+          "soc",
+          "display_panel",
+          "cover_glass",
+          "dram",
+          "nand",
+          "connectivity",
+          "pmic",
+          "battery",
+          "enclosure",
+          "fpc",
+          "pcb",
+          "substrate",
+          "osat",
+          "speaker",
+          "mic",
+          "sensor_motion"
+        ]
+      },
+      {
+        "id": "macstudio_2026",
+        "name": "Mac Studio (2026)",
+        "product_line": "Mac",
+        "english_name": "Mac Studio (2026)",
+        "alias": "当前为预售 Pre-order（Apple 官网 2026-09-15 核）；芯片型号待官方确认",
+        "release_date": "2026-08-26",
+        "release_year": 2026,
+        "status": "在售",
+        "soc": "M5 Max/M5 Ultra/M6",
+        "display": "-",
+        "price_usd": 2499,
+        "assembly": [
+          "foxconn"
+        ],
+        "components": [
+          "soc",
+          "display_panel",
+          "cover_glass",
+          "dram",
+          "nand",
+          "connectivity",
+          "pmic",
+          "battery",
+          "enclosure",
+          "fpc",
+          "pcb",
+          "substrate",
+          "osat",
+          "speaker",
+          "mic",
+          "sensor_motion"
+        ]
+      },
+      {
         "id": "mba_13_m4",
         "name": "MacBook Air 13\" (M4)",
         "product_line": "Mac",
@@ -732,7 +1008,7 @@
         "alias": "",
         "release_date": "2025-03-05",
         "release_year": 2025,
-        "status": "在售",
+        "status": "停产",
         "soc": "M4",
         "display": "13.6\" LCD (BOE)",
         "price_usd": 999,
@@ -767,7 +1043,7 @@
         "alias": "",
         "release_date": "2025-03-05",
         "release_year": 2025,
-        "status": "在售",
+        "status": "停产",
         "soc": "M4",
         "display": "15.3\" LCD (BOE)",
         "price_usd": 1199,
@@ -802,7 +1078,7 @@
         "alias": "",
         "release_date": "2024-10-30",
         "release_year": 2024,
-        "status": "在售",
+        "status": "停产",
         "soc": "M4/M4 Pro/M4 Max",
         "display": "14.2\" Mini-LED (Sharp/LGD)",
         "price_usd": 1599,
@@ -837,47 +1113,13 @@
         "alias": "",
         "release_date": "2024-10-30",
         "release_year": 2024,
-        "status": "在售",
+        "status": "停产",
         "soc": "M4 Pro/M4 Max",
         "display": "16.2\" Mini-LED (Sharp/LGD)",
         "price_usd": 2499,
         "assembly": [
           "foxconn",
           "wistron"
-        ],
-        "components": [
-          "soc",
-          "display_panel",
-          "cover_glass",
-          "dram",
-          "nand",
-          "connectivity",
-          "pmic",
-          "battery",
-          "enclosure",
-          "fpc",
-          "pcb",
-          "substrate",
-          "osat",
-          "speaker",
-          "mic",
-          "sensor_motion"
-        ]
-      },
-      {
-        "id": "imac_24_m4",
-        "name": "iMac 24\" (M4)",
-        "product_line": "Mac",
-        "english_name": "iMac 24-inch (M4)",
-        "alias": "",
-        "release_date": "2024-10-30",
-        "release_year": 2024,
-        "status": "在售",
-        "soc": "M4",
-        "display": "24\" 4.5K LCD",
-        "price_usd": 1299,
-        "assembly": [
-          "foxconn"
         ],
         "components": [
           "soc",
@@ -906,7 +1148,7 @@
         "alias": "",
         "release_date": "2024-10-29",
         "release_year": 2024,
-        "status": "在售",
+        "status": "停产",
         "soc": "M4/M4 Pro",
         "display": "-",
         "price_usd": 599,
@@ -940,7 +1182,7 @@
         "alias": "",
         "release_date": "2025-03-05",
         "release_year": 2025,
-        "status": "在售",
+        "status": "停产",
         "soc": "M4 Max/M3 Ultra",
         "display": "-",
         "price_usd": 1999,
@@ -974,7 +1216,7 @@
         "alias": "",
         "release_date": "2023-06-05",
         "release_year": 2023,
-        "status": "在售",
+        "status": "停产",
         "soc": "M2 Ultra",
         "display": "-",
         "price_usd": 6999,
@@ -1001,6 +1243,68 @@
         ]
       },
       {
+        "id": "ipadpro_11_m5",
+        "name": "iPad Pro 11\" (M5)",
+        "product_line": "iPad",
+        "english_name": "iPad Pro 11-inch (M5)",
+        "alias": "官网在售价 From $1,199（2026-09-15 核）",
+        "release_date": "2025-10-15",
+        "release_year": 2025,
+        "status": "在售",
+        "soc": "M5",
+        "display": "11\" Ultra Retina XDR Tandem OLED (SDC/LGD)",
+        "price_usd": 1199,
+        "assembly": [
+          "foxconn"
+        ],
+        "components": [
+          "soc",
+          "display_panel",
+          "cover_glass",
+          "dram",
+          "nand",
+          "pmic",
+          "battery",
+          "enclosure",
+          "fpc",
+          "touch",
+          "speaker",
+          "mic",
+          "sensor_motion"
+        ]
+      },
+      {
+        "id": "ipadpro_13_m5",
+        "name": "iPad Pro 13\" (M5)",
+        "product_line": "iPad",
+        "english_name": "iPad Pro 13-inch (M5)",
+        "alias": "价格按 11 到 13 英寸价差结构推断，待官网单列价核实",
+        "release_date": "2025-10-15",
+        "release_year": 2025,
+        "status": "在售",
+        "soc": "M5",
+        "display": "13\" Ultra Retina XDR Tandem OLED (SDC/LGD)",
+        "price_usd": 1499,
+        "assembly": [
+          "foxconn"
+        ],
+        "components": [
+          "soc",
+          "display_panel",
+          "cover_glass",
+          "dram",
+          "nand",
+          "pmic",
+          "battery",
+          "enclosure",
+          "fpc",
+          "touch",
+          "speaker",
+          "mic",
+          "sensor_motion"
+        ]
+      },
+      {
         "id": "ipadpro_11_m4",
         "name": "iPad Pro 11\" (M4)",
         "product_line": "iPad",
@@ -1008,7 +1312,7 @@
         "alias": "",
         "release_date": "2024-05-07",
         "release_year": 2024,
-        "status": "在售",
+        "status": "停产",
         "soc": "M4",
         "display": "11\" Tandem OLED (SDC/LGD)",
         "price_usd": 999,
@@ -1039,7 +1343,7 @@
         "alias": "",
         "release_date": "2024-05-07",
         "release_year": 2024,
-        "status": "在售",
+        "status": "停产",
         "soc": "M4",
         "display": "13\" Tandem OLED (SDC/LGD)",
         "price_usd": 1299,
@@ -1070,7 +1374,7 @@
         "alias": "",
         "release_date": "2025-03-04",
         "release_year": 2025,
-        "status": "在售",
+        "status": "停产",
         "soc": "M3",
         "display": "11\" LCD",
         "price_usd": 599,
@@ -1101,10 +1405,72 @@
         "alias": "",
         "release_date": "2025-03-04",
         "release_year": 2025,
-        "status": "在售",
+        "status": "停产",
         "soc": "M3",
         "display": "13\" LCD",
         "price_usd": 799,
+        "assembly": [
+          "foxconn"
+        ],
+        "components": [
+          "soc",
+          "display_panel",
+          "cover_glass",
+          "dram",
+          "nand",
+          "pmic",
+          "battery",
+          "enclosure",
+          "fpc",
+          "touch",
+          "speaker",
+          "mic",
+          "sensor_motion"
+        ]
+      },
+      {
+        "id": "ipadair_11_m4",
+        "name": "iPad Air 11\" (M4)",
+        "product_line": "iPad",
+        "english_name": "iPad Air 11-inch (M4)",
+        "alias": "官网在售价 From $749（2026-09-15 核）",
+        "release_date": "2026-03-11",
+        "release_year": 2026,
+        "status": "在售",
+        "soc": "M4",
+        "display": "11\" Liquid Retina LCD",
+        "price_usd": 749,
+        "assembly": [
+          "foxconn"
+        ],
+        "components": [
+          "soc",
+          "display_panel",
+          "cover_glass",
+          "dram",
+          "nand",
+          "pmic",
+          "battery",
+          "enclosure",
+          "fpc",
+          "touch",
+          "speaker",
+          "mic",
+          "sensor_motion"
+        ]
+      },
+      {
+        "id": "ipadair_13_m4",
+        "name": "iPad Air 13\" (M4)",
+        "product_line": "iPad",
+        "english_name": "iPad Air 13-inch (M4)",
+        "alias": "价格按 11 到 13 英寸价差结构推断，待官网单列价核实",
+        "release_date": "2026-03-11",
+        "release_year": 2026,
+        "status": "在售",
+        "soc": "M4",
+        "display": "13\" Liquid Retina LCD",
+        "price_usd": 949,
         "assembly": [
           "foxconn"
         ],
@@ -1129,13 +1495,13 @@
         "name": "iPad mini (A17 Pro)",
         "product_line": "iPad",
         "english_name": "iPad mini (A17 Pro)",
-        "alias": "",
+        "alias": "官网在售价 From $599（2026-09-15 核）",
         "release_date": "2024-10-15",
         "release_year": 2024,
         "status": "在售",
         "soc": "A17 Pro",
         "display": "8.3\" LCD",
-        "price_usd": 499,
+        "price_usd": 599,
         "assembly": [
           "foxconn"
         ],
@@ -1160,13 +1526,13 @@
         "name": "iPad (A16)",
         "product_line": "iPad",
         "english_name": "iPad (11-inch, 2025)",
-        "alias": "",
+        "alias": "官网在售价 From $449（2026-09-15 核）；首发价为 $349",
         "release_date": "2025-03-04",
         "release_year": 2025,
         "status": "在售",
         "soc": "A16",
-        "display": "11\" LCD",
-        "price_usd": 349,
+        "display": "11\" Liquid Retina LCD",
+        "price_usd": 449,
         "assembly": [
           "foxconn"
         ],
@@ -1191,7 +1557,7 @@
         "name": "Apple Watch Series 12",
         "product_line": "Wearable",
         "english_name": "Apple Watch Series 12",
-        "alias": "",
+        "alias": "当前为预售 Pre-order，非在售（Apple 官网 2026-09-15 核）",
         "release_date": "2026-09-09",
         "release_year": 2026,
         "status": "在售",
@@ -1223,7 +1589,7 @@
         "name": "Apple Watch Ultra 4",
         "product_line": "Wearable",
         "english_name": "Apple Watch Ultra 4",
-        "alias": "",
+        "alias": "当前为预售 Pre-order，非在售（Apple 官网 2026-09-15 核）",
         "release_date": "2026-09-09",
         "release_year": 2026,
         "status": "在售",
@@ -1249,6 +1615,38 @@
         ]
       },
       {
+        "id": "watch_s11",
+        "name": "Apple Watch Series 11",
+        "product_line": "Wearable",
+        "english_name": "Apple Watch Series 11",
+        "alias": "已被 Series 12 取代下架（2026-09 核）",
+        "release_date": "2025-09-09",
+        "release_year": 2025,
+        "status": "停产",
+        "soc": "S10 SiP",
+        "display": "LTPO3 OLED 全天候视网膜屏 2000 尼特 (LGD)",
+        "price_usd": 399,
+        "assembly": [
+          "luxshare",
+          "quanta",
+          "foxconn"
+        ],
+        "components": [
+          "soc",
+          "display_panel",
+          "cover_glass",
+          "battery",
+          "enclosure",
+          "speaker",
+          "mic",
+          "sensor_bio",
+          "sensor_motion",
+          "pmic",
+          "wireless_charging",
+          "connectivity"
+        ]
+      },
+      {
         "id": "watch_s10",
         "name": "Apple Watch Series 10",
         "product_line": "Wearable",
@@ -1256,7 +1654,7 @@
         "alias": "Apple Watch X (发布前传闻名)",
         "release_date": "2024-09-09",
         "release_year": 2024,
-        "status": "在售",
+        "status": "停产",
         "soc": "S10 SiP",
         "display": "LTPO3 OLED (LGD/JDI)",
         "price_usd": 399,
@@ -1285,10 +1683,10 @@
         "name": "Apple Watch Ultra 3",
         "product_line": "Wearable",
         "english_name": "Apple Watch Ultra 3",
-        "alias": "",
+        "alias": "已被 Ultra 4 取代下架（2026-09 核）",
         "release_date": "2025-09-09",
         "release_year": 2025,
-        "status": "在售",
+        "status": "停产",
         "soc": "S? SiP",
         "display": "OLED (LGD)",
         "price_usd": 799,
@@ -1346,7 +1744,7 @@
         "alias": "Apple Vision Pro (1st gen)",
         "release_date": "2024-02-02",
         "release_year": 2024,
-        "status": "在售",
+        "status": "停产",
         "soc": "M2+R1",
         "display": "Micro-OLED (Sony) + AMOLED 外屏(LGD)",
         "price_usd": 3499,
@@ -1377,12 +1775,12 @@
         "name": "Apple Vision Pro (M5)",
         "product_line": "Spatial",
         "english_name": "Apple Vision Pro (M5)",
-        "alias": "",
-        "release_date": "2025（未确认）",
+        "alias": "Apple Vision Pro (2nd gen)",
+        "release_date": "2025-10-15",
         "release_year": 2025,
-        "status": "传闻/未发布",
-        "soc": "M5",
-        "display": "Micro-OLED (SDC) + AMOLED 外屏(LGD)",
+        "status": "在售",
+        "soc": "M5+R1",
+        "display": "Micro-OLED + AMOLED 外屏 (LGD)",
         "price_usd": 3499,
         "assembly": [
           "luxshare"
@@ -4094,6 +4492,1030 @@
         ]
       },
       {
+        "from": "macbook_neo",
+        "to": "soc",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macbook_neo",
+        "to": "display_panel",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macbook_neo",
+        "to": "cover_glass",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macbook_neo",
+        "to": "dram",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macbook_neo",
+        "to": "nand",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macbook_neo",
+        "to": "connectivity",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macbook_neo",
+        "to": "pmic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macbook_neo",
+        "to": "battery",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macbook_neo",
+        "to": "enclosure",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macbook_neo",
+        "to": "fpc",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macbook_neo",
+        "to": "pcb",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macbook_neo",
+        "to": "substrate",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macbook_neo",
+        "to": "osat",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macbook_neo",
+        "to": "speaker",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macbook_neo",
+        "to": "mic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macbook_neo",
+        "to": "sensor_motion",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mba_13_m5",
+        "to": "soc",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mba_13_m5",
+        "to": "display_panel",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mba_13_m5",
+        "to": "cover_glass",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mba_13_m5",
+        "to": "dram",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mba_13_m5",
+        "to": "nand",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mba_13_m5",
+        "to": "connectivity",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mba_13_m5",
+        "to": "pmic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mba_13_m5",
+        "to": "battery",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mba_13_m5",
+        "to": "enclosure",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mba_13_m5",
+        "to": "fpc",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mba_13_m5",
+        "to": "pcb",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mba_13_m5",
+        "to": "substrate",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mba_13_m5",
+        "to": "osat",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mba_13_m5",
+        "to": "speaker",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mba_13_m5",
+        "to": "mic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mba_13_m5",
+        "to": "sensor_motion",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mba_15_m5",
+        "to": "soc",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mba_15_m5",
+        "to": "display_panel",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mba_15_m5",
+        "to": "cover_glass",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mba_15_m5",
+        "to": "dram",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mba_15_m5",
+        "to": "nand",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mba_15_m5",
+        "to": "connectivity",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mba_15_m5",
+        "to": "pmic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mba_15_m5",
+        "to": "battery",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mba_15_m5",
+        "to": "enclosure",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mba_15_m5",
+        "to": "fpc",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mba_15_m5",
+        "to": "pcb",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mba_15_m5",
+        "to": "substrate",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mba_15_m5",
+        "to": "osat",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mba_15_m5",
+        "to": "speaker",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mba_15_m5",
+        "to": "mic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mba_15_m5",
+        "to": "sensor_motion",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mbp_14_m5",
+        "to": "soc",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mbp_14_m5",
+        "to": "display_panel",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mbp_14_m5",
+        "to": "cover_glass",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mbp_14_m5",
+        "to": "dram",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mbp_14_m5",
+        "to": "nand",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mbp_14_m5",
+        "to": "connectivity",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mbp_14_m5",
+        "to": "pmic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mbp_14_m5",
+        "to": "battery",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mbp_14_m5",
+        "to": "enclosure",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mbp_14_m5",
+        "to": "fpc",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mbp_14_m5",
+        "to": "pcb",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mbp_14_m5",
+        "to": "substrate",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mbp_14_m5",
+        "to": "osat",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mbp_14_m5",
+        "to": "speaker",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mbp_14_m5",
+        "to": "mic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mbp_14_m5",
+        "to": "sensor_motion",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mbp_16_m5",
+        "to": "soc",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mbp_16_m5",
+        "to": "display_panel",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mbp_16_m5",
+        "to": "cover_glass",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mbp_16_m5",
+        "to": "dram",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mbp_16_m5",
+        "to": "nand",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mbp_16_m5",
+        "to": "connectivity",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mbp_16_m5",
+        "to": "pmic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mbp_16_m5",
+        "to": "battery",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mbp_16_m5",
+        "to": "enclosure",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mbp_16_m5",
+        "to": "fpc",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mbp_16_m5",
+        "to": "pcb",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mbp_16_m5",
+        "to": "substrate",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mbp_16_m5",
+        "to": "osat",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mbp_16_m5",
+        "to": "speaker",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mbp_16_m5",
+        "to": "mic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "mbp_16_m5",
+        "to": "sensor_motion",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "imac_24_m4",
+        "to": "soc",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "imac_24_m4",
+        "to": "display_panel",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "imac_24_m4",
+        "to": "cover_glass",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "imac_24_m4",
+        "to": "dram",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "imac_24_m4",
+        "to": "nand",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "imac_24_m4",
+        "to": "connectivity",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "imac_24_m4",
+        "to": "pmic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "imac_24_m4",
+        "to": "battery",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "imac_24_m4",
+        "to": "enclosure",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "imac_24_m4",
+        "to": "fpc",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "imac_24_m4",
+        "to": "pcb",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "imac_24_m4",
+        "to": "substrate",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "imac_24_m4",
+        "to": "osat",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "imac_24_m4",
+        "to": "speaker",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "imac_24_m4",
+        "to": "mic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "imac_24_m4",
+        "to": "sensor_motion",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macmini_2026",
+        "to": "soc",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macmini_2026",
+        "to": "display_panel",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macmini_2026",
+        "to": "cover_glass",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macmini_2026",
+        "to": "dram",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macmini_2026",
+        "to": "nand",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macmini_2026",
+        "to": "connectivity",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macmini_2026",
+        "to": "pmic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macmini_2026",
+        "to": "battery",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macmini_2026",
+        "to": "enclosure",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macmini_2026",
+        "to": "fpc",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macmini_2026",
+        "to": "pcb",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macmini_2026",
+        "to": "substrate",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macmini_2026",
+        "to": "osat",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macmini_2026",
+        "to": "speaker",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macmini_2026",
+        "to": "mic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macmini_2026",
+        "to": "sensor_motion",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macstudio_2026",
+        "to": "soc",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macstudio_2026",
+        "to": "display_panel",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macstudio_2026",
+        "to": "cover_glass",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macstudio_2026",
+        "to": "dram",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macstudio_2026",
+        "to": "nand",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macstudio_2026",
+        "to": "connectivity",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macstudio_2026",
+        "to": "pmic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macstudio_2026",
+        "to": "battery",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macstudio_2026",
+        "to": "enclosure",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macstudio_2026",
+        "to": "fpc",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macstudio_2026",
+        "to": "pcb",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macstudio_2026",
+        "to": "substrate",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macstudio_2026",
+        "to": "osat",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macstudio_2026",
+        "to": "speaker",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macstudio_2026",
+        "to": "mic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "macstudio_2026",
+        "to": "sensor_motion",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
         "from": "mba_13_m4",
         "to": "soc",
         "source": [
@@ -4606,134 +6028,6 @@
         ]
       },
       {
-        "from": "imac_24_m4",
-        "to": "soc",
-        "source": [
-          "techinsights",
-          "ifixit"
-        ]
-      },
-      {
-        "from": "imac_24_m4",
-        "to": "display_panel",
-        "source": [
-          "techinsights",
-          "ifixit"
-        ]
-      },
-      {
-        "from": "imac_24_m4",
-        "to": "cover_glass",
-        "source": [
-          "techinsights",
-          "ifixit"
-        ]
-      },
-      {
-        "from": "imac_24_m4",
-        "to": "dram",
-        "source": [
-          "techinsights",
-          "ifixit"
-        ]
-      },
-      {
-        "from": "imac_24_m4",
-        "to": "nand",
-        "source": [
-          "techinsights",
-          "ifixit"
-        ]
-      },
-      {
-        "from": "imac_24_m4",
-        "to": "connectivity",
-        "source": [
-          "techinsights",
-          "ifixit"
-        ]
-      },
-      {
-        "from": "imac_24_m4",
-        "to": "pmic",
-        "source": [
-          "techinsights",
-          "ifixit"
-        ]
-      },
-      {
-        "from": "imac_24_m4",
-        "to": "battery",
-        "source": [
-          "techinsights",
-          "ifixit"
-        ]
-      },
-      {
-        "from": "imac_24_m4",
-        "to": "enclosure",
-        "source": [
-          "techinsights",
-          "ifixit"
-        ]
-      },
-      {
-        "from": "imac_24_m4",
-        "to": "fpc",
-        "source": [
-          "techinsights",
-          "ifixit"
-        ]
-      },
-      {
-        "from": "imac_24_m4",
-        "to": "pcb",
-        "source": [
-          "techinsights",
-          "ifixit"
-        ]
-      },
-      {
-        "from": "imac_24_m4",
-        "to": "substrate",
-        "source": [
-          "techinsights",
-          "ifixit"
-        ]
-      },
-      {
-        "from": "imac_24_m4",
-        "to": "osat",
-        "source": [
-          "techinsights",
-          "ifixit"
-        ]
-      },
-      {
-        "from": "imac_24_m4",
-        "to": "speaker",
-        "source": [
-          "techinsights",
-          "ifixit"
-        ]
-      },
-      {
-        "from": "imac_24_m4",
-        "to": "mic",
-        "source": [
-          "techinsights",
-          "ifixit"
-        ]
-      },
-      {
-        "from": "imac_24_m4",
-        "to": "sensor_motion",
-        "source": [
-          "techinsights",
-          "ifixit"
-        ]
-      },
-      {
         "from": "macmini_m4",
         "to": "soc",
         "source": [
@@ -5111,6 +6405,214 @@
       },
       {
         "from": "macpro_m2u",
+        "to": "sensor_motion",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadpro_11_m5",
+        "to": "soc",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadpro_11_m5",
+        "to": "display_panel",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadpro_11_m5",
+        "to": "cover_glass",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadpro_11_m5",
+        "to": "dram",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadpro_11_m5",
+        "to": "nand",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadpro_11_m5",
+        "to": "pmic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadpro_11_m5",
+        "to": "battery",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadpro_11_m5",
+        "to": "enclosure",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadpro_11_m5",
+        "to": "fpc",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadpro_11_m5",
+        "to": "touch",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadpro_11_m5",
+        "to": "speaker",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadpro_11_m5",
+        "to": "mic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadpro_11_m5",
+        "to": "sensor_motion",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadpro_13_m5",
+        "to": "soc",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadpro_13_m5",
+        "to": "display_panel",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadpro_13_m5",
+        "to": "cover_glass",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadpro_13_m5",
+        "to": "dram",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadpro_13_m5",
+        "to": "nand",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadpro_13_m5",
+        "to": "pmic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadpro_13_m5",
+        "to": "battery",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadpro_13_m5",
+        "to": "enclosure",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadpro_13_m5",
+        "to": "fpc",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadpro_13_m5",
+        "to": "touch",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadpro_13_m5",
+        "to": "speaker",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadpro_13_m5",
+        "to": "mic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadpro_13_m5",
         "to": "sensor_motion",
         "source": [
           "techinsights",
@@ -5527,6 +7029,214 @@
       },
       {
         "from": "ipadair_13_m3",
+        "to": "sensor_motion",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadair_11_m4",
+        "to": "soc",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadair_11_m4",
+        "to": "display_panel",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadair_11_m4",
+        "to": "cover_glass",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadair_11_m4",
+        "to": "dram",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadair_11_m4",
+        "to": "nand",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadair_11_m4",
+        "to": "pmic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadair_11_m4",
+        "to": "battery",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadair_11_m4",
+        "to": "enclosure",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadair_11_m4",
+        "to": "fpc",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadair_11_m4",
+        "to": "touch",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadair_11_m4",
+        "to": "speaker",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadair_11_m4",
+        "to": "mic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadair_11_m4",
+        "to": "sensor_motion",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadair_13_m4",
+        "to": "soc",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadair_13_m4",
+        "to": "display_panel",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadair_13_m4",
+        "to": "cover_glass",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadair_13_m4",
+        "to": "dram",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadair_13_m4",
+        "to": "nand",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadair_13_m4",
+        "to": "pmic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadair_13_m4",
+        "to": "battery",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadair_13_m4",
+        "to": "enclosure",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadair_13_m4",
+        "to": "fpc",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadair_13_m4",
+        "to": "touch",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadair_13_m4",
+        "to": "speaker",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadair_13_m4",
+        "to": "mic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "ipadair_13_m4",
         "to": "sensor_motion",
         "source": [
           "techinsights",
@@ -5927,6 +7637,102 @@
       },
       {
         "from": "watch_ultra4",
+        "to": "connectivity",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "watch_s11",
+        "to": "soc",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "watch_s11",
+        "to": "display_panel",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "watch_s11",
+        "to": "cover_glass",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "watch_s11",
+        "to": "battery",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "watch_s11",
+        "to": "enclosure",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "watch_s11",
+        "to": "speaker",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "watch_s11",
+        "to": "mic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "watch_s11",
+        "to": "sensor_bio",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "watch_s11",
+        "to": "sensor_motion",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "watch_s11",
+        "to": "pmic",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "watch_s11",
+        "to": "wireless_charging",
+        "source": [
+          "techinsights",
+          "ifixit"
+        ]
+      },
+      {
+        "from": "watch_s11",
         "to": "connectivity",
         "source": [
           "techinsights",
@@ -7845,7 +9651,7 @@
         ]
       },
       {
-        "from": "mba_13_m4",
+        "from": "macbook_neo",
         "to": "foxconn",
         "source": [
           "apple_supplier_list",
@@ -7853,7 +9659,15 @@
         ]
       },
       {
-        "from": "mba_13_m4",
+        "from": "mba_13_m5",
+        "to": "foxconn",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "mba_13_m5",
         "to": "wistron",
         "source": [
           "apple_supplier_list",
@@ -7861,7 +9675,7 @@
         ]
       },
       {
-        "from": "mba_15_m4",
+        "from": "mba_15_m5",
         "to": "foxconn",
         "source": [
           "apple_supplier_list",
@@ -7869,7 +9683,7 @@
         ]
       },
       {
-        "from": "mba_15_m4",
+        "from": "mba_15_m5",
         "to": "wistron",
         "source": [
           "apple_supplier_list",
@@ -7877,7 +9691,7 @@
         ]
       },
       {
-        "from": "mbp_14_m4",
+        "from": "mbp_14_m5",
         "to": "foxconn",
         "source": [
           "apple_supplier_list",
@@ -7885,7 +9699,7 @@
         ]
       },
       {
-        "from": "mbp_14_m4",
+        "from": "mbp_14_m5",
         "to": "wistron",
         "source": [
           "apple_supplier_list",
@@ -7893,7 +9707,7 @@
         ]
       },
       {
-        "from": "mbp_16_m4",
+        "from": "mbp_16_m5",
         "to": "foxconn",
         "source": [
           "apple_supplier_list",
@@ -7901,7 +9715,7 @@
         ]
       },
       {
-        "from": "mbp_16_m4",
+        "from": "mbp_16_m5",
         "to": "wistron",
         "source": [
           "apple_supplier_list",
@@ -7911,6 +9725,86 @@
       {
         "from": "imac_24_m4",
         "to": "foxconn",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "macmini_2026",
+        "to": "foxconn",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "macstudio_2026",
+        "to": "foxconn",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "mba_13_m4",
+        "to": "foxconn",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "mba_13_m4",
+        "to": "wistron",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "mba_15_m4",
+        "to": "foxconn",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "mba_15_m4",
+        "to": "wistron",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "mbp_14_m4",
+        "to": "foxconn",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "mbp_14_m4",
+        "to": "wistron",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "mbp_16_m4",
+        "to": "foxconn",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "mbp_16_m4",
+        "to": "wistron",
         "source": [
           "apple_supplier_list",
           "nikkei"
@@ -7934,6 +9828,22 @@
       },
       {
         "from": "macpro_m2u",
+        "to": "foxconn",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "ipadpro_11_m5",
+        "to": "foxconn",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "ipadpro_13_m5",
         "to": "foxconn",
         "source": [
           "apple_supplier_list",
@@ -7966,6 +9876,22 @@
       },
       {
         "from": "ipadair_13_m3",
+        "to": "foxconn",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "ipadair_11_m4",
+        "to": "foxconn",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "ipadair_13_m4",
         "to": "foxconn",
         "source": [
           "apple_supplier_list",
@@ -8015,6 +9941,30 @@
       {
         "from": "watch_ultra4",
         "to": "luxshare",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "watch_s11",
+        "to": "luxshare",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "watch_s11",
+        "to": "quanta",
+        "source": [
+          "apple_supplier_list",
+          "nikkei"
+        ]
+      },
+      {
+        "from": "watch_s11",
+        "to": "foxconn",
         "source": [
           "apple_supplier_list",
           "nikkei"
