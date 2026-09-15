@@ -15,11 +15,11 @@ zero-dependency interactive visualizations.
 >
 > 📊 **研究用途（参考性）**：本图谱可作为供应链图分析、脆弱性建模与图神经网络（GNN）教学的**参考性实验数据**（尚非成熟基准，MIT 许可，详见下方「作为研究 / 分析用实验数据集」）。
 
-[![Nodes](https://img.shields.io/badge/nodes-148-blue)](data/neo4j)
-[![Products](https://img.shields.io/badge/products-34-green)](data/neo4j)
+[![Nodes](https://img.shields.io/badge/nodes-160-blue)](data/neo4j)
+[![Products](https://img.shields.io/badge/products-46-green)](data/neo4j)
 [![Components](https://img.shields.io/badge/components-31-green)](data/neo4j)
 [![Suppliers](https://img.shields.io/badge/suppliers-66-green)](data/neo4j)
-[![Relationships](https://img.shields.io/badge/relationships-510-orange)](data/neo4j)
+[![Relationships](https://img.shields.io/badge/relationships-894-orange)](data/neo4j)
 [![Python](https://img.shields.io/badge/python-3.9%2B-blue?logo=python)](scripts/generate.py)
 [![Zero deps](https://img.shields.io/badge/dependencies-none-success)](scripts)
 [![License](https://img.shields.io/badge/license-MIT-yellow)](LICENSE)
@@ -287,7 +287,7 @@ python3 tools/geo_build.py      # 生成 tools/visualizations/supplier_geo.html�
 ## 作为研究 / 分析用实验数据集
 
 > ⚠️ **谨慎使用**：本图谱目前仍是**探索性、参考性的实验数据**，**尚不是一个经校验、标准化的成熟数据集 / 基准**。
-> 它规模有限（约 148 节点 / 700 关系）、由 AI 联网检索公开资料二手整合、属单点时点快照，存在口径不一致与模型幻觉风险。
+> 它规模有限（约 160 节点 / 894 关系）、由 AI 联网检索公开资料二手整合、属单点时点快照，存在口径不一致与模型幻觉风险。
 > 下文仅说明「如何把它当作实验数据来用」，不代表它已具备基准数据的质量。
 
 本仓库的全部产出（图数据、Neo4j 导入 CSV、脆弱性分析结果、可视化）可作为一份
@@ -373,7 +373,7 @@ python3 tools/run_sentiment.py --id qualcomm    # 只看某一家
 在图谱上直接做经典图分析，**纯前端实时计算、无后端**：类型感知度中心性、断供波及（反向可达 BFS）、PageRank 网络核心度。
 
 - **产品化包装**：独家供应 / 断供影响模拟 / 网络核心度；红 / 琥珀 / 绿语义色；排行点击聚焦到图谱节点。
-- **第 2 跳下游高亮**：选中供应商 / 零部件时，图谱高亮其第 2 跳下游产品，直观看到「断供波及 N 款」（如歌尔股份断供波及 34 款产品）。
+- **第 2 跳下游高亮**：选中供应商 / 零部件时，图谱高亮其第 2 跳下游产品，直观看到「断供波及 N 款」（如歌尔股份断供波及 46 款产品）。
 - **文案防误读**：「波及」≠「停产」——无替代将真正停产的产品数用独立绿 / 红 callout 单独标出。
 
 算法、口径与局限见 **[docs/bottleneck-analytics.md](docs/bottleneck-analytics.md)**。
@@ -513,6 +513,8 @@ apple_supply_chain/
 - **估值方法粗略**：同业相对估值以 `sector` 粗分组 + 中位倍数（P/E、P/B、EV/EBITDA 取均值）判断高估 / 低估，未考虑跨市场（A 股 / 港股 / 美股）估值体系差异、成长性、资本结构与会计准则差异；仅单时点快照，无历史分位与趋势。
 - **舆情为定性共识、非量化模型**：新闻情绪与分析师范畴为人工/AI 归纳的「正面 / 中性 / 负面」标签，未做情感强度量化；不同市场分析师覆盖密度不均，结论代表性有限。
 - **图谱关系为二元、无权重**：边仅表示「是否供应 / 代工」，不含份额、金额、产量权重；供应商 `tier` 层级为定性标注，未建模真实依赖强度与替代弹性；部分未发布机型仅为前瞻。
+- **边上的 `source` 含推导成分，不等于逐条实证**：`USES_COMPONENT`（产品 → 零部件）边由**产品线 BOM 模板**套用生成（`scripts/generate.py` 中的 `PHONE_COMP` / `MAC_COMP` / `PAD_COMP` 等常量），其 `source` 统一标为 `techinsights / ifixit`——这表示该 BOM 结构参照了这两家的行业拆解与分析，**不代表每个型号都经过逐机拆解取证**，2025–2026 年新发布机型尤其如此。相较之下，`SUPPLIED_BY`（零部件 → 供应商）边为逐条人工整理、带 `note` 限定语，证据等级更高；即便在这一层，A 股公司公告受保密协议约束通常只披露「某大客户」，凡标注「未点名客户」者，其「供苹果」属推断而非事实确认。
+- **产品属性字段无独立溯源**：`price_usd` / `release_date` / `soc` / `status` 等产品级字段不携带来源标注，只在生成脚本内以注释说明口径（如「官网在售价」「按价差结构推断」）。数据快照时点为 `meta.generated`，跨时点引用需重新核对官网在售页。
 - **AI 生成固有风险**：数据由模型联网检索并整合，可能存在**幻觉、过时或张冠李戴**；代码示例与文案同样需审阅，不能默认正确。
 
 ## 优化方向

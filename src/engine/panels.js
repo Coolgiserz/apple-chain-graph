@@ -284,7 +284,7 @@ export function renderBottleneckPanel(n) {
     h += "</div>";
     // 澄清：「波及」≠「停产」——共用零件不代表都会停线
     h += "<div class='bn-impact-b'>" + i18nText("bottleneck.reachClarify") + "</div>";
-    // 无替代将真正停产：单独突出（0=安全，>0=风险），避免被误读成「28 款都停产」
+    // 无替代将真正停产：单独突出（0=安全，>0=风险），避免被误读成「46 款都停产」
     h += "<div class='bn-noalt " + (info.noAlt ? "bn-noalt-bad" : "bn-noalt-ok") + "'>" +
       (info.noAlt ? "⚠ " : "✓ ") + i18nText("bottleneck.noAltBox") + "：<span class='bn-noalt-n'>" + info.noAlt + "</span> " + i18nText("bottleneck.reachUnit") + "</div>";
     if (aff.length) {

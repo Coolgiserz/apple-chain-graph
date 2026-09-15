@@ -35,7 +35,7 @@
 **目标**：用一份单一数据源，把"某款具体型号 → 用了哪些零部件 → 由谁供应 / 代工"串成可查询、可导入图数据库、可复现的图。
 
 核心交付：
-- **三层有向图数据模型**：`Product → Component → Supplier`，约 115 节点 / 510 关系（覆盖 iPhone / Mac / iPad / Watch / Vision Pro / AirPods·HomePod 六大产品线，精确到具体型号如 `iPhone 17 Pro`）。
+- **三层有向图数据模型**：`Product → Component → Supplier`，约 160 节点 / 894 关系（覆盖 iPhone / Mac / iPad / Watch / Vision Pro / AirPods·HomePod 六大产品线，精确到具体型号如 `iPhone 17 Pro`）。
 - **Neo4j 官方批量导入格式**：6 个 CSV（`:ID`/`:LABEL`/`:START_ID`/`:END_ID`/`:TYPE` 表头）+ 离线（`neo4j-admin`）/ 在线（`LOAD CSV`）两种导入方式（见 `docs/neo4j-import.md`，提交 `fb522b5` 前的基座）。
 - **数据与代码分离、可复现**：`scripts/generate.py` 从 `data/apple_supply_chain.json` 单一来源生成全部图数据；改 CSV/JSON 即重算。
 
@@ -49,7 +49,7 @@
 
 关键节点：
 - **首页力导向图谱**（`index.html`，Canvas + 自写力导向物理引擎 `templates/graph_engine.js`）：滚轮缩放、拖拽平移、拖动节点、筛选（产品 / 零部件 / 供应商 / 产品线）、搜索定位（`8fd4b82` 前后）。
-- **企业列表表格视图**（`dist/supplier_table.html`）：全部 60 家供应商，支持按地区 / 国家 / 类别 / 层级筛选、关键字搜索、点击列标题升/降序排序（`94e8235`）。
+- **企业列表表格视图**（`dist/supplier_table.html`）：全部 66 家供应商，支持按地区 / 国家 / 类别 / 层级筛选、关键字搜索、点击列标题升/降序排序（`94e8235`）。
 - **统一顶部导航 `topnav.py`**：一处维护、全局生效，首页 / 表格 / 报告 / 地图 / 看板 5 大板块互相跳转，形成"融合"而非聚合页（`8fd4b82`）。
 - **跨页深链**：报告表格实体 → `index.html?focus=S:tsmc` 定位图谱；供应商 → `supplier_geo.html?supplier=tsmc` 定位地图；表格每行"图谱 / 地图"一键直达。
 - **右侧信息面板联动**：点击"关联"邻居可聚焦并同步图谱与详情（`c1e1523`）。
@@ -61,7 +61,7 @@
 
 ## 四、P2 — 供应商研究层（Research Layer）
 
-**目标**：在"结构图谱"之外，补充 60 家供应商中 **15 家重点企业**的基本面 / 估值 / 舆情 / 脆弱性研究。
+**目标**：在"结构图谱"之外，补充 66 家供应商中 **15 家重点企业**的基本面 / 估值 / 舆情 / 脆弱性研究。
 
 交付：
 - **基本面与同业相对估值**（`tools/supplier_research/valuation.py`）：当前倍数（P/E·P/B·EV/EBITDA）÷ 同业中位，判断高估 / 低估 / 合理；数据层 `tools/data/supplier_fundamentals.csv` 可人工核改（`61eb6c8`）。
