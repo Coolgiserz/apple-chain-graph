@@ -128,6 +128,27 @@ class IndexHtmlScaleTest(unittest.TestCase):
                     "index.html 的 <%s> 仍写着过期的「%s」，与图谱当前规模不符" % (key, s),
                 )
 
+    def test_title_states_current_scale(self):
+        """<title> 的正向断言。
+
+        2026-09-15 发现：上一条只查「有没有过期数字」，而 <title> 里写的是
+        「66家苹果供应商与34款产品」——34 不是任何一条 stale 列表里的值，
+        所以旧数字悄悄漏过。正向断言才是唯一能抓住它的写法。
+        """
+        m = re.search(r"<title>([^<]*)</title>", self.html)
+        self.assertIsNotNone(m, "index.html 找不到 <title>")
+        title = m.group(1)
+        s = self.scale
+        # title 里数字与量词之间无空格（SEO 惯例），故两种写法都认
+        self.assertTrue(
+            ("%d 款" % s["n_products"]) in title or ("%d款" % s["n_products"]) in title,
+            "<title> 未写明当前产品款数 %d：%s" % (s["n_products"], title),
+        )
+        self.assertTrue(
+            ("%d 家" % s["n_suppliers"]) in title or ("%d家" % s["n_suppliers"]) in title,
+            "<title> 未写明当前供应商家数 %d：%s" % (s["n_suppliers"], title),
+        )
+
     def test_meta_description_states_current_scale(self):
         # 正向断言：description 必须写出当前真实规模，而不只是「没有旧数字」
         desc = ""
@@ -263,6 +284,36 @@ class ReadmeScaleTest(unittest.TestCase):
                 "README.md 写「%s 关系」，图谱实为 %d 条边" % (m.group(2), s["n_edges"]),
             )
 
+    def test_readme_badges_match_scale(self):
+        """README 顶部 shields.io badge 的数字必须与图谱一致。
+
+        2026-09-15 发现：badge 里的 relationships-510 长期与正文「700 关系」
+        互相矛盾（同一指标两个值差 190），而正文有测试、badge 没有 ——
+        漂移只会发生在无人看守的地方，故补上这条。
+        """
+        s = self.scale
+        wanted = {
+            "nodes": s["n_nodes"],
+            "products": s["n_products"],
+            "components": s["n_components"],
+            "suppliers": s["n_suppliers"],
+            "relationships": s["n_edges"],
+        }
+        for name in ("README.md", "README_en.md"):
+            path = os.path.join(ROOT, name)
+            if not os.path.exists(path):
+                continue
+            text = read(path)
+            for key, value in wanted.items():
+                m = re.search(r"badge/%s-(\d+)-" % re.escape(key), text)
+                self.assertIsNotNone(m, "%s 缺少 %s badge" % (name, key))
+                self.assertEqual(
+                    int(m.group(1)),
+                    value,
+                    "%s 的 badge「%s-%s」与图谱实值 %d 不符"
+                    % (name, key, m.group(1), value),
+                )
+
     def test_table_page_title_matches(self):
         s = self.scale
         path = os.path.join(ROOT, "templates", "table_page.html")
@@ -273,6 +324,91 @@ class ReadmeScaleTest(unittest.TestCase):
             "60 家企业",
             text,
             "templates/table_page.html 的 title 仍写着「60 家企业」，实际为 %d 家" % s["n_suppliers"],
+        )
+
+
+class DocScaleClaimTest(unittest.TestCase):
+    """文档、脚本注释、前端注释里的「规模声明」必须与图谱一致。
+
+    背景（2026-09-15）：把 docs/ 与若干脚本注释中残留的 115 节点 / 510 关系 /
+    60 家 / 34 款 / 28 款 等旧值统一更新后意识到——这些位置此前**没有任何测试
+    保护**，数据再变一次就会重新漂移。README 与 index.html 有断言，docs 没有，
+    漂移只会发生在无人看守的地方，故按「规模声明」的固定句式补上。
+
+    只匹配**组合句式**与**带明确量词的短语**，不匹配裸数字。这是刻意的：
+    分析师的「37 家机构」、前端夹具的「1 款产品」、数据模型注释的「3 节点」
+    都不该被误伤——宁可有少量声明漏检，也不要让测试因误报而被当成噪音忽略。
+    """
+
+    SCAN_EXT = (".md", ".py", ".js", ".mjs", ".json", ".html", ".txt", ".yml")
+    # 自引用（本文件含 stale 值列表）与前端夹具（刻意用 1 节点迷你图）
+    SKIP_FILES = {"tests/test_data_scale_consistency.py", "tests/engine.test.mjs"}
+    # 明确标注为历史快照的行不再校验（如 neo4j-import.md 保留的初版实测记录）
+    ALLOW_MARK = ("初版实测", "stale", "过期", "历史")
+
+    @classmethod
+    def setUpClass(cls):
+        cls.scale = load_graph_scale()
+
+    @classmethod
+    def _iter_files(cls):
+        skip_dirs = {"node_modules", ".git", "dist", "__pycache__", ".venv", ".pytest_cache"}
+        for root, dirs, files in os.walk(ROOT):
+            dirs[:] = [d for d in dirs if d not in skip_dirs]
+            for fn in files:
+                if not fn.endswith(cls.SCAN_EXT):
+                    continue
+                full = os.path.join(root, fn)
+                rel = os.path.relpath(full, ROOT)
+                if rel in cls.SKIP_FILES or rel.startswith("data/neo4j") or rel.startswith("tools/data"):
+                    continue
+                yield rel, full
+
+    def test_no_document_states_stale_scale(self):
+        s = self.scale
+        node_edge = re.compile(r"(\d{2,})\s*节点\s*[/+＋、]?\s*(\d{2,})\s*(?:关系|边)")
+        lineup = re.compile(r"(\d+)\s*产品\s*/\s*(\d+)\s*零部件\s*/\s*(\d+)\s*供应商")
+        prod = re.compile(r"(\d+)\s*款产品")
+        comp = re.compile(r"(\d+)\s*类零部件")
+        supp = re.compile(r"(\d+)\s*家供应商与代工厂")
+
+        problems = []
+        for rel, full in self._iter_files():
+            for lineno, line in enumerate(read(full).split("\n"), 1):
+                if any(mark in line for mark in self.ALLOW_MARK):
+                    continue
+                for m in node_edge.finditer(line):
+                    if int(m.group(1)) != s["n_nodes"] or int(m.group(2)) != s["n_edges"]:
+                        problems.append(
+                            "%s:%d 写「%s 节点 / %s 关系」" % (rel, lineno, m.group(1), m.group(2))
+                        )
+                for m in lineup.finditer(line):
+                    got = tuple(int(m.group(i)) for i in (1, 2, 3))
+                    want = (s["n_products"], s["n_components"], s["n_suppliers"])
+                    if got != want:
+                        problems.append(
+                            "%s:%d 写「%s 产品 / %s 零部件 / %s 供应商」"
+                            % (rel, lineno, m.group(1), m.group(2), m.group(3))
+                        )
+                for m in prod.finditer(line):
+                    if int(m.group(1)) != s["n_products"]:
+                        problems.append("%s:%d 写「%s 款产品」" % (rel, lineno, m.group(1)))
+                for m in comp.finditer(line):
+                    if int(m.group(1)) != s["n_components"]:
+                        problems.append("%s:%d 写「%s 类零部件」" % (rel, lineno, m.group(1)))
+                for m in supp.finditer(line):
+                    if int(m.group(1)) != s["n_suppliers"]:
+                        problems.append("%s:%d 写「%s 家供应商与代工厂」" % (rel, lineno, m.group(1)))
+
+        self.assertEqual(
+            problems,
+            [],
+            "以下位置的规模声明与图谱不符（当前应为 %d 节点 / %d 边 / %d 款产品 / "
+            "%d 类零部件 / %d 家供应商）：\n  %s"
+            % (
+                s["n_nodes"], s["n_edges"], s["n_products"],
+                s["n_components"], s["n_suppliers"], "\n  ".join(problems),
+            ),
         )
 
 
