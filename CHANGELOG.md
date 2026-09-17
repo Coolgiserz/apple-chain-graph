@@ -1,5 +1,17 @@
 # Changelog
 
+## [1.14.0](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.13.0...v1.14.0) (2026-09-17)
+
+
+### Features
+
+* **data:** 补齐 12 款产品型号并修正 14 项与官网不符字段 ([412ae78](https://github.com/Coolgiserz/apple-chain-graph/commit/412ae7847b646bc0f3a7367b67dfe3cd66e2caa5))
+
+
+### Bug Fixes
+
+* **data:** 修正 eSIM 供应商归属，并给二手来源补置信度限定 ([efc8f38](https://github.com/Coolgiserz/apple-chain-graph/commit/efc8f38eeb5b70ee31b081a199fb29dc9c42788f))
+
 ## [1.13.0](https://github.com/Coolgiserz/apple-chain-graph/compare/v1.12.0...v1.13.0) (2026-09-10)
 
 
